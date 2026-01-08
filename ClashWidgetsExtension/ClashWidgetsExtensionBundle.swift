@@ -13,6 +13,5 @@ struct ClashWidgetsExtensionBundle: WidgetBundle {
     var body: some Widget {
         ClashWidgetsExtension()
         ClashWidgetsExtensionControl()
-        ClashWidgetsExtensionLiveActivity()
     }
 }
