@@ -6,46 +6,71 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
+		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
+		A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */; };
+		A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */; };
+		A1B2C4052F0F3B4E00FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
+		A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */; };
+		A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */; };
+		A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
+		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
+		B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */; };
+		B2C3E5032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */; };
+		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
+		B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
+		8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */; };
+		8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
+		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
-		8879E7D22F0F3B4F00FAE5F1 /* PBXContainerItemProxy */ = {
+		8879EAEB2F0F5C9700FAE5F1 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 8879E7BC2F0F3B4E00FAE5F1 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 8879E7C32F0F3B4E00FAE5F1;
-			remoteInfo = clash_widgets;
-		};
-		8879E7DC2F0F3B4F00FAE5F1 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 8879E7BC2F0F3B4E00FAE5F1 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 8879E7C32F0F3B4E00FAE5F1;
-			remoteInfo = clash_widgets;
+			remoteGlobalIDString = 8879EADD2F0F5C9600FAE5F1;
+			remoteInfo = ClashDashWidgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
-/* Begin PBXFileReference section */
-		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		8879E7D12F0F3B4F00FAE5F1 /* clash_widgetsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clash_widgetsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		8879E7DB2F0F3B4F00FAE5F1 /* clash_widgetsUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = clash_widgetsUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-/* End PBXFileReference section */
+/* Begin PBXCopyFilesBuildPhase section */
+		8879EAD42F0F5C2700FAE5F1 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
-/* Begin PBXFileSystemSynchronizedRootGroup section */
-		8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clash_widgets;
-			sourceTree = "<group>";
-		};
-		8879E7D42F0F3B4F00FAE5F1 /* clash_widgetsTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clash_widgetsTests;
-			sourceTree = "<group>";
-		};
-		8879E7DE2F0F3B4F00FAE5F1 /* clash_widgetsUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = clash_widgetsUITests;
-			sourceTree = "<group>";
-		};
-/* End PBXFileSystemSynchronizedRootGroup section */
+/* Begin PBXFileReference section */
+		A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderRow.swift; sourceTree = "<group>"; };
+		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
+		A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clash_widgetsApp.swift; sourceTree = "<group>"; };
+		A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clash_widgets.entitlements; sourceTree = "<group>"; };
+		A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
+		B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetBundle.swift; sourceTree = "<group>"; };
+		B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetControl.swift; sourceTree = "<group>"; };
+		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashWidgetExtension.entitlements; sourceTree = "<group>"; };
+		8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashDashWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashDashWidgetExtension.entitlements; sourceTree = "<group>"; };
+/* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
 		8879E7C12F0F3B4E00FAE5F1 /* Frameworks */ = {
@@ -55,29 +80,54 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8879E7CE2F0F3B4F00FAE5F1 /* Frameworks */ = {
+		8879EADB2F0F5C9600FAE5F1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8879E7D82F0F3B4F00FAE5F1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */,
+				8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */,
+				A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */,
+				A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */,
+				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
+				A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */,
+				A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */,
+				A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */,
+				A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */,
+				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
+			);
+			path = clash_widgets;
+			sourceTree = "<group>";
+		};
+		8879EAE12F0F5C9600FAE5F1 /* ClashDashWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */,
+				B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */,
+				B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */,
+				B2C3D4042F0F5C9600FAE5F1 /* Info.plist */,
+				B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */,
+			);
+			path = ClashDashWidget;
+			sourceTree = "<group>";
+		};
 		8879E7BB2F0F3B4E00FAE5F1 = {
 			isa = PBXGroup;
 			children = (
+				8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */,
+				8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */,
 				8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */,
-				8879E7D42F0F3B4F00FAE5F1 /* clash_widgetsTests */,
-				8879E7DE2F0F3B4F00FAE5F1 /* clash_widgetsUITests */,
+				8879EAE12F0F5C9600FAE5F1 /* ClashDashWidget */,
+				8879E8002F0F45FA00FAE5F1 /* Frameworks */,
 				8879E7C52F0F3B4E00FAE5F1 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -86,10 +136,18 @@
 			isa = PBXGroup;
 			children = (
 				8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */,
-				8879E7D12F0F3B4F00FAE5F1 /* clash_widgetsTests.xctest */,
-				8879E7DB2F0F3B4F00FAE5F1 /* clash_widgetsUITests.xctest */,
+				8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		8879E8002F0F45FA00FAE5F1 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */,
+				8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -102,13 +160,12 @@
 				8879E7C02F0F3B4E00FAE5F1 /* Sources */,
 				8879E7C12F0F3B4E00FAE5F1 /* Frameworks */,
 				8879E7C22F0F3B4E00FAE5F1 /* Resources */,
+				8879EAD42F0F5C2700FAE5F1 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-			);
-			fileSystemSynchronizedGroups = (
-				8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */,
+				8879EAEC2F0F5C9700FAE5F1 /* PBXTargetDependency */,
 			);
 			name = clash_widgets;
 			packageProductDependencies = (
@@ -117,51 +174,24 @@
 			productReference = 8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */;
 			productType = "com.apple.product-type.application";
 		};
-		8879E7D02F0F3B4F00FAE5F1 /* clash_widgetsTests */ = {
+		8879EADD2F0F5C9600FAE5F1 /* ClashDashWidgetExtension */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 8879E7E82F0F3B4F00FAE5F1 /* Build configuration list for PBXNativeTarget "clash_widgetsTests" */;
+			buildConfigurationList = 8879EAEF2F0F5C9700FAE5F1 /* Build configuration list for PBXNativeTarget "ClashDashWidgetExtension" */;
 			buildPhases = (
-				8879E7CD2F0F3B4F00FAE5F1 /* Sources */,
-				8879E7CE2F0F3B4F00FAE5F1 /* Frameworks */,
-				8879E7CF2F0F3B4F00FAE5F1 /* Resources */,
+				8879EADA2F0F5C9600FAE5F1 /* Sources */,
+				8879EADB2F0F5C9600FAE5F1 /* Frameworks */,
+				8879EADC2F0F5C9600FAE5F1 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				8879E7D32F0F3B4F00FAE5F1 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				8879E7D42F0F3B4F00FAE5F1 /* clash_widgetsTests */,
-			);
-			name = clash_widgetsTests;
+			name = ClashDashWidgetExtension;
 			packageProductDependencies = (
 			);
-			productName = clash_widgetsTests;
-			productReference = 8879E7D12F0F3B4F00FAE5F1 /* clash_widgetsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		8879E7DA2F0F3B4F00FAE5F1 /* clash_widgetsUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 8879E7EB2F0F3B4F00FAE5F1 /* Build configuration list for PBXNativeTarget "clash_widgetsUITests" */;
-			buildPhases = (
-				8879E7D72F0F3B4F00FAE5F1 /* Sources */,
-				8879E7D82F0F3B4F00FAE5F1 /* Frameworks */,
-				8879E7D92F0F3B4F00FAE5F1 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				8879E7DD2F0F3B4F00FAE5F1 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				8879E7DE2F0F3B4F00FAE5F1 /* clash_widgetsUITests */,
-			);
-			name = clash_widgetsUITests;
-			packageProductDependencies = (
-			);
-			productName = clash_widgetsUITests;
-			productReference = 8879E7DB2F0F3B4F00FAE5F1 /* clash_widgetsUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
+			productName = ClashDashWidgetExtension;
+			productReference = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -176,13 +206,8 @@
 					8879E7C32F0F3B4E00FAE5F1 = {
 						CreatedOnToolsVersion = 26.2;
 					};
-					8879E7D02F0F3B4F00FAE5F1 = {
+					8879EADD2F0F5C9600FAE5F1 = {
 						CreatedOnToolsVersion = 26.2;
-						TestTargetID = 8879E7C32F0F3B4E00FAE5F1;
-					};
-					8879E7DA2F0F3B4F00FAE5F1 = {
-						CreatedOnToolsVersion = 26.2;
-						TestTargetID = 8879E7C32F0F3B4E00FAE5F1;
 					};
 				};
 			};
@@ -201,8 +226,7 @@
 			projectRoot = "";
 			targets = (
 				8879E7C32F0F3B4E00FAE5F1 /* clash_widgets */,
-				8879E7D02F0F3B4F00FAE5F1 /* clash_widgetsTests */,
-				8879E7DA2F0F3B4F00FAE5F1 /* clash_widgetsUITests */,
+				8879EADD2F0F5C9600FAE5F1 /* ClashDashWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -212,20 +236,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8879E7CF2F0F3B4F00FAE5F1 /* Resources */ = {
+		8879EADC2F0F5C9600FAE5F1 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8879E7D92F0F3B4F00FAE5F1 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -236,35 +255,34 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */,
+				A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */,
+				A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */,
+				A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */,
+				A1B2C4052F0F3B4E00FAE5F1 /* Models.swift in Sources */,
+				A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */,
+				A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8879E7CD2F0F3B4F00FAE5F1 /* Sources */ = {
+		8879EADA2F0F5C9600FAE5F1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		8879E7D72F0F3B4F00FAE5F1 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
+				B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */,
+				B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */,
+				B2C3E5032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift in Sources */,
+				B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		8879E7D32F0F3B4F00FAE5F1 /* PBXTargetDependency */ = {
+		8879EAEC2F0F5C9700FAE5F1 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 8879E7C32F0F3B4E00FAE5F1 /* clash_widgets */;
-			targetProxy = 8879E7D22F0F3B4F00FAE5F1 /* PBXContainerItemProxy */;
-		};
-		8879E7DD2F0F3B4F00FAE5F1 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 8879E7C32F0F3B4E00FAE5F1 /* clash_widgets */;
-			targetProxy = 8879E7DC2F0F3B4F00FAE5F1 /* PBXContainerItemProxy */;
+			target = 8879EADD2F0F5C9600FAE5F1 /* ClashDashWidgetExtension */;
+			targetProxy = 8879EAEB2F0F5C9700FAE5F1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -280,28 +298,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -321,13 +317,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFETCH_ALL_FILES = YES;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
@@ -343,28 +339,6 @@
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -378,12 +352,13 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.2;
+				LOCALIZATION_PREFETCH_ALL_FILES = YES;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -393,8 +368,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -424,8 +401,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -450,83 +429,114 @@
 			};
 			name = Release;
 		};
-		8879E7E92F0F3B4F00FAE5F1 /* Debug */ = {
+		8879EAF02F0F5C9700FAE5F1 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClashDashWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ClashDashWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgetsTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/clash_widgets.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/clash_widgets";
 			};
 			name = Debug;
 		};
-		8879E7EA2F0F3B4F00FAE5F1 /* Release */ = {
+		8879EAF12F0F5C9700FAE5F1 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ClashDashWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = ClashDashWidget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgetsTests";
+				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/clash_widgets.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/clash_widgets";
-			};
-			name = Release;
-		};
-		8879E7EC2F0F3B4F00FAE5F1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgetsUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = clash_widgets;
-			};
-			name = Debug;
-		};
-		8879E7ED2F0F3B4F00FAE5F1 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				GENERATE_INFOPLIST_FILE = YES;
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgetsUITests";
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SWIFT_APPROACHABLE_CONCURRENCY = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = clash_widgets;
 			};
 			name = Release;
 		};
@@ -551,20 +561,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		8879E7E82F0F3B4F00FAE5F1 /* Build configuration list for PBXNativeTarget "clash_widgetsTests" */ = {
+		8879EAEF2F0F5C9700FAE5F1 /* Build configuration list for PBXNativeTarget "ClashDashWidgetExtension" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8879E7E92F0F3B4F00FAE5F1 /* Debug */,
-				8879E7EA2F0F3B4F00FAE5F1 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		8879E7EB2F0F3B4F00FAE5F1 /* Build configuration list for PBXNativeTarget "clash_widgetsUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				8879E7EC2F0F3B4F00FAE5F1 /* Debug */,
-				8879E7ED2F0F3B4F00FAE5F1 /* Release */,
+				8879EAF02F0F5C9700FAE5F1 /* Debug */,
+				8879EAF12F0F5C9700FAE5F1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
