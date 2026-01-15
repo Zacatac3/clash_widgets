@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */; };
+		8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
+		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
 		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
 		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
 		A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */; };
@@ -17,12 +21,14 @@
 		A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
 		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
 		B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */; };
-		B2C3E5032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */; };
 		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
 		B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
-		8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */; };
-		8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
-		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
+		C1D2E3122F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
+		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
+		C1D2E3162F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
+		D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0012F15B00000FAE5F1 /* asset_map.json */; };
+		D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0032F15B00000FAE5F1 /* upgrade_info */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,26 +56,29 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
-		A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderRow.swift; sourceTree = "<group>"; };
-		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
-		A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
-		A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clash_widgetsApp.swift; sourceTree = "<group>"; };
-		A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clash_widgets.entitlements; sourceTree = "<group>"; };
-		A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
-		B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetBundle.swift; sourceTree = "<group>"; };
-		B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetControl.swift; sourceTree = "<group>"; };
-		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashDashWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashDashWidgetExtension.entitlements; sourceTree = "<group>"; };
+		A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
+		A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderRow.swift; sourceTree = "<group>"; };
+		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
+		A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
+		A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
+		A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clash_widgetsApp.swift; sourceTree = "<group>"; };
+		A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clash_widgets.entitlements; sourceTree = "<group>"; };
+		A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
+		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
+		B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetBundle.swift; sourceTree = "<group>"; };
+		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		D4F1A0012F15B00000FAE5F1 /* asset_map.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = asset_map.json; path = ../json_files/asset_map.json; sourceTree = "<group>"; };
+		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -92,34 +101,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */ = {
-			isa = PBXGroup;
-			children = (
-				A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */,
-				A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */,
-				A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */,
-				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
-				A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */,
-				A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */,
-				A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */,
-				A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */,
-				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
-			);
-			path = clash_widgets;
-			sourceTree = "<group>";
-		};
-		8879EAE12F0F5C9600FAE5F1 /* ClashDashWidget */ = {
-			isa = PBXGroup;
-			children = (
-				B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */,
-				B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */,
-				B2C3D4032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift */,
-				B2C3D4042F0F5C9600FAE5F1 /* Info.plist */,
-				B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */,
-			);
-			path = ClashDashWidget;
-			sourceTree = "<group>";
-		};
 		8879E7BB2F0F3B4E00FAE5F1 = {
 			isa = PBXGroup;
 			children = (
@@ -141,6 +122,26 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */,
+				A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */,
+				A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */,
+				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
+				A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */,
+				C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */,
+				C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */,
+				A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */,
+				A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */,
+				A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */,
+				D4F1A0032F15B00000FAE5F1 /* upgrade_info */,
+				D4F1A0012F15B00000FAE5F1 /* asset_map.json */,
+				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
+			);
+			path = clash_widgets;
+			sourceTree = "<group>";
+		};
 		8879E8002F0F45FA00FAE5F1 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -148,6 +149,17 @@
 				8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		8879EAE12F0F5C9600FAE5F1 /* ClashDashWidget */ = {
+			isa = PBXGroup;
+			children = (
+				B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */,
+				B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */,
+				B2C3D4042F0F5C9600FAE5F1 /* Info.plist */,
+				B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */,
+			);
+			path = ClashDashWidget;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -236,6 +248,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */,
+				D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */,
 				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -244,6 +258,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */,
 				B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -260,6 +275,8 @@
 				A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */,
 				A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */,
 				A1B2C4052F0F3B4E00FAE5F1 /* Models.swift in Sources */,
+				C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */,
+				C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */,
 				A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */,
 				A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */,
 			);
@@ -271,8 +288,9 @@
 			files = (
 				B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */,
 				B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */,
-				B2C3E5032F0F5C9600FAE5F1 /* ClashDashWidgetControl.swift in Sources */,
 				B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */,
+				C1D2E3162F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */,
+				C1D2E3122F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

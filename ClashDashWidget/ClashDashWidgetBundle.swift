@@ -12,6 +12,7 @@ import SwiftUI
 struct ClashDashWidgetBundle: WidgetBundle {
     var body: some Widget {
         ClashDashWidget()
-        ClashDashWidgetControl()
+        LabPetWidget()
+        BuilderBaseWidget()
     }
 }
