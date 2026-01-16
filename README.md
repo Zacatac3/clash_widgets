@@ -20,6 +20,7 @@ ClashDash is an iOS app with a WidgetKit extension that tracks Clash of Clans up
 - add "over view" (4x4) widget which displayer all current upgrades in both villages
 - make profile page more useful
 - add "progress tracker" which shows a progress bar for each town hall displaying percent of upgrades complete for said town hall 
+- **obfuscate key**
 
 ### App + Widget Architecture
 - App target: `clash_widgets` (SwiftUI UI, data management, settings).
