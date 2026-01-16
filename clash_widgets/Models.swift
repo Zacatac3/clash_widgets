@@ -11,6 +11,21 @@ enum AppearancePreference: String, Codable, CaseIterable, Identifiable {
     static let storageKey = "appearance_preference"
 
     var id: String { rawValue }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let value = (try? container.decode(String.self)) ?? "device"
+        if value == "navy" {
+            self = .device
+        } else {
+            self = AppearancePreference(rawValue: value) ?? .device
+        }
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(rawValue)
+    }
 }
 
 #if canImport(SwiftUI)
@@ -34,6 +49,29 @@ enum UpgradeCategory: String, Codable {
     case lab
     case pets
     case builderBase
+}
+
+struct NotificationSettings: Codable, Equatable {
+    var notificationsEnabled: Bool = false
+    var builderNotificationsEnabled: Bool = true
+    var labNotificationsEnabled: Bool = true
+    var petNotificationsEnabled: Bool = true
+    var builderBaseNotificationsEnabled: Bool = true
+
+    static var `default`: NotificationSettings { NotificationSettings() }
+
+    func allows(category: UpgradeCategory) -> Bool {
+        switch category {
+        case .builderVillage:
+            return builderNotificationsEnabled
+        case .lab:
+            return labNotificationsEnabled
+        case .pets:
+            return petNotificationsEnabled
+        case .builderBase:
+            return builderBaseNotificationsEnabled
+        }
+    }
 }
 
 // Combined model for UI
@@ -94,8 +132,33 @@ struct BuildingUpgrade: Identifiable, Codable {
             return "\(days)d \(hours)h"
         } else if hours > 0 {
             return "\(hours)h \(minutes)m"
+        } else if minutes > 0 {
+            let seconds = (Int(remaining) % 60)
+            return String(format: "%dm %02ds", minutes, seconds)
         } else {
-            return "\(minutes)m"
+            let seconds = max(Int(remaining.rounded()), 0)
+            return "\(seconds)s"
+        }
+    }
+
+    func timeRemaining(referenceDate: Date) -> String {
+        let remaining = endTime.timeIntervalSince(referenceDate)
+        if remaining <= 0 { return "Complete" }
+
+        let days = Int(remaining) / 86400
+        let hours = (Int(remaining) % 86400) / 3600
+        let minutes = (Int(remaining) % 3600) / 60
+
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        } else if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if minutes > 0 {
+            let seconds = (Int(remaining) % 60)
+            return String(format: "%dm %02ds", minutes, seconds)
+        } else {
+            let seconds = max(Int(remaining.rounded()), 0)
+            return "\(seconds)s"
         }
     }
 }

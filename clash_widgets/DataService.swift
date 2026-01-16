@@ -7,6 +7,7 @@ class DataService: ObservableObject {
 
     private let apiKey: String?
     private let persistenceQueue = DispatchQueue(label: "com.zacharybuschmann.clashdash.persistence", qos: .utility)
+    private let notificationManager = NotificationManager.shared
     private var suppressPersistence = false
     private var refreshedProfilesThisLaunch: Set<UUID> = []
     private var activeRefreshTask: URLSessionDataTask?
@@ -32,6 +33,7 @@ class DataService: ObservableObject {
             guard !suppressPersistence else { return }
             updateCurrentProfile { $0.activeUpgrades = activeUpgrades }
             persistChanges(reloadWidgets: true)
+            scheduleUpgradeNotifications()
         }
     }
     @Published var playerTag: String = "" {
@@ -76,6 +78,12 @@ class DataService: ObservableObject {
         didSet {
             guard !suppressPersistence else { return }
             persistChanges(reloadWidgets: true)
+        }
+    }
+    @Published var notificationSettings: NotificationSettings = .default {
+        didSet {
+            guard !suppressPersistence else { return }
+            handleNotificationSettingsChange(from: oldValue)
         }
     }
 
@@ -174,10 +182,41 @@ class DataService: ObservableObject {
         }
     }
 
-    func recoverFromBackup() {
-        if !rawJSON.isEmpty {
-            parseJSONFromClipboard(input: rawJSON)
+    func triggerDebugNotification() {
+        guard notificationSettings.notificationsEnabled else { return }
+        notificationManager.scheduleDebugNotification()
+    }
+
+    func requestNotificationAuthorizationIfNeeded(completion: @escaping (Bool) -> Void) {
+        notificationManager.ensureAuthorization(promptIfNeeded: true) { granted in
+            DispatchQueue.main.async {
+                completion(granted)
+            }
         }
+    }
+
+    func resetToFactory() {
+        notificationManager.removeAllUpgradeNotifications()
+        refreshedProfilesThisLaunch.removeAll()
+
+        suppressPersistence = true
+        let freshProfile = PlayerAccount()
+        profiles = [freshProfile]
+        selectedProfileID = freshProfile.id
+        appearancePreference = .device
+        notificationSettings = .default
+        profileName = freshProfile.displayName
+        playerTag = ""
+        rawJSON = ""
+        lastImportDate = nil
+        activeUpgrades = []
+        cachedProfile = nil
+        refreshErrorMessage = nil
+        suppressPersistence = false
+
+        applyCurrentProfile()
+        PersistentStore.clearState()
+        saveToStorage()
     }
 
     func refreshCurrentProfile(force: Bool = false) {
@@ -276,12 +315,38 @@ class DataService: ObservableObject {
         }
     }
 
+    private func handleNotificationSettingsChange(from oldValue: NotificationSettings) {
+        if notificationSettings.notificationsEnabled && !oldValue.notificationsEnabled {
+            notificationManager.ensureAuthorization(promptIfNeeded: true) { [weak self] granted in
+                guard let self else { return }
+                if granted {
+                    self.persistChanges(reloadWidgets: false)
+                    self.scheduleUpgradeNotifications()
+                } else {
+                    DispatchQueue.main.async {
+                        self.suppressPersistence = true
+                        self.notificationSettings = oldValue
+                        self.suppressPersistence = false
+                    }
+                }
+            }
+        } else {
+            persistChanges(reloadWidgets: false)
+            scheduleUpgradeNotifications()
+        }
+    }
+
+    private func scheduleUpgradeNotifications() {
+        notificationManager.syncNotifications(for: activeUpgrades, settings: notificationSettings)
+    }
+
     private func saveToStorage() {
         ensureProfiles()
         let snapshot = PersistentStore.AppState(
             profiles: profiles,
             selectedProfileID: selectedProfileID,
-            appearancePreference: appearancePreference
+            appearancePreference: appearancePreference,
+            notificationSettings: notificationSettings
         )
 
         persistenceQueue.async {
@@ -319,6 +384,7 @@ class DataService: ObservableObject {
             profiles = state.profiles
             selectedProfileID = state.selectedProfileID
             appearancePreference = state.appearancePreference
+            notificationSettings = state.notificationSettings
         } else {
             let sharedDefaults = UserDefaults(suiteName: DataService.appGroup)
             let storedName = sharedDefaults?.string(forKey: "widget_simple_text") ?? ""
@@ -339,6 +405,7 @@ class DataService: ObservableObject {
             )
             profiles = [profile]
             selectedProfileID = profile.id
+            notificationSettings = .default
         }
 
         ensureProfiles()
@@ -349,7 +416,10 @@ class DataService: ObservableObject {
 
     private func applyCurrentProfile() {
         suppressPersistence = true
-        defer { suppressPersistence = false }
+        defer {
+            suppressPersistence = false
+            scheduleUpgradeNotifications()
+        }
 
         ensureProfiles()
         guard let profile = currentProfile else { return }

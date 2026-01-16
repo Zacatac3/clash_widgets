@@ -6,6 +6,10 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var dataService: DataService
     @State private var selectedTab: Tab = .dashboard
+    @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
+    @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
+    @State private var showInitialSetup = false
+    @State private var initialSetupTag: String = ""
 
     init() {
         let apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjdiNTg2ZGE4LTk5YTMtNDE0MS1hMmQwLTA0YjgxMTVjNGE1ZCIsImlhdCI6MTc2NzgzMjMwNiwic3ViIjoiZGV2ZWxvcGVyL2IzMzM2MjZkLTlkNjYtZmNjZS0wNTQ2LTNkOGJjZTYzOTBjYyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ1Ljc5LjIxOC43OSIsIjE3Mi41OC4xMjYuMTAzIl0sInR5cGUiOiJjbGllbnQifV19.soreABdHMlQOLiDX6QgkKjGhyhfbR_63adhoQAhyy7IsTk6ZmbK-QO39Q3hcyA8r0RjjNVOoArVJlJ4kz7Z95Q"
@@ -30,6 +34,7 @@ struct ContentView: View {
         .environmentObject(dataService)
         .onAppear {
             dataService.pruneCompletedUpgrades()
+            requestNotificationsIfNeeded()
         }
         .monitorScenePhase(scenePhase) { phase in
             switch phase {
@@ -39,6 +44,41 @@ struct ContentView: View {
                 break
             }
         }
+        .onAppear {
+            initialSetupTag = dataService.playerTag
+            showInitialSetup = !hasCompletedInitialSetup
+        }
+        .onChangeCompat(of: hasCompletedInitialSetup) { newValue in
+            showInitialSetup = !newValue
+        }
+        .onChangeCompat(of: dataService.playerTag) { newValue in
+            if showInitialSetup {
+                initialSetupTag = newValue
+            }
+        }
+        .fullScreenCover(isPresented: $showInitialSetup) {
+            InitialSetupView(playerTag: $initialSetupTag) { cleanedTag in
+                handleInitialSetupSubmission(with: cleanedTag)
+            }
+            .environmentObject(dataService)
+            .interactiveDismissDisabled(true)
+        }
+    }
+
+    private func handleInitialSetupSubmission(with rawTag: String) {
+        let normalized = normalizePlayerTag(rawTag)
+        guard !normalized.isEmpty else { return }
+        initialSetupTag = normalized
+        dataService.playerTag = normalized
+        hasCompletedInitialSetup = true
+        showInitialSetup = false
+        dataService.refreshCurrentProfile(force: true)
+    }
+
+    private func requestNotificationsIfNeeded() {
+        guard !hasPromptedNotificationPermission else { return }
+        hasPromptedNotificationPermission = true
+        dataService.requestNotificationAuthorizationIfNeeded { _ in }
     }
 
     private enum Tab: Hashable {
@@ -106,6 +146,11 @@ private struct DashboardView: View {
                             Text(error)
                                 .font(.caption2)
                                 .foregroundColor(.red)
+                        }
+
+                        if dataService.profiles.count > 1 {
+                            profileSwitchMenu
+                                .padding(.top, 8)
                         }
                     }
                     .padding(.vertical, 4)
@@ -182,7 +227,6 @@ private struct DashboardView: View {
                 }
 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    ProfileSwitcherMenu()
                     Button(action: pasteAndImport) {
                         Image(systemName: "plus")
                     }
@@ -239,6 +283,24 @@ private struct DashboardView: View {
             importStatus = nil
         }
         #endif
+    }
+
+    private var profileSwitchMenu: some View {
+        Menu {
+            ForEach(dataService.profiles) { profile in
+                Button {
+                    dataService.selectProfile(profile.id)
+                } label: {
+                    Label(dataService.displayName(for: profile), systemImage: profile.id == dataService.selectedProfileID ? "checkmark.circle.fill" : "person.crop.circle")
+                }
+            }
+        } label: {
+            Label("Switch Village", systemImage: "arrow.triangle.2.circlepath")
+                .frame(maxWidth: .infinity)
+                .foregroundColor(.white)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(.accentColor)
     }
 }
 
@@ -658,56 +720,17 @@ private struct SettingsView: View {
     @EnvironmentObject private var dataService: DataService
     @State private var showAddProfile = false
     @State private var profileToEdit: PlayerAccount?
-    @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
+    @State private var showResetConfirmation = false
+    @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
     var body: some View {
         NavigationStack {
             Form {
-                Section("Current Profile") {
-                    HStack(spacing: 12) {
-                        Image(systemName: "person.crop.circle.fill")
-                            .foregroundColor(.accentColor)
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(currentProfileName)
-                                .font(.headline)
-                            Text(currentTagText)
-                                .font(.caption)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    if let last = dataService.lastImportDate {
-                        Text("Last import \(last, style: .relative) ago")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                    if let sync = dataService.currentProfile?.lastAPIFetchDate {
-                        Text("Last API sync \(sync, style: .relative) ago")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                Section("Appearance") {
-                    Picker("Dark Mode", selection: $dataService.appearancePreference) {
-                        Text("Dark").tag(AppearancePreference.dark)
-                        Text("Light").tag(AppearancePreference.light)
-                        Text("Device").tag(AppearancePreference.device)
-                    }
-                    .pickerStyle(.segmented)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-
-                Section("Achievements") {
-                    Picker("Show", selection: $achievementFilter) {
-                        ForEach(AchievementFilter.allCases) { filter in
-                            Text(filter.title).tag(filter)
-                        }
-                    }
-                    .pickerStyle(.segmented)
-                }
-
                 Section("Profiles") {
+                    ForEach(sortedProfiles) { profile in
+                        profileRow(profile)
+                    }
+
                     Button {
                         showAddProfile = true
                     } label: {
@@ -726,49 +749,41 @@ private struct SettingsView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                    ForEach(dataService.profiles) { profile in
-                        HStack(spacing: 12) {
-                            TownHallBadgeView(level: townHallLevel(for: profile))
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(dataService.displayName(for: profile))
-                                    .font(.headline)
-                                if !profile.tag.isEmpty {
-                                    Text("#\(profile.tag)")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            Spacer()
-                            Button("Edit") {
-                                profileToEdit = profile
-                            }
-                            .buttonStyle(.borderless)
-                            if profile.id == dataService.selectedProfileID {
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.accentColor)
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            dataService.selectProfile(profile.id)
-                        }
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                dataService.deleteProfile(profile.id)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
+                }
+
+                Section("Appearance") {
+                    Picker("Dark Mode", selection: $dataService.appearancePreference) {
+                        Text("Dark").tag(AppearancePreference.dark)
+                        Text("Light").tag(AppearancePreference.light)
+                        Text("Device").tag(AppearancePreference.device)
+                    }
+                    .pickerStyle(.segmented)
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+
+                Section("Notifications") {
+                    Toggle("Enable Notifications", isOn: notificationBinding(\.notificationsEnabled))
+                        .tint(.accentColor)
+
+                    if dataService.notificationSettings.notificationsEnabled {
+                        notificationCategoryToggle(title: "Builders", binding: notificationBinding(\.builderNotificationsEnabled))
+                        notificationCategoryToggle(title: "Laboratory", binding: notificationBinding(\.labNotificationsEnabled))
+                        notificationCategoryToggle(title: "Pet House", binding: notificationBinding(\.petNotificationsEnabled))
+                        notificationCategoryToggle(title: "Builder Base", binding: notificationBinding(\.builderBaseNotificationsEnabled))
+                    } else {
+                        Text("Allow alerts to be reminded when an upgrade finishes.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
                 }
 
-                if !dataService.rawJSON.isEmpty {
-                    Section("Maintenance") {
-                        Button {
-                            dataService.recoverFromBackup()
-                        } label: {
-                            Label("Reapply Last Import", systemImage: "arrow.clockwise")
-                        }
+                Section("Maintenance") {
+                    Button(role: .destructive) {
+                        showResetConfirmation = true
+                    } label: {
+                        Label("Reset to Factory Defaults", systemImage: "arrow.uturn.backward")
+                            .symbolRenderingMode(.monochrome)
                     }
                 }
             }
@@ -781,22 +796,29 @@ private struct SettingsView: View {
                     dataService.updateProfile(profile.id, displayName: name, tag: tag)
                 }
             }
+            .alert("Reset ClashDash?", isPresented: $showResetConfirmation) {
+                Button("Cancel", role: .cancel) {}
+                Button("Reset", role: .destructive) {
+                    hasCompletedInitialSetup = false
+                    dataService.resetToFactory()
+                }
+            } message: {
+                Text("All profiles, timers, and settings will be erased. You'll need to enter your player tag again before using the app.")
+            }
         }
     }
 
-    private var currentProfileName: String {
-        let name = dataService.profileName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !name.isEmpty {
-            return name
-        }
-        if let profile = dataService.currentProfile {
-            return dataService.displayName(for: profile)
-        }
-        return "Profile"
+    private func notificationBinding(_ keyPath: WritableKeyPath<NotificationSettings, Bool>) -> Binding<Bool> {
+        Binding(
+            get: { dataService.notificationSettings[keyPath: keyPath] },
+            set: { dataService.notificationSettings[keyPath: keyPath] = $0 }
+        )
     }
 
-    private var currentTagText: String {
-        dataService.playerTag.isEmpty ? "No tag saved" : "#\(dataService.playerTag)"
+    @ViewBuilder
+    private func notificationCategoryToggle(title: String, binding: Binding<Bool>) -> some View {
+        Toggle(title, isOn: binding)
+            .disabled(!dataService.notificationSettings.notificationsEnabled)
     }
 
     private func townHallLevel(for profile: PlayerAccount) -> Int {
@@ -807,6 +829,77 @@ private struct SettingsView: View {
             return builderHall
         }
         return 0
+    }
+
+    private var sortedProfiles: [PlayerAccount] {
+        let currentID = dataService.selectedProfileID
+        return dataService.profiles.sorted { lhs, rhs in
+            let lhsPriority = lhs.id == currentID ? 0 : 1
+            let rhsPriority = rhs.id == currentID ? 0 : 1
+            if lhsPriority != rhsPriority {
+                return lhsPriority < rhsPriority
+            }
+            return dataService.displayName(for: lhs).localizedCaseInsensitiveCompare(dataService.displayName(for: rhs)) == .orderedAscending
+        }
+    }
+
+    private func isCurrentProfile(_ profile: PlayerAccount) -> Bool {
+        profile.id == dataService.selectedProfileID
+    }
+
+    @ViewBuilder
+    private func profileRow(_ profile: PlayerAccount) -> some View {
+        let isCurrent = isCurrentProfile(profile)
+
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(spacing: 12) {
+                TownHallBadgeView(level: townHallLevel(for: profile))
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(dataService.displayName(for: profile))
+                        .font(.headline)
+                    if !profile.tag.isEmpty {
+                        Text("#\(profile.tag)")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer()
+                Button("Edit") {
+                    profileToEdit = profile
+                }
+                .buttonStyle(.borderless)
+                if isCurrent {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+            }
+
+            if isCurrent {
+                if let last = dataService.lastImportDate {
+                    Text("Last import \(last, style: .relative) ago")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+                if let sync = dataService.currentProfile?.lastAPIFetchDate {
+                    Text("Last API sync \(sync, style: .relative) ago")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !isCurrent {
+                dataService.selectProfile(profile.id)
+            }
+        }
+        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
+            Button(role: .destructive) {
+                dataService.deleteProfile(profile.id)
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+        }
     }
 }
 
@@ -892,6 +985,13 @@ private struct ProfileEditorSheet: View {
 
 private struct ProfileSwitcherMenu: View {
     @EnvironmentObject private var dataService: DataService
+    private let iconName: String
+    private let iconFont: Font
+
+    init(iconName: String = "person.2.circle", iconFont: Font = .title3) {
+        self.iconName = iconName
+        self.iconFont = iconFont
+    }
 
     var body: some View {
         Menu {
@@ -903,7 +1003,9 @@ private struct ProfileSwitcherMenu: View {
                 }
             }
         } label: {
-            Image(systemName: "person.2.circle")
+            Image(systemName: iconName)
+                .font(iconFont)
+                .foregroundColor(.accentColor)
         }
     }
 }
@@ -924,7 +1026,7 @@ private struct HelpSheetView: View {
                     ])
 
                     helpCard(title: "Managing Profiles", bullets: [
-                        "Use the profile menu in the top right to switch",
+                        "Tap the switch icon next to your profile name to change players",
                         "Tap Edit within Settings to rename or update tags",
                         "Swipe left on a profile row in Settings to delete"
                     ])
@@ -977,10 +1079,232 @@ private struct HelpSheetView: View {
     }
 }
 
+private struct InitialSetupView: View {
+    @EnvironmentObject private var dataService: DataService
+    @Binding var playerTag: String
+    let onComplete: (String) -> Void
+
+    private enum FlowStep {
+        case intro
+        case tagEntry
+    }
+
+    @State private var step: FlowStep = .intro
+    @State private var statusMessage: String?
+    @FocusState private var fieldFocused: Bool
+
+    private var normalizedTag: String {
+        normalizePlayerTag(playerTag)
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 28) {
+                switch step {
+                case .intro:
+                    onboardingSplash
+                case .tagEntry:
+                    tagEntryContent
+                }
+            }
+            .padding(30)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle(step == .intro ? "Welcome" : "Add Your Tag")
+            .animation(.easeInOut, value: step)
+            .onAppear { scheduleFocusIfNeeded() }
+            .onChangeCompat(of: step) { _ in scheduleFocusIfNeeded() }
+        }
+    }
+
+    private var onboardingSplash: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 24) {
+                    Text("Welcome to ClashDash")
+                        .font(.system(size: 30, weight: .bold, design: .rounded))
+
+                    helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
+
+                    helpCard(title: "Importing Data", bullets: [
+                        "Copy the exported JSON from Clash of Clans",
+                        "Tap the + button on the Home tab",
+                        "Choose Paste & Import to sync timers"
+                    ])
+
+                    helpCard(title: "Managing Profiles", bullets: [
+                        "Use the Switch Village button to change players",
+                        "Tap Edit within Settings to rename or update tags",
+                        "Swipe left on a profile row in Settings to delete"
+                    ])
+
+                    helpCard(title: "Widgets", bullets: [
+                        "Add ClashDash widgets from the iOS Home Screen",
+                        "Widgets read the latest data each time you import",
+                        "Open the app after timers finish so widgets stay fresh"
+                    ])
+                }
+                .padding(.top, 8)
+            }
+
+            Button {
+                step = .tagEntry
+            } label: {
+                Text("Continue")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+        }
+    }
+
+    private var tagEntryContent: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            Text("Enter your Clash tag")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Text("We only need it once to sync your player profile. You'll find it under your name inside Clash of Clans.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            VStack(alignment: .leading, spacing: 10) {
+                TextField("e.g. #9C082CCU8", text: $playerTag)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                    .keyboardType(.asciiCapable)
+                    .focused($fieldFocused)
+                    .padding(14)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
+                    .onChangeCompat(of: playerTag) { newValue in
+                        let sanitized = sanitizeInput(newValue)
+                        if sanitized != newValue {
+                            playerTag = sanitized
+                        }
+                    }
+
+                Text("ClashDash removes the # symbol automatically—just type the characters you see in game.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+
+#if canImport(UIKit)
+            Button {
+                importVillageDataFromClipboard()
+            } label: {
+                Label("Paste & Import Village Data", systemImage: "plus")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.bordered)
+#endif
+
+            if let statusMessage {
+                Text(statusMessage)
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            Button {
+                onComplete(normalizedTag)
+            } label: {
+                Text("Save Tag & Continue")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
+            .disabled(normalizedTag.isEmpty)
+
+            Spacer()
+            Text("Need to start over later? Use Settings → Reset to Factory Defaults.")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    @ViewBuilder
+    private func helpCard(title: String, description: String? = nil, bullets: [String] = []) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            Text(title)
+                .font(.headline)
+            if let description {
+                Text(description)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            if !bullets.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(bullets, id: \.self) { bullet in
+                        HStack(alignment: .top, spacing: 8) {
+                            Image(systemName: "checkmark.circle")
+                                .font(.caption)
+                                .foregroundColor(.accentColor)
+                            Text(bullet)
+                                .font(.subheadline)
+                        }
+                    }
+                }
+            }
+        }
+        .padding()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+    }
+
+    private func scheduleFocusIfNeeded() {
+        guard step == .tagEntry else { return }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
+            fieldFocused = true
+        }
+    }
+
+#if canImport(UIKit)
+    private func importVillageDataFromClipboard() {
+        guard let input = UIPasteboard.general.string, !input.isEmpty else {
+            statusMessage = "Clipboard was empty—copy your export from Clash first."
+            return
+        }
+        dataService.parseJSONFromClipboard(input: input)
+        let count = dataService.activeUpgrades.count
+        if count > 0 {
+            statusMessage = "Imported \(count) upgrades from your clipboard."
+        } else {
+            statusMessage = "Processed the clipboard data, but no upgrades were detected."
+        }
+    }
+#endif
+
+    private func sanitizeInput(_ raw: String) -> String {
+        let uppercase = raw.uppercased()
+        let allowed = CharacterSet(charactersIn: "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        var sanitized = String(uppercase.filter { char in
+            guard let scalar = char.unicodeScalars.first else { return false }
+            return allowed.contains(scalar)
+        })
+
+        if let hashIndex = sanitized.firstIndex(of: "#"), hashIndex != sanitized.startIndex {
+            sanitized.remove(at: hashIndex)
+            sanitized.insert("#", at: sanitized.startIndex)
+        }
+
+        if sanitized.count > 15 {
+            sanitized = String(sanitized.prefix(15))
+        }
+
+        return sanitized
+    }
+}
+
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {
         ContentView()
     }
+}
+
+fileprivate func normalizePlayerTag(_ rawTag: String) -> String {
+    let uppercase = rawTag
+        .trimmingCharacters(in: .whitespacesAndNewlines)
+        .uppercased()
+    let allowed = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+    let filteredScalars = uppercase.unicodeScalars.filter { allowed.contains($0) }
+    var view = String.UnicodeScalarView()
+    view.append(contentsOf: filteredScalars)
+    return String(view)
 }
 
 private extension View {
@@ -993,6 +1317,19 @@ private extension View {
         } else {
             onChange(of: scenePhase) { newPhase in
                 handler(newPhase)
+            }
+        }
+    }
+
+    @ViewBuilder
+    func onChangeCompat<Value: Equatable>(of value: Value, perform action: @escaping (Value) -> Void) -> some View {
+        if #available(iOS 17.0, *) {
+            onChange(of: value) { _, newValue in
+                action(newValue)
+            }
+        } else {
+            onChange(of: value) { newValue in
+                action(newValue)
             }
         }
     }

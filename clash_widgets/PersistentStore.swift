@@ -9,17 +9,25 @@ struct PersistentStore {
         var profiles: [PlayerAccount]
         var selectedProfileID: UUID?
         var appearancePreference: AppearancePreference
+        var notificationSettings: NotificationSettings
 
-        init(profiles: [PlayerAccount], selectedProfileID: UUID?, appearancePreference: AppearancePreference = .device) {
+        init(
+            profiles: [PlayerAccount],
+            selectedProfileID: UUID?,
+            appearancePreference: AppearancePreference = .device,
+            notificationSettings: NotificationSettings = .default
+        ) {
             self.profiles = profiles
             self.selectedProfileID = selectedProfileID
             self.appearancePreference = appearancePreference
+            self.notificationSettings = notificationSettings
         }
 
         private enum CodingKeys: String, CodingKey {
             case profiles
             case selectedProfileID
             case appearancePreference
+            case notificationSettings
         }
 
         init(from decoder: Decoder) throws {
@@ -27,6 +35,7 @@ struct PersistentStore {
             self.profiles = try container.decode([PlayerAccount].self, forKey: .profiles)
             self.selectedProfileID = try container.decodeIfPresent(UUID.self, forKey: .selectedProfileID)
             self.appearancePreference = try container.decodeIfPresent(AppearancePreference.self, forKey: .appearancePreference) ?? .device
+            self.notificationSettings = try container.decodeIfPresent(NotificationSettings.self, forKey: .notificationSettings) ?? .default
         }
 
         func encode(to encoder: Encoder) throws {
@@ -34,6 +43,7 @@ struct PersistentStore {
             try container.encode(profiles, forKey: .profiles)
             try container.encodeIfPresent(selectedProfileID, forKey: .selectedProfileID)
             try container.encode(appearancePreference, forKey: .appearancePreference)
+            try container.encode(notificationSettings, forKey: .notificationSettings)
         }
 
         var currentProfile: PlayerAccount? {
@@ -91,7 +101,12 @@ struct PersistentStore {
                     lastImportDate: legacy.lastImportDate,
                     activeUpgrades: legacy.activeUpgrades ?? []
                 )
-                return AppState(profiles: [profile], selectedProfileID: profile.id, appearancePreference: .device)
+                    return AppState(
+                        profiles: [profile],
+                        selectedProfileID: profile.id,
+                        appearancePreference: .device,
+                        notificationSettings: .default
+                    )
             }
             return nil
         } catch {

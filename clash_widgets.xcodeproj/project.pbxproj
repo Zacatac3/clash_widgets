@@ -19,6 +19,7 @@
 		A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */; };
 		A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */; };
 		A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
+		E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */; };
 		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
 		B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */; };
 		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
@@ -67,6 +68,7 @@
 		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
 		A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
 		A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clash_widgetsApp.swift; sourceTree = "<group>"; };
@@ -130,6 +132,7 @@
 				A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */,
 				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
 				A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */,
+				E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */,
 				C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */,
 				C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */,
 				A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */,
@@ -275,6 +278,7 @@
 				A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */,
 				A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */,
 				A1B2C4052F0F3B4E00FAE5F1 /* Models.swift in Sources */,
+				E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */,
 				C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */,
 				C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */,
 				A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */,

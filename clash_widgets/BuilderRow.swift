@@ -24,11 +24,20 @@ struct BuilderRow: View {
                     .font(.headline)
                     .lineLimit(1)
 
-                Text(upgrade.timeRemaining)
-                    .font(.subheadline)
-                    .foregroundColor(.orange)
+                timeRemainingView
 
                 // Progress bar
+                progressBarView
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    @ViewBuilder
+    private var progressBarView: some View {
+        let remainingSeconds = upgrade.endTime.timeIntervalSinceNow
+        if remainingSeconds > 0 && remainingSeconds <= 3600 {
+            TimelineView(.periodic(from: Date(), by: 1)) { context in
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
@@ -37,18 +46,46 @@ struct BuilderRow: View {
 
                         RoundedRectangle(cornerRadius: 4)
                             .fill(Color.green)
-                            .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade)), height: 8)
+                            .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade, referenceDate: context.date)), height: 8)
                     }
                 }
                 .frame(height: 8)
             }
+        } else {
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 8)
+
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.green)
+                        .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade, referenceDate: Date())), height: 8)
+                }
+            }
+            .frame(height: 8)
         }
-        .padding(.vertical, 4)
     }
 
-    private func progressFraction(for upgrade: BuildingUpgrade) -> Double {
+    @ViewBuilder
+    private var timeRemainingView: some View {
+        let remainingSeconds = upgrade.endTime.timeIntervalSinceNow
+        if remainingSeconds > 0 && remainingSeconds <= 3600 {
+            TimelineView(.periodic(from: Date(), by: 1)) { context in
+                Text(upgrade.timeRemaining(referenceDate: context.date))
+                    .font(.subheadline)
+                    .foregroundColor(.orange)
+            }
+        } else {
+            Text(upgrade.timeRemaining)
+                .font(.subheadline)
+                .foregroundColor(.orange)
+        }
+    }
+
+    private func progressFraction(for upgrade: BuildingUpgrade, referenceDate: Date) -> Double {
         let total = max(upgrade.totalDuration, 1)
-        let elapsed = Date().timeIntervalSince(upgrade.startTime)
+        let elapsed = referenceDate.timeIntervalSince(upgrade.startTime)
         if elapsed <= 0 { return 0 }
         return min(max(elapsed / total, 0.0), 1.0)
     }
