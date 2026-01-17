@@ -29,6 +29,7 @@
 		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
 		C1D2E3162F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
 		D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0012F15B00000FAE5F1 /* asset_map.json */; };
+		E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */; };
 		D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0032F15B00000FAE5F1 /* upgrade_info */; };
 /* End PBXBuildFile section */
 
@@ -80,6 +81,7 @@
 		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		D4F1A0012F15B00000FAE5F1 /* asset_map.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = asset_map.json; path = ../json_files/asset_map.json; sourceTree = "<group>"; };
+		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
 		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -140,6 +142,7 @@
 				A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */,
 				D4F1A0032F15B00000FAE5F1 /* upgrade_info */,
 				D4F1A0012F15B00000FAE5F1 /* asset_map.json */,
+				E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */,
 				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
 			);
 			path = clash_widgets;
@@ -253,6 +256,7 @@
 			files = (
 				D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */,
 				D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */,
+				E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */,
 				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
