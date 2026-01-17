@@ -1369,12 +1369,16 @@ private struct EquipmentView: View {
     }
 
     private var equipmentSection: some View {
-        Section("Equipment") {
-            ForEach(filteredEntries) { entry in
-                let totals = EquipmentView.oreCostTable
-                    .totalCost(from: entry.level, to: entry.maxLevel)
-                    .adjusted(for: entry.rarity)
-                EquipmentRow(entry: entry, totals: totals)
+        ForEach(groupedHeroes, id: \.self) { hero in
+            Section {
+                ForEach(groupedEntries[hero] ?? []) { entry in
+                    let totals = EquipmentView.oreCostTable
+                        .totalCost(from: entry.level, to: entry.maxLevel)
+                        .adjusted(for: entry.rarity)
+                    EquipmentRow(entry: entry, totals: totals)
+                }
+            } header: {
+                HeroSectionHeader(heroName: hero)
             }
         }
     }
@@ -1423,7 +1427,32 @@ private struct EquipmentView: View {
             .filter { entry in
                 showLocked || entry.isUnlocked
             }
-            .sorted { $0.name < $1.name }
+            .sorted { lhs, rhs in
+                if lhs.hero != rhs.hero {
+                    return lhs.hero < rhs.hero
+                }
+                if lhs.rarity != rhs.rarity {
+                    return lhs.rarity.sortRank < rhs.rarity.sortRank
+                }
+                return lhs.name < rhs.name
+            }
+    }
+
+    private var groupedEntries: [String: [EquipmentEntry]] {
+        Dictionary(grouping: filteredEntries, by: { $0.hero })
+            .mapValues { entries in
+                entries.sorted { lhs, rhs in
+                    if lhs.rarity != rhs.rarity {
+                        return lhs.rarity.sortRank < rhs.rarity.sortRank
+                    }
+                    return lhs.name < rhs.name
+                }
+            }
+    }
+
+    private var groupedHeroes: [String] {
+        let heroes = groupedEntries.keys.filter { !$0.isEmpty }.sorted()
+        return heroes
     }
 
     private var totalOreCost: OreTotals {
@@ -1437,6 +1466,7 @@ private struct EquipmentView: View {
 
     private var equipmentEntries: [EquipmentEntry] {
         guard let profile = dataService.cachedProfile else { return [] }
+        let hasEquipmentUnlocked = profile.townHallLevel >= 8
         let equipmentList: [HeroEquipment] = profile.heroEquipment ?? []
         let levelsByName = Dictionary(
             uniqueKeysWithValues: equipmentList.map { ($0.name.lowercased(), $0) }
@@ -1447,7 +1477,7 @@ private struct EquipmentView: View {
             let equipment = levelsByName[lookupKey]
             let level = equipment?.level ?? 0
             let maxLevel = metadata.rarity.maxLevel
-            let isUnlocked = equipment != nil
+            let isUnlocked = hasEquipmentUnlocked && equipment != nil
 
             return EquipmentEntry(
                 name: metadata.name,
@@ -1498,6 +1528,15 @@ private enum EquipmentRarity: String {
             return 18
         case .epic:
             return 27
+        }
+    }
+
+    var sortRank: Int {
+        switch self {
+        case .common:
+            return 0
+        case .epic:
+            return 1
         }
     }
 }
@@ -1560,14 +1599,14 @@ private struct EquipmentRow: View {
                         .font(.subheadline)
                     Text(entry.isUnlocked ? "Unlocked" : "Locked")
                         .font(.caption2)
-                        .foregroundColor(entry.isUnlocked ? .green : .secondary)
+                        .foregroundColor(entry.isUnlocked ? .green : .red)
                 }
             }
 
             if entry.remainingLevels == 0 {
                 Text("Max level")
                     .font(.caption)
-                    .foregroundColor(.secondary)
+                    .foregroundColor(.green)
             } else {
                 Text("Remaining levels: \(entry.remainingLevels)")
                     .font(.caption)
@@ -1597,6 +1636,41 @@ private struct EquipmentRow: View {
             }
         }
         .padding(.vertical, 4)
+    }
+}
+
+private struct HeroSectionHeader: View {
+    let heroName: String
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(heroAssetName)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 28, height: 28)
+                .padding(4)
+                .background(RoundedRectangle(cornerRadius: 8).fill(Color(.tertiarySystemBackground)))
+            Text(heroName)
+                .font(.headline)
+        }
+        .padding(.vertical, 4)
+    }
+
+    private var heroAssetName: String {
+        switch heroName {
+        case "Barbarian King":
+            return "heroes/Barbarian_King"
+        case "Archer Queen":
+            return "heroes/Archer_Queen"
+        case "Grand Warden":
+            return "heroes/Grand_Warden"
+        case "Royal Champion":
+            return "heroes/Royal_Champion"
+        case "Minion Prince":
+            return "heroes/minion_prince"
+        default:
+            return "heroes/Barbarian_King"
+        }
     }
 }
 
