@@ -42,8 +42,8 @@ Asset images for buildings, heroes, pets, and lab items live under [clash_widget
 The app stores profiles, upgrades, and preferences to an app group container so the widget can read shared data. The widget falls back to `UserDefaults` data if needed.
 
 ### Setup
-1. Open [clash_widgets.xcodeproj](clash_widgets.xcodeproj) in Xcode.
-2. Select a device or simulator running iOS 17+.
+1. Open the folder [clash_widgets.xcodeproj](clash_widgets.xcodeproj) in Xcode (the rest is not needed for building the app).
+2. Select a simulator running iOS 17+, or your personal device within xcode.
 3. Build the app target and widget target.
 4. Add the “ClashDash” widget to your Home Screen to view builder timers.
 
@@ -52,7 +52,7 @@ The app currently initializes the `DataService` with a hard-coded API key in [cl
 Because the app is fully on-device and has no server backend, the API key has to ship in the app bundle to work out of the box. That means it can be extracted, so please do not abuse it.
 
 ### Development Tools
-Utility scripts and data files live under [tools](tools) and [json_files](json_files).
+Utility scripts and data files live under [tools](tools) and [json_files](json_files), these are not needed for the app and for personal use, not needed for install.
 
 ### Disclaimer
 Clash of Clans is a trademark of Supercell. This project is a fan-made utility and is not affiliated with or endorsed by Supercell.

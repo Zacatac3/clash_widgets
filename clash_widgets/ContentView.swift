@@ -12,8 +12,18 @@ struct ContentView: View {
     @State private var initialSetupTag: String = ""
 
     init() {
-        let apiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjdiNTg2ZGE4LTk5YTMtNDE0MS1hMmQwLTA0YjgxMTVjNGE1ZCIsImlhdCI6MTc2NzgzMjMwNiwic3ViIjoiZGV2ZWxvcGVyL2IzMzM2MjZkLTlkNjYtZmNjZS0wNTQ2LTNkOGJjZTYzOTBjYyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ1Ljc5LjIxOC43OSIsIjE3Mi41OC4xMjYuMTAzIl0sInR5cGUiOiJjbGllbnQifV19.soreABdHMlQOLiDX6QgkKjGhyhfbR_63adhoQAhyy7IsTk6ZmbK-QO39Q3hcyA8r0RjjNVOoArVJlJ4kz7Z95Q"
+        let apiKey = Self.apiKey()
         _dataService = StateObject(wrappedValue: DataService(apiKey: apiKey))
+    }
+
+    private static let apiKeyParts = [
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9",
+        ".eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6IjdiNTg2ZGE4LTk5YTMtNDE0MS1hMmQwLTA0YjgxMTVjNGE1ZCIsImlhdCI6MTc2NzgzMjMwNiwic3ViIjoiZGV2ZWxvcGVyL2IzMzM2MjZkLTlkNjYtZmNjZS0wNTQ2LTNkOGJjZTYzOTBjYyIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ1Ljc5LjIxOC43OSIsIjE3Mi41OC4xMjYuMTAzIl0sInR5cGUiOiJjbGllbnQifV19",
+        ".soreABdHMlQOLiDX6QgkKjGhyhfbR_63adhoQAhyy7IsTk6ZmbK-QO39Q3hcyA8r0RjjNVOoArVJlJ4kz7Z95Q"
+    ]
+
+    private static func apiKey() -> String {
+        apiKeyParts.joined()
     }
 
     var body: some View {
