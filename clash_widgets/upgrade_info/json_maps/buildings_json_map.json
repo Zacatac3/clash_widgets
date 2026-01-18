@@ -1,8 +1,8 @@
 {
   "Troop Housing": {
-    "internalName": "Army Camp",
+    "internalName": "Troop Housing",
     "id": 1000000,
-    "displayName": "Troop Housing"
+    "displayName": "Army Camp"
   },
   "Town Hall": {
     "internalName": "Town Hall",
@@ -10,9 +10,9 @@
     "displayName": "Town Hall"
   },
   "Elixir Pump": {
-    "internalName": "Elixir Collector",
+    "internalName": "Elixir Pump",
     "id": 1000002,
-    "displayName": "Elixir Pump"
+    "displayName": "Elixir Collector"
   },
   "Elixir Storage": {
     "internalName": "Elixir Storage",
@@ -30,9 +30,9 @@
     "displayName": "Gold Storage"
   },
   "Barrack": {
-    "internalName": "Barracks",
+    "internalName": "Barrack",
     "id": 1000006,
-    "displayName": "Barrack"
+    "displayName": "Barracks"
   },
   "Laboratory": {
     "internalName": "Laboratory",
@@ -70,14 +70,14 @@
     "displayName": "Mortar"
   },
   "Alliance Castle": {
-    "internalName": "Clan Castle",
+    "internalName": "Alliance Castle",
     "id": 1000014,
-    "displayName": "Alliance Castle"
+    "displayName": "Clan Castle"
   },
   "Worker Building": {
-    "internalName": "Builder's Hut",
+    "internalName": "Worker Building",
     "id": 1000015,
-    "displayName": "Worker Building"
+    "displayName": "Builder's Hut"
   },
   "Communications mast": {
     "internalName": "Communications mast",
@@ -95,19 +95,19 @@
     "displayName": "Goblin hut"
   },
   "Tesla Tower": {
-    "internalName": "Hidden Tesla",
+    "internalName": "Tesla Tower",
     "id": 1000019,
-    "displayName": "Tesla Tower"
+    "displayName": "Hidden Tesla"
   },
   "Spell Forge": {
-    "internalName": "Spell Factory",
+    "internalName": "Spell Forge",
     "id": 1000020,
-    "displayName": "Spell Forge"
+    "displayName": "Spell Factory"
   },
   "Bow": {
-    "internalName": "X-Bow",
+    "internalName": "Bow",
     "id": 1000021,
-    "displayName": "Bow"
+    "displayName": "X-Bow"
   },
   "Hero Altar Barbarian King": {
     "internalName": "Hero Altar Barbarian King",
@@ -115,9 +115,9 @@
     "displayName": "Hero Altar Barbarian King"
   },
   "Dark Elixir Pump": {
-    "internalName": "Dark Elixir Drill",
+    "internalName": "Dark Elixir Pump",
     "id": 1000023,
-    "displayName": "Dark Elixir Pump"
+    "displayName": "Dark Elixir Drill"
   },
   "Dark Elixir Storage": {
     "internalName": "Dark Elixir Storage",
@@ -130,24 +130,24 @@
     "displayName": "Hero Altar Archer Queen"
   },
   "Dark Elixir Barrack": {
-    "internalName": "Dark Barracks",
+    "internalName": "Dark Elixir Barrack",
     "id": 1000026,
-    "displayName": "Dark Elixir Barrack"
+    "displayName": "Dark Barracks"
   },
   "Dark Tower": {
-    "internalName": "Inferno Tower",
+    "internalName": "Dark Tower",
     "id": 1000027,
-    "displayName": "Dark Tower"
+    "displayName": "Inferno Tower"
   },
   "Air Blaster": {
-    "internalName": "Air Sweeper",
+    "internalName": "Air Blaster",
     "id": 1000028,
-    "displayName": "Air Blaster"
+    "displayName": "Air Sweeper"
   },
   "Mini Spell Factory": {
-    "internalName": "Dark Spell Factory",
+    "internalName": "Mini Spell Factory",
     "id": 1000029,
-    "displayName": "Mini Spell Factory"
+    "displayName": "Dark Spell Factory"
   },
   "Hero Altar Grand Warden": {
     "internalName": "Hero Altar Grand Warden",
@@ -155,9 +155,9 @@
     "displayName": "Hero Altar Grand Warden"
   },
   "Ancient Artillery": {
-    "internalName": "Eagle Artillery",
+    "internalName": "Ancient Artillery",
     "id": 1000031,
-    "displayName": "Ancient Artillery"
+    "displayName": "Eagle Artillery"
   },
   "Bomb Tower": {
     "internalName": "Bomb Tower",
@@ -165,9 +165,9 @@
     "displayName": "Bomb Tower"
   },
   "WallStraight": {
-    "internalName": "Wall",
+    "internalName": "WallStraight",
     "id": 1000033,
-    "displayName": "WallStraight"
+    "displayName": "Wall"
   },
   "Town Hall2": {
     "internalName": "Town Hall2",
@@ -295,9 +295,9 @@
     "displayName": "Gem Mine"
   },
   "SiegeWorkshop": {
-    "internalName": "Siege Workshop",
+    "internalName": "SiegeWorkshop",
     "id": 1000059,
-    "displayName": "SiegeWorkshop"
+    "displayName": "Siege Workshop"
   },
   "CannonNPC": {
     "internalName": "CannonNPC",
@@ -320,9 +320,9 @@
     "displayName": "LavaLauncher"
   },
   "Builder6Home": {
-    "internalName": "B.O.B's Hut",
+    "internalName": "Builder6Home",
     "id": 1000064,
-    "displayName": "Builder6Home"
+    "displayName": "B.O.B's Hut"
   },
   "Builder6Unlock": {
     "internalName": "Builder6Unlock",
@@ -340,9 +340,9 @@
     "displayName": "Scattershot"
   },
   "Pet Shop": {
-    "internalName": "Pet House",
+    "internalName": "Pet Shop",
     "id": 1000068,
-    "displayName": "Pet Shop"
+    "displayName": "Pet House"
   },
   "Goblin boss TH": {
     "internalName": "Goblin boss TH",
@@ -350,9 +350,9 @@
     "displayName": "Goblin boss TH"
   },
   "Smithy": {
-    "internalName": "Blacksmith",
+    "internalName": "Smithy",
     "id": 1000070,
-    "displayName": "Smithy"
+    "displayName": "Blacksmith"
   },
   "Hero Hall": {
     "internalName": "Hero Hall",
@@ -395,9 +395,9 @@
     "displayName": "Outpost Stage2"
   },
   "Merged Archer Cannon": {
-    "internalName": "Multi Gear Tower",
+    "internalName": "Merged Archer Cannon",
     "id": 1000079,
-    "displayName": "Merged Archer Cannon"
+    "displayName": "Multi Gear Tower"
   },
   "Battle Copter Altar": {
     "internalName": "Battle Copter Altar",
@@ -420,19 +420,19 @@
     "displayName": "ClashoweenBuilding"
   },
   "Merged Archer Tower": {
-    "internalName": "Multi-Archer Tower",
+    "internalName": "Merged Archer Tower",
     "id": 1000084,
-    "displayName": "Merged Archer Tower"
+    "displayName": "Multi-Archer Tower"
   },
   "Merged Cannon": {
-    "internalName": "Ricochet Cannon",
+    "internalName": "Merged Cannon",
     "id": 1000085,
-    "displayName": "Merged Cannon"
+    "displayName": "Ricochet Cannon"
   },
   "DebrisTower": {
-    "internalName": "Revenge Tower",
+    "internalName": "DebrisTower",
     "id": 1000086,
-    "displayName": "DebrisTower"
+    "displayName": "Revenge Tower"
   },
   "Unused2": {
     "internalName": "Unused2",
@@ -465,9 +465,9 @@
     "displayName": "DirectHeroChallengeMainBuilding"
   },
   "VillagerApprenticeHQ": {
-    "internalName": "Helper's Hut",
+    "internalName": "VillagerApprenticeHQ",
     "id": 1000093,
-    "displayName": "VillagerApprenticeHQ"
+    "displayName": "Helper's Hut"
   },
   "Unused4": {
     "internalName": "Unused4",
@@ -485,9 +485,9 @@
     "displayName": "Unused6"
   },
   "SeasonalDefensePlatform": {
-    "internalName": "Crafting Station",
+    "internalName": "SeasonalDefensePlatform",
     "id": 1000097,
-    "displayName": "SeasonalDefensePlatform"
+    "displayName": "Crafting Station"
   },
   "GenericSpellCage": {
     "internalName": "GenericSpellCage",
@@ -510,9 +510,9 @@
     "displayName": "DirectHeroChallengeGenericMainBuilding"
   },
   "Merged Wizard Tower": {
-    "internalName": "Super Wizard Tower",
+    "internalName": "Merged Wizard Tower",
     "id": 1000102,
-    "displayName": "Merged Wizard Tower"
+    "displayName": "Super Wizard Tower"
   },
   "Town Hall 18 Teaser": {
     "internalName": "Town Hall 18 Teaser",

@@ -41,6 +41,10 @@ struct ContentView: View {
                 .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                 .tag(Tab.equipment)
 
+            UpgradeListView()
+                .tabItem { Label("Upgrade", systemImage: "list.bullet.rectangle") }
+                .tag(Tab.upgrades)
+
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(Tab.settings)
@@ -100,7 +104,71 @@ struct ContentView: View {
         case dashboard
         case profile
         case equipment
+        case upgrades
         case settings
+    }
+}
+
+private struct UpgradeListView: View {
+    @EnvironmentObject private var dataService: DataService
+    @State private var upgrades: [RemainingBuildingUpgrade] = []
+
+    var body: some View {
+        NavigationStack {
+            List {
+                if upgrades.isEmpty {
+                    Section {
+                        Text("No remaining building upgrades for the current Town Hall.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                } else {
+                    Section("Remaining Building Upgrades") {
+                        ForEach(upgrades) { upgrade in
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(upgrade.name)
+                                    .font(.headline)
+                                    .lineLimit(1)
+                                Text("Lv \(upgrade.currentLevel) → \(upgrade.targetLevel)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                                HStack(spacing: 12) {
+                                    Text(formatDuration(upgrade.buildTimeSeconds))
+                                        .font(.caption2)
+                                        .foregroundColor(.orange)
+                                    Text("\(upgrade.buildCost) \(upgrade.buildResource)")
+                                        .font(.caption2)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            .padding(.vertical, 2)
+                        }
+                    }
+                }
+            }
+            .navigationTitle("Upgrades")
+            .onAppear(perform: refreshUpgrades)
+            .refreshable { refreshUpgrades() }
+        }
+    }
+
+    private func refreshUpgrades() {
+        let townHallLevel = dataService.cachedProfile?.townHallLevel ?? dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
+        upgrades = dataService.remainingBuildingUpgrades(for: townHallLevel)
+    }
+
+    private func formatDuration(_ seconds: Int) -> String {
+        if seconds <= 0 { return "0s" }
+        let days = seconds / 86400
+        let hours = (seconds % 86400) / 3600
+        let minutes = (seconds % 3600) / 60
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        }
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(minutes)m"
     }
 }
 

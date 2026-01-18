@@ -221,6 +221,30 @@ struct ExportSpell: Codable {
     let timer: Int?
 }
 
+struct ParsedBuildingLevel: Codable {
+    let level: Int
+    let buildTimeSeconds: Int?
+    let buildResource: String?
+    let buildCost: Int?
+    let townHallLevel: Int?
+}
+
+struct ParsedBuilding: Codable {
+    let id: Int
+    let internalName: String
+    let levels: [ParsedBuildingLevel]
+}
+
+struct RemainingBuildingUpgrade: Identifiable {
+    let id: Int
+    let name: String
+    let currentLevel: Int
+    let targetLevel: Int
+    let buildTimeSeconds: Int
+    let buildResource: String
+    let buildCost: Int
+}
+
 // Official API Response Models
 struct PlayerProfile: Codable {
     let tag: String

@@ -124,6 +124,7 @@ class DataService: ObservableObject {
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
+    private var cachedParsedBuildings: [ParsedBuilding]?
 
     var currentProfile: PlayerAccount? {
         if let id = selectedProfileID,
@@ -137,10 +138,67 @@ class DataService: ObservableObject {
         self.apiKey = apiKey
         loadFromStorage()
         loadUpgradeDurations()
+        cachedParsedBuildings = loadParsedBuildings()
         saveToStorage()
         DispatchQueue.main.async { [weak self] in
             self?.refreshCurrentProfileIfNeeded(force: false)
         }
+    }
+
+    func remainingBuildingUpgrades(for townHallLevel: Int) -> [RemainingBuildingUpgrade] {
+        guard townHallLevel > 0 else { return [] }
+        guard let raw = currentProfile?.rawJSON, !raw.isEmpty else { return [] }
+        guard let data = raw.data(using: .utf8),
+              let export = try? JSONDecoder().decode(CoCExport.self, from: data) else { return [] }
+        guard let buildingList = export.buildings, !buildingList.isEmpty else { return [] }
+
+        let parsedBuildings = cachedParsedBuildings ?? loadParsedBuildings() ?? []
+        let byId = Dictionary(uniqueKeysWithValues: parsedBuildings.map { ($0.id, $0) })
+
+        var results: [RemainingBuildingUpgrade] = []
+        for building in buildingList {
+            guard let parsed = byId[building.data] else { continue }
+            let available = parsed.levels.filter { level in
+                guard let requiredTH = level.townHallLevel else { return true }
+                return requiredTH <= townHallLevel
+            }
+            guard let maxAvailable = available.map({ $0.level }).max() else { continue }
+            let currentLevel = building.lvl
+            let targetLevel = currentLevel + 1
+            guard currentLevel < maxAvailable else { continue }
+            guard let nextLevel = available.first(where: { $0.level == targetLevel }) else { continue }
+
+            let name = mapping[building.data] ?? parsed.internalName
+            let buildTime = nextLevel.buildTimeSeconds ?? 0
+            let buildResource = nextLevel.buildResource ?? ""
+            let buildCost = nextLevel.buildCost ?? 0
+            results.append(
+                RemainingBuildingUpgrade(
+                    id: building.data,
+                    name: name,
+                    currentLevel: currentLevel,
+                    targetLevel: targetLevel,
+                    buildTimeSeconds: buildTime,
+                    buildResource: buildResource,
+                    buildCost: buildCost
+                )
+            )
+        }
+
+        return results.sorted { $0.name < $1.name }
+    }
+
+    private func loadParsedBuildings() -> [ParsedBuilding]? {
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        let decoder = JSONDecoder()
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("buildings.json")
+            if let data = try? Data(contentsOf: fileURL),
+               let parsed = try? decoder.decode([ParsedBuilding].self, from: data) {
+                return parsed
+            }
+        }
+        return nil
     }
 
     func selectProfile(_ id: UUID) {
@@ -849,7 +907,7 @@ class DataService: ObservableObject {
 
     private func durationFor(dataId: Int, fromLevel level: Int) -> TimeInterval? {
         guard let durations = upgradeDurations[dataId], !durations.isEmpty else { return nil }
-        let index = min(max(level, 0), durations.count - 1)
+        let index = min(max(level - 1, 0), durations.count - 1)
         return durations[index]
     }
 

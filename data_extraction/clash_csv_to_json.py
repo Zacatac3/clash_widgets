@@ -44,18 +44,23 @@ def parse_upgrade_time_seconds(
 
 
 def read_csv_rows(csv_path: str) -> List[Dict[str, str]]:
+    rows, _ = read_csv_rows_with_headers(csv_path)
+    return rows
+
+
+def read_csv_rows_with_headers(csv_path: str) -> tuple[List[Dict[str, str]], List[str]]:
     with open(csv_path, newline="", encoding="utf-8") as csv_file:
         reader = csv.reader(csv_file)
         try:
             headers = next(reader)
         except StopIteration:
-            return []
+            return [], []
 
         # Skip the types row if present.
         try:
             next(reader)
         except StopIteration:
-            return []
+            return [], headers
 
         rows: List[Dict[str, str]] = []
         for raw in reader:
@@ -65,7 +70,7 @@ def read_csv_rows(csv_path: str) -> List[Dict[str, str]]:
                 raw = raw + [""] * (len(headers) - len(raw))
             row = {headers[i]: raw[i].strip() for i in range(len(headers))}
             rows.append(row)
-        return rows
+        return rows, headers
 
 
 def build_buildings_json(rows: List[Dict[str, str]]) -> List[Dict[str, Any]]:
@@ -210,6 +215,38 @@ def write_buildings_json(output_path: str, buildings: List[Dict[str, Any]]) -> N
         out_file.write("\n")
 
 
+def build_townhall_levels(rows: List[Dict[str, str]], headers: List[str]) -> List[Dict[str, Any]]:
+    if "Troop Housing" not in headers:
+        return []
+    start_index = headers.index("Troop Housing")
+    count_columns = headers[start_index:]
+
+    levels: List[Dict[str, Any]] = []
+    previous_counts: Dict[str, int] = {}
+
+    for row in rows:
+        name_value = row.get("Name", "").strip()
+        town_hall_level = safe_int(name_value)
+        if town_hall_level <= 0:
+            continue
+
+        counts: Dict[str, int] = {}
+        for col in count_columns:
+            raw = row.get(col, "").strip()
+            if raw == "":
+                counts[col] = previous_counts.get(col, 0)
+            else:
+                counts[col] = safe_int(raw)
+
+        previous_counts = counts
+        levels.append({
+            "townHallLevel": town_hall_level,
+            "counts": counts
+        })
+
+    return levels
+
+
 def main() -> None:
     buildings_rows = read_csv_rows(DEFAULT_INPUT_CSV)
     buildings = build_buildings_json(buildings_rows)
@@ -302,6 +339,7 @@ def main() -> None:
             "BuildTimeD",
             "BuildTimeH",
             "BuildTimeM",
+            "BuildResource",
             "BuildCost",
             "TownHallLevel",
         ],
@@ -434,6 +472,14 @@ def main() -> None:
             )
     write_buildings_json(os.path.join(PARSED_DIR, "weapons.json"), weapons)
     update_id_map(os.path.join(MAPS_DIR, "weapons_json_map.json"), weapons)
+
+    townhall_rows, townhall_headers = read_csv_rows_with_headers(
+        os.path.join(EXTRACTED_DIR, "townhall_levels.csv")
+    )
+    townhall_levels = build_townhall_levels(townhall_rows, townhall_headers)
+    write_buildings_json(
+        os.path.join(PARSED_DIR, "townhall_levels.json"), townhall_levels
+    )
 
 
 if __name__ == "__main__":
