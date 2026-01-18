@@ -115,7 +115,7 @@
     "id": 4000022
   },
   "BabyDragon": {
-    "displayName": "BabyDragon",
+    "displayName": "Baby Dragon",
     "internalName": "BabyDragon",
     "id": 4000023
   },
@@ -255,12 +255,12 @@
     "id": 4000050
   },
   "Siege Machine Ram": {
-    "displayName": "Siege Machine Ram",
+    "displayName": "Wall Wrecker",
     "internalName": "Siege Machine Ram",
     "id": 4000051
   },
   "Siege Machine Flyer": {
-    "displayName": "Siege Machine Flyer",
+    "displayName": "Battle Blimp",
     "internalName": "Siege Machine Flyer",
     "id": 4000052
   },
@@ -310,7 +310,7 @@
     "id": 4000061
   },
   "Siege Bowler Balloon": {
-    "displayName": "Siege Bowler Balloon",
+    "displayName": "Stone Slammer",
     "internalName": "Siege Bowler Balloon",
     "id": 4000062
   },
@@ -330,7 +330,7 @@
     "id": 4000065
   },
   "Head Witch": {
-    "displayName": "Head Witch",
+    "displayName": "Headhunter",
     "internalName": "Head Witch",
     "id": 4000066
   },
@@ -375,7 +375,7 @@
     "id": 4000074
   },
   "Siege Machine Carrier": {
-    "displayName": "Siege Machine Carrier",
+    "displayName": "Siege Barracks",
     "internalName": "Siege Machine Carrier",
     "id": 4000075
   },
@@ -435,7 +435,7 @@
     "id": 4000086
   },
   "Siege Log Launcher": {
-    "displayName": "Siege Log Launcher",
+    "displayName": "Log Launcher",
     "internalName": "Siege Log Launcher",
     "id": 4000087
   },
@@ -455,7 +455,7 @@
     "id": 4000090
   },
   "Siege Catapult": {
-    "displayName": "Siege Catapult",
+    "displayName": "Flame Flinger",
     "internalName": "Siege Catapult",
     "id": 4000091
   },
@@ -615,7 +615,7 @@
     "id": 4000122
   },
   "Druid_Healer": {
-    "displayName": "Druid_Healer",
+    "displayName": "Druid",
     "internalName": "Druid_Healer",
     "id": 4000123
   },
@@ -675,7 +675,7 @@
     "id": 4000134
   },
   "CommandTower": {
-    "displayName": "CommandTower",
+    "displayName": "Troop Launcher",
     "internalName": "CommandTower",
     "id": 4000135
   },
@@ -845,12 +845,12 @@
     "id": 4000168
   },
   "Guardian Ranged": {
-    "displayName": "Guardian Ranged",
+    "displayName": "Longshot",
     "internalName": "Guardian Ranged",
     "id": 4000169
   },
   "Guardian Melee": {
-    "displayName": "Guardian Melee",
+    "displayName": "Smasher",
     "internalName": "Guardian Melee",
     "id": 4000170
   },
@@ -885,7 +885,7 @@
     "id": 4000176
   },
   "MeteorGolem": {
-    "displayName": "MeteorGolem",
+    "displayName": "Meteor Golem",
     "internalName": "MeteorGolem",
     "id": 4000177
   },
