@@ -12,27 +12,35 @@ import UIKit
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let upgrades: [BuildingUpgrade]
+    let builderCount: Int
     let debugText: String
+
+    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, debugText: String) {
+        self.date = date
+        self.upgrades = upgrades
+        self.builderCount = builderCount
+        self.debugText = debugText
+    }
 }
 
 struct Provider: TimelineProvider {
     let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), upgrades: [], debugText: "Placeholder")
+        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Placeholder")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let upgrades = loadUpgrades()
+        let (upgrades, builderCount) = loadUpgrades()
         let text = loadDebugText()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: text)
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, debugText: text)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        let upgrades = loadUpgrades()
+        let (upgrades, builderCount) = loadUpgrades()
         let text = loadDebugText()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: text)
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, debugText: text)
 
         // Refresh every 15 minutes
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
@@ -40,17 +48,18 @@ struct Provider: TimelineProvider {
         completion(timeline)
     }
     
-    private func loadUpgrades() -> [BuildingUpgrade] {
+    private func loadUpgrades() -> ([BuildingUpgrade], Int) {
         if let state = PersistentStore.loadState() {
-            return prioritized(upgrades: state.activeUpgrades)
+            let count = max(state.currentProfile?.builderCount ?? 5, 0)
+            return (prioritized(upgrades: state.activeUpgrades, builderCount: count), count)
         }
 
         let sharedDefaults = UserDefaults(suiteName: appGroup)
-        guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
-              let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
-            return []
+                guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
+                            let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
+                        return ([], 5)
         }
-        return prioritized(upgrades: decoded)
+                return (prioritized(upgrades: decoded, builderCount: 5), 5)
     }
     
     private func loadDebugText() -> String {
@@ -62,12 +71,12 @@ struct Provider: TimelineProvider {
         return sharedDefaults?.string(forKey: "widget_simple_text") ?? "No dash data"
     }
 
-    private func prioritized(upgrades: [BuildingUpgrade]) -> [BuildingUpgrade] {
+    private func prioritized(upgrades: [BuildingUpgrade], builderCount: Int) -> [BuildingUpgrade] {
         return Array(
             upgrades
                 .filter { $0.category == .builderVillage }
                 .sorted(by: { $0.endTime < $1.endTime })
-                .prefix(6)
+                .prefix(max(builderCount, 0))
         )
     }
 }
@@ -89,7 +98,7 @@ struct ClashDashWidgetEntryView : View {
 
             // 3x2 Grid for 6 Builders (3 columns x 2 rows)
             LazyVGrid(columns: columns, spacing: 4) {
-                ForEach(0..<6) { index in
+                ForEach(0..<max(entry.builderCount, 0), id: \.self) { index in
                     builderCell(for: index)
                         .frame(minHeight: 56)
                 }
@@ -100,13 +109,13 @@ struct ClashDashWidgetEntryView : View {
             // Status line (always visible) — moved closer to grid
             HStack {
                 Spacer()
-                if entry.upgrades.count >= 6 {
+                if entry.upgrades.count >= entry.builderCount {
                     Text("All Builders Busy")
                         .font(.caption2)
                         .foregroundColor(Color.green)
                         .bold()
                 } else {
-                    let free = 6 - entry.upgrades.count
+                    let free = max(entry.builderCount - entry.upgrades.count, 0)
                     let noun = free == 1 ? "builder" : "builders"
                     Text("\(free) \(noun) free!")
                         .font(.caption2)
@@ -232,7 +241,7 @@ struct ClashDashWidget: Widget {
 #Preview(as: .systemMedium) {
     ClashDashWidget()
 } timeline: {
-    SimpleEntry(date: Date(), upgrades: [], debugText: "Preview")
+    SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Preview")
 }
 
 
@@ -242,18 +251,18 @@ struct LabPetProvider: TimelineProvider {
     let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), upgrades: [], debugText: "LabPet")
+        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "LabPet")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: "LabPet")
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "LabPet")
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: "LabPet")
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "LabPet")
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
@@ -414,7 +423,7 @@ struct LabPetWidget: Widget {
 #Preview(as: .systemSmall) {
     LabPetWidget()
 } timeline: {
-    SimpleEntry(date: Date(), upgrades: [], debugText: "Preview")
+    SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Preview")
 }
 
 // Builder Base small widget (up to 3 slots)
@@ -422,18 +431,18 @@ struct BuilderBaseProvider: TimelineProvider {
     let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), upgrades: [], debugText: "BuilderBase")
+        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "BuilderBase")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
         let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: "BuilderBase")
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "BuilderBase")
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, debugText: "BuilderBase")
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "BuilderBase")
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
@@ -590,6 +599,6 @@ struct BuilderBaseWidget: Widget {
 #Preview(as: .systemSmall) {
     BuilderBaseWidget()
 } timeline: {
-    SimpleEntry(date: Date(), upgrades: [], debugText: "Preview")
+    SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Preview")
 }
 

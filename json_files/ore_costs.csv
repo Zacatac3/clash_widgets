@@ -1,28 +1,97 @@
-Level,Shiny Ore Cost,Glowy Ore Cost,Starry Ore Cost,Cumulative Shiny,Cumulative Glowy,Cumulative Starry
-1,0,0,0,0,0,0
-2,120,0,0,120,0,0
-3,240,20,0,360,20,0
-4,400,0,0,760,20,0
-5,600,0,0,1360,20,0
-6,840,100,0,2200,120,0
-7,1120,0,0,3320,120,0
-8,1440,0,0,4760,120,0
-9,1800,200,10,6560,320,10
-10,1900,0,0,8460,320,10
-11,2000,0,0,10460,320,10
-12,2100,400,20,12560,720,30
-13,2200,0,0,14760,720,30
-14,2300,0,0,17060,720,30
-15,2400,600,30,19460,1320,60
-16,2500,0,0,21960,1320,60
-17,2600,0,0,24560,1320,60
-18,2700,600,50,27260,1920,110
-19,2800,0,0,30060,1920,110
-20,2900,0,0,32960,1920,110
-21,3000,600,100,35960,2520,210
-22,3100,0,0,39060,2520,210
-23,3200,0,0,42260,2520,210
-24,3300,600,120,45560,3120,330
-25,3400,0,0,48960,3120,330
-26,3500,0,0,52460,3120,330
-27,3600,600,150,56060,3720,480
+InternalName,InGameName
+"Troop Housing","Army Camp"
+"Town Hall","Town Hall"
+"Elixir Pump","Elixir Collector"
+"Elixir Storage","Elixir Storage"
+"Gold Mine","Gold Mine"
+"Gold Storage","Gold Storage"
+"Barrack","Barracks"
+"Laboratory","Laboratory"
+"Cannon","Cannon"
+"Archer Tower","Archer Tower"
+"Wall","Wall"
+"Wizard Tower","Wizard Tower"
+"Air Defense","Air Defense"
+"Mortar","Mortar"
+"Alliance Castle","Clan Castle"
+"Worker Building","Builder's Hut"
+"Tesla Tower","Hidden Tesla"
+"Spell Forge","Spell Factory"
+"Bow","X-Bow"
+"Hero Altar Barbarian King","Barbarian King Altar"
+"Dark Elixir Pump","Dark Elixir Drill"
+"Dark Elixir Storage","Dark Elixir Storage"
+"Hero Altar Archer Queen","Archer Queen Altar"
+"Dark Elixir Barrack","Dark Barracks"
+"Dark Tower","Inferno Tower"
+"Air Blaster","Air Sweeper"
+"Mini Spell Factory","Dark Spell Factory"
+"Hero Altar Grand Warden","Grand Warden Altar"
+"Ancient Artillery","Eagle Artillery"
+"Bomb Tower","Bomb Tower"
+"WallStraight","Wall (Builder Base)"
+"Town Hall2","Builder Hall"
+"Elixir Pump2","Elixir Collector (Builder Base)"
+"Elixir Storage2","Elixir Storage (Builder Base)"
+"Gold Mine2","Gold Mine (Builder Base)"
+"Gold Storage2","Gold Storage (Builder Base)"
+"Clock Tower","Clock Tower"
+"Barrack2","Builder Barracks"
+"Double Cannon","Double Cannon"
+"Troop Housing2","Army Camp (Builder Base)"
+"Tesla Tower2","Hidden Tesla (Builder Base)"
+"Cannon2","Cannon (Builder Base)"
+"Multi Mortar","Multi Mortar"
+"Laboratory2","Star Laboratory"
+"Worker Building2","O.T.T.O Hut"
+"Archer Tower2","Archer Tower (Builder Base)"
+"Reinforcement Camp","Reinforcement Camp"
+"Air Defense Mini","Firecrackers"
+"Guard Post","Guard Post"
+"Mega Tesla","Mega Tesla"
+"Hero Altar Warmachine","Battle Machine Altar"
+"Air Defense2","Air Bombs"
+"Crusher","Crusher"
+"Flamer","Roaster"
+"Giant Cannon","Giant Cannon"
+"Gem Mine","Gem Mine"
+"SiegeWorkshop","Siege Workshop"
+"CannonNPC","Cannon (NPC)"
+"Goblin Castle","Goblin Clan Castle"
+"Dragon Cave","Dragon Lair"
+"LavaLauncher","Lava Launcher"
+"Builder6Home","B.O.B's Hut"
+"Builder6Unlock","B.O.B's Hut (Unlock)"
+"Hero Altar Royal Champion","Royal Champion Altar"
+"Scattershot","Scattershot"
+"Pet Shop","Pet House"
+"Smithy","Blacksmith"
+"Hero Hall","Hero Hall"
+"Spell Tower","Spell Tower"
+"TroopCage","Troop Cage"
+"DragonLair","Dragon Lair"
+"SpellCage","Spell Cage"
+"PEKKA's Playhouse","P.E.K.K.A's Playhouse"
+"Monolith","Monolith"
+"Outpost Stage2","O.T.T.O's Outpost"
+"Merged Archer Cannon","Multi-Archer Tower"
+"Battle Copter Altar","Battle Copter Altar"
+"Xbow_BB","X-Bow (Builder Base)"
+"Recovery Building","Healing Hut"
+"ClashoweenBuilding","Sour Elixir Cauldron"
+"Merged Archer Tower","Multi-Archer Tower"
+"Merged Cannon","Ricochet Cannon"
+"DebrisTower","Revenge Tower"
+"Firespitter","Firespitter"
+"PetCage","Pet Cage"
+"DefenseTroopCage","Defense Troop Cage"
+"DirectHeroChallengeMainBuilding","Candy Box"
+"VillagerApprenticeHQ","Apprentice Builder's Hut"
+"SeasonalDefensePlatform","Seasonal Defense Platform"
+"GenericSpellCage","Generic Spell Cage"
+"GenericTroopCage","Generic Troop Cage"
+"DefenseGenericTroopCage","Defense Troop Cage"
+"DirectHeroChallengeGenericMainBuilding","Generic Main Building"
+"Merged Wizard Tower","Super Wizard Tower"
+"Town Hall 18 Teaser","Town Hall 18 (Teaser)"
+"Town Hall 17 Upgrading","Town Hall 17 (Upgrading)"

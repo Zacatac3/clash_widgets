@@ -14,7 +14,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var builderApprenticeLevel: Int
     var labAssistantLevel: Int
     var alchemistLevel: Int
-    var goldPassBoostPercent: Int
+    var goldPassBoost: Int
 
     init(
         id: UUID = UUID(),
@@ -30,7 +30,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
-        goldPassBoostPercent: Int = 10
+        goldPassBoost: Int = 0
     ) {
         self.id = id
         self.displayName = displayName
@@ -45,7 +45,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.builderApprenticeLevel = builderApprenticeLevel
         self.labAssistantLevel = labAssistantLevel
         self.alchemistLevel = alchemistLevel
-        self.goldPassBoostPercent = goldPassBoostPercent
+        self.goldPassBoost = goldPassBoost
     }
 }
 

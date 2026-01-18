@@ -133,6 +133,29 @@ struct BuilderRow: View {
     }
 }
 
+struct IdleBuilderRow: View {
+    let builderIndex: Int
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image("profile/home_builder")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 36, height: 36)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Builder \(builderIndex)")
+                    .font(.headline)
+                Text("Idle")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
+
 private final class AssetNameResolver {
     static let shared = AssetNameResolver()
 

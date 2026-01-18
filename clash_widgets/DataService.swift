@@ -114,6 +114,13 @@ class DataService: ObservableObject {
             persistChanges(reloadWidgets: false)
         }
     }
+    @Published var goldPassBoost: Int = 0 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.goldPassBoost = goldPassBoost }
+            persistChanges(reloadWidgets: false)
+        }
+    }
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
@@ -148,7 +155,8 @@ class DataService: ObservableObject {
         builderCount: Int = 5,
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
-        alchemistLevel: Int = 0
+        alchemistLevel: Int = 0,
+        goldPassBoost: Int = 0
     ) {
         let normalizedTag = normalizeTag(tag)
         guard !normalizedTag.isEmpty else { return }
@@ -158,7 +166,8 @@ class DataService: ObservableObject {
             builderCount: builderCount,
             builderApprenticeLevel: builderApprenticeLevel,
             labAssistantLevel: labAssistantLevel,
-            alchemistLevel: alchemistLevel
+            alchemistLevel: alchemistLevel,
+            goldPassBoost: goldPassBoost
         )
         profiles.append(profile)
         selectedProfileID = profile.id
@@ -266,6 +275,40 @@ class DataService: ObservableObject {
 
     func refreshCurrentProfile(force: Bool = false) {
         refreshCurrentProfileIfNeeded(force: force)
+    }
+
+    func fetchProfilePreview(tag: String, completion: @escaping (PlayerProfile?) -> Void) {
+        guard let apiKey = apiKey, !apiKey.isEmpty else {
+            completion(nil)
+            return
+        }
+        let normalizedTag = normalizeTag(tag)
+        guard !normalizedTag.isEmpty else {
+            completion(nil)
+            return
+        }
+        guard let url = URL(string: "https://cocproxy.royaleapi.dev/v1/players/%23\(normalizedTag)") else {
+            completion(nil)
+            return
+        }
+
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+
+        URLSession.shared.dataTask(with: request) { data, response, error in
+            DispatchQueue.main.async {
+                guard error == nil, let data else {
+                    completion(nil)
+                    return
+                }
+                do {
+                    let profile = try JSONDecoder().decode(PlayerProfile.self, from: data)
+                    completion(profile)
+                } catch {
+                    completion(nil)
+                }
+            }
+        }.resume()
     }
 
     private func refreshCurrentProfileIfNeeded(force: Bool) {
@@ -479,6 +522,7 @@ class DataService: ObservableObject {
         builderApprenticeLevel = profile.builderApprenticeLevel
         labAssistantLevel = profile.labAssistantLevel
         alchemistLevel = profile.alchemistLevel
+        goldPassBoost = profile.goldPassBoost
     }
 
     private func updateCurrentProfile(_ mutate: (inout PlayerAccount) -> Void) {

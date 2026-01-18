@@ -178,39 +178,62 @@ private struct DashboardView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
-                } else {
-                    if !builderVillageUpgrades.isEmpty {
-                        Section("Home Village Builders") {
-                            ForEach(builderVillageUpgrades) { upgrade in
-                                BuilderRow(upgrade: upgrade)
+                }
+
+                let totalBuilders = max(dataService.builderCount, 0)
+                let busyBuilders = builderVillageUpgrades.count
+                let idleBuilders = max(totalBuilders - busyBuilders, 0)
+
+                if totalBuilders > 0 {
+                    Section("Home Village Builders") {
+                        ForEach(builderVillageUpgrades) { upgrade in
+                            BuilderRow(upgrade: upgrade)
+                        }
+                        if idleBuilders > 0 {
+                            ForEach(0..<idleBuilders, id: \.self) { index in
+                                IdleBuilderRow(builderIndex: busyBuilders + index + 1)
                             }
                         }
                     }
+                }
 
-                    if !labUpgrades.isEmpty {
-                        Section("Laboratory") {
+                if displayedTownHallLevel >= 3 {
+                    Section("Laboratory") {
+                        if !labUpgrades.isEmpty {
                             ForEach(labUpgrades) { upgrade in
                                 BuilderRow(upgrade: upgrade)
                             }
+                        } else {
+                            IdleStatusRow(title: "Laboratory", status: "Idle")
                         }
                     }
+                }
 
-                    if !petUpgrades.isEmpty {
-                        Section("Pets") {
+                if displayedTownHallLevel >= 14 {
+                    Section("Pets") {
+                        if !petUpgrades.isEmpty {
                             ForEach(petUpgrades) { upgrade in
                                 BuilderRow(upgrade: upgrade)
                             }
+                        } else {
+                            IdleStatusRow(title: "Pet House", status: "Idle")
                         }
                     }
+                }
 
-                    if !builderBaseUpgrades.isEmpty {
-                        Section("Builder Base") {
+                if displayedTownHallLevel >= 6 {
+                    Section("Builder Base") {
+                        if !builderBaseUpgrades.isEmpty {
                             ForEach(builderBaseUpgrades) { upgrade in
                                 BuilderRow(upgrade: upgrade)
                             }
+                        } else {
+                            IdleStatusRow(title: "Builder Base", status: "Idle")
                         }
                     }
+                }
 
+                if !dataService.activeUpgrades.isEmpty {
                     Section {
                         Button(role: .destructive) {
                             dataService.clearData()
@@ -516,6 +539,10 @@ private struct ProfileDetailView: View {
 
             Stepper(value: $dataService.builderCount, in: 2...maxBuilders) {
                 HStack {
+                    Image("profile/home_builder")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
                     Text("Builders")
                     Spacer()
                     Text("\(dataService.builderCount)")
@@ -525,15 +552,56 @@ private struct ProfileDetailView: View {
             }
 
             if townHallLevel >= 9 {
-                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: 12)
+                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: 12, iconName: "profile/lab_assistant")
             }
 
             if townHallLevel >= 10 {
-                sliderRow(title: "Builder Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: 8)
+                sliderRow(title: "Builder Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: 8, iconName: "profile/apprentice_builder")
             }
 
             if townHallLevel >= 11 {
-                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: 7)
+                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: 7, iconName: "profile/alchemist")
+            }
+
+            if townHallLevel >= 7 {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Image(profileGoldPassIconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
+                        Text(profileGoldPassTitle)
+                        Spacer()
+                        Text(profileGoldPassBoostLabel)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(
+                        value: Binding(
+                            get: { goldPassBoostToSliderValue(dataService.goldPassBoost) },
+                            set: { dataService.goldPassBoost = sliderValueToGoldPassBoost($0) }
+                        ),
+                        in: 0...3,
+                        step: 1
+                    )
+                    HStack {
+                        Text("0%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("10%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("15%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("20%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -668,9 +736,15 @@ private struct ProfileDetailView: View {
         }
     }
 
-    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int) -> some View {
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, iconName: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                }
                 Text(title)
                 Spacer()
                 Text("Lv \(value.wrappedValue)/\(maxLevel)")
@@ -685,6 +759,38 @@ private struct ProfileDetailView: View {
                 in: 0...Double(maxLevel),
                 step: 1
             )
+        }
+    }
+
+    private var profileGoldPassBoostLabel: String {
+        dataService.goldPassBoost == 0 ? "None" : "\(dataService.goldPassBoost)%"
+    }
+
+    private var profileGoldPassTitle: String {
+        dataService.goldPassBoost == 0 ? "Free Pass" : "Gold Pass"
+    }
+
+    private var profileGoldPassIconName: String {
+        dataService.goldPassBoost == 0 ? "profile/free_pass" : "profile/gold_pass"
+    }
+
+    private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
+        switch boost {
+        case 0: return 0
+        case 10: return 1
+        case 15: return 2
+        case 20: return 3
+        default: return 0
+        }
+    }
+
+    private func sliderValueToGoldPassBoost(_ value: Double) -> Int {
+        switch Int(value.rounded()) {
+        case 0: return 0
+        case 1: return 10
+        case 2: return 15
+        case 3: return 20
+        default: return 0
         }
     }
 }
@@ -999,68 +1105,245 @@ private struct AddProfileSheet: View {
     @EnvironmentObject private var dataService: DataService
     @Environment(\.dismiss) private var dismiss
 
+    private enum SetupStep {
+        case tagEntry
+        case settings
+    }
+
+    @State private var step: SetupStep = .tagEntry
     @State private var playerTag: String = ""
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
     @State private var labAssistantLevel: Int = 0
     @State private var alchemistLevel: Int = 0
+    @State private var goldPassBoost: Int = 0
+    @State private var previewTownHallLevel: Int = 0
+    @State private var statusMessage: String?
+    @FocusState private var fieldFocused: Bool
+
+    private var normalizedTag: String {
+        normalizePlayerTag(playerTag)
+    }
+
+    private var townHallLevel: Int {
+        previewTownHallLevel
+    }
+
+    private var maxBuilders: Int {
+        townHallLevel < 10 ? 5 : 6
+    }
+
+    private var goldPassBoostLabel: String {
+        goldPassBoost == 0 ? "None" : "\(goldPassBoost)%"
+    }
+
+    private var goldPassTitle: String {
+        goldPassBoost == 0 ? "Free Pass" : "Gold Pass"
+    }
+
+    private var goldPassIconName: String {
+        goldPassBoost == 0 ? "profile/free_pass" : "profile/gold_pass"
+    }
+
+    private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
+        switch boost {
+        case 0: return 0
+        case 10: return 1
+        case 15: return 2
+        case 20: return 3
+        default: return 0
+        }
+    }
+
+    private func sliderValueToGoldPassBoost(_ value: Double) -> Int {
+        switch Int(value.rounded()) {
+        case 0: return 0
+        case 1: return 10
+        case 2: return 15
+        case 3: return 20
+        default: return 0
+        }
+    }
+
+    private func fetchPreviewTownHall() {
+        let tag = normalizePlayerTag(playerTag)
+        guard !tag.isEmpty else { return }
+        dataService.fetchProfilePreview(tag: tag) { profile in
+            previewTownHallLevel = profile?.townHallLevel ?? 0
+            clampBuilderCount()
+        }
+    }
 
     var body: some View {
         NavigationStack {
-            Form {
-                Section("Player Tag") {
-                    TextField("e.g. #9C082CCU8", text: $playerTag)
-                        .textInputAutocapitalization(.characters)
-                        .autocorrectionDisabled()
-                }
-                Section("Profile Settings") {
-                    Stepper(value: $builderCount, in: 2...6) {
-                        HStack {
-                            Text("Builders")
-                            Spacer()
-                            Text("\(builderCount)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                    }
-                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12)
-                    sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8)
-                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7)
-                    Text("These unlock at TH9/TH10/TH11. Values will apply once unlocked.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                Section {
-                    Text("Only the tag is required. ClashDash will pull the latest name and stats automatically when you save.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+            VStack(spacing: 0) {
+                switch step {
+                case .tagEntry:
+                    tagEntryView
+                case .settings:
+                    settingsView
                 }
             }
-            .navigationTitle("New Profile")
+            .navigationTitle(step == .tagEntry ? "New Profile" : "Profile Settings")
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
                 }
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Save") {
-                        dataService.addProfile(
-                            tag: playerTag,
-                            builderCount: builderCount,
-                            builderApprenticeLevel: builderApprenticeLevel,
-                            labAssistantLevel: labAssistantLevel,
-                            alchemistLevel: alchemistLevel
-                        )
-                        dismiss()
+            }
+            .animation(.easeInOut, value: step)
+        }
+    }
+
+    private var tagEntryView: some View {
+        Form {
+            Section {
+                TextField("e.g. #9C082CCU8", text: $playerTag)
+                    .textInputAutocapitalization(.characters)
+                    .autocorrectionDisabled()
+                    .focused($fieldFocused)
+            } header: {
+                Text("Player Tag")
+            } footer: {
+                Text("Enter your Clash tag to sync your profile data.")
+            }
+
+#if canImport(UIKit)
+            Section {
+                Button {
+                    importVillageDataFromClipboard()
+                } label: {
+                    Label("Paste & Import Village Data", systemImage: "plus")
+                        .frame(maxWidth: .infinity)
+                }
+            }
+#endif
+
+            if let statusMessage {
+                Section {
+                    Text(statusMessage)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            Section {
+                Button {
+                    fetchPreviewTownHall()
+                    step = .settings
+                } label: {
+                    Text("Continue")
+                        .frame(maxWidth: .infinity)
+                }
+                .disabled(normalizedTag.isEmpty)
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                fieldFocused = true
+            }
+        }
+    }
+
+    private var settingsView: some View {
+        Form {
+            Section {
+                Stepper(value: $builderCount, in: 2...maxBuilders) {
+                    HStack {
+                        Image("profile/home_builder")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
+                        Text("Builders")
+                        Spacer()
+                        Text("\(builderCount)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
                     }
-                    .disabled(playerTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
+                }
+            } header: {
+                Text("Builders")
+            }
+
+            Section {
+                if townHallLevel >= 9 {
+                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9, iconName: "profile/lab_assistant")
+                }
+                if townHallLevel >= 10 {
+                    sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10, iconName: "profile/apprentice_builder")
+                }
+                if townHallLevel >= 11 {
+                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11, iconName: "profile/alchemist")
+                }
+            } header: {
+                Text("Helpers")
+            }
+
+            if townHallLevel >= 7 {
+                Section {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Image(goldPassIconName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                            Text(goldPassTitle)
+                            Spacer()
+                            Text(goldPassBoostLabel)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Slider(
+                            value: Binding(
+                                get: { goldPassBoostToSliderValue(goldPassBoost) },
+                                set: { goldPassBoost = sliderValueToGoldPassBoost($0) }
+                            ),
+                            in: 0...3,
+                            step: 1
+                        )
+                        HStack {
+                            Text("0%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("10%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("15%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("20%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                } header: {
+                    Text("Gold Pass")
+                }
+            }
+
+            Section {
+                Button {
+                    saveProfile()
+                } label: {
+                    Text("Save Profile")
+                        .frame(maxWidth: .infinity)
                 }
             }
         }
     }
 
-    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int) -> some View {
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                }
                 Text(title)
                 Spacer()
                 Text("Lv \(value.wrappedValue)/\(maxLevel)")
@@ -1077,6 +1360,40 @@ private struct AddProfileSheet: View {
             )
         }
     }
+
+    private func saveProfile() {
+        clampBuilderCount()
+        dataService.addProfile(
+            tag: playerTag,
+            builderCount: builderCount,
+            builderApprenticeLevel: builderApprenticeLevel,
+            labAssistantLevel: labAssistantLevel,
+            alchemistLevel: alchemistLevel,
+            goldPassBoost: goldPassBoost
+        )
+        dismiss()
+    }
+
+    private func clampBuilderCount() {
+        if builderCount > maxBuilders { builderCount = maxBuilders }
+        if builderCount < 2 { builderCount = 2 }
+    }
+
+#if canImport(UIKit)
+    private func importVillageDataFromClipboard() {
+        guard let input = UIPasteboard.general.string, !input.isEmpty else {
+            statusMessage = "Clipboard was empty—copy your export from Clash first."
+            return
+        }
+        dataService.parseJSONFromClipboard(input: input)
+        let count = dataService.activeUpgrades.count
+        if count > 0 {
+            statusMessage = "Imported \(count) upgrades from your clipboard."
+        } else {
+            statusMessage = "Processed the clipboard data, but no upgrades were detected."
+        }
+    }
+#endif
 }
 
 private struct ProfileEditorSheet: View {
@@ -1226,6 +1543,7 @@ private struct InitialSetupView: View {
     private enum FlowStep {
         case intro
         case tagEntry
+        case settings
     }
 
     @State private var step: FlowStep = .intro
@@ -1234,6 +1552,8 @@ private struct InitialSetupView: View {
     @State private var builderApprenticeLevel: Int = 0
     @State private var labAssistantLevel: Int = 0
     @State private var alchemistLevel: Int = 0
+    @State private var goldPassBoost: Int = 0
+    @State private var previewTownHallLevel: Int = 0
     @State private var didSeedSettings = false
     @FocusState private var fieldFocused: Bool
 
@@ -1249,12 +1569,14 @@ private struct InitialSetupView: View {
                     onboardingSplash
                 case .tagEntry:
                     tagEntryContent
+                case .settings:
+                    settingsContent
                 }
             }
             .padding(30)
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(step == .intro ? "Welcome" : "Add Your Tag")
+            .navigationTitle(step == .intro ? "Welcome" : (step == .tagEntry ? "Add Your Tag" : "Profile Settings"))
             .animation(.easeInOut, value: step)
             .onAppear { scheduleFocusIfNeeded() }
             .onChangeCompat(of: step) { _ in scheduleFocusIfNeeded() }
@@ -1330,8 +1652,6 @@ private struct InitialSetupView: View {
                     .foregroundColor(.secondary)
             }
 
-            settingsFields
-
 #if canImport(UIKit)
             Button {
                 importVillageDataFromClipboard()
@@ -1349,14 +1669,37 @@ private struct InitialSetupView: View {
             }
 
             Button {
-                persistSettings()
-                onComplete(normalizedTag)
+                fetchPreviewTownHall()
+                step = .settings
             } label: {
-                Text("Save Tag & Continue")
+                Text("Continue")
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
             .disabled(normalizedTag.isEmpty)
+
+            Spacer()
+        }
+    }
+
+    private var settingsContent: some View {
+        VStack(alignment: .leading, spacing: 24) {
+            Text("Configure your profile")
+                .font(.system(size: 28, weight: .bold, design: .rounded))
+            Text("Set your builders and assistants based on your Town Hall level.")
+                .font(.subheadline)
+                .foregroundColor(.secondary)
+
+            settingsFields
+
+            Button {
+                persistSettings()
+                onComplete(normalizedTag)
+            } label: {
+                Text("Save & Continue")
+                    .frame(maxWidth: .infinity)
+            }
+            .buttonStyle(.borderedProminent)
 
             Spacer()
             Text("Need to start over later? Use Settings → Reset to Factory Defaults.")
@@ -1367,11 +1710,12 @@ private struct InitialSetupView: View {
 
     private var settingsFields: some View {
         VStack(alignment: .leading, spacing: 16) {
-            Text("Profile Settings")
-                .font(.headline)
-
             Stepper(value: $builderCount, in: 2...maxBuilders) {
                 HStack {
+                    Image("profile/home_builder")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
                     Text("Builders")
                     Spacer()
                     Text("\(builderCount)")
@@ -1380,24 +1724,106 @@ private struct InitialSetupView: View {
                 }
             }
 
-            sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9)
-            sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10)
-            sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11)
+            if townHallLevel >= 9 {
+                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9, iconName: "profile/lab_assistant")
+            }
 
-            Text("These unlock at TH9/TH10/TH11. Values will apply once unlocked.")
-                .font(.caption)
-                .foregroundColor(.secondary)
+            if townHallLevel >= 10 {
+                sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10, iconName: "profile/apprentice_builder")
+            }
+
+            if townHallLevel >= 11 {
+                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11, iconName: "profile/alchemist")
+            }
+
+            if townHallLevel >= 7 {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Image(goldPassIconName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
+                        Text(goldPassTitle)
+                        Spacer()
+                        Text(goldPassBoostLabel)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(
+                        value: Binding(
+                            get: { goldPassBoostToSliderValue(goldPassBoost) },
+                            set: { goldPassBoost = sliderValueToGoldPassBoost($0) }
+                        ),
+                        in: 0...3,
+                        step: 1
+                    )
+                    HStack {
+                        Text("0%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("10%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("15%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("20%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+            }
         }
         .padding(16)
         .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
     }
 
     private var maxBuilders: Int {
-        townHallLevel > 0 && townHallLevel < 10 ? 5 : 6
+        townHallLevel < 10 ? 5 : 6
     }
 
     private var townHallLevel: Int {
-        dataService.cachedProfile?.townHallLevel ?? 0
+        if previewTownHallLevel > 0 {
+            return previewTownHallLevel
+        }
+        return dataService.cachedProfile?.townHallLevel
+            ?? dataService.currentProfile?.cachedProfile?.townHallLevel
+            ?? 0
+    }
+
+    private var goldPassBoostLabel: String {
+        goldPassBoost == 0 ? "None" : "\(goldPassBoost)%"
+    }
+
+    private var goldPassTitle: String {
+        goldPassBoost == 0 ? "Free Pass" : "Gold Pass"
+    }
+
+    private var goldPassIconName: String {
+        goldPassBoost == 0 ? "profile/free_pass" : "profile/gold_pass"
+    }
+
+    private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
+        switch boost {
+        case 0: return 0
+        case 10: return 1
+        case 15: return 2
+        case 20: return 3
+        default: return 0
+        }
+    }
+
+    private func sliderValueToGoldPassBoost(_ value: Double) -> Int {
+        switch Int(value.rounded()) {
+        case 0: return 0
+        case 1: return 10
+        case 2: return 15
+        case 3: return 20
+        default: return 0
+        }
     }
 
     private func seedSettingsIfNeeded() {
@@ -1407,7 +1833,17 @@ private struct InitialSetupView: View {
         builderApprenticeLevel = dataService.builderApprenticeLevel
         labAssistantLevel = dataService.labAssistantLevel
         alchemistLevel = dataService.alchemistLevel
+        goldPassBoost = dataService.goldPassBoost
         clampBuilderCount()
+    }
+
+    private func fetchPreviewTownHall() {
+        let tag = normalizePlayerTag(playerTag)
+        guard !tag.isEmpty else { return }
+        dataService.fetchProfilePreview(tag: tag) { profile in
+            previewTownHallLevel = profile?.townHallLevel ?? 0
+            clampBuilderCount()
+        }
     }
 
     private func clampBuilderCount() {
@@ -1421,11 +1857,18 @@ private struct InitialSetupView: View {
         dataService.builderApprenticeLevel = builderApprenticeLevel
         dataService.labAssistantLevel = labAssistantLevel
         dataService.alchemistLevel = alchemistLevel
+        dataService.goldPassBoost = goldPassBoost
     }
 
-    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int) -> some View {
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             HStack {
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                }
                 Text(title)
                 Spacer()
                 Text("Lv \(value.wrappedValue)/\(maxLevel)")
@@ -1440,11 +1883,6 @@ private struct InitialSetupView: View {
                 in: 0...Double(maxLevel),
                 step: 1
             )
-            if townHallLevel > 0 && townHallLevel < unlockedAt {
-                Text("Unlocks at Town Hall \(unlockedAt)")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
         }
     }
 
@@ -1527,6 +1965,28 @@ struct ContentView_Previews: PreviewProvider {
     }
 }
 
+private struct IdleStatusRow: View {
+    let title: String
+    let status: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            Image(systemName: "pause.circle")
+                .font(.title2)
+                .foregroundColor(.secondary)
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text(title)
+                    .font(.headline)
+                Text(status)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+}
+
 private struct EquipmentView: View {
     @EnvironmentObject private var dataService: DataService
     @State private var rarityFilter: EquipmentRarityFilter = .all
@@ -1540,7 +2000,9 @@ private struct EquipmentView: View {
     var body: some View {
         NavigationStack {
             List {
-                if equipmentEntries.isEmpty {
+                if equipmentLocked {
+                    equipmentLockedState
+                } else if equipmentEntries.isEmpty {
                     emptyState
                 } else {
                     summarySection
@@ -1607,6 +2069,23 @@ private struct EquipmentView: View {
                 Text("No equipment data yet")
                     .font(.headline)
                 Text("Sync your profile to load hero equipment levels.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 24)
+        }
+    }
+
+    private var equipmentLockedState: some View {
+        Section {
+            VStack(spacing: 12) {
+                Image(systemName: "lock.shield")
+                    .font(.largeTitle)
+                    .foregroundColor(.secondary)
+                Text("Equipment unlocks at Town Hall 8")
+                    .font(.headline)
+                Text("Reach Town Hall 8 to start managing hero equipment and ore costs.")
                     .font(.caption)
                     .foregroundColor(.secondary)
             }
@@ -1704,6 +2183,12 @@ private struct EquipmentView: View {
                 isUnlocked: isUnlocked
             )
         }
+    }
+
+    private var equipmentLocked: Bool {
+        let profile = dataService.currentProfile?.cachedProfile ?? dataService.cachedProfile
+        guard let profile else { return false }
+        return profile.townHallLevel > 0 && profile.townHallLevel < 8
     }
 }
 
