@@ -1,21 +1,21 @@
 {
   "Barky": {
-    "displayName": "Barky",
+    "displayName": "L.A.S.S.I",
     "internalName": "Barky",
     "id": 73000000
   },
   "Bulldozer": {
-    "displayName": "Bulldozer",
+    "displayName": "Mighty Yak",
     "internalName": "Bulldozer",
     "id": 73000001
   },
   "Electrowl": {
-    "displayName": "Electrowl",
+    "displayName": "Electro Owl",
     "internalName": "Electrowl",
     "id": 73000002
   },
   "Unipony": {
-    "displayName": "Unipony",
+    "displayName": "Unicorn",
     "internalName": "Unipony",
     "id": 73000003
   },
@@ -50,7 +50,7 @@
     "id": 73000009
   },
   "Phase Fennec": {
-    "displayName": "Phase Fennec",
+    "displayName": "Spirit Fox",
     "internalName": "Phase Fennec",
     "id": 73000010
   },
@@ -80,7 +80,7 @@
     "id": 73000015
   },
   "AirSpawnerPet": {
-    "displayName": "AirSpawnerPet",
+    "displayName": "Sneezy",
     "internalName": "AirSpawnerPet",
     "id": 73000016
   }

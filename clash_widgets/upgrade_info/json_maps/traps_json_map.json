@@ -10,7 +10,7 @@
     "id": 12000001
   },
   "Superbomb": {
-    "displayName": "Superbomb",
+    "displayName": "Giant Bomb",
     "internalName": "Superbomb",
     "id": 12000002
   },
@@ -25,12 +25,12 @@
     "id": 12000004
   },
   "AirTrap": {
-    "displayName": "AirTrap",
+    "displayName": "Air Bomb",
     "internalName": "AirTrap",
     "id": 12000005
   },
   "MegaAirTrap": {
-    "displayName": "MegaAirTrap",
+    "displayName": "Seeking Air Mine",
     "internalName": "MegaAirTrap",
     "id": 12000006
   },
@@ -40,7 +40,7 @@
     "id": 12000007
   },
   "Halloweenskels": {
-    "displayName": "Halloweenskels",
+    "displayName": "Skeleton Trap",
     "internalName": "Halloweenskels",
     "id": 12000008
   },
@@ -80,7 +80,7 @@
     "id": 12000015
   },
   "TornadoTrap": {
-    "displayName": "TornadoTrap",
+    "displayName": "Tornado Trap",
     "internalName": "TornadoTrap",
     "id": 12000016
   },
@@ -100,7 +100,7 @@
     "id": 12000019
   },
   "GigaBomb": {
-    "displayName": "GigaBomb",
+    "displayName": "Giga Bomb",
     "internalName": "GigaBomb",
     "id": 12000020
   }

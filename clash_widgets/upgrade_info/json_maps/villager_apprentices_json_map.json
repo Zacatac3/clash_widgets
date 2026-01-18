@@ -1,10 +1,10 @@
 {
   "BuilderApprentice": {
-    "displayName": "BuilderApprentice",
+    "displayName": "Builder's Apprentice",
     "internalName": "BuilderApprentice"
   },
   "ResearchApprentice": {
-    "displayName": "ResearchApprentice",
+    "displayName": "Lab Assistant",
     "internalName": "ResearchApprentice"
   },
   "Alchemist": {

@@ -1,21 +1,21 @@
 {
   "LighningStorm": {
-    "displayName": "LighningStorm",
+    "displayName": "Lightning Spell",
     "internalName": "LighningStorm",
     "id": 26000000
   },
   "HealingWave": {
-    "displayName": "HealingWave",
+    "displayName": "Healing Spell",
     "internalName": "HealingWave",
     "id": 26000001
   },
   "Haste": {
-    "displayName": "Haste",
+    "displayName": "Rage Spell",
     "internalName": "Haste",
     "id": 26000002
   },
   "Jump": {
-    "displayName": "Jump",
+    "displayName": "Jump Spell",
     "internalName": "Jump",
     "id": 26000003
   },
@@ -25,7 +25,7 @@
     "id": 26000004
   },
   "Freeze": {
-    "displayName": "Freeze",
+    "displayName": "Freeze Spell",
     "internalName": "Freeze",
     "id": 26000005
   },
@@ -45,17 +45,17 @@
     "id": 26000008
   },
   "Poison": {
-    "displayName": "Poison",
+    "displayName": "Poison Spell",
     "internalName": "Poison",
     "id": 26000009
   },
   "Earthquake": {
-    "displayName": "Earthquake",
+    "displayName": "Earthquake Spell",
     "internalName": "Earthquake",
     "id": 26000010
   },
   "SpeedUp": {
-    "displayName": "SpeedUp",
+    "displayName": "Haste Spell",
     "internalName": "SpeedUp",
     "id": 26000011
   },
@@ -80,12 +80,12 @@
     "id": 26000015
   },
   "Duplicate": {
-    "displayName": "Duplicate",
+    "displayName": "Clone Spell",
     "internalName": "Duplicate",
     "id": 26000016
   },
   "SpawnSkele": {
-    "displayName": "SpawnSkele",
+    "displayName": "Skeleton Spell",
     "internalName": "SpawnSkele",
     "id": 26000017
   },
@@ -140,7 +140,7 @@
     "id": 26000027
   },
   "SpawnBats": {
-    "displayName": "SpawnBats",
+    "displayName": "Bat Spell",
     "internalName": "SpawnBats",
     "id": 26000028
   },
@@ -175,7 +175,7 @@
     "id": 26000034
   },
   "Invisibility": {
-    "displayName": "Invisibility",
+    "displayName": "Invisibility Spell",
     "internalName": "Invisibility",
     "id": 26000035
   },
@@ -265,7 +265,7 @@
     "id": 26000052
   },
   "Recall": {
-    "displayName": "Recall",
+    "displayName": "Recall Spell",
     "internalName": "Recall",
     "id": 26000053
   },
@@ -350,7 +350,7 @@
     "id": 26000069
   },
   "Overgrowth": {
-    "displayName": "Overgrowth",
+    "displayName": "Overgrowth Spell",
     "internalName": "Overgrowth",
     "id": 26000070
   },
@@ -490,7 +490,7 @@
     "id": 26000097
   },
   "Revive": {
-    "displayName": "Revive",
+    "displayName": "Revive Spell",
     "internalName": "Revive",
     "id": 26000098
   },
@@ -545,7 +545,7 @@
     "id": 26000108
   },
   "IceBlock": {
-    "displayName": "IceBlock",
+    "displayName": "Ice Block Spell",
     "internalName": "IceBlock",
     "id": 26000109
   },
@@ -600,7 +600,7 @@
     "id": 26000119
   },
   "TotemDrop": {
-    "displayName": "TotemDrop",
+    "displayName": "Totem Spell",
     "internalName": "TotemDrop",
     "id": 26000120
   },
