@@ -1,0 +1,422 @@
+{
+  "Troop Housing": {
+    "internalName": "Troop Housing",
+    "id": 1000000
+  },
+  "Town Hall": {
+    "internalName": "Town Hall",
+    "id": 1000001
+  },
+  "Elixir Pump": {
+    "internalName": "Elixir Pump",
+    "id": 1000002
+  },
+  "Elixir Storage": {
+    "internalName": "Elixir Storage",
+    "id": 1000003
+  },
+  "Gold Mine": {
+    "internalName": "Gold Mine",
+    "id": 1000004
+  },
+  "Gold Storage": {
+    "internalName": "Gold Storage",
+    "id": 1000005
+  },
+  "Barrack": {
+    "internalName": "Barrack",
+    "id": 1000006
+  },
+  "Laboratory": {
+    "internalName": "Laboratory",
+    "id": 1000007
+  },
+  "Cannon": {
+    "internalName": "Cannon",
+    "id": 1000008
+  },
+  "Archer Tower": {
+    "internalName": "Archer Tower",
+    "id": 1000009
+  },
+  "Wall": {
+    "internalName": "Wall",
+    "id": 1000010
+  },
+  "Wizard Tower": {
+    "internalName": "Wizard Tower",
+    "id": 1000011
+  },
+  "Air Defense": {
+    "internalName": "Air Defense",
+    "id": 1000012
+  },
+  "Mortar": {
+    "internalName": "Mortar",
+    "id": 1000013
+  },
+  "Alliance Castle": {
+    "internalName": "Alliance Castle",
+    "id": 1000014
+  },
+  "Worker Building": {
+    "internalName": "Worker Building",
+    "id": 1000015
+  },
+  "Communications mast": {
+    "internalName": "Communications mast",
+    "id": 1000016
+  },
+  "Goblin main building": {
+    "internalName": "Goblin main building",
+    "id": 1000017
+  },
+  "Goblin hut": {
+    "internalName": "Goblin hut",
+    "id": 1000018
+  },
+  "Tesla Tower": {
+    "internalName": "Tesla Tower",
+    "id": 1000019
+  },
+  "Spell Forge": {
+    "internalName": "Spell Forge",
+    "id": 1000020
+  },
+  "Bow": {
+    "internalName": "Bow",
+    "id": 1000021
+  },
+  "Hero Altar Barbarian King": {
+    "internalName": "Hero Altar Barbarian King",
+    "id": 1000022
+  },
+  "Dark Elixir Pump": {
+    "internalName": "Dark Elixir Pump",
+    "id": 1000023
+  },
+  "Dark Elixir Storage": {
+    "internalName": "Dark Elixir Storage",
+    "id": 1000024
+  },
+  "Hero Altar Archer Queen": {
+    "internalName": "Hero Altar Archer Queen",
+    "id": 1000025
+  },
+  "Dark Elixir Barrack": {
+    "internalName": "Dark Elixir Barrack",
+    "id": 1000026
+  },
+  "Dark Tower": {
+    "internalName": "Dark Tower",
+    "id": 1000027
+  },
+  "Air Blaster": {
+    "internalName": "Air Blaster",
+    "id": 1000028
+  },
+  "Mini Spell Factory": {
+    "internalName": "Mini Spell Factory",
+    "id": 1000029
+  },
+  "Hero Altar Grand Warden": {
+    "internalName": "Hero Altar Grand Warden",
+    "id": 1000030
+  },
+  "Ancient Artillery": {
+    "internalName": "Ancient Artillery",
+    "id": 1000031
+  },
+  "Bomb Tower": {
+    "internalName": "Bomb Tower",
+    "id": 1000032
+  },
+  "WallStraight": {
+    "internalName": "WallStraight",
+    "id": 1000033
+  },
+  "Town Hall2": {
+    "internalName": "Town Hall2",
+    "id": 1000034
+  },
+  "Elixir Pump2": {
+    "internalName": "Elixir Pump2",
+    "id": 1000035
+  },
+  "Elixir Storage2": {
+    "internalName": "Elixir Storage2",
+    "id": 1000036
+  },
+  "Gold Mine2": {
+    "internalName": "Gold Mine2",
+    "id": 1000037
+  },
+  "Gold Storage2": {
+    "internalName": "Gold Storage2",
+    "id": 1000038
+  },
+  "Clock Tower": {
+    "internalName": "Clock Tower",
+    "id": 1000039
+  },
+  "Barrack2": {
+    "internalName": "Barrack2",
+    "id": 1000040
+  },
+  "Double Cannon": {
+    "internalName": "Double Cannon",
+    "id": 1000041
+  },
+  "Troop Housing2": {
+    "internalName": "Troop Housing2",
+    "id": 1000042
+  },
+  "Tesla Tower2": {
+    "internalName": "Tesla Tower2",
+    "id": 1000043
+  },
+  "Cannon2": {
+    "internalName": "Cannon2",
+    "id": 1000044
+  },
+  "Multi Mortar": {
+    "internalName": "Multi Mortar",
+    "id": 1000045
+  },
+  "Laboratory2": {
+    "internalName": "Laboratory2",
+    "id": 1000046
+  },
+  "Worker Building2": {
+    "internalName": "Worker Building2",
+    "id": 1000047
+  },
+  "Archer Tower2": {
+    "internalName": "Archer Tower2",
+    "id": 1000048
+  },
+  "Reinforcement Camp": {
+    "internalName": "Reinforcement Camp",
+    "id": 1000049
+  },
+  "Air Defense Mini": {
+    "internalName": "Air Defense Mini",
+    "id": 1000050
+  },
+  "Guard Post": {
+    "internalName": "Guard Post",
+    "id": 1000051
+  },
+  "Mega Tesla": {
+    "internalName": "Mega Tesla",
+    "id": 1000052
+  },
+  "Hero Altar Warmachine": {
+    "internalName": "Hero Altar Warmachine",
+    "id": 1000053
+  },
+  "Air Defense2": {
+    "internalName": "Air Defense2",
+    "id": 1000054
+  },
+  "Crusher": {
+    "internalName": "Crusher",
+    "id": 1000055
+  },
+  "Flamer": {
+    "internalName": "Flamer",
+    "id": 1000056
+  },
+  "Giant Cannon": {
+    "internalName": "Giant Cannon",
+    "id": 1000057
+  },
+  "Gem Mine": {
+    "internalName": "Gem Mine",
+    "id": 1000058
+  },
+  "SiegeWorkshop": {
+    "internalName": "SiegeWorkshop",
+    "id": 1000059
+  },
+  "CannonNPC": {
+    "internalName": "CannonNPC",
+    "id": 1000060
+  },
+  "Goblin Castle": {
+    "internalName": "Goblin Castle",
+    "id": 1000061
+  },
+  "Dragon Cave": {
+    "internalName": "Dragon Cave",
+    "id": 1000062
+  },
+  "LavaLauncher": {
+    "internalName": "LavaLauncher",
+    "id": 1000063
+  },
+  "Builder6Home": {
+    "internalName": "Builder6Home",
+    "id": 1000064
+  },
+  "Builder6Unlock": {
+    "internalName": "Builder6Unlock",
+    "id": 1000065
+  },
+  "Hero Altar Royal Champion": {
+    "internalName": "Hero Altar Royal Champion",
+    "id": 1000066
+  },
+  "Scattershot": {
+    "internalName": "Scattershot",
+    "id": 1000067
+  },
+  "Pet Shop": {
+    "internalName": "Pet Shop",
+    "id": 1000068
+  },
+  "Goblin boss TH": {
+    "internalName": "Goblin boss TH",
+    "id": 1000069
+  },
+  "Smithy": {
+    "internalName": "Smithy",
+    "id": 1000070
+  },
+  "Hero Hall": {
+    "internalName": "Hero Hall",
+    "id": 1000071
+  },
+  "Spell Tower": {
+    "internalName": "Spell Tower",
+    "id": 1000072
+  },
+  "TroopCage": {
+    "internalName": "TroopCage",
+    "id": 1000073
+  },
+  "DragonLair": {
+    "internalName": "DragonLair",
+    "id": 1000074
+  },
+  "SpellCage": {
+    "internalName": "SpellCage",
+    "id": 1000075
+  },
+  "PEKKA's Playhouse": {
+    "internalName": "PEKKA's Playhouse",
+    "id": 1000076
+  },
+  "Monolith": {
+    "internalName": "Monolith",
+    "id": 1000077
+  },
+  "Outpost Stage2": {
+    "internalName": "Outpost Stage2",
+    "id": 1000078
+  },
+  "Merged Archer Cannon": {
+    "internalName": "Merged Archer Cannon",
+    "id": 1000079
+  },
+  "Battle Copter Altar": {
+    "internalName": "Battle Copter Altar",
+    "id": 1000080
+  },
+  "Xbow_BB": {
+    "internalName": "Xbow_BB",
+    "id": 1000081
+  },
+  "Recovery Building": {
+    "internalName": "Recovery Building",
+    "id": 1000082
+  },
+  "ClashoweenBuilding": {
+    "internalName": "ClashoweenBuilding",
+    "id": 1000083
+  },
+  "Merged Archer Tower": {
+    "internalName": "Merged Archer Tower",
+    "id": 1000084
+  },
+  "Merged Cannon": {
+    "internalName": "Merged Cannon",
+    "id": 1000085
+  },
+  "DebrisTower": {
+    "internalName": "DebrisTower",
+    "id": 1000086
+  },
+  "Unused2": {
+    "internalName": "Unused2",
+    "id": 1000087
+  },
+  "Unused3": {
+    "internalName": "Unused3",
+    "id": 1000088
+  },
+  "Firespitter": {
+    "internalName": "Firespitter",
+    "id": 1000089
+  },
+  "PetCage": {
+    "internalName": "PetCage",
+    "id": 1000090
+  },
+  "DefenseTroopCage": {
+    "internalName": "DefenseTroopCage",
+    "id": 1000091
+  },
+  "DirectHeroChallengeMainBuilding": {
+    "internalName": "DirectHeroChallengeMainBuilding",
+    "id": 1000092
+  },
+  "VillagerApprenticeHQ": {
+    "internalName": "VillagerApprenticeHQ",
+    "id": 1000093
+  },
+  "Unused4": {
+    "internalName": "Unused4",
+    "id": 1000094
+  },
+  "Unused5": {
+    "internalName": "Unused5",
+    "id": 1000095
+  },
+  "Unused6": {
+    "internalName": "Unused6",
+    "id": 1000096
+  },
+  "SeasonalDefensePlatform": {
+    "internalName": "SeasonalDefensePlatform",
+    "id": 1000097
+  },
+  "GenericSpellCage": {
+    "internalName": "GenericSpellCage",
+    "id": 1000098
+  },
+  "GenericTroopCage": {
+    "internalName": "GenericTroopCage",
+    "id": 1000099
+  },
+  "DefenseGenericTroopCage": {
+    "internalName": "DefenseGenericTroopCage",
+    "id": 1000100
+  },
+  "DirectHeroChallengeGenericMainBuilding": {
+    "internalName": "DirectHeroChallengeGenericMainBuilding",
+    "id": 1000101
+  },
+  "Merged Wizard Tower": {
+    "internalName": "Merged Wizard Tower",
+    "id": 1000102
+  },
+  "Town Hall 18 Teaser": {
+    "internalName": "Town Hall 18 Teaser",
+    "id": 1000103
+  },
+  "Town Hall 17 Upgrading": {
+    "internalName": "Town Hall 17 Upgrading",
+    "id": 1000104
+  }
+}
