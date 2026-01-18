@@ -1,0 +1,6882 @@
+[
+  {
+    "id": 1000000,
+    "internalName": "Troop Housing",
+    "tid": "TID_BUILDING_HOUSING",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "fireplace_lvl1",
+        "buildTimeSeconds": 60,
+        "buildResource": "Elixir",
+        "buildCost": 200,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "fireplace_lvl2",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 2000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "fireplace_lvl3",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "fireplace_lvl4",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "fireplace_lvl5",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "fireplace_lvl6",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "fireplace_lvl7",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "fireplace_lvl8",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "fireplace_lvl9",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 4200000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 10,
+        "exportName": "fireplace_lvl10",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 11,
+        "exportName": "fireplace_lvl11",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 7500000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 12,
+        "exportName": "fireplace_lvl12",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 13,
+        "exportName": "fireplace_lvl13",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 17000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000001,
+    "internalName": "Town Hall",
+    "tid": "TID_BUILDING_TOWN_HALL",
+    "buildingClass": "Town Hall",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "town_hall_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 0
+      },
+      {
+        "level": 2,
+        "exportName": "town_hall_lvl2",
+        "buildTimeSeconds": 10,
+        "buildResource": "",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 3,
+        "exportName": "town_hall_lvl3",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 4000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "town_hall_lvl4",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 5,
+        "exportName": "town_hall_lvl5",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 6,
+        "exportName": "town_hall_lvl6",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 7,
+        "exportName": "town_hall_lvl7",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 8,
+        "exportName": "town_hall_lvl8",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 9,
+        "exportName": "town_hall_lvl9",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 10,
+        "exportName": "town_hall_lvl10",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 11,
+        "exportName": "town_hall_lvl11",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 12,
+        "exportName": "town_hall_lvl12_t5",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 13,
+        "exportName": "town_hall_lvl13_t5",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 14,
+        "exportName": "town_hall_lvl14_t5",
+        "buildTimeSeconds": 648000,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 15,
+        "exportName": "town_hall_lvl15_t5",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 16,
+        "exportName": "town_hall_lvl16",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 15000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 17,
+        "exportName": "town_hall_lvl17_t1",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 16000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 18,
+        "exportName": "town_hall_lvl18_t1",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 25000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000002,
+    "internalName": "Elixir Pump",
+    "tid": "TID_BUILDING_ELIXIR_PUMP",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "elixir_pump_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 150,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "elixir_pump_lvl2",
+        "buildTimeSeconds": 15,
+        "buildResource": "",
+        "buildCost": 300,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "elixir_pump_lvl3",
+        "buildTimeSeconds": 60,
+        "buildResource": "",
+        "buildCost": 700,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "elixir_pump_lvl4",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 1400,
+        "townHallLevel": 2
+      },
+      {
+        "level": 5,
+        "exportName": "elixir_pump_lvl5",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 3000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 6,
+        "exportName": "elixir_pump_lvl6",
+        "buildTimeSeconds": 900,
+        "buildResource": "",
+        "buildCost": 7000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 7,
+        "exportName": "elixir_pump_lvl7",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 14000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 8,
+        "exportName": "elixir_pump_lvl8",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 28000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 9,
+        "exportName": "elixir_pump_lvl9",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 56000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 10,
+        "exportName": "elixir_pump_lvl10",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 75000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 11,
+        "exportName": "elixir_pump_lvl11",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 85000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 12,
+        "exportName": "elixir_pump_lvl12",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 170000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 13,
+        "exportName": "elixir_pump_lvl13",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 14,
+        "exportName": "elixir_pump_lvl14",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 15,
+        "exportName": "elixir_pump_lvl15",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 16,
+        "exportName": "elixir_pump_lvl16",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 17,
+        "exportName": "elixir_pump_lvl17",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000003,
+    "internalName": "Elixir Storage",
+    "tid": "TID_BUILDING_ELIXIR_STORAGE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "elixir_storage_level1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 300,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "elixir_storage_level2",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 750,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "elixir_storage_level3",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 1500,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "elixir_storage_level4",
+        "buildTimeSeconds": 900,
+        "buildResource": "",
+        "buildCost": 3000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 5,
+        "exportName": "elixir_storage_level5",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 6000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 6,
+        "exportName": "elixir_storage_level6",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 12000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 7,
+        "exportName": "elixir_storage_level7",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 8,
+        "exportName": "elixir_storage_level8",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 9,
+        "exportName": "elixir_storage_level9",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 10,
+        "exportName": "elixir_storage_level10",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 11,
+        "exportName": "elixir_storage_level11",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 12,
+        "exportName": "elixir_storage_level12",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 13,
+        "exportName": "elixir_storage_level13",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 14,
+        "exportName": "elixir_storage_level14",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2800000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 15,
+        "exportName": "elixir_storage_level15",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 16,
+        "exportName": "elixir_storage_level16",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 17,
+        "exportName": "elixir_storage_level17",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 18,
+        "exportName": "elixir_storage_level18",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 19,
+        "exportName": "elixir_storage_level19",
+        "buildTimeSeconds": 1080000,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000004,
+    "internalName": "Gold Mine",
+    "tid": "TID_BUILDING_GOLD_MINE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goldmine_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Elixir",
+        "buildCost": 150,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "goldmine_lvl2",
+        "buildTimeSeconds": 15,
+        "buildResource": "",
+        "buildCost": 300,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "goldmine_lvl3",
+        "buildTimeSeconds": 60,
+        "buildResource": "",
+        "buildCost": 700,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "goldmine_lvl4",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 1400,
+        "townHallLevel": 2
+      },
+      {
+        "level": 5,
+        "exportName": "goldmine_lvl5",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 3000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 6,
+        "exportName": "goldmine_lvl6",
+        "buildTimeSeconds": 900,
+        "buildResource": "",
+        "buildCost": 7000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 7,
+        "exportName": "goldmine_lvl7",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 14000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 8,
+        "exportName": "goldmine_lvl8",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 28000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 9,
+        "exportName": "goldmine_lvl9",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 56000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 10,
+        "exportName": "goldmine_lvl10",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 75000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 11,
+        "exportName": "goldmine_lvl11",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 85000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 12,
+        "exportName": "goldmine_lvl12",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 170000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 13,
+        "exportName": "goldmine_lvl13",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 14,
+        "exportName": "goldmine_lvl14",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 15,
+        "exportName": "goldmine_lvl15",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 16,
+        "exportName": "goldmine_lvl16",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 17,
+        "exportName": "goldmine_lvl17",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000005,
+    "internalName": "Gold Storage",
+    "tid": "TID_BUILDING_GOLD_STORAGE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "gold_storage_lvl1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Elixir",
+        "buildCost": 300,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "gold_storage_lvl2",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 750,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "gold_storage_lvl3",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 1500,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "gold_storage_lvl4",
+        "buildTimeSeconds": 900,
+        "buildResource": "",
+        "buildCost": 3000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 5,
+        "exportName": "gold_storage_lvl5",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 6000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 6,
+        "exportName": "gold_storage_lvl6",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 12000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 7,
+        "exportName": "gold_storage_lvl7",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 8,
+        "exportName": "gold_storage_lvl8",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 9,
+        "exportName": "gold_storage_lvl9",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 10,
+        "exportName": "gold_storage_lvl10",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 11,
+        "exportName": "gold_storage_lvl11",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 12,
+        "exportName": "gold_storage_lvl12",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 13,
+        "exportName": "gold_storage_lvl13",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 14,
+        "exportName": "gold_storage_lvl14",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2800000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 15,
+        "exportName": "gold_storage_lvl15",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 16,
+        "exportName": "gold_storage_lvl16",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 17,
+        "exportName": "gold_storage_lvl17",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 18,
+        "exportName": "gold_storage_lvl18",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 19,
+        "exportName": "gold_storage_lvl19",
+        "buildTimeSeconds": 1080000,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000006,
+    "internalName": "Barrack",
+    "tid": "TID_BUILDING_BARRACK",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "barracks_lvl1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Elixir",
+        "buildCost": 100,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "barracks_lvl2",
+        "buildTimeSeconds": 15,
+        "buildResource": "",
+        "buildCost": 500,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "barracks_lvl3",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 2500,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "barracks_lvl4",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 5000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 5,
+        "exportName": "barracks_lvl5",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 20000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 6,
+        "exportName": "barracks_lvl6",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 120000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 7,
+        "exportName": "barracks_lvl7",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 270000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 8,
+        "exportName": "barracks_lvl8",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 9,
+        "exportName": "barracks_lvl9",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 10,
+        "exportName": "barracks_lvl10",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 11,
+        "exportName": "barracks_lvl11",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 12,
+        "exportName": "barracks_lvl12",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 13,
+        "exportName": "barracks_lvl13",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 14,
+        "exportName": "barracks_lvl14",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 15,
+        "exportName": "barracks_lvl15",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 16,
+        "exportName": "barracks_lvl16",
+        "buildTimeSeconds": 648000,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 17,
+        "exportName": "barracks_lvl17",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 12600000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 18,
+        "exportName": "barracks_lvl18",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 15000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 19,
+        "exportName": "barracks_lvl19",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000007,
+    "internalName": "Laboratory",
+    "tid": "TID_BUILDING_LABORATORY",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "laboratory_lvl1",
+        "buildTimeSeconds": 60,
+        "buildResource": "Elixir",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "laboratory_lvl2",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "laboratory_lvl3",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 4,
+        "exportName": "laboratory_lvl4",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 5,
+        "exportName": "laboratory_lvl5",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 6,
+        "exportName": "laboratory_lvl6",
+        "buildTimeSeconds": 57600,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "laboratory_lvl7",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "laboratory_lvl8",
+        "buildTimeSeconds": 151200,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "laboratory_lvl9",
+        "buildTimeSeconds": 237600,
+        "buildResource": "",
+        "buildCost": 2100000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 10,
+        "exportName": "laboratory_lvl10",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3800000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 11,
+        "exportName": "laboratory_lvl11",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 12,
+        "exportName": "laboratory_lvl12",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 8100000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 13,
+        "exportName": "laboratory_lvl13",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 10800000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 14,
+        "exportName": "laboratory_lvl14",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 15,
+        "exportName": "laboratory_lvl15",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 16,
+        "exportName": "laboratory_lvl16",
+        "buildTimeSeconds": 1382400,
+        "buildResource": "",
+        "buildCost": 27000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000008,
+    "internalName": "Cannon",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "basic_turret_lvl2",
+        "buildTimeSeconds": 30,
+        "buildResource": "",
+        "buildCost": 1000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "basic_turret_lvl3",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 4000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 4,
+        "exportName": "basic_turret_lvl4",
+        "buildTimeSeconds": 1200,
+        "buildResource": "",
+        "buildCost": 16000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 5,
+        "exportName": "basic_turret_lvl5",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 6,
+        "exportName": "basic_turret_lvl6",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 60000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 7,
+        "exportName": "basic_turret_lvl7",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 8,
+        "exportName": "basic_turret_lvl8",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 160000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 9,
+        "exportName": "basic_turret_lvl9",
+        "buildTimeSeconds": 12600,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 10,
+        "exportName": "basic_turret_lvl10",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 330000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 11,
+        "exportName": "basic_turret_lvl11",
+        "buildTimeSeconds": 16200,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 12,
+        "exportName": "basic_turret_lvl12",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 13,
+        "exportName": "basic_turret_lvl13",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 660000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 14,
+        "exportName": "basic_turret_lvl14",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 15,
+        "exportName": "basic_turret_lvl15",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 16,
+        "exportName": "basic_turret_lvl16",
+        "buildTimeSeconds": 39600,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 17,
+        "exportName": "basic_turret_lvl17",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 18,
+        "exportName": "basic_turret_lvl18",
+        "buildTimeSeconds": 57600,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 19,
+        "exportName": "basic_turret_lvl19",
+        "buildTimeSeconds": 72000,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 20,
+        "exportName": "basic_turret_lvl20",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 2600000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 21,
+        "exportName": "basic_turret_lvl21",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 15
+      }
+    ]
+  },
+  {
+    "id": 1000009,
+    "internalName": "Archer Tower",
+    "tid": "TID_BUILDING_ARCHER_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "tower_turret_lvl1",
+        "buildTimeSeconds": 15,
+        "buildResource": "Gold",
+        "buildCost": 1000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 2,
+        "exportName": "tower_turret_lvl2",
+        "buildTimeSeconds": 120,
+        "buildResource": "",
+        "buildCost": 2000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "tower_turret_lvl3",
+        "buildTimeSeconds": 1200,
+        "buildResource": "",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "tower_turret_lvl4",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 20000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "tower_turret_lvl5",
+        "buildTimeSeconds": 5400,
+        "buildResource": "",
+        "buildCost": 70000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "tower_turret_lvl6",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 80000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 7,
+        "exportName": "tower_turret_lvl7",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 8,
+        "exportName": "tower_turret_lvl8",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 9,
+        "exportName": "tower_turret_lvl9",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 10,
+        "exportName": "tower_turret_lvl10",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 460000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 11,
+        "exportName": "tower_turret_lvl11",
+        "buildTimeSeconds": 25200,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 12,
+        "exportName": "tower_turret_lvl12",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 700000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 13,
+        "exportName": "tower_turret_lvl13",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 14,
+        "exportName": "tower_turret_lvl14",
+        "buildTimeSeconds": 39600,
+        "buildResource": "",
+        "buildCost": 1100000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 15,
+        "exportName": "tower_turret_lvl15",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 16,
+        "exportName": "tower_turret_lvl16",
+        "buildTimeSeconds": 57600,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 17,
+        "exportName": "tower_turret_lvl17",
+        "buildTimeSeconds": 72000,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 18,
+        "exportName": "tower_turret_lvl18",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 19,
+        "exportName": "tower_turret_lvl19",
+        "buildTimeSeconds": 108000,
+        "buildResource": "",
+        "buildCost": 2200000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 20,
+        "exportName": "tower_turret_lvl20",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 21,
+        "exportName": "tower_turret_lvl21",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 15
+      }
+    ]
+  },
+  {
+    "id": 1000010,
+    "internalName": "Wall",
+    "tid": "TID_BUILDING_WALL",
+    "buildingClass": "Wall",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "defense_wall_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 2
+      },
+      {
+        "level": 2,
+        "exportName": "defense_wall_lvl2",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 1000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "defense_wall_lvl3",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "defense_wall_lvl4",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "defense_wall_lvl5",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 20000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "defense_wall_lvl6",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 30000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "defense_wall_lvl7",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "defense_wall_lvl8",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 75000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "defense_wall_lvl9",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "defense_wall_lvl10",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 11,
+        "exportName": "defense_wall_lvl11",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 12,
+        "exportName": "defense_wall_lvl12",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 13,
+        "exportName": "defense_wall_lvl13",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 14,
+        "exportName": "defense_wall_lvl14",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 15,
+        "exportName": "defense_wall_lvl15",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 16,
+        "exportName": "defense_wall_lvl16",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 17,
+        "exportName": "defense_wall_lvl17",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 18,
+        "exportName": "defense_wall_lvl18",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 19,
+        "exportName": "defense_wall_lvl19",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000011,
+    "internalName": "Wizard Tower",
+    "tid": "TID_BUILDING_WIZARD_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "wizard_tower_lvl1",
+        "buildTimeSeconds": 3600,
+        "buildResource": "Gold",
+        "buildCost": 100000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 2,
+        "exportName": "wizard_tower_lvl4",
+        "buildTimeSeconds": 5400,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 3,
+        "exportName": "wizard_tower_lvl7",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 4,
+        "exportName": "wizard_tower_lvl8",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 5,
+        "exportName": "wizard_tower_lvl9",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 550000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 6,
+        "exportName": "wizard_tower_lvl10",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 660000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "wizard_tower_lvl11",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "wizard_tower_lvl12",
+        "buildTimeSeconds": 72000,
+        "buildResource": "",
+        "buildCost": 1100000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "wizard_tower_lvl13",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 10,
+        "exportName": "wizard_tower_lvl14",
+        "buildTimeSeconds": 108000,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 11,
+        "exportName": "wizard_tower_lvl15",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 12,
+        "exportName": "wizard_tower_lvl16",
+        "buildTimeSeconds": 151200,
+        "buildResource": "",
+        "buildCost": 2600000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 13,
+        "exportName": "wizard_tower_lvl17",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 14,
+        "exportName": "wizard_tower_lvl18",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 15,
+        "exportName": "wizard_tower_lvl19",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 16,
+        "exportName": "wizard_tower_lvl20",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 17,
+        "exportName": "wizard_tower_lvl21",
+        "buildTimeSeconds": 734400,
+        "buildResource": "",
+        "buildCost": 14000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000012,
+    "internalName": "Air Defense",
+    "tid": "TID_BUILDING_AIR_DEFENSE",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "fireworks_tower_lvl1",
+        "buildTimeSeconds": 3600,
+        "buildResource": "Gold",
+        "buildCost": 22000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 2,
+        "exportName": "fireworks_tower_lvl2",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 90000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "fireworks_tower_lvl3",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 210000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 4,
+        "exportName": "fireworks_tower_lvl4",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 5,
+        "exportName": "fireworks_tower_lvl5",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 6,
+        "exportName": "fireworks_tower_lvl6",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "fireworks_tower_lvl7",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1750000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "fireworks_tower_lvl8",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "fireworks_tower_lvl9",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 10,
+        "exportName": "fireworks_tower_lvl10",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 11,
+        "exportName": "fireworks_tower_lvl11",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 5600000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 12,
+        "exportName": "fireworks_tower_lvl12",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 6500000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 13,
+        "exportName": "fireworks_tower_lvl13",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 14,
+        "exportName": "fireworks_tower_lvl14",
+        "buildTimeSeconds": 561600,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 15,
+        "exportName": "fireworks_tower_lvl15",
+        "buildTimeSeconds": 820800,
+        "buildResource": "",
+        "buildCost": 15000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 16,
+        "exportName": "fireworks_tower_lvl16",
+        "buildTimeSeconds": 1144800,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000013,
+    "internalName": "Mortar",
+    "tid": "TID_BUILDING_MORTAR",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "mortar_lvl1",
+        "buildTimeSeconds": 1800,
+        "buildResource": "Gold",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "mortar_lvl2",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "mortar_lvl3",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 90000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 4,
+        "exportName": "mortar_lvl4",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 180000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 5,
+        "exportName": "mortar_lvl5",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 6,
+        "exportName": "mortar_lvl6",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "mortar_lvl7",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 900000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "mortar_lvl8",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "mortar_lvl9",
+        "buildTimeSeconds": 72000,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 10,
+        "exportName": "mortar_lvl10",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 11,
+        "exportName": "mortar_lvl11",
+        "buildTimeSeconds": 108000,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 12,
+        "exportName": "mortar_lvl12",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 13,
+        "exportName": "mortar_lvl13",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2800000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 14,
+        "exportName": "mortar_lvl14",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 4300000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 15,
+        "exportName": "mortar_lvl15",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 16,
+        "exportName": "mortar_lvl16",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 17,
+        "exportName": "mortar_lvl17",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000014,
+    "internalName": "Alliance Castle",
+    "tid": "TID_BUILDING_ALLIANCE_CASTLE",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "alliance_castle_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "alliance_castle_lvl2",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "alliance_castle_lvl3",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 4,
+        "exportName": "alliance_castle_lvl4",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "alliance_castle_lvl5",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "alliance_castle_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 7,
+        "exportName": "alliance_castle_lvl7",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 8,
+        "exportName": "alliance_castle_lvl8",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 9,
+        "exportName": "alliance_castle_lvl9",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 10,
+        "exportName": "alliance_castle_lvl10",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 11,
+        "exportName": "alliance_castle_lvl11",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 12,
+        "exportName": "alliance_castle_lvl12",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 14500000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 13,
+        "exportName": "alliance_castle_lvl13",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 19000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 14,
+        "exportName": "alliance_castle_lvl14",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 28000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000015,
+    "internalName": "Worker Building",
+    "tid": "TID_WORKER_BUILDING",
+    "buildingClass": "Worker",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "worker_building",
+        "buildTimeSeconds": 0,
+        "buildResource": "Diamonds",
+        "buildCost": 0,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "worker_building_armed_lvl1",
+        "buildTimeSeconds": 172800,
+        "buildResource": "Gold",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 3,
+        "exportName": "worker_building_armed_lvl2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 4,
+        "exportName": "worker_building_armed_lvl3",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 5,
+        "exportName": "worker_building_armed_lvl4",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 6,
+        "exportName": "worker_building_armed_lvl5",
+        "buildTimeSeconds": 475200,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 7,
+        "exportName": "worker_building_armed_lvl6",
+        "buildTimeSeconds": 820800,
+        "buildResource": "",
+        "buildCost": 15500000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000016,
+    "internalName": "Communications mast",
+    "tid": "TID_CAPBUILD_GOBLIN_HUT",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "comm_mast_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000017,
+    "internalName": "Goblin main building",
+    "tid": "TID_BUILDING_GOBLIN_HALL",
+    "buildingClass": "Npc Town Hall",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goblin_townhall_lvl1",
+        "buildTimeSeconds": 60,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 0
+      },
+      {
+        "level": 2,
+        "exportName": "goblin_th02",
+        "buildTimeSeconds": 120,
+        "buildResource": "Gold",
+        "buildCost": 1,
+        "townHallLevel": 0
+      }
+    ]
+  },
+  {
+    "id": 1000018,
+    "internalName": "Goblin hut",
+    "tid": "TID_CAPBUILD_GOBLIN_HUT",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goblin_hut_lvl1",
+        "buildTimeSeconds": 300,
+        "buildResource": "Elixir",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000019,
+    "internalName": "Tesla Tower",
+    "tid": "TID_BUILDING_TESLA_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "teslatower_lvl1_setup",
+        "buildTimeSeconds": 7200,
+        "buildResource": "Gold",
+        "buildCost": 250000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "teslatower_lvl2_setup",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 350000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 3,
+        "exportName": "teslatower_lvl3_setup",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "teslatower_lvl4_setup",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "teslatower_lvl5_setup",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 6,
+        "exportName": "teslatower_lvl6_setup",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "teslatower_lvl7_setup",
+        "buildTimeSeconds": 108000,
+        "buildResource": "",
+        "buildCost": 1400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "teslatower_lvl8_setup",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 9,
+        "exportName": "teslatower_lvl9_setup",
+        "buildTimeSeconds": 151200,
+        "buildResource": "",
+        "buildCost": 2100000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 10,
+        "exportName": "teslatower_lvl10_setup",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 11,
+        "exportName": "teslatower_lvl11_setup",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 3100000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 12,
+        "exportName": "teslatower_lvl12_setup",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 13,
+        "exportName": "teslatower_lvl13_setup",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 5100000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 14,
+        "exportName": "teslatower_lvl14_setup",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 6500000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 15,
+        "exportName": "teslatower_lvl15_setup",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 8200000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 16,
+        "exportName": "teslatower_lvl16_setup",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 15000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000020,
+    "internalName": "Spell Forge",
+    "tid": "TID_BUILDING_SPELL_FORGE",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "spell_factory_lvl1",
+        "buildTimeSeconds": 21600,
+        "buildResource": "Elixir",
+        "buildCost": 150000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 2,
+        "exportName": "spell_factory_lvl2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 3,
+        "exportName": "spell_factory_lvl3",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "spell_factory_lvl4",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 5,
+        "exportName": "spell_factory_lvl5",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 6,
+        "exportName": "spell_factory_lvl6",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3500000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 7,
+        "exportName": "spell_factory_lvl7",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 8,
+        "exportName": "spell_factory_lvl8",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 14000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 9,
+        "exportName": "spell_factory_lvl9",
+        "buildTimeSeconds": 1123200,
+        "buildResource": "",
+        "buildCost": 24000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000021,
+    "internalName": "Bow",
+    "tid": "TID_BUILDING_BOW",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "rapidfire_turret_lvl1",
+        "buildTimeSeconds": 43200,
+        "buildResource": "Gold",
+        "buildCost": 1000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 2,
+        "exportName": "rapidfire_turret_lvl2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 3,
+        "exportName": "rapidfire_turret_lvl3",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 4,
+        "exportName": "rapidfire_turret_lvl4",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 5,
+        "exportName": "rapidfire_turret_lvl5",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 3900000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 6,
+        "exportName": "rapidfire_turret_lvl6",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 7,
+        "exportName": "rapidfire_turret_lvl7",
+        "buildTimeSeconds": 367200,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 8,
+        "exportName": "rapidfire_turret_lvl8",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 9,
+        "exportName": "rapidfire_turret_lvl9",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 10,
+        "exportName": "rapidfire_turret_lvl10",
+        "buildTimeSeconds": 475200,
+        "buildResource": "",
+        "buildCost": 9500000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 11,
+        "exportName": "rapidfire_turret_lvl11",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 12,
+        "exportName": "rapidfire_turret_lvl12",
+        "buildTimeSeconds": 907200,
+        "buildResource": "",
+        "buildCost": 16000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000022,
+    "internalName": "Hero Altar Barbarian King",
+    "tid": "TID_BARBARIAN_KING",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "heroaltar_barbarian_king_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "DarkElixir",
+        "buildCost": 0,
+        "townHallLevel": 7
+      }
+    ]
+  },
+  {
+    "id": 1000023,
+    "internalName": "Dark Elixir Pump",
+    "tid": "TID_BUILDING_DARK_ELIXIR_PUMP",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "darkelixir_pump_lvl1",
+        "buildTimeSeconds": 14400,
+        "buildResource": "Elixir",
+        "buildCost": 180000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "darkelixir_pump_lvl2",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 270000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 3,
+        "exportName": "darkelixir_pump_lvl3",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 540000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "darkelixir_pump_lvl4",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 900000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 5,
+        "exportName": "darkelixir_pump_lvl5",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "darkelixir_pump_lvl6",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 7,
+        "exportName": "darkelixir_pump_lvl7",
+        "buildTimeSeconds": 151200,
+        "buildResource": "",
+        "buildCost": 2100000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 8,
+        "exportName": "darkelixir_pump_lvl8",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 9,
+        "exportName": "darkelixir_pump_lvl9",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 10,
+        "exportName": "darkelixir_pump_lvl10",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 5300000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 11,
+        "exportName": "darkelixir_pump_lvl11",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000024,
+    "internalName": "Dark Elixir Storage",
+    "tid": "TID_BUILDING_DARK_ELIXIR_STORAGE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "darkelixir_storage_level1",
+        "buildTimeSeconds": 28800,
+        "buildResource": "Elixir",
+        "buildCost": 250000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "darkelixir_storage_level2",
+        "buildTimeSeconds": 57600,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 3,
+        "exportName": "darkelixir_storage_level3",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 4,
+        "exportName": "darkelixir_storage_level4",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "darkelixir_storage_level5",
+        "buildTimeSeconds": 144000,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "darkelixir_storage_level6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 7,
+        "exportName": "darkelixir_storage_level7",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3800000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 8,
+        "exportName": "darkelixir_storage_level8",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 5400000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 9,
+        "exportName": "darkelixir_storage_level9",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 6600000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 10,
+        "exportName": "darkelixir_storage_level10",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 11,
+        "exportName": "darkelixir_storage_level11",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 12,
+        "exportName": "darkelixir_storage_level12",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 16000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 13,
+        "exportName": "darkelixir_storage_level13",
+        "buildTimeSeconds": 1123200,
+        "buildResource": "",
+        "buildCost": 25000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000025,
+    "internalName": "Hero Altar Archer Queen",
+    "tid": "TID_ARCHER_QUEEN",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "heroaltar_archer_queen_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "DarkElixir",
+        "buildCost": 0,
+        "townHallLevel": 9
+      }
+    ]
+  },
+  {
+    "id": 1000026,
+    "internalName": "Dark Elixir Barrack",
+    "tid": "TID_DARK_ELIXIR_BARRACK",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "darkBarracks_lvl1",
+        "buildTimeSeconds": 28800,
+        "buildResource": "Elixir",
+        "buildCost": 200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "darkBarracks_lvl2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 3,
+        "exportName": "darkBarracks_lvl3",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 4,
+        "exportName": "darkBarracks_lvl4",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "darkBarracks_lvl5",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 2200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "darkBarracks_lvl6",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2900000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 7,
+        "exportName": "darkBarracks_lvl7",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 8,
+        "exportName": "darkBarracks_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 9,
+        "exportName": "darkBarracks_lvl9",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 7200000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 10,
+        "exportName": "darkBarracks_lvl10",
+        "buildTimeSeconds": 648000,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 11,
+        "exportName": "darkBarracks_lvl11",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 12,
+        "exportName": "darkBarracks_lvl12",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 20000000,
+        "townHallLevel": 15
+      }
+    ]
+  },
+  {
+    "id": 1000027,
+    "internalName": "Dark Tower",
+    "tid": "TID_BUILDING_DARK_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "dark_tower_lvl1",
+        "buildTimeSeconds": 43200,
+        "buildResource": "Gold",
+        "buildCost": 1000000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 2,
+        "exportName": "dark_tower_lvl2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 3,
+        "exportName": "dark_tower_lvl3",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 4,
+        "exportName": "dark_tower_lvl4",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 5,
+        "exportName": "dark_tower_lvl5",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 6,
+        "exportName": "dark_tower_lvl6",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 7,
+        "exportName": "dark_tower_lvl7",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 8,
+        "exportName": "dark_tower_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 9500000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 9,
+        "exportName": "dark_tower_lvl9",
+        "buildTimeSeconds": 561600,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 10,
+        "exportName": "dark_tower_lvl10",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 11,
+        "exportName": "dark_tower_lvl11",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 16000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000028,
+    "internalName": "Air Blaster",
+    "tid": "TID_AIR_BLASTER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "air_mortar_lvl1",
+        "buildTimeSeconds": 14400,
+        "buildResource": "Gold",
+        "buildCost": 200000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 2,
+        "exportName": "air_mortar_lvl2",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 3,
+        "exportName": "air_mortar_lvl3",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 450000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "air_mortar_lvl4",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "air_mortar_lvl5",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "air_mortar_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1900000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 7,
+        "exportName": "air_mortar_lvl7",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 11
+      }
+    ]
+  },
+  {
+    "id": 1000029,
+    "internalName": "Mini Spell Factory",
+    "tid": "TID_BUILDING_MINI_SPELL_FACTORY",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "mini_spell_distillery_lvl1",
+        "buildTimeSeconds": 21600,
+        "buildResource": "Elixir",
+        "buildCost": 130000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 2,
+        "exportName": "mini_spell_distillery_lvl2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 260000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 3,
+        "exportName": "mini_spell_distillery_lvl3",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 4,
+        "exportName": "mini_spell_distillery_lvl4",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 5,
+        "exportName": "mini_spell_distillery_lvl5",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 6,
+        "exportName": "mini_spell_distillery_lvl6",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 7,
+        "exportName": "mini_spell_distillery_lvl7",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 14
+      }
+    ]
+  },
+  {
+    "id": 1000030,
+    "internalName": "Hero Altar Grand Warden",
+    "tid": "TID_GRAND_WARDEN",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "heroaltar_warmachine_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir",
+        "buildCost": 0,
+        "townHallLevel": 11
+      }
+    ]
+  },
+  {
+    "id": 1000031,
+    "internalName": "Ancient Artillery",
+    "tid": "TID_BUILDING_ARTILLERY",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "doom_cannon_lvl1",
+        "buildTimeSeconds": 345600,
+        "buildResource": "Gold",
+        "buildCost": 5000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 2,
+        "exportName": "doom_cannon_lvl2",
+        "buildTimeSeconds": 432000,
+        "buildResource": "Gold",
+        "buildCost": 6000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 3,
+        "exportName": "doom_cannon_lvl3",
+        "buildTimeSeconds": 604800,
+        "buildResource": "Gold",
+        "buildCost": 9000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 4,
+        "exportName": "doom_cannon_lvl4",
+        "buildTimeSeconds": 648000,
+        "buildResource": "Gold",
+        "buildCost": 10000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 5,
+        "exportName": "doom_cannon_lvl5",
+        "buildTimeSeconds": 691200,
+        "buildResource": "Gold",
+        "buildCost": 12000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 6,
+        "exportName": "doom_cannon_lvl6",
+        "buildTimeSeconds": 777600,
+        "buildResource": "Gold",
+        "buildCost": 13000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 7,
+        "exportName": "doom_cannon_lvl7",
+        "buildTimeSeconds": 820800,
+        "buildResource": "Gold",
+        "buildCost": 14000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000032,
+    "internalName": "Bomb Tower",
+    "tid": "TID_BUILDING_BOMB_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "bomb_tower_lvl1",
+        "buildTimeSeconds": 43200,
+        "buildResource": "Gold",
+        "buildCost": 700000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 2,
+        "exportName": "bomb_tower_lvl2",
+        "buildTimeSeconds": 64800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 3,
+        "exportName": "bomb_tower_lvl3",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 4,
+        "exportName": "bomb_tower_lvl4",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 5,
+        "exportName": "bomb_tower_lvl5",
+        "buildTimeSeconds": 151200,
+        "buildResource": "",
+        "buildCost": 1900000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 6,
+        "exportName": "bomb_tower_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 7,
+        "exportName": "bomb_tower_lvl7",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 8,
+        "exportName": "bomb_tower_lvl8",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 9,
+        "exportName": "bomb_tower_lvl9",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 10,
+        "exportName": "bomb_tower_lvl10",
+        "buildTimeSeconds": 410400,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 11,
+        "exportName": "bomb_tower_lvl11",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 8500000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 12,
+        "exportName": "bomb_tower_lvl12",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 14500000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 13,
+        "exportName": "bomb_tower_lvl13",
+        "buildTimeSeconds": 1123200,
+        "buildResource": "",
+        "buildCost": 25000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000033,
+    "internalName": "WallStraight",
+    "tid": "TID_BUILDING_WALL",
+    "buildingClass": "Wall",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "secondVillage_wall_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold2",
+        "buildCost": 0,
+        "townHallLevel": 2
+      },
+      {
+        "level": 2,
+        "exportName": "secondVillage_wall_lvl2",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 2000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "secondVillage_wall_lvl3",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "secondVillage_wall_lvl4",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "secondVillage_wall_lvl5",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "secondVillage_wall_lvl6",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 240000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "secondVillage_wall_lvl7",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "secondVillage_wall_lvl8",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "secondVillage_wall_lvl9",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "secondVillage_wall_lvl10",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000034,
+    "internalName": "Town Hall2",
+    "tid": "TID_BUILDING_TOWN_HALL2",
+    "buildingClass": "Town Hall2",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "new_TH_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold2",
+        "buildCost": 0,
+        "townHallLevel": 0
+      },
+      {
+        "level": 2,
+        "exportName": "new_TH_lvl2",
+        "buildTimeSeconds": 5,
+        "buildResource": "",
+        "buildCost": 3500,
+        "townHallLevel": 0
+      },
+      {
+        "level": 3,
+        "exportName": "new_TH_lvl3",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 30000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 4,
+        "exportName": "new_TH_lvl4",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 5,
+        "exportName": "new_TH_lvl5",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 6,
+        "exportName": "new_TH_lvl6",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 7,
+        "exportName": "new_TH_lvl7",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 8,
+        "exportName": "new_TH_lvl8",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 2800000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 9,
+        "exportName": "new_TH_lvl9",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3800000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 10,
+        "exportName": "new_TH_lvl10",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 4800000,
+        "townHallLevel": 0
+      }
+    ]
+  },
+  {
+    "id": 1000035,
+    "internalName": "Elixir Pump2",
+    "tid": "TID_BUILDING_ELIXIR_PUMP",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "elixir_pump_lvl1_v2",
+        "buildTimeSeconds": 600,
+        "buildResource": "Gold2",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "elixir_pump_lvl2_v2",
+        "buildTimeSeconds": 1200,
+        "buildResource": "",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "elixir_pump_lvl3_v2",
+        "buildTimeSeconds": 2400,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "elixir_pump_lvl4_v2",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 30000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "elixir_pump_lvl5_v2",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 60000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "elixir_pump_lvl6_v2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "elixir_pump_lvl7_v2",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "elixir_pump_lvl8_v2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "elixir_pump_lvl9_v2",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "elixir_pump_lvl10_v2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000036,
+    "internalName": "Elixir Storage2",
+    "tid": "TID_BUILDING_ELIXIR_STORAGE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "elixir_storage_level1_v2",
+        "buildTimeSeconds": 1800,
+        "buildResource": "Gold2",
+        "buildCost": 20000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "elixir_storage_level2_v2",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 80000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "elixir_storage_level3_v2",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "elixir_storage_level4_v2",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "elixir_storage_level5_v2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "elixir_storage_level6_v2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "elixir_storage_level7_v2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "elixir_storage_level8_v2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "elixir_storage_level9_v2",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "elixir_storage_level10_v2",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000037,
+    "internalName": "Gold Mine2",
+    "tid": "TID_BUILDING_GOLD_MINE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goldmine_lvl1",
+        "buildTimeSeconds": 600,
+        "buildResource": "Elixir2",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "goldmine_lvl2",
+        "buildTimeSeconds": 1200,
+        "buildResource": "",
+        "buildCost": 5000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "goldmine_lvl3",
+        "buildTimeSeconds": 2400,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "goldmine_lvl4",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 30000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "goldmine_lvl5",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 60000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "goldmine_lvl6",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "goldmine_lvl7",
+        "buildTimeSeconds": 129600,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "goldmine_lvl8",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "goldmine_lvl9",
+        "buildTimeSeconds": 216000,
+        "buildResource": "",
+        "buildCost": 400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "goldmine_lvl10",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000038,
+    "internalName": "Gold Storage2",
+    "tid": "TID_BUILDING_GOLD_STORAGE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "gold_storage_lvl1_v2",
+        "buildTimeSeconds": 1800,
+        "buildResource": "Elixir2",
+        "buildCost": 20000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "gold_storage_lvl2_v2",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 80000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "gold_storage_lvl3_v2",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "gold_storage_lvl4_v2",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "gold_storage_lvl5_v2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "gold_storage_lvl6_v2",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "gold_storage_lvl7_v2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "gold_storage_lvl8_v2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "gold_storage_lvl9_v2",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "gold_storage_lvl10_v2",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000039,
+    "internalName": "Clock Tower",
+    "tid": "TID_BUILDING_CLOCK_TOWER",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "clocktower_lvl1",
+        "buildTimeSeconds": 7200,
+        "buildResource": "Gold2",
+        "buildCost": 150000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 2,
+        "exportName": "clocktower_lvl2",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 180000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "clocktower_lvl3",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 220000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 4,
+        "exportName": "clocktower_lvl4",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "clocktower_lvl5",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 700000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "clocktower_lvl6",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "clocktower_lvl7",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1700000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "clocktower_lvl8",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "clocktower_lvl9",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2700000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "clocktower_lvl10",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000040,
+    "internalName": "Barrack2",
+    "tid": "TID_BUILDING_BARRACK2",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "adv_training_camp_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir2",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "adv_training_camp_lvl2",
+        "buildTimeSeconds": 60,
+        "buildResource": "",
+        "buildCost": 4000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "adv_training_camp_lvl3",
+        "buildTimeSeconds": 600,
+        "buildResource": "",
+        "buildCost": 10000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "adv_training_camp_lvl4",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 25000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 5,
+        "exportName": "adv_training_camp_lvl5",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 6,
+        "exportName": "adv_training_camp_lvl6",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 7,
+        "exportName": "adv_training_camp_lvl7",
+        "buildTimeSeconds": 32400,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 8,
+        "exportName": "adv_training_camp_lvl8",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 9,
+        "exportName": "adv_training_camp_lvl9",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 10,
+        "exportName": "adv_training_camp_lvl10",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 11,
+        "exportName": "adv_training_camp_lvl11",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 12,
+        "exportName": "adv_training_camp_lvl12",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000041,
+    "internalName": "Double Cannon",
+    "tid": "TID_BUILDING_DOUBLE_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "doubleCannon_lvl1",
+        "buildTimeSeconds": 600,
+        "buildResource": "Gold2",
+        "buildCost": 20000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 2,
+        "exportName": "doubleCannon_lvl2",
+        "buildTimeSeconds": 3600,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "doubleCannon_lvl3",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 80000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "doubleCannon_lvl4",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "doubleCannon_lvl6",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 900000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "doubleCannon_lvl8",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1400000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "doubleCannon_lvl9",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "doubleCannon_lvl10",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "doubleCannon_lvl11",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "doubleCannon_lvl12",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 5200000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000042,
+    "internalName": "Troop Housing2",
+    "tid": "TID_BUILDING_HOUSING",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "adv_fireplace_lvl1_3x3",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir2",
+        "buildCost": 0,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000043,
+    "internalName": "Tesla Tower2",
+    "tid": "TID_BUILDING_TESLA_TOWER2",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "teslatower_lvl1_setup",
+        "buildTimeSeconds": 1800,
+        "buildResource": "Gold2",
+        "buildCost": 50000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "teslatower_lvl2_setup",
+        "buildTimeSeconds": 10800,
+        "buildResource": "",
+        "buildCost": 100000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "teslatower_lvl3_setup",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 150000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "teslatower_lvl4_setup",
+        "buildTimeSeconds": 36000,
+        "buildResource": "",
+        "buildCost": 280000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "teslatower_lvl5_setup",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 700000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "teslatower_lvl6_setup",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1300000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "teslatower_lvl7_setup",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2100000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "teslatower_lvl8_setup",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3100000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "teslatower_lvl9_setup",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4100000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "teslatower_lvl10_setup",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 5100000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000044,
+    "internalName": "Cannon2",
+    "tid": "TID_BUILDING_CANNON2",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 60,
+        "buildResource": "Gold2",
+        "buildCost": 10000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "basic_turret_lvl2",
+        "buildTimeSeconds": 300,
+        "buildResource": "",
+        "buildCost": 20000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "basic_turret_lvl3",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "basic_turret_lvl4",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 200000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "basic_turret_lvl5",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 600000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "basic_turret_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "basic_turret_lvl7",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1800000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "basic_turret_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "basic_turret_lvl9",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3300000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "basic_turret_lvl10",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000045,
+    "internalName": "Multi Mortar",
+    "tid": "TID_BUILDING_MULTI_MORTAR",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "multi_mortar_lvl1",
+        "buildTimeSeconds": 28800,
+        "buildResource": "Gold2",
+        "buildCost": 600000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 2,
+        "exportName": "multi_mortar_lvl2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 700000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 3,
+        "exportName": "multi_mortar_lvl3",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 4,
+        "exportName": "multi_mortar_lvl4",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 5,
+        "exportName": "multi_mortar_lvl5",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "multi_mortar_lvl6",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "multi_mortar_lvl7",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "multi_mortar_lvl8",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 3500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "multi_mortar_lvl9",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "multi_mortar_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000046,
+    "internalName": "Laboratory2",
+    "tid": "TID_BUILDING_TELESCOPE",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "Telescope_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir2",
+        "buildCost": 1000,
+        "townHallLevel": 1
+      },
+      {
+        "level": 2,
+        "exportName": "Telescope_lvl2",
+        "buildTimeSeconds": 600,
+        "buildResource": "",
+        "buildCost": 15000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 3,
+        "exportName": "Telescope_lvl3",
+        "buildTimeSeconds": 1800,
+        "buildResource": "",
+        "buildCost": 50000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "Telescope_lvl4",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "Telescope_lvl5",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 700000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "Telescope_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "Telescope_lvl7",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "Telescope_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "Telescope_lvl9",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "Telescope_lvl10",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000047,
+    "internalName": "Worker Building2",
+    "tid": "TID_WORKER2_BUILDING",
+    "buildingClass": "Worker2",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "new_builders_hut",
+        "buildTimeSeconds": 0,
+        "buildResource": "Diamonds",
+        "buildCost": 20000,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000048,
+    "internalName": "Archer Tower2",
+    "tid": "TID_BUILDING_ARCHER_TOWER2",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "adv_archer_tower_lvl1",
+        "buildTimeSeconds": 300,
+        "buildResource": "Gold2",
+        "buildCost": 12000,
+        "townHallLevel": 2
+      },
+      {
+        "level": 2,
+        "exportName": "adv_archer_tower_lvl2",
+        "buildTimeSeconds": 900,
+        "buildResource": "",
+        "buildCost": 30000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "adv_archer_tower_lvl3",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 60000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "adv_archer_tower_lvl4",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "adv_archer_tower_lvl5",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "adv_archer_tower_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "adv_archer_tower_lvl7",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "adv_archer_tower_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 2800000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "adv_archer_tower_lvl9",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "adv_archer_tower_lvl10",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 4600000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000049,
+    "internalName": "Reinforcement Camp",
+    "tid": "TID_BUILDING_REINFORCEMENT_CAMP",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "adv_fireplace_lvl7",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir2",
+        "buildCost": 1500000,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000050,
+    "internalName": "Air Defense Mini",
+    "tid": "TID_BUILDING_AIR_DEFENSE_SMALL",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "airDefence_box_lvl1",
+        "buildTimeSeconds": 900,
+        "buildResource": "Gold2",
+        "buildCost": 40000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "airDefence_box_lvl2",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 80000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "airDefence_box_lvl3",
+        "buildTimeSeconds": 14400,
+        "buildResource": "",
+        "buildCost": 120000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "airDefence_box_lvl4",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "airDefence_box_lvl5",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 800000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "airDefence_box_lvl6",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "airDefence_box_lvl7",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "airDefence_box_lvl8",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "airDefence_box_lvl9",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "airDefence_box_lvl10",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000051,
+    "internalName": "Guard Post",
+    "tid": "TID_BUILDING_GUARD_POST",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "GuardPost_lvl1",
+        "buildTimeSeconds": 14400,
+        "buildResource": "Gold2",
+        "buildCost": 200000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 2,
+        "exportName": "GuardPost_lvl2",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 240000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "GuardPost_lvl3",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 280000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 4,
+        "exportName": "GuardPost_lvl4",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 320000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "GuardPost_lvl5",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "GuardPost_lvl6",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1400000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "GuardPost_lvl7",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "GuardPost_lvl8",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "GuardPost_lvl9",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 4100000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "GuardPost_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5100000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000052,
+    "internalName": "Mega Tesla",
+    "tid": "TID_BUILDING_MEGA_TESLA",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "mega_tesla_lvl1",
+        "buildTimeSeconds": 172800,
+        "buildResource": "Gold2",
+        "buildCost": 3000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 2,
+        "exportName": "mega_tesla_lvl2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3100000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 3,
+        "exportName": "mega_tesla_lvl3",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 4,
+        "exportName": "mega_tesla_lvl4",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3300000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "mega_tesla_lvl5",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 6,
+        "exportName": "mega_tesla_lvl6",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 3600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 7,
+        "exportName": "mega_tesla_lvl7",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3800000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 8,
+        "exportName": "mega_tesla_lvl8",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "mega_tesla_lvl9",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 4800000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "mega_tesla_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5800000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000053,
+    "internalName": "Hero Altar Warmachine",
+    "tid": "TID_WARMACHINE",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "heroaltar_warmachine_lvl1",
+        "buildTimeSeconds": 43200,
+        "buildResource": "Elixir2",
+        "buildCost": 900000,
+        "townHallLevel": 5
+      }
+    ]
+  },
+  {
+    "id": 1000054,
+    "internalName": "Air Defense2",
+    "tid": "TID_BUILDING_AIR_DEFENSE2",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "airDefence_factory_lvl1",
+        "buildTimeSeconds": 21600,
+        "buildResource": "Gold2",
+        "buildCost": 300000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 2,
+        "exportName": "airDefence_factory_lvl2",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 320000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 3,
+        "exportName": "airDefence_factory_lvl3",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 340000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 4,
+        "exportName": "airDefence_factory_lvl4",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 360000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "airDefence_factory_lvl5",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "airDefence_factory_lvl6",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "airDefence_factory_lvl7",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "airDefence_factory_lvl8",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "airDefence_factory_lvl9",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 4400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "airDefence_factory_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5400000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000055,
+    "internalName": "Crusher",
+    "tid": "TID_BUILDING_CRUSHER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "Crusher_lvl1",
+        "buildTimeSeconds": 7200,
+        "buildResource": "Gold2",
+        "buildCost": 120000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "Crusher_lvl2",
+        "buildTimeSeconds": 18000,
+        "buildResource": "",
+        "buildCost": 180000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "Crusher_lvl3",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 220000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "Crusher_lvl4",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 350000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "Crusher_lvl5",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "Crusher_lvl6",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "Crusher_lvl7",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "Crusher_lvl8",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "Crusher_lvl9",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 4400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "Crusher_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5400000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000056,
+    "internalName": "Flamer",
+    "tid": "TID_BUILDING_FLAMER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "Flamer_lvl1",
+        "buildTimeSeconds": 86400,
+        "buildResource": "Gold2",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 2,
+        "exportName": "Flamer_lvl2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 3,
+        "exportName": "Flamer_lvl3",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1400000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 4,
+        "exportName": "Flamer_lvl4",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 5,
+        "exportName": "Flamer_lvl5",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 6,
+        "exportName": "Flamer_lvl6",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 1700000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "Flamer_lvl7",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 2600000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "Flamer_lvl8",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 3600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "Flamer_lvl9",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 4600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "Flamer_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5600000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000057,
+    "internalName": "Giant Cannon",
+    "tid": "TID_BUILDING_GIANT_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "megaCannon_lvl1",
+        "buildTimeSeconds": 86400,
+        "buildResource": "Gold2",
+        "buildCost": 2000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "megaCannon_lvl2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2100000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 3,
+        "exportName": "megaCannon_lvl3",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2200000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "megaCannon_lvl4",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 5,
+        "exportName": "megaCannon_lvl5",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 2400000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 6,
+        "exportName": "megaCannon_lvl6",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 7,
+        "exportName": "megaCannon_lvl7",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 2700000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "megaCannon_lvl8",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 3800000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "megaCannon_lvl9",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 4700000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "megaCannon_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5700000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000058,
+    "internalName": "Gem Mine",
+    "tid": "TID_BUILDING_GEM_MINE",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "gem_mine_lvl1",
+        "buildTimeSeconds": 3600,
+        "buildResource": "Elixir2",
+        "buildCost": 120000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 2,
+        "exportName": "gem_mine_lvl2",
+        "buildTimeSeconds": 7200,
+        "buildResource": "",
+        "buildCost": 180000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 3,
+        "exportName": "gem_mine_lvl3",
+        "buildTimeSeconds": 21600,
+        "buildResource": "",
+        "buildCost": 240000,
+        "townHallLevel": 3
+      },
+      {
+        "level": 4,
+        "exportName": "gem_mine_lvl4",
+        "buildTimeSeconds": 28800,
+        "buildResource": "",
+        "buildCost": 450000,
+        "townHallLevel": 4
+      },
+      {
+        "level": 5,
+        "exportName": "gem_mine_lvl5",
+        "buildTimeSeconds": 43200,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 5
+      },
+      {
+        "level": 6,
+        "exportName": "gem_mine_lvl6",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "gem_mine_lvl7",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "gem_mine_lvl8",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3500000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "gem_mine_lvl9",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "gem_mine_lvl10",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000059,
+    "internalName": "SiegeWorkshop",
+    "tid": "TID_SIEGE_WORKSHOP",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "siegeWorkshop_lvl1",
+        "buildTimeSeconds": 172800,
+        "buildResource": "Elixir",
+        "buildCost": 2400000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 2,
+        "exportName": "siegeWorkshop_lvl2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 3,
+        "exportName": "siegeWorkshop_lvl3",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 4,
+        "exportName": "siegeWorkshop_lvl4",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 8700000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 5,
+        "exportName": "siegeWorkshop_lvl5",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 6,
+        "exportName": "siegeWorkshop_lvl6",
+        "buildTimeSeconds": 475200,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 7,
+        "exportName": "siegeWorkshop_lvl7",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 8,
+        "exportName": "siegeWorkshop_lvl8",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000060,
+    "internalName": "CannonNPC",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000061,
+    "internalName": "Goblin Castle",
+    "tid": "TID_BUILDING_GOBLIN_CASTLE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goblin_clancastle_01",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 10000,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000062,
+    "internalName": "Dragon Cave",
+    "tid": "TID_BUILDING_DRAGON_CAVE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "deco_dragoncave_01",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 10000,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000063,
+    "internalName": "LavaLauncher",
+    "tid": "TID_BUILDING_LAVA_LAUNCHER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "Lava_Launcher_lvl1",
+        "buildTimeSeconds": 172800,
+        "buildResource": "Gold2",
+        "buildCost": 3000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 2,
+        "exportName": "Lava_Launcher_lvl2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3100000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 3,
+        "exportName": "Lava_Launcher_lvl3",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 4,
+        "exportName": "Lava_Launcher_lvl4",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 3400000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 5,
+        "exportName": "Lava_Launcher_lvl5",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 3700000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "Lava_Launcher_lvl6",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 7,
+        "exportName": "Lava_Launcher_lvl7",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4300000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 8,
+        "exportName": "Lava_Launcher_lvl8",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 4600000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 9,
+        "exportName": "Lava_Launcher_lvl9",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 4900000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "Lava_Launcher_lvl10",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 5900000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000064,
+    "internalName": "Builder6Home",
+    "tid": "TID_BOB_HUT",
+    "buildingClass": "Worker2",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "new_builders_hut_arto_lvl5_a",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000065,
+    "internalName": "Builder6Unlock",
+    "tid": "TID_BOB_UNLOCK_BUILDING",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "new_builders_hut_arto_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold2",
+        "buildCost": 100000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 2,
+        "exportName": "new_builders_hut_arto_lvl2",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 500000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 3,
+        "exportName": "new_builders_hut_arto_lvl3",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 4,
+        "exportName": "new_builders_hut_arto_lvl4",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 0
+      },
+      {
+        "level": 5,
+        "exportName": "new_builders_hut_arto_lvl5",
+        "buildTimeSeconds": 0,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 0
+      }
+    ]
+  },
+  {
+    "id": 1000066,
+    "internalName": "Hero Altar Royal Champion",
+    "tid": "TID_HERO_ROYAL_CHAMPION",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "heroaltar_royal_champion_lvl1",
+        "buildTimeSeconds": 0,
+        "buildResource": "DarkElixir",
+        "buildCost": 0,
+        "townHallLevel": 13
+      }
+    ]
+  },
+  {
+    "id": 1000067,
+    "internalName": "Scattershot",
+    "tid": "TID_BUILDING_SCATTERSHOT",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "ice_breaker_lvl1",
+        "buildTimeSeconds": 518400,
+        "buildResource": "Gold",
+        "buildCost": 8000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 2,
+        "exportName": "ice_breaker_lvl2",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 3,
+        "exportName": "ice_breaker_lvl3",
+        "buildTimeSeconds": 648000,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 4,
+        "exportName": "ice_breaker_lvl4",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 11500000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 5,
+        "exportName": "ice_breaker_lvl5",
+        "buildTimeSeconds": 734400,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 6,
+        "exportName": "ice_breaker_lvl6",
+        "buildTimeSeconds": 907200,
+        "buildResource": "",
+        "buildCost": 16500000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000068,
+    "internalName": "Pet Shop",
+    "tid": "TID_PET_SHOP",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "pet_house_lvl1",
+        "buildTimeSeconds": 86400,
+        "buildResource": "Elixir",
+        "buildCost": 3000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 2,
+        "exportName": "pet_house_lvl2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 3,
+        "exportName": "pet_house_lvl3",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 4,
+        "exportName": "pet_house_lvl4",
+        "buildTimeSeconds": 302400,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 5,
+        "exportName": "pet_house_lvl5",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 7000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 6,
+        "exportName": "pet_house_lvl6",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 8000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 7,
+        "exportName": "pet_house_lvl7",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 9000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 8,
+        "exportName": "pet_house_lvl8",
+        "buildTimeSeconds": 475200,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 9,
+        "exportName": "pet_house_lvl9",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 10,
+        "exportName": "pet_house_lvl10",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 11,
+        "exportName": "pet_house_lvl11",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 16500000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000069,
+    "internalName": "Goblin boss TH",
+    "tid": "TID_BUILDING_GOBLIN_HALL",
+    "buildingClass": "Npc Town Hall",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goblin_clancastle_01",
+        "buildTimeSeconds": 60,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 0
+      }
+    ]
+  },
+  {
+    "id": 1000070,
+    "internalName": "Smithy",
+    "tid": "TID_SMITHY",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "blacksmith_lvl1",
+        "buildTimeSeconds": 43200,
+        "buildResource": "Elixir",
+        "buildCost": 600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 2,
+        "exportName": "blacksmith_lvl1",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1200000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 3,
+        "exportName": "blacksmith_lvl2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 4,
+        "exportName": "blacksmith_lvl2",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 5,
+        "exportName": "blacksmith_lvl3",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 6,
+        "exportName": "blacksmith_lvl3",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 6200000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 7,
+        "exportName": "blacksmith_lvl4",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 9200000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 8,
+        "exportName": "blacksmith_lvl4",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 10000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 9,
+        "exportName": "blacksmith_lvl5",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 16
+      }
+    ]
+  },
+  {
+    "id": 1000071,
+    "internalName": "Hero Hall",
+    "tid": "TID_HERO_TAVERN",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "hero_inn_lvl1",
+        "buildTimeSeconds": 86400,
+        "buildResource": "Elixir",
+        "buildCost": 800000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 2,
+        "exportName": "hero_inn_lvl2",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1600000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 3,
+        "exportName": "hero_inn_lvl3",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2300000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 4,
+        "exportName": "hero_inn_lvl4",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 5,
+        "exportName": "hero_inn_lvl5",
+        "buildTimeSeconds": 388800,
+        "buildResource": "",
+        "buildCost": 4500000,
+        "townHallLevel": 11
+      },
+      {
+        "level": 6,
+        "exportName": "hero_inn_lvl6",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 5500000,
+        "townHallLevel": 12
+      },
+      {
+        "level": 7,
+        "exportName": "hero_inn_lvl7",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 8500000,
+        "townHallLevel": 13
+      },
+      {
+        "level": 8,
+        "exportName": "hero_inn_lvl8",
+        "buildTimeSeconds": 561600,
+        "buildResource": "",
+        "buildCost": 9500000,
+        "townHallLevel": 14
+      },
+      {
+        "level": 9,
+        "exportName": "hero_inn_lvl9",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 10,
+        "exportName": "hero_inn_lvl10",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 11,
+        "exportName": "hero_inn_lvl11",
+        "buildTimeSeconds": 820800,
+        "buildResource": "",
+        "buildCost": 17000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 12,
+        "exportName": "hero_inn_lvl12",
+        "buildTimeSeconds": 1166400,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000072,
+    "internalName": "Spell Tower",
+    "tid": "TID_BUILDING_SPELL_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "spell_tower_lvl1",
+        "buildTimeSeconds": 604800,
+        "buildResource": "Gold",
+        "buildCost": 9000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 2,
+        "exportName": "spell_tower_lvl2_rage",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 11000000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 3,
+        "exportName": "spell_tower_lvl3_rage",
+        "buildTimeSeconds": 734400,
+        "buildResource": "",
+        "buildCost": 12000000,
+        "townHallLevel": 15
+      }
+    ]
+  },
+  {
+    "id": 1000073,
+    "internalName": "TroopCage",
+    "tid": "TID_BUILDING_TROOP_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "candy_cage_3x3",
+        "buildTimeSeconds": 300,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000074,
+    "internalName": "DragonLair",
+    "tid": "TID_BUILDING_DRAGON_CAVE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "deco_dragoncave_01",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000075,
+    "internalName": "SpellCage",
+    "tid": "TID_BUILDING_SPELL_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "clashmas24_spellcage_present_2x2_idle",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000076,
+    "internalName": "PEKKA's Playhouse",
+    "tid": "TID_BUILDING_DRAGON_CAVE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "goblin_clancastle_01",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000077,
+    "internalName": "Monolith",
+    "tid": "TID_BUILDING_MONOLITH",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "monolith_lvl_1",
+        "buildTimeSeconds": 604800,
+        "buildResource": "DarkElixir",
+        "buildCost": 200000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 2,
+        "exportName": "monolith_lvl_2",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 250000,
+        "townHallLevel": 15
+      },
+      {
+        "level": 3,
+        "exportName": "monolith_lvl_3",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 260000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 4,
+        "exportName": "monolith_lvl_4",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 300000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000078,
+    "internalName": "Outpost Stage2",
+    "tid": "TID_BUILDING_OTTOS_OUTPOST",
+    "buildingClass": "Town Hall2",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "outpost_01",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold2",
+        "buildCost": 0,
+        "townHallLevel": 6
+      },
+      {
+        "level": 2,
+        "exportName": "outpost_02",
+        "buildTimeSeconds": 86400,
+        "buildResource": "",
+        "buildCost": 1000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 3,
+        "exportName": "outpost_03",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 1250000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 4,
+        "exportName": "outpost_04",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 5,
+        "exportName": "outpost_05",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 1750000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 6,
+        "exportName": "outpost_06",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 7,
+        "exportName": "outpost_07",
+        "buildTimeSeconds": 604800,
+        "buildResource": "",
+        "buildCost": 3000000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 8,
+        "exportName": "outpost_08",
+        "buildTimeSeconds": 777600,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 9,
+        "exportName": "outpost_09",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 10,
+        "exportName": "outpost_10",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000079,
+    "internalName": "Merged Archer Cannon",
+    "tid": "TID_BUILDING_ARCHER_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "merged_cat_archer_lvl1",
+        "buildTimeSeconds": 864000,
+        "buildResource": "Gold",
+        "buildCost": 17000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 2,
+        "exportName": "merged_cat_archer_lvl2",
+        "buildTimeSeconds": 928800,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 3,
+        "exportName": "merged_cat_archer_lvl3",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 28000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000080,
+    "internalName": "Battle Copter Altar",
+    "tid": "TID_HERO_BATTLE_COPTER",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "BB_hero_altar_flying",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir2",
+        "buildCost": 2500000,
+        "townHallLevel": 5
+      }
+    ]
+  },
+  {
+    "id": 1000081,
+    "internalName": "Xbow_BB",
+    "tid": "TID_BUILDING_XBOW2",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "BB_xbow_lvl1",
+        "buildTimeSeconds": 604800,
+        "buildResource": "Gold2",
+        "buildCost": 4400000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 2,
+        "exportName": "BB_xbow_lvl2",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 4800000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 3,
+        "exportName": "BB_xbow_lvl3",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 5200000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 4,
+        "exportName": "BB_xbow_lvl4",
+        "buildTimeSeconds": 950400,
+        "buildResource": "",
+        "buildCost": 5600000,
+        "townHallLevel": 10
+      },
+      {
+        "level": 5,
+        "exportName": "BB_xbow_lvl5",
+        "buildTimeSeconds": 1036800,
+        "buildResource": "",
+        "buildCost": 6000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000082,
+    "internalName": "Recovery Building",
+    "tid": "TID_RECOVERY_BUILDING",
+    "buildingClass": "Army",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "healing_hut_01",
+        "buildTimeSeconds": 108000,
+        "buildResource": "Elixir2",
+        "buildCost": 1500000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 2,
+        "exportName": "healing_hut_02",
+        "buildTimeSeconds": 172800,
+        "buildResource": "",
+        "buildCost": 2000000,
+        "townHallLevel": 6
+      },
+      {
+        "level": 3,
+        "exportName": "healing_hut_03",
+        "buildTimeSeconds": 259200,
+        "buildResource": "",
+        "buildCost": 2500000,
+        "townHallLevel": 7
+      },
+      {
+        "level": 4,
+        "exportName": "healing_hut_04",
+        "buildTimeSeconds": 345600,
+        "buildResource": "",
+        "buildCost": 3250000,
+        "townHallLevel": 8
+      },
+      {
+        "level": 5,
+        "exportName": "healing_hut_05",
+        "buildTimeSeconds": 432000,
+        "buildResource": "",
+        "buildCost": 4000000,
+        "townHallLevel": 9
+      },
+      {
+        "level": 6,
+        "exportName": "healing_hut_06",
+        "buildTimeSeconds": 518400,
+        "buildResource": "",
+        "buildCost": 5000000,
+        "townHallLevel": 10
+      }
+    ]
+  },
+  {
+    "id": 1000083,
+    "internalName": "ClashoweenBuilding",
+    "tid": "TID_BUILDING_CLASHOWEEN_BUILDING",
+    "buildingClass": "Resource",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "sour_elixir_cauldron_01",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000084,
+    "internalName": "Merged Archer Tower",
+    "tid": "TID_BUILDING_MULTI_ARCHER_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "merged_archer_tower_lvl1",
+        "buildTimeSeconds": 604800,
+        "buildResource": "Gold",
+        "buildCost": 12000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 2,
+        "exportName": "merged_archer_tower_lvl2",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 3,
+        "exportName": "merged_archer_tower_lvl3",
+        "buildTimeSeconds": 928800,
+        "buildResource": "",
+        "buildCost": 17500000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 4,
+        "exportName": "merged_archer_tower_lvl4",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 27000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000085,
+    "internalName": "Merged Cannon",
+    "tid": "TID_BUILDING_RICOCHET_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "merged_cannon_lvl1",
+        "buildTimeSeconds": 604800,
+        "buildResource": "Gold",
+        "buildCost": 12000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 2,
+        "exportName": "merged_cannon_lvl2",
+        "buildTimeSeconds": 691200,
+        "buildResource": "",
+        "buildCost": 13000000,
+        "townHallLevel": 16
+      },
+      {
+        "level": 3,
+        "exportName": "merged_cannon_lvl3",
+        "buildTimeSeconds": 928800,
+        "buildResource": "",
+        "buildCost": 17500000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 4,
+        "exportName": "merged_cannon_lvl4",
+        "buildTimeSeconds": 1166400,
+        "buildResource": "",
+        "buildCost": 26500000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000086,
+    "internalName": "DebrisTower",
+    "tid": "TID_BUILDING_DEBRIS_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "revenge_tower_lvl1",
+        "buildTimeSeconds": 1123205,
+        "buildResource": "DarkElixir",
+        "buildCost": 430000,
+        "townHallLevel": 18
+      },
+      {
+        "level": 2,
+        "exportName": "revenge_tower_lvl2",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 460000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000087,
+    "internalName": "Unused2",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000088,
+    "internalName": "Unused3",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000089,
+    "internalName": "Firespitter",
+    "tid": "TID_BUILDING_GATLING_GUN",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "firespitter_lvl1",
+        "buildTimeSeconds": 950400,
+        "buildResource": "Gold",
+        "buildCost": 17000000,
+        "townHallLevel": 17
+      },
+      {
+        "level": 2,
+        "exportName": "firespitter_lvl2",
+        "buildTimeSeconds": 993600,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000090,
+    "internalName": "PetCage",
+    "tid": "TID_BUILDING_PET_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "candy_cage_3x3",
+        "buildTimeSeconds": 300,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000091,
+    "internalName": "DefenseTroopCage",
+    "tid": "TID_BUILDING_DEFENSE_TROOP_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "clashmas24_enemyspawn_1x1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000092,
+    "internalName": "DirectHeroChallengeMainBuilding",
+    "tid": "TID_BUILDING_DIRECT_HERO_CONTROL_MAIN_BUILDING",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "clashmas24_candybox_3x3_idle",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000093,
+    "internalName": "VillagerApprenticeHQ",
+    "tid": "TID_BUILDING_VILLAGER_APPRENTICE",
+    "buildingClass": "Helper",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "villager_house_lvl1_active",
+        "buildTimeSeconds": 0,
+        "buildResource": "Elixir",
+        "buildCost": 1000000,
+        "townHallLevel": 9
+      }
+    ]
+  },
+  {
+    "id": 1000094,
+    "internalName": "Unused4",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000095,
+    "internalName": "Unused5",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000096,
+    "internalName": "Unused6",
+    "tid": "TID_BUILDING_CANNON",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "basic_turret_lvl1",
+        "buildTimeSeconds": 5,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1000
+      }
+    ]
+  },
+  {
+    "id": 1000097,
+    "internalName": "SeasonalDefensePlatform",
+    "tid": "TID_BUILDING_SEASONAL_PLATFORM",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "seasonal_defense_platform_hidden",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000098,
+    "internalName": "GenericSpellCage",
+    "tid": "TID_BUILDING_GEN_SPELL_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "ch_spellbuilding_generic_2x2",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000099,
+    "internalName": "GenericTroopCage",
+    "tid": "TID_BUILDING_GEN_TROOP_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "ch_troop_pet_cage_3x3",
+        "buildTimeSeconds": 300,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000100,
+    "internalName": "DefenseGenericTroopCage",
+    "tid": "TID_BUILDING_GEN_DEFENCE_TROOP_CAGE",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "ch_enemyspawn_gen_idle_1x1",
+        "buildTimeSeconds": 10,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000101,
+    "internalName": "DirectHeroChallengeGenericMainBuilding",
+    "tid": "TID_BUILDING_GEN_DIRECT_HERO_CONTROL_MAIN_BUILDING",
+    "buildingClass": "Npc",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "ch_mainbuilding_generic_idle_3x3",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 250,
+        "townHallLevel": 1
+      }
+    ]
+  },
+  {
+    "id": 1000102,
+    "internalName": "Merged Wizard Tower",
+    "tid": "TID_BUILDING_MERGED_WIZARD_TOWER",
+    "buildingClass": "Defense",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "merged_wizard_tower_lvl1",
+        "buildTimeSeconds": 1123200,
+        "buildResource": "Gold",
+        "buildCost": 29000000,
+        "townHallLevel": 18
+      },
+      {
+        "level": 2,
+        "exportName": "merged_wizard_tower_lvl2",
+        "buildTimeSeconds": 1209600,
+        "buildResource": "",
+        "buildCost": 30000000,
+        "townHallLevel": 18
+      }
+    ]
+  },
+  {
+    "id": 1000103,
+    "internalName": "Town Hall 18 Teaser",
+    "tid": "TID_BUILDING_TOWN_HALL",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "town_hall_lvl18_t1_covered",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 17
+      }
+    ]
+  },
+  {
+    "id": 1000104,
+    "internalName": "Town Hall 17 Upgrading",
+    "tid": "TID_BUILDING_TOWN_HALL",
+    "buildingClass": "NonFunctional",
+    "levels": [
+      {
+        "level": 1,
+        "exportName": "_th18_upgrade_lvl1_idle1",
+        "buildTimeSeconds": 0,
+        "buildResource": "Gold",
+        "buildCost": 0,
+        "townHallLevel": 17
+      }
+    ]
+  }
+]

@@ -1,0 +1,233 @@
+[
+  {
+    "internalName": "BuilderApprentice",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "10",
+        "Type": "BUILDER",
+        "BoostMultiplier": "1",
+        "CostResource": "Diamonds",
+        "Cost": "500"
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "10",
+        "Type": "",
+        "BoostMultiplier": "2",
+        "CostResource": "",
+        "Cost": "500"
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "11",
+        "Type": "",
+        "BoostMultiplier": "3",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 4,
+        "RequiredTownHallLevel": "11",
+        "Type": "",
+        "BoostMultiplier": "4",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 5,
+        "RequiredTownHallLevel": "12",
+        "Type": "",
+        "BoostMultiplier": "5",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 6,
+        "RequiredTownHallLevel": "12",
+        "Type": "",
+        "BoostMultiplier": "6",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 7,
+        "RequiredTownHallLevel": "13",
+        "Type": "",
+        "BoostMultiplier": "7",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 8,
+        "RequiredTownHallLevel": "14",
+        "Type": "",
+        "BoostMultiplier": "8",
+        "CostResource": "",
+        "Cost": "1000"
+      }
+    ]
+  },
+  {
+    "internalName": "ResearchApprentice",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "9",
+        "Type": "RESEARCHER",
+        "BoostMultiplier": "1",
+        "CostResource": "Diamonds",
+        "Cost": "0"
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "10",
+        "Type": "",
+        "BoostMultiplier": "2",
+        "CostResource": "",
+        "Cost": "500"
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "10",
+        "Type": "",
+        "BoostMultiplier": "3",
+        "CostResource": "",
+        "Cost": "500"
+      },
+      {
+        "level": 4,
+        "RequiredTownHallLevel": "11",
+        "Type": "",
+        "BoostMultiplier": "4",
+        "CostResource": "",
+        "Cost": "500"
+      },
+      {
+        "level": 5,
+        "RequiredTownHallLevel": "12",
+        "Type": "",
+        "BoostMultiplier": "5",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 6,
+        "RequiredTownHallLevel": "12",
+        "Type": "",
+        "BoostMultiplier": "6",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 7,
+        "RequiredTownHallLevel": "13",
+        "Type": "",
+        "BoostMultiplier": "7",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 8,
+        "RequiredTownHallLevel": "13",
+        "Type": "",
+        "BoostMultiplier": "8",
+        "CostResource": "",
+        "Cost": "750"
+      },
+      {
+        "level": 9,
+        "RequiredTownHallLevel": "14",
+        "Type": "",
+        "BoostMultiplier": "9",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 10,
+        "RequiredTownHallLevel": "14",
+        "Type": "",
+        "BoostMultiplier": "10",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 11,
+        "RequiredTownHallLevel": "15",
+        "Type": "",
+        "BoostMultiplier": "11",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 12,
+        "RequiredTownHallLevel": "16",
+        "Type": "",
+        "BoostMultiplier": "12",
+        "CostResource": "",
+        "Cost": "1000"
+      }
+    ]
+  },
+  {
+    "internalName": "Alchemist",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "11",
+        "Type": "ALCHEMIST",
+        "BoostMultiplier": "0",
+        "CostResource": "Diamonds",
+        "Cost": "100"
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "12",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "250"
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "13",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "500"
+      },
+      {
+        "level": 4,
+        "RequiredTownHallLevel": "14",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 5,
+        "RequiredTownHallLevel": "15",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "1000"
+      },
+      {
+        "level": 6,
+        "RequiredTownHallLevel": "16",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "1500"
+      },
+      {
+        "level": 7,
+        "RequiredTownHallLevel": "17",
+        "Type": "",
+        "BoostMultiplier": "0",
+        "CostResource": "",
+        "Cost": "1500"
+      }
+    ]
+  }
+]

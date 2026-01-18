@@ -1,0 +1,54 @@
+{
+  "Townhall12": {
+    "displayName": "Townhall12",
+    "internalName": "Townhall12"
+  },
+  "GoblinTh02": {
+    "displayName": "GoblinTh02",
+    "internalName": "GoblinTh02"
+  },
+  "Townhall13": {
+    "displayName": "Townhall13",
+    "internalName": "Townhall13"
+  },
+  "Townhall14": {
+    "displayName": "Townhall14",
+    "internalName": "Townhall14"
+  },
+  "GoblinBossTH": {
+    "displayName": "GoblinBossTH",
+    "internalName": "GoblinBossTH"
+  },
+  "Townhall15": {
+    "displayName": "Townhall15",
+    "internalName": "Townhall15"
+  },
+  "Unused": {
+    "displayName": "Unused",
+    "internalName": "Unused"
+  },
+  "SpellTowerInvisibility": {
+    "displayName": "SpellTowerInvisibility",
+    "internalName": "SpellTowerInvisibility"
+  },
+  "SpellTowerPoison": {
+    "displayName": "SpellTowerPoison",
+    "internalName": "SpellTowerPoison"
+  },
+  "SpellTowerRage": {
+    "displayName": "SpellTowerRage",
+    "internalName": "SpellTowerRage"
+  },
+  "Townhall16": {
+    "displayName": "Townhall16",
+    "internalName": "Townhall16"
+  },
+  "Townhall17": {
+    "displayName": "Townhall17",
+    "internalName": "Townhall17"
+  },
+  "Townhall18": {
+    "displayName": "Townhall18",
+    "internalName": "Townhall18"
+  }
+}

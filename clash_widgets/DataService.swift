@@ -560,6 +560,11 @@ class DataService: ObservableObject {
     }
 
     private func loadUpgradeDurations() {
+        if let parsed = Self.loadDurationsFromParsedJSON(), !parsed.isEmpty {
+            upgradeDurations = parsed
+            return
+        }
+
         if let path = Bundle.main.path(forResource: "raw", ofType: "json", inDirectory: "upgrade_info"),
            let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             parseUpgradeDurationsJSON(data: data)
@@ -580,6 +585,91 @@ class DataService: ObservableObject {
                 parseUpgradeDurationsJSON(data: data)
             }
         }
+    }
+
+    private static func candidateFolderURLs(named folderName: String) -> [URL] {
+        let bundle = Bundle.main
+        let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
+        var urls: [URL] = []
+
+        if let url = bundle.url(forResource: folderName, withExtension: nil) {
+            urls.append(url)
+        }
+        if let upgradeInfo = bundle.url(forResource: "upgrade_info", withExtension: nil) {
+            urls.append(upgradeInfo.appendingPathComponent(folderName))
+        }
+        if let container = container {
+            urls.append(container.appendingPathComponent(folderName))
+            urls.append(container.appendingPathComponent("upgrade_info/\(folderName)"))
+        }
+        return urls
+    }
+
+    private static func loadDurationsFromParsedJSON() -> [Int: [Double]]? {
+        let files: [(String, String)] = [
+            ("buildings.json", "buildTimeSeconds"),
+            ("characters.json", "upgradeTimeSeconds"),
+            ("heroes.json", "upgradeTimeSeconds"),
+            ("pets.json", "upgradeTimeSeconds"),
+            ("spells.json", "upgradeTimeSeconds"),
+            ("traps.json", "buildTimeSeconds"),
+            ("weapons.json", "buildTimeSeconds"),
+            ("mini_levels.json", "buildTimeSeconds"),
+            ("seasonal_defense_modules.json", "buildTimeSeconds")
+        ]
+
+        var output: [Int: [Double]] = [:]
+        let folders = candidateFolderURLs(named: "parsed_json_files")
+
+        for folder in folders {
+            for (fileName, durationKey) in files {
+                let fileURL = folder.appendingPathComponent(fileName)
+                guard let data = try? Data(contentsOf: fileURL) else { continue }
+                if let parsed = parseParsedDurationData(data: data, durationKey: durationKey) {
+                    for (id, durations) in parsed where !durations.isEmpty {
+                        output[id] = durations
+                    }
+                }
+            }
+        }
+
+        return output.isEmpty ? nil : output
+    }
+
+    private static func parseParsedDurationData(
+        data: Data,
+        durationKey: String
+    ) -> [Int: [Double]]? {
+        guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { return nil }
+        var parsed: [Int: [Double]] = [:]
+
+        for entry in raw {
+            guard let idValue = entry["id"] else { continue }
+            let id: Int?
+            if let n = idValue as? Int { id = n }
+            else if let n = idValue as? Double { id = Int(n) }
+            else if let s = idValue as? String { id = Int(s) }
+            else { id = nil }
+            guard let resolvedId = id else { continue }
+
+            guard let levels = entry["levels"] as? [[String: Any]] else { continue }
+            var durations: [Double] = []
+            for level in levels {
+                let value = level[durationKey]
+                if let n = value as? Double {
+                    durations.append(n)
+                } else if let n = value as? Int {
+                    durations.append(Double(n))
+                } else if let s = value as? String, let n = Double(s) {
+                    durations.append(n)
+                }
+            }
+            if !durations.isEmpty {
+                parsed[resolvedId] = durations
+            }
+        }
+
+        return parsed.isEmpty ? nil : parsed
     }
 
     private func parseUpgradeDurationsJSON(data: Data) {
@@ -747,6 +837,7 @@ class DataService: ObservableObject {
         let start = end.addingTimeInterval(-totalDuration)
 
         return BuildingUpgrade(
+            dataId: dataId,
             name: mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))",
             targetLevel: currentLevel + 1,
             endTime: end,
@@ -777,6 +868,11 @@ class DataService: ObservableObject {
             return output.isEmpty ? nil : output
         }
 
+        var output: [Int: String] = [:]
+        if let parsed = loadNameMappingFromJSONMaps(), !parsed.isEmpty {
+            output.merge(parsed) { current, _ in current }
+        }
+
         let bundle = Bundle.main
         let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
         let candidates: [URL?] = [
@@ -788,10 +884,42 @@ class DataService: ObservableObject {
 
         for candidate in candidates {
             guard let url = candidate, let data = try? Data(contentsOf: url), let parsed = parse(data: data) else { continue }
-            return parsed
+            output.merge(parsed) { current, _ in current }
         }
 
-        return [:]
+        return output
+    }
+
+    private static func loadNameMappingFromJSONMaps() -> [Int: String]? {
+        let folders = candidateFolderURLs(named: "json_maps")
+        var output: [Int: String] = [:]
+
+        for folder in folders {
+            let files = (try? FileManager.default.contentsOfDirectory(at: folder, includingPropertiesForKeys: nil)) ?? []
+            let jsonFiles = files.filter { $0.pathExtension.lowercased() == "json" }
+            for fileURL in jsonFiles {
+                guard let data = try? Data(contentsOf: fileURL) else { continue }
+                guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+                for (_, value) in raw {
+                    guard let entry = value as? [String: Any] else { continue }
+                    let idValue = entry["id"]
+                    let id: Int?
+                    if let n = idValue as? Int { id = n }
+                    else if let n = idValue as? Double { id = Int(n) }
+                    else if let s = idValue as? String { id = Int(s) }
+                    else { id = nil }
+                    guard let resolvedId = id else { continue }
+
+                    let display = (entry["displayName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let internalName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines)
+                    let name = (display?.isEmpty == false ? display : internalName) ?? ""
+                    guard !name.isEmpty else { continue }
+                    output[resolvedId] = name
+                }
+            }
+        }
+
+        return output.isEmpty ? nil : output
     }
 
 }

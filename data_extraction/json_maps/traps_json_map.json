@@ -1,0 +1,86 @@
+{
+  "Mine": {
+    "displayName": "Mine",
+    "internalName": "Mine"
+  },
+  "Ejector": {
+    "displayName": "Ejector",
+    "internalName": "Ejector"
+  },
+  "Superbomb": {
+    "displayName": "Superbomb",
+    "internalName": "Superbomb"
+  },
+  "Halloweenbomb": {
+    "displayName": "Halloweenbomb",
+    "internalName": "Halloweenbomb"
+  },
+  "Slowbomb": {
+    "displayName": "Slowbomb",
+    "internalName": "Slowbomb"
+  },
+  "AirTrap": {
+    "displayName": "AirTrap",
+    "internalName": "AirTrap"
+  },
+  "MegaAirTrap": {
+    "displayName": "MegaAirTrap",
+    "internalName": "MegaAirTrap"
+  },
+  "SantaTrap": {
+    "displayName": "SantaTrap",
+    "internalName": "SantaTrap"
+  },
+  "Halloweenskels": {
+    "displayName": "Halloweenskels",
+    "internalName": "Halloweenskels"
+  },
+  "FreezeBomb": {
+    "displayName": "FreezeBomb",
+    "internalName": "FreezeBomb"
+  },
+  "Ejector2": {
+    "displayName": "Ejector2",
+    "internalName": "Ejector2"
+  },
+  "Pusher": {
+    "displayName": "Pusher",
+    "internalName": "Pusher"
+  },
+  "AirTrap2": {
+    "displayName": "AirTrap2",
+    "internalName": "AirTrap2"
+  },
+  "AirGroundTrap": {
+    "displayName": "AirGroundTrap",
+    "internalName": "AirGroundTrap"
+  },
+  "MegaAirGroundTrap": {
+    "displayName": "MegaAirGroundTrap",
+    "internalName": "MegaAirGroundTrap"
+  },
+  "ShrinkTrap": {
+    "displayName": "ShrinkTrap",
+    "internalName": "ShrinkTrap"
+  },
+  "TornadoTrap": {
+    "displayName": "TornadoTrap",
+    "internalName": "TornadoTrap"
+  },
+  "ShrinkTrap_SinglePlayer": {
+    "displayName": "ShrinkTrap_SinglePlayer",
+    "internalName": "ShrinkTrap_SinglePlayer"
+  },
+  "FreezeTrap_SinglePlayer": {
+    "displayName": "FreezeTrap_SinglePlayer",
+    "internalName": "FreezeTrap_SinglePlayer"
+  },
+  "GhostTrap": {
+    "displayName": "GhostTrap",
+    "internalName": "GhostTrap"
+  },
+  "GigaBomb": {
+    "displayName": "GigaBomb",
+    "internalName": "GigaBomb"
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "Mine": {
+    "displayName": "Bomb",
+    "internalName": "Mine",
+    "id": 12000000
+  },
+  "Ejector": {
+    "displayName": "Spring Trap",
+    "internalName": "Ejector",
+    "id": 12000001
+  },
+  "Superbomb": {
+    "displayName": "Superbomb",
+    "internalName": "Superbomb",
+    "id": 12000002
+  },
+  "Halloweenbomb": {
+    "displayName": "Halloweenbomb",
+    "internalName": "Halloweenbomb",
+    "id": 12000003
+  },
+  "Slowbomb": {
+    "displayName": "Slowbomb",
+    "internalName": "Slowbomb",
+    "id": 12000004
+  },
+  "AirTrap": {
+    "displayName": "AirTrap",
+    "internalName": "AirTrap",
+    "id": 12000005
+  },
+  "MegaAirTrap": {
+    "displayName": "MegaAirTrap",
+    "internalName": "MegaAirTrap",
+    "id": 12000006
+  },
+  "SantaTrap": {
+    "displayName": "SantaTrap",
+    "internalName": "SantaTrap",
+    "id": 12000007
+  },
+  "Halloweenskels": {
+    "displayName": "Halloweenskels",
+    "internalName": "Halloweenskels",
+    "id": 12000008
+  },
+  "FreezeBomb": {
+    "displayName": "FreezeBomb",
+    "internalName": "FreezeBomb",
+    "id": 12000009
+  },
+  "Ejector2": {
+    "displayName": "Ejector2",
+    "internalName": "Ejector2",
+    "id": 12000010
+  },
+  "Pusher": {
+    "displayName": "Pusher",
+    "internalName": "Pusher",
+    "id": 12000011
+  },
+  "AirTrap2": {
+    "displayName": "AirTrap2",
+    "internalName": "AirTrap2",
+    "id": 12000012
+  },
+  "AirGroundTrap": {
+    "displayName": "AirGroundTrap",
+    "internalName": "AirGroundTrap",
+    "id": 12000013
+  },
+  "MegaAirGroundTrap": {
+    "displayName": "MegaAirGroundTrap",
+    "internalName": "MegaAirGroundTrap",
+    "id": 12000014
+  },
+  "ShrinkTrap": {
+    "displayName": "ShrinkTrap",
+    "internalName": "ShrinkTrap",
+    "id": 12000015
+  },
+  "TornadoTrap": {
+    "displayName": "TornadoTrap",
+    "internalName": "TornadoTrap",
+    "id": 12000016
+  },
+  "ShrinkTrap_SinglePlayer": {
+    "displayName": "ShrinkTrap_SinglePlayer",
+    "internalName": "ShrinkTrap_SinglePlayer",
+    "id": 12000017
+  },
+  "FreezeTrap_SinglePlayer": {
+    "displayName": "FreezeTrap_SinglePlayer",
+    "internalName": "FreezeTrap_SinglePlayer",
+    "id": 12000018
+  },
+  "GhostTrap": {
+    "displayName": "GhostTrap",
+    "internalName": "GhostTrap",
+    "id": 12000019
+  },
+  "GigaBomb": {
+    "displayName": "GigaBomb",
+    "internalName": "GigaBomb",
+    "id": 12000020
+  }
+}

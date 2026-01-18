@@ -1,0 +1,521 @@
+[
+  {
+    "internalName": "Elixir Pump Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "1700000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "1500000",
+        "buildTimeSeconds": 259200
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "1300000",
+        "buildTimeSeconds": 345600
+      }
+    ]
+  },
+  {
+    "internalName": "Gold Mine Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "1700000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "1500000",
+        "buildTimeSeconds": 259200
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "1300000",
+        "buildTimeSeconds": 345600
+      }
+    ]
+  },
+  {
+    "internalName": "Dark Elixir Pump Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "5100000",
+        "buildTimeSeconds": 259200
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 345600
+      },
+      {
+        "level": 3,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "5",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3900000",
+        "buildTimeSeconds": 432000
+      }
+    ]
+  },
+  {
+    "internalName": "Tesla Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "3",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 324000
+      }
+    ]
+  },
+  {
+    "internalName": "Dark Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 367200
+      }
+    ]
+  },
+  {
+    "internalName": "Scattershot Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "5",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 432000
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Worker Building Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 345600
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 518400
+      }
+    ]
+  },
+  {
+    "internalName": "Bow Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "4",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 388800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "6",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6250000",
+        "buildTimeSeconds": 561600
+      }
+    ]
+  },
+  {
+    "internalName": "Mortar Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "3",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 302400
+      }
+    ]
+  },
+  {
+    "internalName": "Firespitter Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "3",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 302400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 345600
+      }
+    ]
+  },
+  {
+    "internalName": "Air Defense Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 367200
+      }
+    ]
+  },
+  {
+    "internalName": "Bomb Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "4",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 345600
+      }
+    ]
+  },
+  {
+    "internalName": "Wizard Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "100",
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "3",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "2000000",
+        "buildTimeSeconds": 302400
+      }
+    ]
+  },
+  {
+    "internalName": "Merged Archer Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 518400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Merged Cannon Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 518400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Merged Archer Cannon Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 518400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Monolith Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "17",
+        "BuildTimeD": "5",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "150000",
+        "buildTimeSeconds": 432000
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "130000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Merged Wizard Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 518400
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "14000000",
+        "buildTimeSeconds": 604800
+      }
+    ]
+  }
+]

@@ -1,0 +1,274 @@
+[
+  {
+    "internalName": "Townhall12",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "GoblinTh02",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall13",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall14",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "GoblinBossTH",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "",
+        "BuildTimeM": "",
+        "BuildResource": "",
+        "BuildCost": "",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall15",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Unused",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "SpellTowerInvisibility",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "SpellTowerPoison",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "SpellTowerRage",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall16",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall17",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "6",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 518400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 604800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "8",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "14000000",
+        "buildTimeSeconds": 691200
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "10",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "18000000",
+        "buildTimeSeconds": 864000
+      }
+    ]
+  },
+  {
+    "internalName": "Townhall18",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      }
+    ]
+  }
+]

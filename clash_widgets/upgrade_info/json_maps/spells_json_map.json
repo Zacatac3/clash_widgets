@@ -1,0 +1,647 @@
+{
+  "LighningStorm": {
+    "displayName": "LighningStorm",
+    "internalName": "LighningStorm",
+    "id": 26000000
+  },
+  "HealingWave": {
+    "displayName": "HealingWave",
+    "internalName": "HealingWave",
+    "id": 26000001
+  },
+  "Haste": {
+    "displayName": "Haste",
+    "internalName": "Haste",
+    "id": 26000002
+  },
+  "Jump": {
+    "displayName": "Jump",
+    "internalName": "Jump",
+    "id": 26000003
+  },
+  "xmas": {
+    "displayName": "xmas",
+    "internalName": "xmas",
+    "id": 26000004
+  },
+  "Freeze": {
+    "displayName": "Freeze",
+    "internalName": "Freeze",
+    "id": 26000005
+  },
+  "xmas2013": {
+    "displayName": "xmas2013",
+    "internalName": "xmas2013",
+    "id": 26000006
+  },
+  "Slow": {
+    "displayName": "Slow",
+    "internalName": "Slow",
+    "id": 26000007
+  },
+  "BoostDefences": {
+    "displayName": "BoostDefences",
+    "internalName": "BoostDefences",
+    "id": 26000008
+  },
+  "Poison": {
+    "displayName": "Poison",
+    "internalName": "Poison",
+    "id": 26000009
+  },
+  "Earthquake": {
+    "displayName": "Earthquake",
+    "internalName": "Earthquake",
+    "id": 26000010
+  },
+  "SpeedUp": {
+    "displayName": "SpeedUp",
+    "internalName": "SpeedUp",
+    "id": 26000011
+  },
+  "Shield": {
+    "displayName": "Shield",
+    "internalName": "Shield",
+    "id": 26000012
+  },
+  "Growth": {
+    "displayName": "Growth",
+    "internalName": "Growth",
+    "id": 26000013
+  },
+  "Artillery Center": {
+    "displayName": "Artillery Center",
+    "internalName": "Artillery Center",
+    "id": 26000014
+  },
+  "MiniGrowth": {
+    "displayName": "MiniGrowth",
+    "internalName": "MiniGrowth",
+    "id": 26000015
+  },
+  "Duplicate": {
+    "displayName": "Duplicate",
+    "internalName": "Duplicate",
+    "id": 26000016
+  },
+  "SpawnSkele": {
+    "displayName": "SpawnSkele",
+    "internalName": "SpawnSkele",
+    "id": 26000017
+  },
+  "FreezeTrap": {
+    "displayName": "FreezeTrap",
+    "internalName": "FreezeTrap",
+    "id": 26000018
+  },
+  "Mortar2Poison": {
+    "displayName": "Mortar2Poison",
+    "internalName": "Mortar2Poison",
+    "id": 26000019
+  },
+  "TroopRage": {
+    "displayName": "TroopRage",
+    "internalName": "TroopRage",
+    "id": 26000020
+  },
+  "ShrinkTrap": {
+    "displayName": "ShrinkTrap",
+    "internalName": "ShrinkTrap",
+    "id": 26000021
+  },
+  "Birthday2017": {
+    "displayName": "Birthday2017",
+    "internalName": "Birthday2017",
+    "id": 26000022
+  },
+  "IceGolemFreeze": {
+    "displayName": "IceGolemFreeze",
+    "internalName": "IceGolemFreeze",
+    "id": 26000023
+  },
+  "ElectroDragonDie": {
+    "displayName": "ElectroDragonDie",
+    "internalName": "ElectroDragonDie",
+    "id": 26000024
+  },
+  "TornadoTrap": {
+    "displayName": "TornadoTrap",
+    "internalName": "TornadoTrap",
+    "id": 26000025
+  },
+  "TroopHaste": {
+    "displayName": "TroopHaste",
+    "internalName": "TroopHaste",
+    "id": 26000026
+  },
+  "ProtoSpell2": {
+    "displayName": "ProtoSpell2",
+    "internalName": "ProtoSpell2",
+    "id": 26000027
+  },
+  "SpawnBats": {
+    "displayName": "SpawnBats",
+    "internalName": "SpawnBats",
+    "id": 26000028
+  },
+  "IceGolemFreeze_DEF": {
+    "displayName": "IceGolemFreeze_DEF",
+    "internalName": "IceGolemFreeze_DEF",
+    "id": 26000029
+  },
+  "IceBreakerSplinters": {
+    "displayName": "IceBreakerSplinters",
+    "internalName": "IceBreakerSplinters",
+    "id": 26000030
+  },
+  "BatRage": {
+    "displayName": "BatRage",
+    "internalName": "BatRage",
+    "id": 26000031
+  },
+  "TH13Freeze": {
+    "displayName": "TH13Freeze",
+    "internalName": "TH13Freeze",
+    "id": 26000032
+  },
+  "ElectroTitanDamageAura": {
+    "displayName": "ElectroTitanDamageAura",
+    "internalName": "ElectroTitanDamageAura",
+    "id": 26000033
+  },
+  "EliteValkyrieRage": {
+    "displayName": "EliteValkyrieRage",
+    "internalName": "EliteValkyrieRage",
+    "id": 26000034
+  },
+  "Invisibility": {
+    "displayName": "Invisibility",
+    "internalName": "Invisibility",
+    "id": 26000035
+  },
+  "IceHoundFreeze": {
+    "displayName": "IceHoundFreeze",
+    "internalName": "IceHoundFreeze",
+    "id": 26000036
+  },
+  "TH14Poison": {
+    "displayName": "TH14Poison",
+    "internalName": "TH14Poison",
+    "id": 26000037
+  },
+  "FireSpiritExplosion": {
+    "displayName": "FireSpiritExplosion",
+    "internalName": "FireSpiritExplosion",
+    "id": 26000038
+  },
+  "PhoenixImmortality": {
+    "displayName": "PhoenixImmortality",
+    "internalName": "PhoenixImmortality",
+    "id": 26000039
+  },
+  "TroopImmortality": {
+    "displayName": "TroopImmortality",
+    "internalName": "TroopImmortality",
+    "id": 26000040
+  },
+  "AreaStun": {
+    "displayName": "AreaStun",
+    "internalName": "AreaStun",
+    "id": 26000041
+  },
+  "DrillerSurfacing": {
+    "displayName": "DrillerSurfacing",
+    "internalName": "DrillerSurfacing",
+    "id": 26000042
+  },
+  "TH15Poison": {
+    "displayName": "TH15Poison",
+    "internalName": "TH15Poison",
+    "id": 26000043
+  },
+  "PoisonST": {
+    "displayName": "PoisonST",
+    "internalName": "PoisonST",
+    "id": 26000044
+  },
+  "SuperHogRiderSummonHog": {
+    "displayName": "SuperHogRiderSummonHog",
+    "internalName": "SuperHogRiderSummonHog",
+    "id": 26000045
+  },
+  "RageST": {
+    "displayName": "RageST",
+    "internalName": "RageST",
+    "id": 26000046
+  },
+  "SuperHogRiderSummonRider": {
+    "displayName": "SuperHogRiderSummonRider",
+    "internalName": "SuperHogRiderSummonRider",
+    "id": 26000047
+  },
+  "InvisibilityST": {
+    "displayName": "InvisibilityST",
+    "internalName": "InvisibilityST",
+    "id": 26000048
+  },
+  "GraveGolemSummonBigBoy": {
+    "displayName": "GraveGolemSummonBigBoy",
+    "internalName": "GraveGolemSummonBigBoy",
+    "id": 26000049
+  },
+  "HogWizardDamageAura": {
+    "displayName": "HogWizardDamageAura",
+    "internalName": "HogWizardDamageAura",
+    "id": 26000050
+  },
+  "BagOfFrostmitesSpawn": {
+    "displayName": "BagOfFrostmitesSpawn",
+    "internalName": "BagOfFrostmitesSpawn",
+    "id": 26000051
+  },
+  "COOKIEAura": {
+    "displayName": "COOKIEAura",
+    "internalName": "COOKIEAura",
+    "id": 26000052
+  },
+  "Recall": {
+    "displayName": "Recall",
+    "internalName": "Recall",
+    "id": 26000053
+  },
+  "GrandWardenRangeRing": {
+    "displayName": "GrandWardenRangeRing",
+    "internalName": "GrandWardenRangeRing",
+    "id": 26000054
+  },
+  "PoisonLizardAttack": {
+    "displayName": "PoisonLizardAttack",
+    "internalName": "PoisonLizardAttack",
+    "id": 26000055
+  },
+  "RamRiderDestroyWalls": {
+    "displayName": "RamRiderDestroyWalls",
+    "internalName": "RamRiderDestroyWalls",
+    "id": 26000056
+  },
+  "SlowBomb": {
+    "displayName": "SlowBomb",
+    "internalName": "SlowBomb",
+    "id": 26000057
+  },
+  "VisualRage": {
+    "displayName": "VisualRage",
+    "internalName": "VisualRage",
+    "id": 26000058
+  },
+  "Baby Dragon Flaming Sneeze": {
+    "displayName": "Baby Dragon Flaming Sneeze",
+    "internalName": "Baby Dragon Flaming Sneeze",
+    "id": 26000059
+  },
+  "Power PEKKA Overcharge": {
+    "displayName": "Power PEKKA Overcharge",
+    "internalName": "Power PEKKA Overcharge",
+    "id": 26000060
+  },
+  "Drop Ship Skeleton Bomb": {
+    "displayName": "Drop Ship Skeleton Bomb",
+    "internalName": "Drop Ship Skeleton Bomb",
+    "id": 26000061
+  },
+  "Night Witch Bat Swarm": {
+    "displayName": "Night Witch Bat Swarm",
+    "internalName": "Night Witch Bat Swarm",
+    "id": 26000062
+  },
+  "Cannon Cart Mortar Mode Splash": {
+    "displayName": "Cannon Cart Mortar Mode Splash",
+    "internalName": "Cannon Cart Mortar Mode Splash",
+    "id": 26000063
+  },
+  "Apprentice Growth": {
+    "displayName": "Apprentice Growth",
+    "internalName": "Apprentice Growth",
+    "id": 26000064
+  },
+  "PetJump": {
+    "displayName": "PetJump",
+    "internalName": "PetJump",
+    "id": 26000065
+  },
+  "PetSpeedUp": {
+    "displayName": "PetSpeedUp",
+    "internalName": "PetSpeedUp",
+    "id": 26000066
+  },
+  "FireSpiritBurn": {
+    "displayName": "FireSpiritBurn",
+    "internalName": "FireSpiritBurn",
+    "id": 26000067
+  },
+  "TreantWallDamageAura": {
+    "displayName": "TreantWallDamageAura",
+    "internalName": "TreantWallDamageAura",
+    "id": 26000068
+  },
+  "SiegeInvisibility": {
+    "displayName": "SiegeInvisibility",
+    "internalName": "SiegeInvisibility",
+    "id": 26000069
+  },
+  "Overgrowth": {
+    "displayName": "Overgrowth",
+    "internalName": "Overgrowth",
+    "id": 26000070
+  },
+  "GWHeroicTorchSpell": {
+    "displayName": "GWHeroicTorchSpell",
+    "internalName": "GWHeroicTorchSpell",
+    "id": 26000071
+  },
+  "Blizzard": {
+    "displayName": "Blizzard",
+    "internalName": "Blizzard",
+    "id": 26000072
+  },
+  "BagOfFrostmites": {
+    "displayName": "BagOfFrostmites",
+    "internalName": "BagOfFrostmites",
+    "id": 26000073
+  },
+  "TroopCatapultSummonTroop": {
+    "displayName": "TroopCatapultSummonTroop",
+    "internalName": "TroopCatapultSummonTroop",
+    "id": 26000074
+  },
+  "LavaloonSpawnPup": {
+    "displayName": "LavaloonSpawnPup",
+    "internalName": "LavaloonSpawnPup",
+    "id": 26000075
+  },
+  "Firecracker Explosion": {
+    "displayName": "Firecracker Explosion",
+    "internalName": "Firecracker Explosion",
+    "id": 26000076
+  },
+  "EarthquakeBoots": {
+    "displayName": "EarthquakeBoots",
+    "internalName": "EarthquakeBoots",
+    "id": 26000077
+  },
+  "FireBallExplosion": {
+    "displayName": "FireBallExplosion",
+    "internalName": "FireBallExplosion",
+    "id": 26000078
+  },
+  "RageAura": {
+    "displayName": "RageAura",
+    "internalName": "RageAura",
+    "id": 26000079
+  },
+  "QueenFreeze": {
+    "displayName": "QueenFreeze",
+    "internalName": "QueenFreeze",
+    "id": 26000080
+  },
+  "ElectrifiedShield": {
+    "displayName": "ElectrifiedShield",
+    "internalName": "ElectrifiedShield",
+    "id": 26000081
+  },
+  "BarbarianKingDestroyWalls": {
+    "displayName": "BarbarianKingDestroyWalls",
+    "internalName": "BarbarianKingDestroyWalls",
+    "id": 26000082
+  },
+  "HealAura": {
+    "displayName": "HealAura",
+    "internalName": "HealAura",
+    "id": 26000083
+  },
+  "Yellow Card": {
+    "displayName": "Yellow Card",
+    "internalName": "Yellow Card",
+    "id": 26000084
+  },
+  "GWPhoenixStickSpell": {
+    "displayName": "GWPhoenixStickSpell",
+    "internalName": "GWPhoenixStickSpell",
+    "id": 26000085
+  },
+  "BattleDruidHeal": {
+    "displayName": "BattleDruidHeal",
+    "internalName": "BattleDruidHeal",
+    "id": 26000086
+  },
+  "RCDamageAura": {
+    "displayName": "RCDamageAura",
+    "internalName": "RCDamageAura",
+    "id": 26000087
+  },
+  "GWLavaloonSpawnPup": {
+    "displayName": "GWLavaloonSpawnPup",
+    "internalName": "GWLavaloonSpawnPup",
+    "id": 26000088
+  },
+  "IceMinionFreeze": {
+    "displayName": "IceMinionFreeze",
+    "internalName": "IceMinionFreeze",
+    "id": 26000089
+  },
+  "Commander Aura": {
+    "displayName": "Commander Aura",
+    "internalName": "Commander Aura",
+    "id": 26000090
+  },
+  "TroopCatapultSummonTroopNew": {
+    "displayName": "TroopCatapultSummonTroopNew",
+    "internalName": "TroopCatapultSummonTroopNew",
+    "id": 26000091
+  },
+  "TorchThrowerB": {
+    "displayName": "TorchThrowerB",
+    "internalName": "TorchThrowerB",
+    "id": 26000092
+  },
+  "Destroyer": {
+    "displayName": "Destroyer",
+    "internalName": "Destroyer",
+    "id": 26000093
+  },
+  "Debris Explosion 1": {
+    "displayName": "Debris Explosion 1",
+    "internalName": "Debris Explosion 1",
+    "id": 26000094
+  },
+  "Debris Explosion 2": {
+    "displayName": "Debris Explosion 2",
+    "internalName": "Debris Explosion 2",
+    "id": 26000095
+  },
+  "FireSpiritBurn_DEF": {
+    "displayName": "FireSpiritBurn_DEF",
+    "internalName": "FireSpiritBurn_DEF",
+    "id": 26000096
+  },
+  "Resurrect": {
+    "displayName": "Resurrect",
+    "internalName": "Resurrect",
+    "id": 26000097
+  },
+  "Revive": {
+    "displayName": "Revive",
+    "internalName": "Revive",
+    "id": 26000098
+  },
+  "TH17WeaponAreaDamage": {
+    "displayName": "TH17WeaponAreaDamage",
+    "internalName": "TH17WeaponAreaDamage",
+    "id": 26000099
+  },
+  "BarbKingEquipSpawn": {
+    "displayName": "BarbKingEquipSpawn",
+    "internalName": "BarbKingEquipSpawn",
+    "id": 26000100
+  },
+  "MassDestruction": {
+    "displayName": "MassDestruction",
+    "internalName": "MassDestruction",
+    "id": 26000101
+  },
+  "MinionGiantPoison": {
+    "displayName": "MinionGiantPoison",
+    "internalName": "MinionGiantPoison",
+    "id": 26000102
+  },
+  "SuperDragonRiderSummonDragonSpell": {
+    "displayName": "SuperDragonRiderSummonDragonSpell",
+    "internalName": "SuperDragonRiderSummonDragonSpell",
+    "id": 26000103
+  },
+  "SuperDragonRiderSummonRiderSpell": {
+    "displayName": "SuperDragonRiderSummonRiderSpell",
+    "internalName": "SuperDragonRiderSummonRiderSpell",
+    "id": 26000104
+  },
+  "April25_TBRM_Aura": {
+    "displayName": "April25_TBRM_Aura",
+    "internalName": "April25_TBRM_Aura",
+    "id": 26000105
+  },
+  "April25_TBRM_DeathSpawn": {
+    "displayName": "April25_TBRM_DeathSpawn",
+    "internalName": "April25_TBRM_DeathSpawn",
+    "id": 26000106
+  },
+  "April25_RRAltProjectile_Spawn": {
+    "displayName": "April25_RRAltProjectile_Spawn",
+    "internalName": "April25_RRAltProjectile_Spawn",
+    "id": 26000107
+  },
+  "April25_RRAltProjectile_Spawn_DEF": {
+    "displayName": "April25_RRAltProjectile_Spawn_DEF",
+    "internalName": "April25_RRAltProjectile_Spawn_DEF",
+    "id": 26000108
+  },
+  "IceBlock": {
+    "displayName": "IceBlock",
+    "internalName": "IceBlock",
+    "id": 26000109
+  },
+  "MPMeteorStaffSpell": {
+    "displayName": "MPMeteorStaffSpell",
+    "internalName": "MPMeteorStaffSpell",
+    "id": 26000110
+  },
+  "MeteorGolemImpactSpell": {
+    "displayName": "MeteorGolemImpactSpell",
+    "internalName": "MeteorGolemImpactSpell",
+    "id": 26000111
+  },
+  "TH18EventMeteorDeathDamage": {
+    "displayName": "TH18EventMeteorDeathDamage",
+    "internalName": "TH18EventMeteorDeathDamage",
+    "id": 26000112
+  },
+  "SmasherRageArea": {
+    "displayName": "SmasherRageArea",
+    "internalName": "SmasherRageArea",
+    "id": 26000113
+  },
+  "SlowdownTowerSlowness": {
+    "displayName": "SlowdownTowerSlowness",
+    "internalName": "SlowdownTowerSlowness",
+    "id": 26000114
+  },
+  "GuardianRage": {
+    "displayName": "GuardianRage",
+    "internalName": "GuardianRage",
+    "id": 26000115
+  },
+  "GuardianReviveSpell": {
+    "displayName": "GuardianReviveSpell",
+    "internalName": "GuardianReviveSpell",
+    "id": 26000116
+  },
+  "SeasonalDefenseHeroBoosterRageAura": {
+    "displayName": "SeasonalDefenseHeroBoosterRageAura",
+    "internalName": "SeasonalDefenseHeroBoosterRageAura",
+    "id": 26000117
+  },
+  "SeasonalDefenseHeroBoosterHealthBoostAura": {
+    "displayName": "SeasonalDefenseHeroBoosterHealthBoostAura",
+    "internalName": "SeasonalDefenseHeroBoosterHealthBoostAura",
+    "id": 26000118
+  },
+  "Debris Explosion 3": {
+    "displayName": "Debris Explosion 3",
+    "internalName": "Debris Explosion 3",
+    "id": 26000119
+  },
+  "TotemDrop": {
+    "displayName": "TotemDrop",
+    "internalName": "TotemDrop",
+    "id": 26000120
+  },
+  "TotemSummon": {
+    "displayName": "TotemSummon",
+    "internalName": "TotemSummon",
+    "id": 26000121
+  },
+  "PhoenixSpell": {
+    "displayName": "PhoenixSpell",
+    "internalName": "PhoenixSpell",
+    "id": 26000122
+  },
+  "AngrySpell": {
+    "displayName": "AngrySpell",
+    "internalName": "AngrySpell",
+    "id": 26000123
+  },
+  "TotemDropBig": {
+    "displayName": "TotemDropBig",
+    "internalName": "TotemDropBig",
+    "id": 26000124
+  },
+  "TotemSummonBig": {
+    "displayName": "TotemSummonBig",
+    "internalName": "TotemSummonBig",
+    "id": 26000125
+  },
+  "Clashmas25FireArea": {
+    "displayName": "Clashmas25FireArea",
+    "internalName": "Clashmas25FireArea",
+    "id": 26000126
+  },
+  "LNY26HealingArea": {
+    "displayName": "LNY26HealingArea",
+    "internalName": "LNY26HealingArea",
+    "id": 26000127
+  },
+  "LNY26DeathDamage": {
+    "displayName": "LNY26DeathDamage",
+    "internalName": "LNY26DeathDamage",
+    "id": 26000128
+  }
+}

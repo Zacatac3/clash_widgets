@@ -1,0 +1,2522 @@
+[
+  {
+    "internalName": "HookTowerHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "HookTowerAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "HookTowerEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "25000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LazyLaserHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LazyLaserAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LazyLaserEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "25000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LogLobberHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LogLobberAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "45000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "65000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "75000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "95000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "105000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "LogLobberEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "FlameSpinnerHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "FlameSpinnerAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "45000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "65000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "75000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "95000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "105000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "FlameSpinnerEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "CrusherMortarHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "45000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "60000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "75000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "90000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "95000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "105000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "110000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "CrusherMortarAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "CrusherMortarEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SunBeamHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "45000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "60000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "75000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "90000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "95000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "105000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "110000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SunBeamAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SunBeamEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SlowdownTowerHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SlowdownTowerAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "SlowdownTowerEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "25000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "HeroBoosterHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7000000",
+        "buildTimeSeconds": 151200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 194400
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "HeroBoosterAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8000000",
+        "buildTimeSeconds": 72000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "1",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 86400
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "1",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 108000
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11000000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  },
+  {
+    "internalName": "HeroBoosterEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "1",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "25000",
+        "buildTimeSeconds": 129600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "2",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 172800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "35000",
+        "buildTimeSeconds": 216000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "2",
+        "BuildTimeH": "14",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 223200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "2",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "55000",
+        "buildTimeSeconds": 230400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "2",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 237600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "2",
+        "BuildTimeH": "20",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "85000",
+        "buildTimeSeconds": 244800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "2",
+        "BuildTimeH": "22",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 252000
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "3",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "115000",
+        "buildTimeSeconds": 259200
+      }
+    ]
+  }
+]

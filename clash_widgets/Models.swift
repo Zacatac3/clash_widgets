@@ -77,6 +77,7 @@ struct NotificationSettings: Codable, Equatable {
 // Combined model for UI
 struct BuildingUpgrade: Identifiable, Codable {
     let id: UUID
+    let dataId: Int?
     let name: String
     let targetLevel: Int
     let endTime: Date
@@ -84,8 +85,9 @@ struct BuildingUpgrade: Identifiable, Codable {
     let startTime: Date
     let totalDuration: TimeInterval
     
-    init(id: UUID = UUID(), name: String, targetLevel: Int, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
+    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
         self.id = id
+        self.dataId = dataId
         self.name = name
         self.targetLevel = targetLevel
         self.endTime = endTime
@@ -95,12 +97,13 @@ struct BuildingUpgrade: Identifiable, Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, name, targetLevel, endTime, category, startTime, totalDuration
+        case id, dataId, name, targetLevel, endTime, category, startTime, totalDuration
     }
     
     init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.id = try container.decode(UUID.self, forKey: .id)
+        self.dataId = try container.decodeIfPresent(Int.self, forKey: .dataId)
         self.name = try container.decode(String.self, forKey: .name)
         self.targetLevel = try container.decode(Int.self, forKey: .targetLevel)
         self.endTime = try container.decode(Date.self, forKey: .endTime)
@@ -112,6 +115,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
         try container.encode(id, forKey: .id)
+        try container.encodeIfPresent(dataId, forKey: .dataId)
         try container.encode(name, forKey: .name)
         try container.encode(targetLevel, forKey: .targetLevel)
         try container.encode(endTime, forKey: .endTime)

@@ -1,0 +1,14 @@
+{
+  "BuilderApprentice": {
+    "displayName": "BuilderApprentice",
+    "internalName": "BuilderApprentice"
+  },
+  "ResearchApprentice": {
+    "displayName": "ResearchApprentice",
+    "internalName": "ResearchApprentice"
+  },
+  "Alchemist": {
+    "displayName": "Alchemist",
+    "internalName": "Alchemist"
+  }
+}
