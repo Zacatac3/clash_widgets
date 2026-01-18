@@ -10,6 +10,11 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var cachedProfile: PlayerProfile?
     var apiProfileJSON: String
     var lastAPIFetchDate: Date?
+    var builderCount: Int
+    var builderApprenticeLevel: Int
+    var labAssistantLevel: Int
+    var alchemistLevel: Int
+    var goldPassBoostPercent: Int
 
     init(
         id: UUID = UUID(),
@@ -20,7 +25,12 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         activeUpgrades: [BuildingUpgrade] = [],
         cachedProfile: PlayerProfile? = nil,
         apiProfileJSON: String = "",
-        lastAPIFetchDate: Date? = nil
+        lastAPIFetchDate: Date? = nil,
+        builderCount: Int = 5,
+        builderApprenticeLevel: Int = 0,
+        labAssistantLevel: Int = 0,
+        alchemistLevel: Int = 0,
+        goldPassBoostPercent: Int = 10
     ) {
         self.id = id
         self.displayName = displayName
@@ -31,6 +41,11 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.cachedProfile = cachedProfile
         self.apiProfileJSON = apiProfileJSON
         self.lastAPIFetchDate = lastAPIFetchDate
+        self.builderCount = builderCount
+        self.builderApprenticeLevel = builderApprenticeLevel
+        self.labAssistantLevel = labAssistantLevel
+        self.alchemistLevel = alchemistLevel
+        self.goldPassBoostPercent = goldPassBoostPercent
     }
 }
 

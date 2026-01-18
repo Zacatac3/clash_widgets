@@ -378,6 +378,7 @@ private struct ProfileDetailView: View {
                 } else {
                     VStack(spacing: 20) {
                         profileSummaryCard
+                        profileSettingsCard
                         statsGrid
                         builderStatsCard
                         heroShowcase
@@ -408,6 +409,12 @@ private struct ProfileDetailView: View {
             }
             .onAppear {
                 dataService.refreshCurrentProfile(force: false)
+            }
+            .onChangeCompat(of: townHallLevel) { _ in
+                clampBuilderCount()
+            }
+            .onChangeCompat(of: dataService.builderCount) { _ in
+                clampBuilderCount()
             }
         }
     }
@@ -495,6 +502,38 @@ private struct ProfileDetailView: View {
                 infoPill(title: "Trophies", value: builderTrophies > 0 ? "\(builderTrophies)" : "–")
                 infoPill(title: "Best", value: bestBuilder > 0 ? "\(bestBuilder)" : "–")
                 infoPill(title: "League", value: builderLeague)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 20).fill(Color(.secondarySystemBackground)))
+    }
+
+    private var profileSettingsCard: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Profile Settings")
+                .font(.headline)
+
+            Stepper(value: $dataService.builderCount, in: 2...maxBuilders) {
+                HStack {
+                    Text("Builders")
+                    Spacer()
+                    Text("\(dataService.builderCount)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            if townHallLevel >= 9 {
+                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: 12)
+            }
+
+            if townHallLevel >= 10 {
+                sliderRow(title: "Builder Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: 8)
+            }
+
+            if townHallLevel >= 11 {
+                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: 7)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -610,6 +649,43 @@ private struct ProfileDetailView: View {
 
     private var activeProfileName: String {
         dataService.profileName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? (dataService.currentProfile.map { dataService.displayName(for: $0) } ?? "Profile") : dataService.profileName
+    }
+
+    private var townHallLevel: Int {
+        resolvedProfile?.townHallLevel ?? 0
+    }
+
+    private var maxBuilders: Int {
+        townHallLevel < 10 ? 5 : 6
+    }
+
+    private func clampBuilderCount() {
+        if dataService.builderCount > maxBuilders {
+            dataService.builderCount = maxBuilders
+        }
+        if dataService.builderCount < 2 {
+            dataService.builderCount = 2
+        }
+    }
+
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text("Lv \(value.wrappedValue)/\(maxLevel)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: Binding(
+                    get: { Double(value.wrappedValue) },
+                    set: { value.wrappedValue = Int($0.rounded()) }
+                ),
+                in: 0...Double(maxLevel),
+                step: 1
+            )
+        }
     }
 }
 
@@ -924,6 +1000,10 @@ private struct AddProfileSheet: View {
     @Environment(\.dismiss) private var dismiss
 
     @State private var playerTag: String = ""
+    @State private var builderCount: Int = 5
+    @State private var builderApprenticeLevel: Int = 0
+    @State private var labAssistantLevel: Int = 0
+    @State private var alchemistLevel: Int = 0
 
     var body: some View {
         NavigationStack {
@@ -932,6 +1012,23 @@ private struct AddProfileSheet: View {
                     TextField("e.g. #9C082CCU8", text: $playerTag)
                         .textInputAutocapitalization(.characters)
                         .autocorrectionDisabled()
+                }
+                Section("Profile Settings") {
+                    Stepper(value: $builderCount, in: 2...6) {
+                        HStack {
+                            Text("Builders")
+                            Spacer()
+                            Text("\(builderCount)")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12)
+                    sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8)
+                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7)
+                    Text("These unlock at TH9/TH10/TH11. Values will apply once unlocked.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
                 Section {
                     Text("Only the tag is required. ClashDash will pull the latest name and stats automatically when you save.")
@@ -946,12 +1043,38 @@ private struct AddProfileSheet: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
-                        dataService.addProfile(tag: playerTag)
+                        dataService.addProfile(
+                            tag: playerTag,
+                            builderCount: builderCount,
+                            builderApprenticeLevel: builderApprenticeLevel,
+                            labAssistantLevel: labAssistantLevel,
+                            alchemistLevel: alchemistLevel
+                        )
                         dismiss()
                     }
                     .disabled(playerTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
+        }
+    }
+
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text("Lv \(value.wrappedValue)/\(maxLevel)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: Binding(
+                    get: { Double(value.wrappedValue) },
+                    set: { value.wrappedValue = Int($0.rounded()) }
+                ),
+                in: 0...Double(maxLevel),
+                step: 1
+            )
         }
     }
 }
@@ -1107,6 +1230,11 @@ private struct InitialSetupView: View {
 
     @State private var step: FlowStep = .intro
     @State private var statusMessage: String?
+    @State private var builderCount: Int = 5
+    @State private var builderApprenticeLevel: Int = 0
+    @State private var labAssistantLevel: Int = 0
+    @State private var alchemistLevel: Int = 0
+    @State private var didSeedSettings = false
     @FocusState private var fieldFocused: Bool
 
     private var normalizedTag: String {
@@ -1130,6 +1258,7 @@ private struct InitialSetupView: View {
             .animation(.easeInOut, value: step)
             .onAppear { scheduleFocusIfNeeded() }
             .onChangeCompat(of: step) { _ in scheduleFocusIfNeeded() }
+            .onAppear { seedSettingsIfNeeded() }
         }
     }
 
@@ -1201,6 +1330,8 @@ private struct InitialSetupView: View {
                     .foregroundColor(.secondary)
             }
 
+            settingsFields
+
 #if canImport(UIKit)
             Button {
                 importVillageDataFromClipboard()
@@ -1218,6 +1349,7 @@ private struct InitialSetupView: View {
             }
 
             Button {
+                persistSettings()
                 onComplete(normalizedTag)
             } label: {
                 Text("Save Tag & Continue")
@@ -1230,6 +1362,89 @@ private struct InitialSetupView: View {
             Text("Need to start over later? Use Settings → Reset to Factory Defaults.")
                 .font(.caption2)
                 .foregroundColor(.secondary)
+        }
+    }
+
+    private var settingsFields: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Text("Profile Settings")
+                .font(.headline)
+
+            Stepper(value: $builderCount, in: 2...maxBuilders) {
+                HStack {
+                    Text("Builders")
+                    Spacer()
+                    Text("\(builderCount)")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9)
+            sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10)
+            sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11)
+
+            Text("These unlock at TH9/TH10/TH11. Values will apply once unlocked.")
+                .font(.caption)
+                .foregroundColor(.secondary)
+        }
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+    }
+
+    private var maxBuilders: Int {
+        townHallLevel > 0 && townHallLevel < 10 ? 5 : 6
+    }
+
+    private var townHallLevel: Int {
+        dataService.cachedProfile?.townHallLevel ?? 0
+    }
+
+    private func seedSettingsIfNeeded() {
+        guard !didSeedSettings else { return }
+        didSeedSettings = true
+        builderCount = dataService.builderCount
+        builderApprenticeLevel = dataService.builderApprenticeLevel
+        labAssistantLevel = dataService.labAssistantLevel
+        alchemistLevel = dataService.alchemistLevel
+        clampBuilderCount()
+    }
+
+    private func clampBuilderCount() {
+        if builderCount > maxBuilders { builderCount = maxBuilders }
+        if builderCount < 2 { builderCount = 2 }
+    }
+
+    private func persistSettings() {
+        clampBuilderCount()
+        dataService.builderCount = builderCount
+        dataService.builderApprenticeLevel = builderApprenticeLevel
+        dataService.labAssistantLevel = labAssistantLevel
+        dataService.alchemistLevel = alchemistLevel
+    }
+
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(title)
+                Spacer()
+                Text("Lv \(value.wrappedValue)/\(maxLevel)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: Binding(
+                    get: { Double(value.wrappedValue) },
+                    set: { value.wrappedValue = Int($0.rounded()) }
+                ),
+                in: 0...Double(maxLevel),
+                step: 1
+            )
+            if townHallLevel > 0 && townHallLevel < unlockedAt {
+                Text("Unlocks at Town Hall \(unlockedAt)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
         }
     }
 
@@ -1465,7 +1680,8 @@ private struct EquipmentView: View {
     }
 
     private var equipmentEntries: [EquipmentEntry] {
-        guard let profile = dataService.cachedProfile else { return [] }
+        let profile = dataService.currentProfile?.cachedProfile ?? dataService.cachedProfile
+        guard let profile else { return [] }
         let hasEquipmentUnlocked = profile.townHallLevel >= 8
         let equipmentList: [HeroEquipment] = profile.heroEquipment ?? []
         let levelsByName = Dictionary(
@@ -1475,7 +1691,7 @@ private struct EquipmentView: View {
         return EquipmentView.equipmentMetadata.entries.map { metadata in
             let lookupKey = metadata.name.lowercased()
             let equipment = levelsByName[lookupKey]
-            let level = equipment?.level ?? 0
+            let level = hasEquipmentUnlocked ? (equipment?.level ?? 0) : 0
             let maxLevel = metadata.rarity.maxLevel
             let isUnlocked = hasEquipmentUnlocked && equipment != nil
 

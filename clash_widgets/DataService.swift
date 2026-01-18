@@ -86,6 +86,34 @@ class DataService: ObservableObject {
             handleNotificationSettingsChange(from: oldValue)
         }
     }
+    @Published var builderCount: Int = 5 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.builderCount = builderCount }
+            persistChanges(reloadWidgets: false)
+        }
+    }
+    @Published var builderApprenticeLevel: Int = 0 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.builderApprenticeLevel = builderApprenticeLevel }
+            persistChanges(reloadWidgets: false)
+        }
+    }
+    @Published var labAssistantLevel: Int = 0 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.labAssistantLevel = labAssistantLevel }
+            persistChanges(reloadWidgets: false)
+        }
+    }
+    @Published var alchemistLevel: Int = 0 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.alchemistLevel = alchemistLevel }
+            persistChanges(reloadWidgets: false)
+        }
+    }
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
@@ -115,10 +143,23 @@ class DataService: ObservableObject {
         }
     }
 
-    func addProfile(tag: String) {
+    func addProfile(
+        tag: String,
+        builderCount: Int = 5,
+        builderApprenticeLevel: Int = 0,
+        labAssistantLevel: Int = 0,
+        alchemistLevel: Int = 0
+    ) {
         let normalizedTag = normalizeTag(tag)
         guard !normalizedTag.isEmpty else { return }
-        let profile = PlayerAccount(displayName: defaultProfileName(), tag: normalizedTag)
+        let profile = PlayerAccount(
+            displayName: defaultProfileName(),
+            tag: normalizedTag,
+            builderCount: builderCount,
+            builderApprenticeLevel: builderApprenticeLevel,
+            labAssistantLevel: labAssistantLevel,
+            alchemistLevel: alchemistLevel
+        )
         profiles.append(profile)
         selectedProfileID = profile.id
     }
@@ -205,6 +246,10 @@ class DataService: ObservableObject {
         selectedProfileID = freshProfile.id
         appearancePreference = .device
         notificationSettings = .default
+        builderCount = freshProfile.builderCount
+        builderApprenticeLevel = freshProfile.builderApprenticeLevel
+        labAssistantLevel = freshProfile.labAssistantLevel
+        alchemistLevel = freshProfile.alchemistLevel
         profileName = freshProfile.displayName
         playerTag = ""
         rawJSON = ""
@@ -430,6 +475,10 @@ class DataService: ObservableObject {
         lastImportDate = profile.lastImportDate
         activeUpgrades = profile.activeUpgrades
         cachedProfile = profile.cachedProfile
+        builderCount = profile.builderCount
+        builderApprenticeLevel = profile.builderApprenticeLevel
+        labAssistantLevel = profile.labAssistantLevel
+        alchemistLevel = profile.alchemistLevel
     }
 
     private func updateCurrentProfile(_ mutate: (inout PlayerAccount) -> Void) {
