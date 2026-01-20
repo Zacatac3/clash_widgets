@@ -74,6 +74,7 @@ class DataService: ObservableObject {
     }
     @Published var isRefreshingProfile = false
     @Published var refreshErrorMessage: String?
+    @Published var refreshCooldownMessage: String?
     @Published var appearancePreference: AppearancePreference = .device {
         didSet {
             guard !suppressPersistence else { return }
@@ -124,7 +125,10 @@ class DataService: ObservableObject {
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
-    private var cachedParsedBuildings: [ParsedBuilding]?
+    var cachedParsedBuildings: [ParsedBuilding]?
+    var cachedTownHallLevels: [TownHallLevelCounts]?
+    var cachedBuildingNameToId: [String: Int]?
+    var cachedParsedUnits: [String: [Int: ParsedUnitData]] = [:]
 
     var currentProfile: PlayerAccount? {
         if let id = selectedProfileID,
@@ -138,7 +142,9 @@ class DataService: ObservableObject {
         self.apiKey = apiKey
         loadFromStorage()
         loadUpgradeDurations()
-        cachedParsedBuildings = loadParsedBuildings()
+        cachedParsedBuildings = loadParsedBuildingsData()
+        cachedTownHallLevels = loadTownHallLevelsData()
+        cachedBuildingNameToId = loadBuildingNameToIdData()
         saveToStorage()
         DispatchQueue.main.async { [weak self] in
             self?.refreshCurrentProfileIfNeeded(force: false)
@@ -152,8 +158,8 @@ class DataService: ObservableObject {
               let export = try? JSONDecoder().decode(CoCExport.self, from: data) else { return [] }
         guard let buildingList = export.buildings, !buildingList.isEmpty else { return [] }
 
-        let parsedBuildings = cachedParsedBuildings ?? loadParsedBuildings() ?? []
-        let byId = Dictionary(uniqueKeysWithValues: parsedBuildings.map { ($0.id, $0) })
+        let parsedBuildings = cachedParsedBuildings ?? loadParsedBuildingsData() ?? []
+        let byId = makeParsedBuildingsByIdMap(parsedBuildings)
 
         var results: [RemainingBuildingUpgrade] = []
         for building in buildingList {
@@ -188,7 +194,7 @@ class DataService: ObservableObject {
         return results.sorted { $0.name < $1.name }
     }
 
-    private func loadParsedBuildings() -> [ParsedBuilding]? {
+    func loadParsedBuildingsData() -> [ParsedBuilding]? {
         let folders = Self.candidateFolderURLs(named: "parsed_json_files")
         let decoder = JSONDecoder()
         for folder in folders {
@@ -201,6 +207,113 @@ class DataService: ObservableObject {
         return nil
     }
 
+    func makeParsedBuildingsByIdMap(_ buildings: [ParsedBuilding]) -> [Int: ParsedBuilding] {
+        var output: [Int: ParsedBuilding] = [:]
+        for building in buildings {
+            output[building.id] = building
+        }
+        return output
+    }
+
+    func loadTownHallLevelsData() -> [TownHallLevelCounts]? {
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("townhall_levels.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+            let parsed = raw.compactMap { entry -> TownHallLevelCounts? in
+                guard let level = entry["townHallLevel"] as? Int else { return nil }
+                guard let countsRaw = entry["counts"] as? [String: Any] else { return nil }
+                var counts: [String: Int] = [:]
+                for (key, value) in countsRaw {
+                    if let n = value as? Int {
+                        counts[key] = n
+                    } else if let n = value as? Double {
+                        counts[key] = Int(n)
+                    } else if let s = value as? String, let n = Int(s) {
+                        counts[key] = n
+                    }
+                }
+                return TownHallLevelCounts(level: level, counts: counts)
+            }
+            if !parsed.isEmpty {
+                return parsed
+            }
+        }
+        return nil
+    }
+
+    func loadBuildingNameToIdData() -> [String: Int]? {
+        let folders = Self.candidateFolderURLs(named: "json_maps")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("buildings_json_map.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+            var output: [String: Int] = [:]
+            for (_, value) in raw {
+                guard let entry = value as? [String: Any] else { continue }
+                let idValue = entry["id"]
+                let id: Int?
+                if let n = idValue as? Int { id = n }
+                else if let n = idValue as? Double { id = Int(n) }
+                else if let s = idValue as? String { id = Int(s) }
+                else { id = nil }
+                guard let resolvedId = id else { continue }
+
+                let display = (entry["displayName"] as? String)?.lowercased()
+                let internalName = (entry["internalName"] as? String)?.lowercased()
+                if let display, !display.isEmpty { output[display] = resolvedId }
+                if let internalName, !internalName.isEmpty { output[internalName] = resolvedId }
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return nil
+    }
+
+    func loadParsedUnits(fileName: String) -> [Int: ParsedUnitData] {
+        if let cached = cachedParsedUnits[fileName] {
+            return cached
+        }
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent(fileName)
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+            var output: [Int: ParsedUnitData] = [:]
+            for entry in raw {
+                guard let id = entry["id"] as? Int else { continue }
+                let internalName = (entry["internalName"] as? String) ?? ""
+                let levels = (entry["levels"] as? [[String: Any]] ?? []).compactMap { level -> ParsedUnitLevelData? in
+                    guard let levelNumber = level["level"] as? Int else { return nil }
+                    let time = parseInt(level["upgradeTimeSeconds"]) ?? 0
+                    let cost = parseInt(level["UpgradeCost"]) ?? 0
+                    let resource = (level["UpgradeResource"] as? String) ?? ""
+                    let lab = parseInt(level["LaboratoryLevel"]) ?? parseInt(level["RequiredTownHallLevel"]) ?? 0
+                    return ParsedUnitLevelData(
+                        level: levelNumber,
+                        upgradeTimeSeconds: time,
+                        upgradeCost: cost,
+                        upgradeResource: resource,
+                        laboratoryLevel: lab
+                    )
+                }
+                output[id] = ParsedUnitData(id: id, name: internalName, levels: levels)
+            }
+            cachedParsedUnits[fileName] = output
+            return output
+        }
+        return [:]
+    }
+
+    func parseInt(_ value: Any?) -> Int? {
+        if let n = value as? Int { return n }
+        if let n = value as? Double { return Int(n) }
+        if let s = value as? String { return Int(s) }
+        return nil
+    }
+
     func selectProfile(_ id: UUID) {
         guard profiles.contains(where: { $0.id == id }) else { return }
         if selectedProfileID != id {
@@ -208,6 +321,7 @@ class DataService: ObservableObject {
         }
     }
 
+    @discardableResult
     func addProfile(
         tag: String,
         builderCount: Int = 5,
@@ -215,9 +329,9 @@ class DataService: ObservableObject {
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
         goldPassBoost: Int = 0
-    ) {
+    ) -> UUID {
         let normalizedTag = normalizeTag(tag)
-        guard !normalizedTag.isEmpty else { return }
+        guard !normalizedTag.isEmpty else { return currentProfile?.id ?? UUID() }
         let profile = PlayerAccount(
             displayName: defaultProfileName(),
             tag: normalizedTag,
@@ -229,6 +343,7 @@ class DataService: ObservableObject {
         )
         profiles.append(profile)
         selectedProfileID = profile.id
+        return profile.id
     }
 
     func deleteProfile(_ id: UUID) {
@@ -374,6 +489,17 @@ class DataService: ObservableObject {
         guard let profile = currentProfile else { return }
         guard !profile.tag.isEmpty else { return }
 
+        if let lastFetch = profile.lastAPIFetchDate {
+            let elapsed = Date().timeIntervalSince(lastFetch)
+            let cooldown: TimeInterval = 180
+            if elapsed < cooldown {
+                let remaining = cooldown - elapsed
+                let message = "Please wait \(formatCooldown(remaining)) to refresh again"
+                showRefreshCooldown(message)
+                return
+            }
+        }
+
         if force {
             refreshedProfilesThisLaunch.remove(profile.id)
         }
@@ -397,6 +523,7 @@ class DataService: ObservableObject {
         activeRefreshTask?.cancel()
         isRefreshingProfile = true
         refreshErrorMessage = nil
+        refreshCooldownMessage = nil
 
         let task = URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
             DispatchQueue.main.async {
@@ -450,7 +577,28 @@ class DataService: ObservableObject {
         profileName = response.name
         playerTag = normalizedTag
         refreshErrorMessage = nil
+        refreshCooldownMessage = nil
         persistChanges(reloadWidgets: false)
+    }
+
+    private func showRefreshCooldown(_ message: String) {
+        refreshCooldownMessage = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
+            guard let self else { return }
+            if self.refreshCooldownMessage == message {
+                self.refreshCooldownMessage = nil
+            }
+        }
+    }
+
+    private func formatCooldown(_ remaining: TimeInterval) -> String {
+        let totalSeconds = max(Int(remaining.rounded()), 0)
+        let minutes = totalSeconds / 60
+        let seconds = totalSeconds % 60
+        if minutes > 0 {
+            return String(format: "%dm %02ds", minutes, seconds)
+        }
+        return String(format: "%ds", seconds)
     }
 
     private func persistChanges(reloadWidgets: Bool) {
@@ -645,7 +793,7 @@ class DataService: ObservableObject {
         }
     }
 
-    private static func candidateFolderURLs(named folderName: String) -> [URL] {
+    static func candidateFolderURLs(named folderName: String) -> [URL] {
         let bundle = Bundle.main
         let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
         var urls: [URL] = []
@@ -790,6 +938,14 @@ class DataService: ObservableObject {
         } catch {
             print("Failed to parse clipboard JSON: \(error)")
         }
+    }
+
+    func previewImportUpgrades(input: String) -> [BuildingUpgrade]? {
+        guard let data = input.data(using: .utf8) else { return nil }
+        let decoder = JSONDecoder()
+        guard let export = try? decoder.decode(CoCExport.self, from: data) else { return nil }
+        return collectUpgrades(from: export)
+            .sorted(by: { $0.endTime < $1.endTime })
     }
 
     private func collectUpgrades(from export: CoCExport) -> [BuildingUpgrade] {

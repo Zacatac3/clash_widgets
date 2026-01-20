@@ -1,0 +1,42 @@
+{
+        "Buiuldings": {
+                "": "cannon",
+                "": "archer tower",
+                "": "mortar",
+                "": "air defense",
+                "": "wizard tower",
+                "": "air sweeper",
+                "": "hidden tesla",
+                "": "bomb tower",
+                "": "x-bow",
+                "": "inferno tower",
+                "": "eagle artillery",
+                "": "scattershot",
+                "": "builders hut",
+                "": "spell tower",
+                "": "multi-archer tower",
+                "": "ricochet cannon",
+                "": "multi-gear tower",
+                "": "firespitter",
+                "": "revenge tower",
+                "": "super wizard tower",
+                "": "town hall",
+                "": "wall",
+                "": "bomb",
+                "": "spring trap",
+                "": "giant bomb",
+                "": "air bomb",
+                "": "seeking air mine",
+                "": "skeleton trap",
+                "": "tornado trap",
+                "": "giga bomb"
+        },
+        "Lab_Upgrades": {
+            "displayName": "",
+            "internalName": "ResearchApprentice"
+        },
+        "Pets": {
+            "displayName": "Alchemist",
+            "internalName": "Alchemist"
+        }
+}

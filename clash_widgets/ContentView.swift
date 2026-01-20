@@ -2,6 +2,9 @@ import SwiftUI
 #if canImport(UIKit)
 import UIKit
 #endif
+#if canImport(WebKit)
+import WebKit
+#endif
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var dataService: DataService
@@ -41,9 +44,9 @@ struct ContentView: View {
                 .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                 .tag(Tab.equipment)
 
-            UpgradeListView()
-                .tabItem { Label("Upgrade", systemImage: "list.bullet.rectangle") }
-                .tag(Tab.upgrades)
+            ProgressOverviewView()
+                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
+                .tag(Tab.progress)
 
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
@@ -91,6 +94,7 @@ struct ContentView: View {
         dataService.playerTag = normalized
         hasCompletedInitialSetup = true
         showInitialSetup = false
+        selectedTab = .dashboard
         dataService.refreshCurrentProfile(force: true)
     }
 
@@ -104,71 +108,222 @@ struct ContentView: View {
         case dashboard
         case profile
         case equipment
-        case upgrades
+        case progress
         case settings
     }
 }
 
-private struct UpgradeListView: View {
+private struct ProgressOverviewView: View {
     @EnvironmentObject private var dataService: DataService
-    @State private var upgrades: [RemainingBuildingUpgrade] = []
+    @State private var rows: [TownHallProgress] = []
 
     var body: some View {
         NavigationStack {
             List {
-                if upgrades.isEmpty {
+                ForEach(rows) { row in
                     Section {
-                        Text("No remaining building upgrades for the current Town Hall.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                } else {
-                    Section("Remaining Building Upgrades") {
-                        ForEach(upgrades) { upgrade in
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(upgrade.name)
-                                    .font(.headline)
-                                    .lineLimit(1)
-                                Text("Lv \(upgrade.currentLevel) → \(upgrade.targetLevel)")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                HStack(spacing: 12) {
-                                    Text(formatDuration(upgrade.buildTimeSeconds))
-                                        .font(.caption2)
-                                        .foregroundColor(.orange)
-                                    Text("\(upgrade.buildCost) \(upgrade.buildResource)")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
+                        DisclosureGroup {
+                            VStack(alignment: .leading, spacing: 12) {
+                                ForEach(row.categories) { category in
+                                    categoryRow(category: category, townHall: row.level)
                                 }
                             }
-                            .padding(.vertical, 2)
+                            .padding(.vertical, 6)
+                        } label: {
+                            townHallRow(row)
                         }
                     }
                 }
+
+                if !rows.isEmpty {
+                    cumulativeSection(title: "Remaining to Current TH", rows: rows.filter { $0.level <= currentTownHall })
+                    cumulativeSection(title: "Remaining to Max TH", rows: rows)
+                }
             }
-            .navigationTitle("Upgrades")
-            .onAppear(perform: refreshUpgrades)
-            .refreshable { refreshUpgrades() }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Progress")
+            .onAppear(perform: reload)
+            .refreshable { reload() }
         }
     }
 
-    private func refreshUpgrades() {
-        let townHallLevel = dataService.cachedProfile?.townHallLevel ?? dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
-        upgrades = dataService.remainingBuildingUpgrades(for: townHallLevel)
+    private var currentTownHall: Int {
+        dataService.cachedProfile?.townHallLevel ?? dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
+    }
+
+    private func reload() {
+        rows = dataService.townHallProgressRows()
+    }
+
+    private func townHallRow(_ row: TownHallProgress) -> some View {
+        HStack(spacing: 12) {
+            TownHallBadgeView(level: row.level)
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text("TH \(row.level)")
+                        .font(.headline)
+                    Spacer()
+                    Text(String(format: "%.0f%%", row.overallCompletion * 100))
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                ProgressView(value: row.overallCompletion)
+                    .progressViewStyle(.linear)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func categoryRow(category: CategoryProgress, townHall: Int) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(spacing: 10) {
+                resourceImage(categoryIconName(category.id, townHall: townHall))
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 28, height: 28)
+                Text(category.title)
+                    .font(.subheadline)
+                Spacer()
+                Text(String(format: "%.0f%%", category.completion * 100))
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
+            ProgressView(value: category.completion)
+                .progressViewStyle(.linear)
+
+            HStack(spacing: 10) {
+                resourcePill(icon: "gold", value: category.remainingCost.gold)
+                resourcePill(icon: "elixir", value: category.remainingCost.elixir)
+                resourcePill(icon: "dark_elixir", value: category.remainingCost.darkElixir)
+                Spacer()
+                timePill(seconds: Int(category.remainingTime))
+            }
+        }
+        .padding(.vertical, 6)
+    }
+
+    private func cumulativeSection(title: String, rows: [TownHallProgress]) -> some View {
+        let totals = cumulativeTotals(rows: rows)
+        return Section(title) {
+            VStack(alignment: .leading, spacing: 10) {
+                HStack(spacing: 10) {
+                    resourcePill(icon: "gold", value: totals.costs.gold)
+                    resourcePill(icon: "elixir", value: totals.costs.elixir)
+                    resourcePill(icon: "dark_elixir", value: totals.costs.darkElixir)
+                }
+                HStack(spacing: 12) {
+                    timeSummary(title: "Builder", seconds: totals.builderTime)
+                    timeSummary(title: "Lab", seconds: totals.labTime)
+                    timeSummary(title: "Pets", seconds: totals.petTime)
+                }
+            }
+            .padding(.vertical, 4)
+        }
+    }
+
+    private func cumulativeTotals(rows: [TownHallProgress]) -> (costs: ResourceTotals, builderTime: TimeInterval, labTime: TimeInterval, petTime: TimeInterval) {
+        var costs = ResourceTotals()
+        var builderTime: TimeInterval = 0
+        var labTime: TimeInterval = 0
+        var petTime: TimeInterval = 0
+
+        for row in rows {
+            for category in row.categories {
+                costs = costs + category.remainingCost
+                switch category.id {
+                case "buildings": builderTime += category.remainingTime
+                case "lab": labTime += category.remainingTime
+                case "pets": petTime += category.remainingTime
+                default: break
+                }
+            }
+        }
+
+        return (costs, builderTime, labTime, petTime)
+    }
+
+    private func timeSummary(title: String, seconds: TimeInterval) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text(title)
+                .font(.caption)
+                .foregroundColor(.secondary)
+            HStack(spacing: 4) {
+                resourceImage("clock")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 72, height: 72)
+                Text(formatDuration(Int(seconds)))
+                    .font(.caption)
+            }
+        }
+    }
+
+    private func resourcePill(icon: String, value: Int) -> some View {
+        HStack(spacing: 2) {
+            resourceImage(icon)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 72, height: 72)
+            Text(formatCompactNumber(value))
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private func timePill(seconds: Int) -> some View {
+        HStack(spacing: 2) {
+            resourceImage("clock")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 72, height: 72)
+            Text(formatDuration(seconds))
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+    }
+
+    private func categoryIconName(_ id: String, townHall: Int) -> String {
+        switch id {
+        case "buildings": return "builder"
+        case "lab": return "lab"
+        case "walls": return "wall_\(townHall)"
+        case "heroes": return "heroes/Barbarian_King"
+        case "pets": return "pet_house"
+        default: return "builder"
+        }
+    }
+
+    private func resourceImage(_ name: String) -> Image {
+        #if canImport(UIKit)
+        if let image = UIImage(named: "resources/\(name)") ?? UIImage(named: name) {
+            return Image(uiImage: image)
+        }
+        return Image(systemName: "questionmark.square")
+        #else
+        return Image("resources/\(name)")
+        #endif
     }
 
     private func formatDuration(_ seconds: Int) -> String {
-        if seconds <= 0 { return "0s" }
+        if seconds <= 0 { return "00d 00h" }
         let days = seconds / 86400
         let hours = (seconds % 86400) / 3600
-        let minutes = (seconds % 3600) / 60
-        if days > 0 {
-            return "\(days)d \(hours)h"
+        return String(format: "%02dd %02dh", days, hours)
+    }
+
+    private func formatCompactNumber(_ value: Int) -> String {
+        let absValue = abs(value)
+        let sign = value < 0 ? "-" : ""
+        switch absValue {
+        case 1_000_000_000...:
+            return "\(sign)" + String(format: "%.1fB", Double(absValue) / 1_000_000_000)
+        case 1_000_000...:
+            return "\(sign)" + String(format: "%.1fM", Double(absValue) / 1_000_000)
+        case 1_000...:
+            return "\(sign)" + String(format: "%.1fK", Double(absValue) / 1_000)
+        default:
+            return "\(value)"
         }
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        }
-        return "\(minutes)m"
     }
 }
 
@@ -340,6 +495,21 @@ private struct DashboardView: View {
                     .accessibilityLabel("Import Village Data")
                 }
             }
+            .overlay(alignment: .bottom) {
+                if let message = dataService.refreshCooldownMessage {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(
+                            Capsule()
+                                .fill(Color(.secondarySystemBackground))
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        )
+                        .padding(.bottom, 12)
+                }
+            }
         }
     }
 
@@ -506,6 +676,21 @@ private struct ProfileDetailView: View {
             }
             .onChangeCompat(of: dataService.builderCount) { _ in
                 clampBuilderCount()
+            }
+            .overlay(alignment: .bottom) {
+                if let message = dataService.refreshCooldownMessage {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.primary)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(
+                            Capsule()
+                                .fill(Color(.secondarySystemBackground))
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        )
+                        .padding(.bottom, 12)
+                }
             }
         }
     }
@@ -792,7 +977,7 @@ private struct ProfileDetailView: View {
     }
 
     private var maxBuilders: Int {
-        townHallLevel < 10 ? 5 : 6
+        townHallLevel == 0 ? 6 : (townHallLevel < 10 ? 5 : 6)
     }
 
     private func clampBuilderCount() {
@@ -987,6 +1172,7 @@ private struct SettingsView: View {
     @State private var showAddProfile = false
     @State private var profileToEdit: PlayerAccount?
     @State private var showResetConfirmation = false
+    @State private var showFeedbackForm = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
     var body: some View {
@@ -1052,6 +1238,19 @@ private struct SettingsView: View {
                             .symbolRenderingMode(.monochrome)
                     }
                 }
+
+                Section("Feedback") {
+                    Button {
+                        showFeedbackForm = true
+                    } label: {
+                        Label("Open Feedback Form", systemImage: "doc.text.magnifyingglass")
+                    }
+                    .disabled(feedbackFormURL == nil)
+
+                    Text("Report bugs, glitches, or share ideas.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
             }
             .navigationTitle("Settings")
             .sheet(isPresented: $showAddProfile) {
@@ -1060,6 +1259,17 @@ private struct SettingsView: View {
             .sheet(item: $profileToEdit) { profile in
                 ProfileEditorSheet(profile: profile) { name, tag in
                     dataService.updateProfile(profile.id, displayName: name, tag: tag)
+                }
+            }
+            .sheet(isPresented: $showFeedbackForm) {
+                if let url = feedbackFormURL {
+                    InlineWebView(url: url)
+                        .ignoresSafeArea()
+                } else {
+                    Text("Set feedback form URL in SettingsView.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                        .padding()
                 }
             }
             .alert("Reset ClashDash?", isPresented: $showResetConfirmation) {
@@ -1072,6 +1282,12 @@ private struct SettingsView: View {
                 Text("All profiles, timers, and settings will be erased. You'll need to enter your player tag again before using the app.")
             }
         }
+    }
+
+    private let feedbackFormURLString = "https://forms.gle/E7h9kETSokcZLior7"
+
+    private var feedbackFormURL: URL? {
+        URL(string: feedbackFormURLString)
     }
 
     private func notificationBinding(_ keyPath: WritableKeyPath<NotificationSettings, Bool>) -> Binding<Bool> {
@@ -1169,6 +1385,24 @@ private struct SettingsView: View {
     }
 }
 
+#if canImport(WebKit)
+private struct InlineWebView: UIViewRepresentable {
+    let url: URL
+
+    func makeUIView(context: Context) -> WKWebView {
+        let webView = WKWebView()
+        webView.load(URLRequest(url: url))
+        return webView
+    }
+
+    func updateUIView(_ uiView: WKWebView, context: Context) {
+        if uiView.url != url {
+            uiView.load(URLRequest(url: url))
+        }
+    }
+}
+#endif
+
 private struct AddProfileSheet: View {
     @EnvironmentObject private var dataService: DataService
     @Environment(\.dismiss) private var dismiss
@@ -1187,6 +1421,7 @@ private struct AddProfileSheet: View {
     @State private var goldPassBoost: Int = 0
     @State private var previewTownHallLevel: Int = 0
     @State private var statusMessage: String?
+    @State private var pendingImportRawJSON: String?
     @FocusState private var fieldFocused: Bool
 
     private var normalizedTag: String {
@@ -1198,7 +1433,7 @@ private struct AddProfileSheet: View {
     }
 
     private var maxBuilders: Int {
-        townHallLevel < 10 ? 5 : 6
+        townHallLevel == 0 ? 6 : (townHallLevel < 10 ? 5 : 6)
     }
 
     private var goldPassBoostLabel: String {
@@ -1431,7 +1666,7 @@ private struct AddProfileSheet: View {
 
     private func saveProfile() {
         clampBuilderCount()
-        dataService.addProfile(
+        let newProfileId = dataService.addProfile(
             tag: playerTag,
             builderCount: builderCount,
             builderApprenticeLevel: builderApprenticeLevel,
@@ -1439,6 +1674,10 @@ private struct AddProfileSheet: View {
             alchemistLevel: alchemistLevel,
             goldPassBoost: goldPassBoost
         )
+        if let pendingImportRawJSON {
+            dataService.selectProfile(newProfileId)
+            dataService.parseJSONFromClipboard(input: pendingImportRawJSON)
+        }
         dismiss()
     }
 
@@ -1453,12 +1692,16 @@ private struct AddProfileSheet: View {
             statusMessage = "Clipboard was empty—copy your export from Clash first."
             return
         }
-        dataService.parseJSONFromClipboard(input: input)
-        let count = dataService.activeUpgrades.count
+        guard let upgrades = dataService.previewImportUpgrades(input: input) else {
+            statusMessage = "Could not parse the clipboard data."
+            return
+        }
+        pendingImportRawJSON = input
+        let count = upgrades.count
         if count > 0 {
-            statusMessage = "Imported \(count) upgrades from your clipboard."
+            statusMessage = "Ready to import \(count) upgrades after saving this profile."
         } else {
-            statusMessage = "Processed the clipboard data, but no upgrades were detected."
+            statusMessage = "Clipboard parsed, but no upgrades were detected."
         }
     }
 #endif
@@ -2086,12 +2329,27 @@ private struct EquipmentView: View {
     private var summarySection: some View {
         Section {
             VStack(alignment: .leading, spacing: 12) {
-                Text("Total to max displayed")
+                Text(summaryTitle)
                     .font(.headline)
                 OreTotalsView(totals: totalOreCost, showStarry: totalOreCost.starry > 0)
             }
             .padding(.vertical, 4)
         }
+    }
+
+    private var summaryTitle: String {
+        let isAllHeroes = selectedHeroFilter == Self.allHeroesLabel
+        if isAllHeroes && showLocked {
+            switch rarityFilter {
+            case .all:
+                return "Total to max all equipment"
+            case .epic:
+                return "Total to max all epic equipment"
+            case .common:
+                return "Total to max all common equipment"
+            }
+        }
+        return "Total to max all displayed equipment"
     }
 
     private var filtersSection: some View {
@@ -2235,7 +2493,11 @@ private struct EquipmentView: View {
             uniqueKeysWithValues: equipmentList.map { ($0.name.lowercased(), $0) }
         )
 
-        return EquipmentView.equipmentMetadata.entries.map { metadata in
+        return EquipmentView.equipmentMetadata.entries.compactMap { metadata in
+            let heroUnlockLevel = heroUnlockTownHall(metadata.hero)
+            guard profile.townHallLevel >= heroUnlockLevel else {
+                return nil
+            }
             let lookupKey = metadata.name.lowercased()
             let equipment = levelsByName[lookupKey]
             let level = hasEquipmentUnlocked ? (equipment?.level ?? 0) : 0
@@ -2250,6 +2512,24 @@ private struct EquipmentView: View {
                 rarity: metadata.rarity,
                 isUnlocked: isUnlocked
             )
+        }
+    }
+
+    private func heroUnlockTownHall(_ heroName: String) -> Int {
+        let normalized = heroName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        switch normalized {
+        case "barbarian king":
+            return 8
+        case "archer queen":
+            return 8
+        case "minion prince":
+            return 9
+        case "grand warden":
+            return 11
+        case "royal champion":
+            return 13
+        default:
+            return 8
         }
     }
 

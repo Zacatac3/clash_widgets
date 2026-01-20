@@ -245,6 +245,113 @@ struct RemainingBuildingUpgrade: Identifiable {
     let buildCost: Int
 }
 
+struct ResourceTotals: Codable {
+    var gold: Int = 0
+    var elixir: Int = 0
+    var darkElixir: Int = 0
+
+    mutating func add(resource: String, amount: Int) {
+        let key = resource.lowercased()
+        if key.contains("dark") {
+            darkElixir += amount
+        } else if key.contains("elixir") {
+            elixir += amount
+        } else if key.contains("gold") {
+            gold += amount
+        }
+    }
+
+    static func + (lhs: ResourceTotals, rhs: ResourceTotals) -> ResourceTotals {
+        var total = ResourceTotals()
+        total.gold = lhs.gold + rhs.gold
+        total.elixir = lhs.elixir + rhs.elixir
+        total.darkElixir = lhs.darkElixir + rhs.darkElixir
+        return total
+    }
+
+    var totalValue: Int {
+        gold + elixir + darkElixir
+    }
+}
+
+struct CategoryProgress: Identifiable {
+    let id: String
+    let title: String
+    let remainingTime: TimeInterval
+    let totalTime: TimeInterval
+    let remainingCost: ResourceTotals
+    let totalCost: ResourceTotals
+
+    var completion: Double {
+        if id == "walls" {
+            let total = Double(max(totalCost.totalValue, 1))
+            return max(0, min(1, 1 - (Double(remainingCost.totalValue) / total)))
+        }
+        guard totalTime > 0 else { return 1 }
+        return max(0, min(1, 1 - (remainingTime / totalTime)))
+    }
+}
+
+struct TownHallProgress: Identifiable {
+    let id: Int
+    let level: Int
+    let categories: [CategoryProgress]
+
+    var overallCompletion: Double {
+        guard !categories.isEmpty else { return 0 }
+        var weightedSum: Double = 0
+        var weightTotal: Double = 0
+        for category in categories {
+            let weight = Double(max(category.totalCost.totalValue, 1))
+            weightedSum += category.completion * weight
+            weightTotal += weight
+        }
+        guard weightTotal > 0 else { return 0 }
+        return weightedSum / weightTotal
+    }
+
+    var remainingCosts: ResourceTotals {
+        categories.reduce(ResourceTotals()) { $0 + $1.remainingCost }
+    }
+
+    var remainingTime: TimeInterval {
+        categories.map { $0.remainingTime }.reduce(0, +)
+    }
+}
+
+struct TownHallLevelCounts: Codable {
+    let level: Int
+    let counts: [String: Int]
+}
+
+struct ParsedUnitLevelData {
+    let level: Int
+    let upgradeTimeSeconds: Int
+    let upgradeCost: Int
+    let upgradeResource: String
+    let laboratoryLevel: Int
+}
+
+struct ParsedUnitData {
+    let id: Int
+    let name: String
+    let levels: [ParsedUnitLevelData]
+
+    var levelsByLevel: [Int: ParsedUnitLevelData] {
+        var output: [Int: ParsedUnitLevelData] = [:]
+        for level in levels {
+            output[level.level] = level
+        }
+        return output
+    }
+
+    func maxLevel(forLabLevel labLevel: Int) -> Int {
+        levels.filter { $0.laboratoryLevel <= labLevel && $0.level > 0 }
+            .map { $0.level }
+            .max() ?? 0
+    }
+}
+
 // Official API Response Models
 struct PlayerProfile: Codable {
     let tag: String
