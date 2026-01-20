@@ -1,0 +1,24 @@
+{
+  "originHash" : "d956466d2b6058175e6e9f872c28f1cd7f9bb6497ed46267f013fcd69a0e586e",
+  "pins" : [
+    {
+      "identity" : "colorkit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Boris-Em/ColorKit.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "6e4375a6126eac0a29893c607ae318bdbe33310c"
+      }
+    },
+    {
+      "identity" : "uiimagecolors",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/jathu/UIImageColors",
+      "state" : {
+        "revision" : "e49e6c32ea556e9fa0109dc79686bea4a10d41a2",
+        "version" : "2.2.0"
+      }
+    }
+  ],
+  "version" : 3
+}

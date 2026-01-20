@@ -1,6 +1,9 @@
 import SwiftUI
 #if canImport(UIKit)
 import UIKit
+#if canImport(UIImageColors)
+import UIImageColors
+#endif
 #endif
 #if canImport(WebKit)
 import WebKit
@@ -11,6 +14,9 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
+    @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
+    @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
+    @State private var showWhatsNew = false
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
 
@@ -44,19 +50,19 @@ struct ContentView: View {
                 .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                 .tag(Tab.equipment)
 
-            ProgressOverviewView()
-                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
-                .tag(Tab.progress)
-
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(Tab.settings)
         }
         .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
         .environmentObject(dataService)
+        .sheet(isPresented: $showWhatsNew) {
+            WhatsNewView(items: whatsNewItems)
+        }
         .onAppear {
             dataService.pruneCompletedUpgrades()
             requestNotificationsIfNeeded()
+            checkForWhatsNew()
         }
         .monitorScenePhase(scenePhase) { phase in
             switch phase {
@@ -104,14 +110,201 @@ struct ContentView: View {
         dataService.requestNotificationAuthorizationIfNeeded { _ in }
     }
 
+    private var whatsNewItems: [WhatsNewItem] {
+        defaultWhatsNewItems()
+    }
+
+    private func checkForWhatsNew() {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        guard !version.isEmpty || !build.isEmpty else { return }
+        if version != lastSeenAppVersion || build != lastSeenBuildNumber {
+            lastSeenAppVersion = version
+            lastSeenBuildNumber = build
+            showWhatsNew = true
+        }
+    }
+
     private enum Tab: Hashable {
         case dashboard
         case profile
         case equipment
         case progress
+        case palette
         case settings
     }
 }
+
+private struct WhatsNewItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let detail: String
+}
+
+private func defaultWhatsNewItems() -> [WhatsNewItem] {
+    [
+        .init(title: "Progress Dashboard", detail: "Track Town Hall completion with weighted totals."),
+        .init(title: "Equipment Filters", detail: "Equipment now respects hero unlock levels."),
+        .init(title: "Gold Pass Timing", detail: "Timers and progress bars reflect Gold Pass boosts.")
+    ]
+}
+
+private struct WhatsNewView: View {
+    @Environment(\.dismiss) private var dismiss
+    let items: [WhatsNewItem]
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 16) {
+                    Text("What’s New")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    LazyVStack(spacing: 12) {
+                        ForEach(items) { item in
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text(item.title)
+                                    .font(.headline)
+                                Text(item.detail)
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                            }
+                            .padding()
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .background(
+                                RoundedRectangle(cornerRadius: 16)
+                                    .fill(Color(.secondarySystemBackground))
+                            )
+                        }
+                    }
+                }
+                .padding()
+            }
+            .navigationTitle("What’s New")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Continue") {
+                        dismiss()
+                    }
+                }
+            }
+        }
+    }
+}
+
+#if canImport(UIKit)
+private extension UIImage {
+    var averageColor: UIColor? {
+        guard let inputImage = CIImage(image: self) else { return nil }
+        let extent = inputImage.extent
+        guard let filter = CIFilter(name: "CIAreaAverage") else { return nil }
+        filter.setValue(inputImage, forKey: kCIInputImageKey)
+        filter.setValue(CIVector(cgRect: extent), forKey: kCIInputExtentKey)
+        guard let outputImage = filter.outputImage else { return nil }
+
+        var bitmap = [UInt8](repeating: 0, count: 4)
+        let context = CIContext(options: [.workingColorSpace: NSNull()])
+        context.render(
+            outputImage,
+            toBitmap: &bitmap,
+            rowBytes: 4,
+            bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
+            format: .RGBA8,
+            colorSpace: nil
+        )
+        return UIColor(
+            red: CGFloat(bitmap[0]) / 255.0,
+            green: CGFloat(bitmap[1]) / 255.0,
+            blue: CGFloat(bitmap[2]) / 255.0,
+            alpha: CGFloat(bitmap[3]) / 255.0
+        )
+    }
+
+    func croppedToOpaquePixels(alphaThreshold: UInt8 = 8) -> UIImage? {
+        guard let cgImage = cgImage else { return nil }
+        let width = cgImage.width
+        let height = cgImage.height
+        let bytesPerPixel = 4
+        let bytesPerRow = bytesPerPixel * width
+        let bitsPerComponent = 8
+
+        var pixelData = [UInt8](repeating: 0, count: height * bytesPerRow)
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        guard let context = CGContext(
+            data: &pixelData,
+            width: width,
+            height: height,
+            bitsPerComponent: bitsPerComponent,
+            bytesPerRow: bytesPerRow,
+            space: colorSpace,
+            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
+        ) else {
+            return nil
+        }
+
+        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
+
+        var minX = width
+        var minY = height
+        var maxX = 0
+        var maxY = 0
+        var found = false
+
+        for y in 0..<height {
+            let rowOffset = y * bytesPerRow
+            for x in 0..<width {
+                let alpha = pixelData[rowOffset + (x * bytesPerPixel) + 3]
+                if alpha > alphaThreshold {
+                    if x < minX { minX = x }
+                    if y < minY { minY = y }
+                    if x > maxX { maxX = x }
+                    if y > maxY { maxY = y }
+                    found = true
+                }
+            }
+        }
+
+        guard found else { return nil }
+        let rect = CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1)
+        guard let cropped = cgImage.cropping(to: rect) else { return nil }
+        return UIImage(cgImage: cropped, scale: scale, orientation: imageOrientation)
+    }
+}
+
+private extension UIColor {
+    func adjustedBrightness(by delta: CGFloat) -> UIColor {
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        if getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
+            let newBrightness = min(max(brightness + delta, 0), 1)
+            return UIColor(hue: hue, saturation: saturation, brightness: newBrightness, alpha: alpha)
+        }
+
+        var white: CGFloat = 0
+        if getWhite(&white, alpha: &alpha) {
+            let newWhite = min(max(white + delta, 0), 1)
+            return UIColor(white: newWhite, alpha: alpha)
+        }
+
+        return self
+    }
+
+    func adjustedSaturation(by delta: CGFloat) -> UIColor {
+        var hue: CGFloat = 0
+        var saturation: CGFloat = 0
+        var brightness: CGFloat = 0
+        var alpha: CGFloat = 0
+        if getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
+            let newSaturation = min(max(saturation + delta, 0), 1)
+            return UIColor(hue: hue, saturation: newSaturation, brightness: brightness, alpha: alpha)
+        }
+        return self
+    }
+}
+#endif
 
 private struct ProgressOverviewView: View {
     @EnvironmentObject private var dataService: DataService
@@ -327,11 +520,124 @@ private struct ProgressOverviewView: View {
     }
 }
 
+private struct TownHallPaletteView: View {
+    private let maxTownHallLevel = 17
+
+    var body: some View {
+        NavigationStack {
+            List {
+                #if canImport(UIKit)
+                ForEach(1...maxTownHallLevel, id: \.self) { level in
+                    Section {
+                        TownHallPaletteRow(level: level)
+                    }
+                }
+                #else
+                Section {
+                    Text("Town Hall palettes are only available on iOS.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                #endif
+            }
+            .listStyle(.insetGrouped)
+            .navigationTitle("Town Hall Palettes")
+        }
+    }
+
+    #if canImport(UIKit)
+    private struct TownHallPaletteRow: View {
+        let level: Int
+        @State private var palette: UIImageColors?
+
+        var body: some View {
+            let image = townHallImage(for: level)
+            let displayImage = image ?? UIImage(systemName: "questionmark.square")
+            let swatches = paletteColors
+
+            return HStack(alignment: .center, spacing: 12) {
+                if let displayImage {
+                    Image(uiImage: displayImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 56, height: 56)
+                        .padding(6)
+                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.tertiarySystemBackground)))
+                }
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("TH \(level)")
+                        .font(.headline)
+
+                    if !swatches.isEmpty {
+                        HStack(spacing: 8) {
+                            ForEach(swatches.indices, id: \.self) { index in
+                                RoundedRectangle(cornerRadius: 6)
+                                    .fill(Color(swatches[index]))
+                                    .frame(width: 28, height: 28)
+                            }
+                        }
+                    } else {
+                        Text("No colors detected")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+                }
+
+                Spacer()
+            }
+            .padding(.vertical, 4)
+            .onAppear(perform: loadPalette)
+        }
+
+        private var paletteColors: [UIColor] {
+            if let palette {
+                return [palette.primary, palette.secondary, palette.detail, palette.background]
+                    .compactMap { $0 }
+            }
+            return []
+        }
+
+        private func loadPalette() {
+            #if canImport(UIImageColors)
+            guard palette == nil else { return }
+            let image = townHallImage(for: level)
+            DispatchQueue.global(qos: .userInitiated).async {
+                let colors = image?.getColors(quality: .high)
+                DispatchQueue.main.async {
+                    palette = colors
+                }
+            }
+            #endif
+        }
+
+        private func townHallImage(for level: Int) -> UIImage? {
+            guard level > 0 else { return nil }
+            let padded = String(format: "%02d", level)
+            let candidates = [
+                "town_hall/th\(level)",
+                "town_hall/\(level)",
+                "town_hall/th_\(padded)",
+                "town_hall/\(padded)"
+            ]
+            for name in candidates {
+                if let image = UIImage(named: name) {
+                    return image
+                }
+            }
+            return nil
+        }
+    }
+    #endif
+}
+
 private struct DashboardView: View {
     @EnvironmentObject private var dataService: DataService
     @State private var importStatus: String?
     @AppStorage("hasSeenClashDashOnboarding") private var hasSeenOnboarding = false
-    @State private var showHelpSheet = false
+    @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
+    @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
+    @State private var infoSheet: InfoSheetType?
 
     var body: some View {
         NavigationStack {
@@ -467,25 +773,39 @@ private struct DashboardView: View {
                     }
                 }
             }
-            .sheet(isPresented: $showHelpSheet) {
-                HelpSheetView()
+            .sheet(item: $infoSheet) { sheet in
+                switch sheet {
+                case .welcome:
+                    HelpSheetView()
+                case .whatsNew:
+                    WhatsNewView(items: defaultWhatsNewItems())
+                }
             }
             .onAppear {
                 if !hasSeenOnboarding {
                     hasSeenOnboarding = true
-                    showHelpSheet = true
+                    infoSheet = .welcome
                 }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Upgrade Tracker")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        showHelpSheet = true
-                    } label: {
-                        Image(systemName: "questionmark.circle")
+                    HStack(spacing: 10) {
+                        Button {
+                            infoSheet = .welcome
+                        } label: {
+                            Image(systemName: "questionmark.circle")
+                        }
+                        .accessibilityLabel("Show Welcome")
+
+                        Button {
+                            infoSheet = .whatsNew
+                        } label: {
+                            Image(systemName: "exclamationmark.circle")
+                        }
+                        .accessibilityLabel("Show What's New")
                     }
-                    .accessibilityLabel("Show Help")
                 }
 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -579,6 +899,20 @@ private struct DashboardView: View {
         .buttonStyle(.borderedProminent)
         .tint(.accentColor)
     }
+
+    private var shouldShowWhatsNew: Bool {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        guard !version.isEmpty || !build.isEmpty else { return false }
+        return version != lastSeenAppVersion || build != lastSeenBuildNumber
+    }
+
+    private enum InfoSheetType: String, Identifiable {
+        case welcome
+        case whatsNew
+
+        var id: String { rawValue }
+    }
 }
 
 private struct TownHallBadgeView: View {
@@ -627,6 +961,10 @@ private struct TownHallBadgeView: View {
 private struct ProfileDetailView: View {
     @EnvironmentObject private var dataService: DataService
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
+    #if canImport(UIImageColors)
+    @State private var townHallPalette: UIImageColors?
+    @State private var townHallPaletteLevel: Int = 0
+    #endif
 
     var body: some View {
         NavigationStack {
@@ -640,8 +978,6 @@ private struct ProfileDetailView: View {
                     VStack(spacing: 20) {
                         profileSummaryCard
                         profileSettingsCard
-                        statsGrid
-                        builderStatsCard
                         heroShowcase
                         achievementsSection
                     }
@@ -670,9 +1006,11 @@ private struct ProfileDetailView: View {
             }
             .onAppear {
                 dataService.refreshCurrentProfile(force: false)
+                loadTownHallPaletteIfNeeded()
             }
             .onChangeCompat(of: townHallLevel) { _ in
                 clampBuilderCount()
+                loadTownHallPaletteIfNeeded()
             }
             .onChangeCompat(of: dataService.builderCount) { _ in
                 clampBuilderCount()
@@ -705,85 +1043,182 @@ private struct ProfileDetailView: View {
         let trophies = resolvedProfile?.trophies ?? 0
         let thLevel = resolvedProfile?.townHallLevel ?? 0
         let league = resolvedProfile?.leagueTier?.name ?? "Unranked"
-        let labels = resolvedProfile?.labels ?? []
+        let builderHall = resolvedProfile?.builderHallLevel ?? 0
+        let builderTrophies = resolvedProfile?.builderBaseTrophies ?? 0
+        let warStars = resolvedProfile?.warStars ?? 0
         let lastSync = dataService.currentProfile?.lastAPIFetchDate
 
-        return VStack(alignment: .leading, spacing: 12) {
-            Text(name)
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            Text(tag)
-                .font(.caption)
-                .foregroundColor(.secondary)
-            HStack {
-                infoPill(title: "Town Hall", value: thLevel > 0 ? "\(thLevel)" : "–")
-                infoPill(title: "Trophies", value: trophies > 0 ? "\(trophies)" : "–")
-                infoPill(title: "League", value: league)
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+        return ZStack(alignment: .topTrailing) {
+            VStack(alignment: .leading, spacing: 12) {
+                Text(name)
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                Text(tag)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                HStack {
+                    infoPill(title: "Town Hall", value: thLevel > 0 ? "\(thLevel)" : "–")
+                    infoPill(title: "Trophies", value: trophies > 0 ? "\(trophies)" : "–")
+                    infoPill(title: "League", value: league)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            if !labels.isEmpty {
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 90), spacing: 8)], spacing: 8) {
-                    ForEach(labels, id: \.id) { label in
-                        Text(label.name)
-                            .font(.caption)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 6)
-                            .background(Color.white.opacity(0.2))
-                            .clipShape(Capsule())
-                    }
+                HStack {
+                    infoPill(title: "Builder Hall", value: builderHall > 0 ? "\(builderHall)" : "–")
+                    infoPill(title: "Builder Trophies", value: builderTrophies > 0 ? "\(builderTrophies)" : "–")
+                    infoPill(title: "War Stars", value: warStars > 0 ? "\(warStars)" : "–")
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+                if let lastSync {
+                    Text("Last synced \(lastSync, style: .relative) ago")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
                 }
             }
+            .padding()
 
-            if let lastSync {
-                Text("Last synced \(lastSync, style: .relative) ago")
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+            if let leagueAsset = leagueAssetName(for: league) {
+                Image(leagueAsset)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 56, height: 56)
+                    .padding(12)
+                    .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
             }
         }
-        .padding()
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
-            LinearGradient(colors: [.purple.opacity(0.8), .blue.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+            profileGradient(for: thLevel)
         )
         .foregroundColor(.white)
         .clipShape(RoundedRectangle(cornerRadius: 24))
     }
 
-    private var statsGrid: some View {
-        let profile = resolvedProfile
-        let items: [StatItem] = [
-            .init(title: "War Stars", value: profile?.warStars ?? 0),
-            .init(title: "Donations", value: profile?.donations ?? 0),
-            .init(title: "Donations Recv", value: profile?.donationsReceived ?? 0),
-            .init(title: "Capital Gold", value: profile?.clanCapitalContributions ?? 0),
-            .init(title: "Best Trophies", value: profile?.bestTrophies ?? 0),
-            .init(title: "Builder Trophies", value: profile?.builderBaseTrophies ?? 0)
-        ]
-
-        return StatGrid(items: items)
+    @ViewBuilder
+    private var profileGradientSwatches: some View {
+        #if canImport(UIKit) && canImport(UIImageColors)
+                    if let palette = townHallPalette {
+                        let swatches = [palette.primary, palette.secondary, palette.detail, palette.background]
+                                .compactMap { $0 }
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Dominant Colors")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                HStack(spacing: 8) {
+                    ForEach(swatches.indices, id: \.self) { index in
+                        RoundedRectangle(cornerRadius: 8)
+                            .fill(Color(swatches[index]))
+                            .frame(width: 36, height: 36)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        #endif
     }
 
-    private var builderStatsCard: some View {
-        let profile = resolvedProfile
-        let builderHall = profile?.builderHallLevel ?? 0
-        let builderTrophies = profile?.builderBaseTrophies ?? 0
-        let bestBuilder = profile?.bestBuilderBaseTrophies ?? 0
-        let builderLeague = profile?.builderBaseLeague?.name ?? "–"
+    private func profileGradient(for townHallLevel: Int) -> LinearGradient {
+        #if canImport(UIKit)
+        if let image = townHallImage(for: townHallLevel) {
+            #if canImport(UIImageColors)
+            if let palette = townHallPalette {
+                let primaryColor = palette.detail ?? palette.background ?? palette.primary ?? palette.secondary ?? UIColor.systemBlue
+                let secondaryColor = palette.background ?? palette.detail ?? primaryColor
+                let primary = primaryColor
+                    .adjustedSaturation(by: 0.28)
+                    .adjustedBrightness(by: 0.14)
+                let secondary = secondaryColor
+                    .adjustedSaturation(by: 0.24)
+                    .adjustedBrightness(by: 0.02)
+                return LinearGradient(
+                    colors: [Color(primary).opacity(0.95), Color(secondary).opacity(0.95)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            }
+            #endif
 
-        return VStack(alignment: .leading, spacing: 12) {
-            Text("Builder Base")
-                .font(.headline)
-            HStack {
-                infoPill(title: "Hall", value: builderHall > 0 ? "\(builderHall)" : "–")
-                infoPill(title: "Trophies", value: builderTrophies > 0 ? "\(builderTrophies)" : "–")
-                infoPill(title: "Best", value: bestBuilder > 0 ? "\(bestBuilder)" : "–")
-                infoPill(title: "League", value: builderLeague)
+            if let average = image.averageColor {
+                let primary = average
+                    .adjustedSaturation(by: 0.22)
+                    .adjustedBrightness(by: 0.18)
+                let secondary = average
+                    .adjustedSaturation(by: 0.18)
+                    .adjustedBrightness(by: -0.06)
+                return LinearGradient(
+                    colors: [Color(primary).opacity(0.92), Color(secondary).opacity(0.92)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 20).fill(Color(.secondarySystemBackground)))
+        #endif
+        return LinearGradient(colors: [.purple.opacity(0.8), .blue.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
     }
+
+    private func townHallImage(for level: Int) -> UIImage? {
+        #if canImport(UIKit)
+        guard level > 0 else { return nil }
+        let padded = String(format: "%02d", level)
+        let candidates = [
+            "town_hall/th\(level)",
+            "town_hall/\(level)",
+            "town_hall/th_\(padded)",
+            "town_hall/\(padded)"
+        ]
+        for name in candidates {
+            if let image = UIImage(named: name) {
+                return image
+            }
+        }
+        return nil
+        #else
+        return nil
+        #endif
+    }
+
+    private func loadTownHallPaletteIfNeeded() {
+        #if canImport(UIKit) && canImport(UIImageColors)
+        let level = townHallLevel
+        guard level > 0 else {
+            townHallPalette = nil
+            townHallPaletteLevel = 0
+            return
+        }
+        if townHallPaletteLevel == level, townHallPalette != nil { return }
+        townHallPaletteLevel = level
+        let image = townHallImage(for: level)
+        DispatchQueue.global(qos: .userInitiated).async {
+            let palette = image?.getColors(quality: .high)
+            DispatchQueue.main.async {
+                if townHallPaletteLevel == level {
+                    townHallPalette = palette
+                }
+            }
+        }
+        #endif
+    }
+
+    private func leagueAssetName(for league: String) -> String? {
+        let trimmed = league.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        if trimmed.localizedCaseInsensitiveCompare("Unranked") == .orderedSame { return nil }
+        if trimmed.localizedCaseInsensitiveCompare("Legend League") == .orderedSame {
+            return "leagues/legend_league"
+        }
+        let firstWord = trimmed.split(separator: " ").first.map(String.init) ?? trimmed
+        let normalized = firstWord.lowercased()
+        let allowed = CharacterSet.alphanumerics
+        let mapped = normalized.unicodeScalars.map { scalar -> Character in
+            allowed.contains(scalar) ? Character(scalar) : "_"
+        }
+        let collapsed = String(mapped)
+            .replacingOccurrences(of: "__+", with: "_", options: .regularExpression)
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+        guard !collapsed.isEmpty else { return nil }
+        return "leagues/\(collapsed)"
+    }
+
 
     private var profileSettingsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -863,15 +1298,51 @@ private struct ProfileDetailView: View {
     }
 
     private var heroShowcase: some View {
-        guard let heroes = resolvedProfile?.heroes?.sorted(by: { $0.level > $1.level }).prefix(4), !heroes.isEmpty else {
+        guard let heroes = resolvedProfile?.heroes, !heroes.isEmpty else {
             return AnyView(EmptyView())
+        }
+        let excludedHeroes: Set<String> = [
+            "battle machine",
+            "battle copter"
+        ]
+        let filteredHeroes = heroes.filter { hero in
+            !excludedHeroes.contains(hero.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
+        }
+        guard !filteredHeroes.isEmpty else {
+            return AnyView(EmptyView())
+        }
+        let orderedNames = [
+            "Barbarian King",
+            "Archer Queen",
+            "Grand Warden",
+            "Royal Champion",
+            "Minion Prince"
+        ]
+        let sortedHeroes = filteredHeroes.sorted { lhs, rhs in
+            let leftIndex = orderedNames.firstIndex(of: lhs.name) ?? orderedNames.count
+            let rightIndex = orderedNames.firstIndex(of: rhs.name) ?? orderedNames.count
+            if leftIndex == rightIndex {
+                return lhs.level > rhs.level
+            }
+            return leftIndex < rightIndex
         }
         return AnyView(
             VStack(alignment: .leading, spacing: 12) {
                 Text("Hero Levels")
                     .font(.headline)
-                ForEach(Array(heroes), id: \.name) { hero in
+                ForEach(sortedHeroes, id: \.name) { hero in
                     HStack {
+                        if let assetName = heroAssetName(hero.name) {
+                            Image(assetName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 32, height: 32)
+                        } else {
+                            Image(systemName: "person.fill")
+                                .font(.system(size: 24))
+                                .foregroundColor(.secondary)
+                                .frame(width: 32, height: 32)
+                        }
                         VStack(alignment: .leading) {
                             Text(hero.name)
                                 .font(.subheadline)
@@ -891,6 +1362,26 @@ private struct ProfileDetailView: View {
             .padding()
             .background(RoundedRectangle(cornerRadius: 20).fill(Color(.secondarySystemBackground)))
         )
+    }
+
+    private func heroAssetName(_ heroName: String) -> String? {
+        let trimmed = heroName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+        let lowercased = trimmed.lowercased()
+        switch lowercased {
+        case "barbarian king":
+            return "heroes/Barbarian_King"
+        case "archer queen":
+            return "heroes/Archer_Queen"
+        case "grand warden":
+            return "heroes/Grand_Warden"
+        case "royal champion":
+            return "heroes/Royal_Champion"
+        case "minion prince":
+            return "heroes/minion_prince"
+        default:
+            return nil
+        }
     }
 
     private var achievementsSection: some View {
@@ -1228,6 +1719,10 @@ private struct SettingsView: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
+
+                    Text("Notification preferences are saved per profile.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
                 }
 
                 Section("Maintenance") {
@@ -1785,6 +2280,12 @@ private struct HelpSheetView: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 24) {
                     helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
+
+                    helpCard(title: "IMPORTANT NOTE ⚠️", bullets: [
+                        "This app is currently still in early development",
+                        "most things related to builder base are either missing or incomplete, this is low on the current priority list",
+                        "Some things may work unexpectedly, please report it via the feedback form in Settings"
+                    ])
 
                     helpCard(title: "Importing Data", bullets: [
                         "Copy the exported JSON from Clash of Clans",

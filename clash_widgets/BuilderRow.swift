@@ -3,6 +3,7 @@ import UIKit
 import Foundation
 
 struct BuilderRow: View {
+    @EnvironmentObject private var dataService: DataService
     let upgrade: BuildingUpgrade
     
     var body: some View {
@@ -15,6 +16,9 @@ struct BuilderRow: View {
                     .scaledToFit()
                     .frame(width: 36, height: 36)
                 Text("Lv \(upgrade.targetLevel - 1) → \(upgrade.targetLevel)")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Text(formatBoostedDuration(boostedTotalDuration(for: upgrade)))
                     .font(.caption2)
                     .foregroundColor(.secondary)
             }
@@ -69,25 +73,74 @@ struct BuilderRow: View {
 
     @ViewBuilder
     private var timeRemainingView: some View {
-        let remainingSeconds = upgrade.endTime.timeIntervalSinceNow
+        let remainingSeconds = effectiveRemainingSeconds(for: upgrade, referenceDate: Date())
         if remainingSeconds > 0 && remainingSeconds <= 3600 {
             TimelineView(.periodic(from: Date(), by: 1)) { context in
-                Text(upgrade.timeRemaining(referenceDate: context.date))
+                Text(formatRemaining(effectiveRemainingSeconds(for: upgrade, referenceDate: context.date)))
                     .font(.subheadline)
                     .foregroundColor(.orange)
             }
         } else {
-            Text(upgrade.timeRemaining)
+            Text(formatRemaining(remainingSeconds))
                 .font(.subheadline)
                 .foregroundColor(.orange)
         }
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade, referenceDate: Date) -> Double {
-        let total = max(upgrade.totalDuration, 1)
-        let elapsed = referenceDate.timeIntervalSince(upgrade.startTime)
-        if elapsed <= 0 { return 0 }
+        let total = boostedTotalDuration(for: upgrade)
+        let remaining = effectiveRemainingSeconds(for: upgrade, referenceDate: referenceDate)
+        let elapsed = max(total - remaining, 0)
         return min(max(elapsed / total, 0.0), 1.0)
+    }
+
+    private func boostedTotalDuration(for upgrade: BuildingUpgrade) -> TimeInterval {
+        let boost = max(0, min(100, dataService.goldPassBoost))
+        let factor = max(0.0, 1.0 - (Double(boost) / 100.0))
+        return max(upgrade.totalDuration * factor, 1)
+    }
+
+    private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, referenceDate: Date) -> TimeInterval {
+        let total = boostedTotalDuration(for: upgrade)
+        let actualRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
+        return min(actualRemaining, total)
+    }
+
+    private func formatRemaining(_ seconds: TimeInterval) -> String {
+        let remaining = Int(max(seconds, 0))
+        if remaining <= 0 { return "Complete" }
+
+        let days = remaining / 86400
+        let hours = (remaining % 86400) / 3600
+        let minutes = (remaining % 3600) / 60
+        let secs = remaining % 60
+
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        }
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        if minutes > 0 {
+            return "\(minutes)m \(secs)s"
+        }
+        return "\(secs)s"
+    }
+
+    private func formatBoostedDuration(_ seconds: TimeInterval) -> String {
+        let total = Int(max(seconds, 0))
+        let days = total / 86400
+        let hours = (total % 86400) / 3600
+        let minutes = (total % 3600) / 60
+        let secs = total % 60
+
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        }
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        return "\(minutes)m \(secs)s"
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {

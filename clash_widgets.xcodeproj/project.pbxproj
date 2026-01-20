@@ -11,17 +11,16 @@
 		8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
 		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
+		88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3A2F1F522C00B855B8 /* ColorKit */; };
+		88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3D2F1F551500B855B8 /* UIImageColors */; };
 		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
 		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
 		A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */; };
 		A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */; };
-		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
-		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 		A1B2C4052F0F3B4E00FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
 		A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */; };
 		A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */; };
 		A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
-		E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */; };
 		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
 		B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */; };
 		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
@@ -31,8 +30,11 @@
 		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
 		C1D2E3162F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
 		D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0012F15B00000FAE5F1 /* asset_map.json */; };
-		E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */; };
 		D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0032F15B00000FAE5F1 /* upgrade_info */; };
+		E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */; };
+		E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */; };
+		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
+		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,23 +72,23 @@
 		A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderRow.swift; sourceTree = "<group>"; };
 		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataService.swift; sourceTree = "<group>"; };
-		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
-		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 		A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
-		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityHelper.swift; sourceTree = "<group>"; };
 		A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = clash_widgetsApp.swift; sourceTree = "<group>"; };
 		A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = clash_widgets.entitlements; sourceTree = "<group>"; };
 		A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
 		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
 		B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetBundle.swift; sourceTree = "<group>"; };
 		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
+		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		D4F1A0012F15B00000FAE5F1 /* asset_map.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = asset_map.json; path = ../json_files/asset_map.json; sourceTree = "<group>"; };
-		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
 		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
+		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
+		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
+		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
+		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -94,6 +96,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */,
+				88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +197,8 @@
 			);
 			name = clash_widgets;
 			packageProductDependencies = (
+				88C67E3A2F1F522C00B855B8 /* ColorKit */,
+				88C67E3D2F1F551500B855B8 /* UIImageColors */,
 			);
 			productName = clash_widgets;
 			productReference = 8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */;
@@ -244,6 +250,10 @@
 			);
 			mainGroup = 8879E7BB2F0F3B4E00FAE5F1;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */,
+				88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8879E7C52F0F3B4E00FAE5F1 /* Products */;
 			projectDirPath = "";
@@ -277,7 +287,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
 
 /* Begin PBXSourcesBuildPhase section */
 		8879E7C02F0F3B4E00FAE5F1 /* Sources */ = {
@@ -606,6 +615,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Boris-Em/ColorKit.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/jathu/UIImageColors";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.2.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		88C67E3A2F1F522C00B855B8 /* ColorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */;
+			productName = ColorKit;
+		};
+		88C67E3D2F1F551500B855B8 /* UIImageColors */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */;
+			productName = UIImageColors;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8879E7BC2F0F3B4E00FAE5F1 /* Project object */;
 }

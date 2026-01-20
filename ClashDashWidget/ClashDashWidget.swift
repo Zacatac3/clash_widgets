@@ -13,12 +13,14 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let upgrades: [BuildingUpgrade]
     let builderCount: Int
+    let goldPassBoost: Int
     let debugText: String
 
-    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, debugText: String) {
+    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, goldPassBoost: Int = 0, debugText: String) {
         self.date = date
         self.upgrades = upgrades
         self.builderCount = builderCount
+        self.goldPassBoost = goldPassBoost
         self.debugText = debugText
     }
 }
@@ -27,20 +29,20 @@ struct Provider: TimelineProvider {
     let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Placeholder")
+        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, goldPassBoost: 0, debugText: "Placeholder")
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let (upgrades, builderCount) = loadUpgrades()
+        let (upgrades, builderCount, goldPassBoost) = loadUpgrades()
         let text = loadDebugText()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, debugText: text)
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, goldPassBoost: goldPassBoost, debugText: text)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        let (upgrades, builderCount) = loadUpgrades()
+        let (upgrades, builderCount, goldPassBoost) = loadUpgrades()
         let text = loadDebugText()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, debugText: text)
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, goldPassBoost: goldPassBoost, debugText: text)
 
         // Refresh every 15 minutes
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
@@ -48,18 +50,19 @@ struct Provider: TimelineProvider {
         completion(timeline)
     }
     
-    private func loadUpgrades() -> ([BuildingUpgrade], Int) {
+    private func loadUpgrades() -> ([BuildingUpgrade], Int, Int) {
         if let state = PersistentStore.loadState() {
             let count = max(state.currentProfile?.builderCount ?? 5, 0)
-            return (prioritized(upgrades: state.activeUpgrades, builderCount: count), count)
+            let boost = max(state.currentProfile?.goldPassBoost ?? 0, 0)
+            return (prioritized(upgrades: state.activeUpgrades, builderCount: count), count, boost)
         }
 
         let sharedDefaults = UserDefaults(suiteName: appGroup)
                 guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
                             let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
-                        return ([], 5)
+                        return ([], 5, 0)
         }
-                return (prioritized(upgrades: decoded, builderCount: 5), 5)
+                    return (prioritized(upgrades: decoded, builderCount: 5), 5, 0)
     }
     
     private func loadDebugText() -> String {
@@ -176,10 +179,7 @@ struct ClashDashWidgetEntryView : View {
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade) -> Double {
-        let total = max(upgrade.totalDuration, 1)
-        let elapsed = Date().timeIntervalSince(upgrade.startTime)
-        if elapsed <= 0 { return 0 }
-        return min(max(elapsed / total, 0.0), 1.0)
+        goldPassProgressFraction(for: upgrade, boost: entry.goldPassBoost)
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
@@ -236,6 +236,24 @@ struct ClashDashWidget: Widget {
         .description("Track your building upgrades.")
         .supportedFamilies([.systemMedium])
     }
+}
+
+private func goldPassProgressFraction(for upgrade: BuildingUpgrade, boost: Int, referenceDate: Date = Date()) -> Double {
+    let total = goldPassBoostedTotalDuration(for: upgrade, boost: boost)
+    let remaining = goldPassEffectiveRemaining(for: upgrade, referenceDate: referenceDate, totalDuration: total)
+    let elapsed = max(total - remaining, 0)
+    return min(max(elapsed / total, 0.0), 1.0)
+}
+
+private func goldPassBoostedTotalDuration(for upgrade: BuildingUpgrade, boost: Int) -> TimeInterval {
+    let clamped = max(0, min(100, boost))
+    let factor = max(0.0, 1.0 - (Double(clamped) / 100.0))
+    return max(upgrade.totalDuration * factor, 1)
+}
+
+private func goldPassEffectiveRemaining(for upgrade: BuildingUpgrade, referenceDate: Date, totalDuration: TimeInterval) -> TimeInterval {
+    let actualRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
+    return min(actualRemaining, totalDuration)
 }
 
 #Preview(as: .systemMedium) {
@@ -360,10 +378,7 @@ struct LabPetWidgetEntryView: View {
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade) -> Double {
-        let total = max(upgrade.totalDuration, 1)
-        let elapsed = Date().timeIntervalSince(upgrade.startTime)
-        if elapsed <= 0 { return 0 }
-        return min(max(elapsed / total, 0.0), 1.0)
+        goldPassProgressFraction(for: upgrade, boost: entry.goldPassBoost)
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
@@ -536,10 +551,7 @@ struct BuilderBaseWidgetEntryView: View {
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade) -> Double {
-        let total = max(upgrade.totalDuration, 1)
-        let elapsed = Date().timeIntervalSince(upgrade.startTime)
-        if elapsed <= 0 { return 0 }
-        return min(max(elapsed / total, 0.0), 1.0)
+        goldPassProgressFraction(for: upgrade, boost: entry.goldPassBoost)
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {

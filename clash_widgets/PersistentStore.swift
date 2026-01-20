@@ -9,13 +9,13 @@ struct PersistentStore {
         var profiles: [PlayerAccount]
         var selectedProfileID: UUID?
         var appearancePreference: AppearancePreference
-        var notificationSettings: NotificationSettings
+        var notificationSettings: NotificationSettings?
 
         init(
             profiles: [PlayerAccount],
             selectedProfileID: UUID?,
             appearancePreference: AppearancePreference = .device,
-            notificationSettings: NotificationSettings = .default
+            notificationSettings: NotificationSettings? = nil
         ) {
             self.profiles = profiles
             self.selectedProfileID = selectedProfileID
@@ -35,7 +35,7 @@ struct PersistentStore {
             self.profiles = try container.decode([PlayerAccount].self, forKey: .profiles)
             self.selectedProfileID = try container.decodeIfPresent(UUID.self, forKey: .selectedProfileID)
             self.appearancePreference = try container.decodeIfPresent(AppearancePreference.self, forKey: .appearancePreference) ?? .device
-            self.notificationSettings = try container.decodeIfPresent(NotificationSettings.self, forKey: .notificationSettings) ?? .default
+            self.notificationSettings = try container.decodeIfPresent(NotificationSettings.self, forKey: .notificationSettings)
         }
 
         func encode(to encoder: Encoder) throws {
@@ -43,7 +43,7 @@ struct PersistentStore {
             try container.encode(profiles, forKey: .profiles)
             try container.encodeIfPresent(selectedProfileID, forKey: .selectedProfileID)
             try container.encode(appearancePreference, forKey: .appearancePreference)
-            try container.encode(notificationSettings, forKey: .notificationSettings)
+            try container.encodeIfPresent(notificationSettings, forKey: .notificationSettings)
         }
 
         var currentProfile: PlayerAccount? {

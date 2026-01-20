@@ -84,6 +84,7 @@ class DataService: ObservableObject {
     @Published var notificationSettings: NotificationSettings = .default {
         didSet {
             guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.notificationSettings = notificationSettings }
             handleNotificationSettingsChange(from: oldValue)
         }
     }
@@ -427,7 +428,7 @@ class DataService: ObservableObject {
         profiles = [freshProfile]
         selectedProfileID = freshProfile.id
         appearancePreference = .device
-        notificationSettings = .default
+        notificationSettings = freshProfile.notificationSettings
         builderCount = freshProfile.builderCount
         builderApprenticeLevel = freshProfile.builderApprenticeLevel
         labAssistantLevel = freshProfile.labAssistantLevel
@@ -640,7 +641,7 @@ class DataService: ObservableObject {
             profiles: profiles,
             selectedProfileID: selectedProfileID,
             appearancePreference: appearancePreference,
-            notificationSettings: notificationSettings
+            notificationSettings: nil
         )
 
         persistenceQueue.async {
@@ -678,7 +679,14 @@ class DataService: ObservableObject {
             profiles = state.profiles
             selectedProfileID = state.selectedProfileID
             appearancePreference = state.appearancePreference
-            notificationSettings = state.notificationSettings
+            if let legacySettings = state.notificationSettings,
+               profiles.allSatisfy({ $0.notificationSettings == .default }) {
+                profiles = profiles.map { profile in
+                    var updated = profile
+                    updated.notificationSettings = legacySettings
+                    return updated
+                }
+            }
         } else {
             let sharedDefaults = UserDefaults(suiteName: DataService.appGroup)
             let storedName = sharedDefaults?.string(forKey: "widget_simple_text") ?? ""
@@ -699,7 +707,6 @@ class DataService: ObservableObject {
             )
             profiles = [profile]
             selectedProfileID = profile.id
-            notificationSettings = .default
         }
 
         ensureProfiles()
@@ -724,6 +731,7 @@ class DataService: ObservableObject {
         lastImportDate = profile.lastImportDate
         activeUpgrades = profile.activeUpgrades
         cachedProfile = profile.cachedProfile
+        notificationSettings = profile.notificationSettings
         builderCount = profile.builderCount
         builderApprenticeLevel = profile.builderApprenticeLevel
         labAssistantLevel = profile.labAssistantLevel
@@ -916,6 +924,7 @@ class DataService: ObservableObject {
             let export = try decoder.decode(CoCExport.self, from: data)
             let upgrades = collectUpgrades(from: export)
                 .sorted(by: { $0.endTime < $1.endTime })
+            let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage }.count
             let importTimestamp = Date()
             let normalizedTag = export.tag?.replacingOccurrences(of: "#", with: "").uppercased()
 
@@ -924,6 +933,9 @@ class DataService: ObservableObject {
                 profile.rawJSON = input
                 profile.lastImportDate = importTimestamp
                 profile.activeUpgrades = upgrades
+                if inferredBuilderCount > profile.builderCount {
+                    profile.builderCount = inferredBuilderCount
+                }
                 if let normalizedTag = normalizedTag, !normalizedTag.isEmpty {
                     profile.tag = normalizedTag
                     if profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
