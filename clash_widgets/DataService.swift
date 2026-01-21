@@ -130,6 +130,10 @@ class DataService: ObservableObject {
     var cachedTownHallLevels: [TownHallLevelCounts]?
     var cachedBuildingNameToId: [String: Int]?
     var cachedParsedUnits: [String: [Int: ParsedUnitData]] = [:]
+    var cachedMiniLevels: [ParsedMiniLevel]?
+    private var cachedMiniLevelsByName: [String: ParsedMiniLevel] = [:]
+    private var cachedMiniLevelsNameMap: [String: String] = [:]
+    private var cachedHelperLevelsByName: [String: [HelperLevel]] = [:]
 
     var currentProfile: PlayerAccount? {
         if let id = selectedProfileID,
@@ -146,10 +150,19 @@ class DataService: ObservableObject {
         cachedParsedBuildings = loadParsedBuildingsData()
         cachedTownHallLevels = loadTownHallLevelsData()
         cachedBuildingNameToId = loadBuildingNameToIdData()
+        cachedMiniLevels = loadMiniLevelsData()
+        cachedMiniLevelsByName = makeMiniLevelsByInternalName(cachedMiniLevels ?? [])
+        cachedMiniLevelsNameMap = loadMiniLevelsNameMap()
+        cachedHelperLevelsByName = loadHelperLevelsData()
         saveToStorage()
         DispatchQueue.main.async { [weak self] in
             self?.refreshCurrentProfileIfNeeded(force: false)
         }
+    }
+
+    private struct HelperLevel {
+        let level: Int
+        let requiredTownHall: Int
     }
 
     func remainingBuildingUpgrades(for townHallLevel: Int) -> [RemainingBuildingUpgrade] {
@@ -206,6 +219,89 @@ class DataService: ObservableObject {
             }
         }
         return nil
+    }
+
+    func loadMiniLevelsData() -> [ParsedMiniLevel]? {
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        let decoder = JSONDecoder()
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("mini_levels.json")
+            if let data = try? Data(contentsOf: fileURL),
+               let parsed = try? decoder.decode([ParsedMiniLevel].self, from: data) {
+                return parsed
+            }
+        }
+        return nil
+    }
+
+    func makeMiniLevelsByInternalName(_ items: [ParsedMiniLevel]) -> [String: ParsedMiniLevel] {
+        var output: [String: ParsedMiniLevel] = [:]
+        for item in items {
+            output[item.internalName.lowercased()] = item
+        }
+        return output
+    }
+
+    func loadMiniLevelsNameMap() -> [String: String] {
+        let folders = Self.candidateFolderURLs(named: "json_maps")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("mini_levels_json_map.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+            var output: [String: String] = [:]
+            for (_, value) in raw {
+                guard let entry = value as? [String: Any] else { continue }
+                let displayName = (entry["displayName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                let internalName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                guard !displayName.isEmpty, !internalName.isEmpty else { continue }
+                output[displayName.lowercased()] = internalName.lowercased()
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
+    }
+
+    private func loadHelperLevelsData() -> [String: [HelperLevel]] {
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("villager_apprentices.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+            var output: [String: [HelperLevel]] = [:]
+            for entry in raw {
+                guard let internalName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines),
+                      !internalName.isEmpty else { continue }
+                let levelsRaw = entry["levels"] as? [[String: Any]] ?? []
+                let parsedLevels: [HelperLevel] = levelsRaw.compactMap { levelEntry in
+                    guard let levelValue = parseInt(levelEntry["level"]) else { return nil }
+                    guard let requiredValue = parseInt(levelEntry["RequiredTownHallLevel"]) else { return nil }
+                    return HelperLevel(level: levelValue, requiredTownHall: requiredValue)
+                }
+                if !parsedLevels.isEmpty {
+                    output[internalName.lowercased()] = parsedLevels
+                }
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
+    }
+
+    func helperMaxLevel(internalName: String, townHallLevel: Int) -> Int {
+        guard townHallLevel > 0 else { return 0 }
+        let key = internalName.lowercased()
+        let levels = cachedHelperLevelsByName[key] ?? []
+        let allowed = levels.filter { $0.requiredTownHall <= townHallLevel }
+        return allowed.map { $0.level }.max() ?? 0
+    }
+
+    func helperUnlockTownHall(internalName: String) -> Int? {
+        let key = internalName.lowercased()
+        let levels = cachedHelperLevelsByName[key] ?? []
+        return levels.map { $0.requiredTownHall }.min()
     }
 
     func makeParsedBuildingsByIdMap(_ buildings: [ParsedBuilding]) -> [Int: ParsedBuilding] {
@@ -325,6 +421,7 @@ class DataService: ObservableObject {
     @discardableResult
     func addProfile(
         tag: String,
+        displayName: String = "",
         builderCount: Int = 5,
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
@@ -332,9 +429,15 @@ class DataService: ObservableObject {
         goldPassBoost: Int = 0
     ) -> UUID {
         let normalizedTag = normalizeTag(tag)
-        guard !normalizedTag.isEmpty else { return currentProfile?.id ?? UUID() }
+        let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        let resolvedName: String
+        if trimmedName.isEmpty {
+            resolvedName = normalizedTag.isEmpty ? defaultProfileName() : normalizedTag
+        } else {
+            resolvedName = trimmedName
+        }
         let profile = PlayerAccount(
-            displayName: defaultProfileName(),
+            displayName: resolvedName,
             tag: normalizedTag,
             builderCount: builderCount,
             builderApprenticeLevel: builderApprenticeLevel,
@@ -397,6 +500,23 @@ class DataService: ObservableObject {
         activeUpgrades = []
         rawJSON = ""
         lastImportDate = nil
+    }
+
+    func resetGoldPassBoostForAllProfiles() {
+        ensureProfiles()
+        suppressPersistence = true
+        profiles = profiles.map { profile in
+            var updated = profile
+            updated.goldPassBoost = 0
+            return updated
+        }
+        if let current = currentProfile {
+            goldPassBoost = current.goldPassBoost
+        } else {
+            goldPassBoost = 0
+        }
+        suppressPersistence = false
+        persistChanges(reloadWidgets: true)
     }
 
     func pruneCompletedUpgrades(referenceDate: Date = Date()) {
@@ -632,7 +752,15 @@ class DataService: ObservableObject {
     }
 
     private func scheduleUpgradeNotifications() {
-        notificationManager.syncNotifications(for: activeUpgrades, settings: notificationSettings)
+        let now = Date()
+        var combined: [BuildingUpgrade] = []
+        for profile in profiles {
+            let settings = profile.notificationSettings
+            guard settings.notificationsEnabled else { continue }
+            let filtered = profile.activeUpgrades.filter { settings.allows(category: $0.category) && $0.endTime > now }
+            combined.append(contentsOf: filtered)
+        }
+        notificationManager.syncNotifications(for: combined)
     }
 
     private func saveToStorage() {
@@ -999,8 +1127,20 @@ class DataService: ObservableObject {
     }
 
     private func convert(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
-        convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+        items.compactMap { item in
+            guard let timer = item.timer, timer > 0 else { return nil }
+            let superchargeLevel = item.supercharge
+            let superchargeTargetLevel = superchargeLevel.map { $0 + 1 }
+            return buildUpgrade(
+                dataId: item.data,
+                currentLevel: item.lvl,
+                remainingSeconds: TimeInterval(timer),
+                category: category,
+                fallbackPrefix: fallbackPrefix,
+                referenceDate: referenceDate,
+                superchargeLevel: superchargeLevel,
+                superchargeTargetLevel: superchargeTargetLevel
+            )
         }
     }
 
@@ -1055,9 +1195,16 @@ class DataService: ObservableObject {
         remainingSeconds: TimeInterval,
         category: UpgradeCategory,
         fallbackPrefix: String,
-        referenceDate: Date
+        referenceDate: Date,
+        superchargeLevel: Int? = nil,
+        superchargeTargetLevel: Int? = nil
     ) -> BuildingUpgrade {
-        let canonical = durationFor(dataId: dataId, fromLevel: currentLevel)
+        let canonical = durationFor(
+            dataId: dataId,
+            fromLevel: currentLevel,
+            buildingName: mapping[dataId] ?? "",
+            superchargeTargetLevel: superchargeTargetLevel
+        )
         let totalDuration = max(canonical ?? remainingSeconds, remainingSeconds)
         let end = referenceDate.addingTimeInterval(remainingSeconds)
         let start = end.addingTimeInterval(-totalDuration)
@@ -1066,6 +1213,8 @@ class DataService: ObservableObject {
             dataId: dataId,
             name: mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))",
             targetLevel: currentLevel + 1,
+            superchargeLevel: superchargeLevel,
+            superchargeTargetLevel: superchargeTargetLevel,
             endTime: end,
             category: category,
             startTime: start,
@@ -1073,10 +1222,44 @@ class DataService: ObservableObject {
         )
     }
 
-    private func durationFor(dataId: Int, fromLevel level: Int) -> TimeInterval? {
+    private func durationFor(
+        dataId: Int,
+        fromLevel level: Int,
+        buildingName: String,
+        superchargeTargetLevel: Int?
+    ) -> TimeInterval? {
+        if let target = superchargeTargetLevel,
+           let scDuration = durationForSupercharge(buildingName: buildingName, targetLevel: target) {
+            return scDuration
+        }
         guard let durations = upgradeDurations[dataId], !durations.isEmpty else { return nil }
         let index = min(max(level - 1, 0), durations.count - 1)
         return durations[index]
+    }
+
+    private func durationForSupercharge(buildingName: String, targetLevel: Int) -> TimeInterval? {
+        guard !buildingName.isEmpty else { return nil }
+        let normalized = buildingName.lowercased()
+        let displayCandidates = [
+            normalized,
+            "\(normalized) mini levels",
+            "\(normalized) supercharge"
+        ]
+        var internalName: String? = nil
+        for display in displayCandidates {
+            if let mapped = cachedMiniLevelsNameMap[display] {
+                internalName = mapped
+                break
+            }
+        }
+        if internalName == nil {
+            internalName = "\(normalized) mini levels"
+        }
+        guard let resolvedName = internalName,
+              let mini = cachedMiniLevelsByName[resolvedName] else { return nil }
+        guard let level = mini.levels.first(where: { $0.level == targetLevel }) else { return nil }
+        guard let seconds = level.buildTimeSeconds, seconds > 0 else { return nil }
+        return TimeInterval(seconds)
     }
 
     private static func loadNameMapping() -> [Int: String] {

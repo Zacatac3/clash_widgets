@@ -1,74 +1,74 @@
 {
   "Elixir Pump Mini Levels": {
-    "displayName": "Elixir Pump Mini Levels",
+    "displayName": "Elixir Collector",
     "internalName": "Elixir Pump Mini Levels"
   },
   "Gold Mine Mini Levels": {
-    "displayName": "Gold Mine Mini Levels",
+    "displayName": "Gold Mine",
     "internalName": "Gold Mine Mini Levels"
   },
   "Dark Elixir Pump Mini Levels": {
-    "displayName": "Dark Elixir Pump Mini Levels",
+    "displayName": "Dark Elixir Drill",
     "internalName": "Dark Elixir Pump Mini Levels"
   },
   "Tesla Tower Mini Levels": {
-    "displayName": "Tesla Tower Mini Levels",
+    "displayName": "Hidden Tesla",
     "internalName": "Tesla Tower Mini Levels"
   },
   "Dark Tower Mini Levels": {
-    "displayName": "Dark Tower Mini Levels",
+    "displayName": "Revenge Tower",
     "internalName": "Dark Tower Mini Levels"
   },
   "Scattershot Mini Levels": {
-    "displayName": "Scattershot Mini Levels",
+    "displayName": "Scattershot",
     "internalName": "Scattershot Mini Levels"
   },
   "Worker Building Mini Levels": {
-    "displayName": "Worker Building Mini Levels",
+    "displayName": "Builder's Hut",
     "internalName": "Worker Building Mini Levels"
   },
   "Bow Mini Levels": {
-    "displayName": "Bow Mini Levels",
+    "displayName": "X-Bow",
     "internalName": "Bow Mini Levels"
   },
   "Mortar Mini Levels": {
-    "displayName": "Mortar Mini Levels",
+    "displayName": "Mortar",
     "internalName": "Mortar Mini Levels"
   },
   "Firespitter Mini Levels": {
-    "displayName": "Firespitter Mini Levels",
+    "displayName": "Firespitter",
     "internalName": "Firespitter Mini Levels"
   },
   "Air Defense Mini Levels": {
-    "displayName": "Air Defense Mini Levels",
+    "displayName": "Air Defense",
     "internalName": "Air Defense Mini Levels"
   },
   "Bomb Tower Mini Levels": {
-    "displayName": "Bomb Tower Mini Levels",
+    "displayName": "Bomb Tower",
     "internalName": "Bomb Tower Mini Levels"
   },
   "Wizard Tower Mini Levels": {
-    "displayName": "Wizard Tower Mini Levels",
+    "displayName": "Wizard Tower",
     "internalName": "Wizard Tower Mini Levels"
   },
   "Merged Archer Tower Mini Levels": {
-    "displayName": "Merged Archer Tower Mini Levels",
+    "displayName": "Multi-Archer Tower",
     "internalName": "Merged Archer Tower Mini Levels"
   },
   "Merged Cannon Mini Levels": {
-    "displayName": "Merged Cannon Mini Levels",
+    "displayName": "Ricochet Cannon",
     "internalName": "Merged Cannon Mini Levels"
   },
   "Merged Archer Cannon Mini Levels": {
-    "displayName": "Merged Archer Cannon Mini Levels",
+    "displayName": "Multi-Gear Tower",
     "internalName": "Merged Archer Cannon Mini Levels"
   },
   "Monolith Mini Levels": {
-    "displayName": "Monolith Mini Levels",
+    "displayName": "Monolith",
     "internalName": "Monolith Mini Levels"
   },
   "Merged Wizard Tower Mini Levels": {
-    "displayName": "Merged Wizard Tower Mini Levels",
+    "displayName": "Super Wizard Tower",
     "internalName": "Merged Wizard Tower Mini Levels"
   }
 }

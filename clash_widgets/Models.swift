@@ -80,16 +80,20 @@ struct BuildingUpgrade: Identifiable, Codable {
     let dataId: Int?
     let name: String
     let targetLevel: Int
+    let superchargeLevel: Int?
+    let superchargeTargetLevel: Int?
     let endTime: Date
     let category: UpgradeCategory
     let startTime: Date
     let totalDuration: TimeInterval
     
-    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
+    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, superchargeLevel: Int? = nil, superchargeTargetLevel: Int? = nil, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
         self.id = id
         self.dataId = dataId
         self.name = name
         self.targetLevel = targetLevel
+        self.superchargeLevel = superchargeLevel
+        self.superchargeTargetLevel = superchargeTargetLevel
         self.endTime = endTime
         self.category = category
         self.startTime = startTime
@@ -97,7 +101,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, dataId, name, targetLevel, endTime, category, startTime, totalDuration
+        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, endTime, category, startTime, totalDuration
     }
     
     init(from decoder: Decoder) throws {
@@ -106,6 +110,8 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.dataId = try container.decodeIfPresent(Int.self, forKey: .dataId)
         self.name = try container.decode(String.self, forKey: .name)
         self.targetLevel = try container.decode(Int.self, forKey: .targetLevel)
+        self.superchargeLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeLevel)
+        self.superchargeTargetLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeTargetLevel)
         self.endTime = try container.decode(Date.self, forKey: .endTime)
         self.category = try container.decodeIfPresent(UpgradeCategory.self, forKey: .category) ?? .builderVillage
         self.startTime = try container.decodeIfPresent(Date.self, forKey: .startTime) ?? Date()
@@ -118,10 +124,24 @@ struct BuildingUpgrade: Identifiable, Codable {
         try container.encodeIfPresent(dataId, forKey: .dataId)
         try container.encode(name, forKey: .name)
         try container.encode(targetLevel, forKey: .targetLevel)
+        try container.encodeIfPresent(superchargeLevel, forKey: .superchargeLevel)
+        try container.encodeIfPresent(superchargeTargetLevel, forKey: .superchargeTargetLevel)
         try container.encode(endTime, forKey: .endTime)
         try container.encode(category, forKey: .category)
         try container.encode(startTime, forKey: .startTime)
         try container.encode(totalDuration, forKey: .totalDuration)
+    }
+
+    var levelDisplayText: String {
+        if let target = superchargeTargetLevel {
+            let current = superchargeLevel ?? max(target - 1, 0)
+            return "SC \(current) → \(target)"
+        }
+        return "Lv \(targetLevel - 1) → \(targetLevel)"
+    }
+
+    var showsSuperchargeIcon: Bool {
+        superchargeTargetLevel != nil
     }
     
     var timeRemaining: String {
@@ -188,6 +208,7 @@ struct Building: Codable {
     let lvl: Int
     let timer: Int? // Presence of timer = active upgrade
     let cnt: Int?
+    let supercharge: Int?
 }
 
 struct Trap: Codable {
@@ -233,6 +254,16 @@ struct ParsedBuilding: Codable {
     let id: Int
     let internalName: String
     let levels: [ParsedBuildingLevel]
+}
+
+struct ParsedMiniLevel: Codable {
+    let internalName: String
+    let levels: [ParsedMiniLevelLevel]
+}
+
+struct ParsedMiniLevelLevel: Codable {
+    let level: Int
+    let buildTimeSeconds: Int?
 }
 
 struct RemainingBuildingUpgrade: Identifiable {

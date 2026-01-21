@@ -14,11 +14,13 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
-    @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
-    @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
-    @State private var showWhatsNew = false
+    @AppStorage("goldPassMonthlyPromptEnabled") private var goldPassMonthlyPromptEnabled = true
+    @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
+    @AppStorage("lastGoldPassResetPrompt") private var lastGoldPassResetPrompt: Double = 0
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
+    @State private var initialSetupName: String = ""
+    @State private var showGoldPassResetPrompt = false
 
     init() {
         let apiKey = Self.apiKey()
@@ -56,24 +58,28 @@ struct ContentView: View {
         }
         .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
         .environmentObject(dataService)
-        .sheet(isPresented: $showWhatsNew) {
-            WhatsNewView(items: whatsNewItems)
+        .sheet(isPresented: $showGoldPassResetPrompt) {
+            GoldPassResetPrompt(boost: $dataService.goldPassBoost)
         }
         .onAppear {
             dataService.pruneCompletedUpgrades()
             requestNotificationsIfNeeded()
-            checkForWhatsNew()
+            handleGoldPassResetIfNeeded()
         }
         .monitorScenePhase(scenePhase) { phase in
             switch phase {
             case .active, .background:
                 dataService.pruneCompletedUpgrades()
+                if phase == .active {
+                    handleGoldPassResetIfNeeded()
+                }
             default:
                 break
             }
         }
         .onAppear {
             initialSetupTag = dataService.playerTag
+            initialSetupName = dataService.profileName
             showInitialSetup = !hasCompletedInitialSetup
         }
         .onChangeCompat(of: hasCompletedInitialSetup) { newValue in
@@ -85,23 +91,29 @@ struct ContentView: View {
             }
         }
         .fullScreenCover(isPresented: $showInitialSetup) {
-            InitialSetupView(playerTag: $initialSetupTag) { cleanedTag in
-                handleInitialSetupSubmission(with: cleanedTag)
+            InitialSetupView(playerTag: $initialSetupTag, displayName: $initialSetupName) { cleanedTag, displayName, didImport in
+                handleInitialSetupSubmission(tag: cleanedTag, displayName: displayName, didImport: didImport)
             }
             .environmentObject(dataService)
             .interactiveDismissDisabled(true)
         }
     }
 
-    private func handleInitialSetupSubmission(with rawTag: String) {
+    private func handleInitialSetupSubmission(tag rawTag: String, displayName: String, didImport: Bool) {
         let normalized = normalizePlayerTag(rawTag)
-        guard !normalized.isEmpty else { return }
+        let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !normalized.isEmpty || didImport || !trimmedName.isEmpty else { return }
         initialSetupTag = normalized
-        dataService.playerTag = normalized
+        if !trimmedName.isEmpty {
+            dataService.profileName = trimmedName
+        }
+        if !normalized.isEmpty {
+            dataService.playerTag = normalized
+            dataService.refreshCurrentProfile(force: true)
+        }
         hasCompletedInitialSetup = true
         showInitialSetup = false
         selectedTab = .dashboard
-        dataService.refreshCurrentProfile(force: true)
     }
 
     private func requestNotificationsIfNeeded() {
@@ -110,19 +122,41 @@ struct ContentView: View {
         dataService.requestNotificationAuthorizationIfNeeded { _ in }
     }
 
-    private var whatsNewItems: [WhatsNewItem] {
-        defaultWhatsNewItems()
+    private func handleGoldPassResetIfNeeded(referenceDate: Date = Date()) {
+        let resetDate = goldPassResetDate(for: referenceDate)
+        let resetTime = resetDate.timeIntervalSince1970
+
+        if referenceDate >= resetDate, lastGoldPassResetApplied < resetTime {
+            lastGoldPassResetApplied = resetTime
+            dataService.resetGoldPassBoostForAllProfiles()
+        }
+
+        if goldPassMonthlyPromptEnabled,
+           referenceDate >= resetDate,
+           lastGoldPassResetPrompt < resetTime {
+            lastGoldPassResetPrompt = resetTime
+            showGoldPassResetPrompt = true
+        }
     }
 
-    private func checkForWhatsNew() {
-        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        guard !version.isEmpty || !build.isEmpty else { return }
-        if version != lastSeenAppVersion || build != lastSeenBuildNumber {
-            lastSeenAppVersion = version
-            lastSeenBuildNumber = build
-            showWhatsNew = true
+    private func goldPassResetDate(for date: Date) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        let components = calendar.dateComponents([.year, .month], from: date)
+
+        var resetComponents = DateComponents()
+        resetComponents.year = components.year
+        resetComponents.month = components.month
+        resetComponents.day = 1
+        resetComponents.hour = 8
+        resetComponents.minute = 0
+        resetComponents.second = 0
+
+        let currentReset = calendar.date(from: resetComponents) ?? date
+        if date >= currentReset {
+            return currentReset
         }
+        return calendar.date(byAdding: .month, value: -1, to: currentReset) ?? currentReset
     }
 
     private enum Tab: Hashable {
@@ -141,6 +175,13 @@ private struct WhatsNewItem: Identifiable {
     let detail: String
 }
 
+private enum InfoSheetPage: String, CaseIterable, Identifiable {
+    case welcome = "Welcome"
+    case whatsNew = "What’s New"
+
+    var id: String { rawValue }
+}
+
 private func defaultWhatsNewItems() -> [WhatsNewItem] {
     [
         .init(title: "Progress Dashboard", detail: "Track Town Hall completion with weighted totals."),
@@ -149,38 +190,82 @@ private func defaultWhatsNewItems() -> [WhatsNewItem] {
     ]
 }
 
+private struct InfoSheetView: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var selectedPage: InfoSheetPage
+    let items: [WhatsNewItem]
+
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 16) {
+                Picker("Info Pages", selection: $selectedPage) {
+                    ForEach(InfoSheetPage.allCases) { page in
+                        Text(page.rawValue).tag(page)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+
+                TabView(selection: $selectedPage) {
+                    HelpSheetContent()
+                        .tag(InfoSheetPage.welcome)
+
+                    WhatsNewContent(items: items)
+                        .tag(InfoSheetPage.whatsNew)
+                }
+                .tabViewStyle(.page(indexDisplayMode: .never))
+            }
+            .navigationTitle("Help & What’s New")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+}
+
+private struct WhatsNewContent: View {
+    let items: [WhatsNewItem]
+
+    var body: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                Text("What’s New")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                LazyVStack(spacing: 12) {
+                    ForEach(items) { item in
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(item.title)
+                                .font(.headline)
+                            Text(item.detail)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(
+                            RoundedRectangle(cornerRadius: 16)
+                                .fill(Color(.secondarySystemBackground))
+                        )
+                    }
+                }
+            }
+            .padding()
+        }
+    }
+}
+
 private struct WhatsNewView: View {
     @Environment(\.dismiss) private var dismiss
     let items: [WhatsNewItem]
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    Text("What’s New")
-                        .font(.system(size: 28, weight: .bold, design: .rounded))
-                        .frame(maxWidth: .infinity, alignment: .leading)
-
-                    LazyVStack(spacing: 12) {
-                        ForEach(items) { item in
-                            VStack(alignment: .leading, spacing: 6) {
-                                Text(item.title)
-                                    .font(.headline)
-                                Text(item.detail)
-                                    .font(.subheadline)
-                                    .foregroundColor(.secondary)
-                            }
-                            .padding()
-                            .frame(maxWidth: .infinity, alignment: .leading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 16)
-                                    .fill(Color(.secondarySystemBackground))
-                            )
-                        }
-                    }
-                }
-                .padding()
-            }
+            WhatsNewContent(items: items)
             .navigationTitle("What’s New")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -189,6 +274,99 @@ private struct WhatsNewView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+private struct GoldPassResetPrompt: View {
+    @Environment(\.dismiss) private var dismiss
+    @Binding var boost: Int
+
+    private var boostLabel: String {
+        boost == 0 ? "None" : "\(boost)%"
+    }
+
+    var body: some View {
+        NavigationStack {
+            VStack(alignment: .leading, spacing: 16) {
+                Text("Gold Pass Status")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+
+                Text("A new season just started. Confirm your Gold Pass boost for this month.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack {
+                        Image(boost == 0 ? "profile/free_pass" : "profile/gold_pass")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
+                        Text(boost == 0 ? "Free Pass" : "Gold Pass")
+                        Spacer()
+                        Text(boostLabel)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                    Slider(
+                        value: Binding(
+                            get: { goldPassBoostToSliderValue(boost) },
+                            set: { boost = sliderValueToGoldPassBoost($0) }
+                        ),
+                        in: 0...3,
+                        step: 1
+                    )
+                    HStack {
+                        Text("0%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("10%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("15%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("20%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+
+                Spacer()
+            }
+            .padding()
+            .navigationTitle("Gold Pass")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+        }
+    }
+
+    private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
+        switch boost {
+        case 0: return 0
+        case 10: return 1
+        case 15: return 2
+        case 20: return 3
+        default: return 0
+        }
+    }
+
+    private func sliderValueToGoldPassBoost(_ value: Double) -> Int {
+        switch Int(value.rounded()) {
+        case 0: return 0
+        case 1: return 10
+        case 2: return 15
+        case 3: return 20
+        default: return 0
         }
     }
 }
@@ -526,7 +704,7 @@ private struct TownHallPaletteView: View {
     var body: some View {
         NavigationStack {
             List {
-                #if canImport(UIKit)
+                #if canImport(UIKit) && canImport(UIImageColors)
                 ForEach(1...maxTownHallLevel, id: \.self) { level in
                     Section {
                         TownHallPaletteRow(level: level)
@@ -534,7 +712,7 @@ private struct TownHallPaletteView: View {
                 }
                 #else
                 Section {
-                    Text("Town Hall palettes are only available on iOS.")
+                    Text("Town Hall palettes require UIImageColors on iOS.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -545,7 +723,7 @@ private struct TownHallPaletteView: View {
         }
     }
 
-    #if canImport(UIKit)
+    #if canImport(UIKit) && canImport(UIImageColors)
     private struct TownHallPaletteRow: View {
         let level: Int
         @State private var palette: UIImageColors?
@@ -637,7 +815,8 @@ private struct DashboardView: View {
     @AppStorage("hasSeenClashDashOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
-    @State private var infoSheet: InfoSheetType?
+    @State private var showInfoSheet = false
+    @State private var infoSheetPage: InfoSheetPage = .welcome
 
     var body: some View {
         NavigationStack {
@@ -773,39 +952,34 @@ private struct DashboardView: View {
                     }
                 }
             }
-            .sheet(item: $infoSheet) { sheet in
-                switch sheet {
-                case .welcome:
-                    HelpSheetView()
-                case .whatsNew:
-                    WhatsNewView(items: defaultWhatsNewItems())
-                }
+            .sheet(isPresented: $showInfoSheet) {
+                InfoSheetView(selectedPage: $infoSheetPage, items: defaultWhatsNewItems())
             }
             .onAppear {
-                if !hasSeenOnboarding {
+                if shouldShowWhatsNew {
+                    infoSheetPage = .whatsNew
+                    showInfoSheet = true
+                    markWhatsNewSeen()
+                } else if !hasSeenOnboarding {
                     hasSeenOnboarding = true
-                    infoSheet = .welcome
+                    infoSheetPage = .welcome
+                    showInfoSheet = true
                 }
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Upgrade Tracker")
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    HStack(spacing: 10) {
-                        Button {
-                            infoSheet = .welcome
-                        } label: {
-                            Image(systemName: "questionmark.circle")
+                    Button {
+                        infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
+                        showInfoSheet = true
+                        if infoSheetPage == .whatsNew {
+                            markWhatsNewSeen()
                         }
-                        .accessibilityLabel("Show Welcome")
-
-                        Button {
-                            infoSheet = .whatsNew
-                        } label: {
-                            Image(systemName: "exclamationmark.circle")
-                        }
-                        .accessibilityLabel("Show What's New")
+                    } label: {
+                        Image(systemName: "exclamationmark.circle")
                     }
+                    .accessibilityLabel("Show Help & What's New")
                 }
 
                 ToolbarItemGroup(placement: .navigationBarTrailing) {
@@ -907,12 +1081,14 @@ private struct DashboardView: View {
         return version != lastSeenAppVersion || build != lastSeenBuildNumber
     }
 
-    private enum InfoSheetType: String, Identifiable {
-        case welcome
-        case whatsNew
-
-        var id: String { rawValue }
+    private func markWhatsNewSeen() {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        guard !version.isEmpty || !build.isEmpty else { return }
+        lastSeenAppVersion = version
+        lastSeenBuildNumber = build
     }
+
 }
 
 private struct TownHallBadgeView: View {
@@ -965,6 +1141,9 @@ private struct ProfileDetailView: View {
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
+    private let labAssistantInternalName = "ResearchApprentice"
+    private let builderApprenticeInternalName = "BuilderApprentice"
+    private let alchemistInternalName = "Alchemist"
 
     var body: some View {
         NavigationStack {
@@ -1007,9 +1186,11 @@ private struct ProfileDetailView: View {
             .onAppear {
                 dataService.refreshCurrentProfile(force: false)
                 loadTownHallPaletteIfNeeded()
+                clampHelperLevels()
             }
             .onChangeCompat(of: townHallLevel) { _ in
                 clampBuilderCount()
+                clampHelperLevels()
                 loadTownHallPaletteIfNeeded()
             }
             .onChangeCompat(of: dataService.builderCount) { _ in
@@ -1239,16 +1420,16 @@ private struct ProfileDetailView: View {
                 }
             }
 
-            if townHallLevel >= 9 {
-                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: 12, iconName: "profile/lab_assistant")
+            if labAssistantMaxLevel > 0 {
+                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: labAssistantMaxLevel, iconName: "profile/lab_assistant")
             }
 
-            if townHallLevel >= 10 {
-                sliderRow(title: "Builder Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: 8, iconName: "profile/apprentice_builder")
+            if builderApprenticeMaxLevel > 0 {
+                sliderRow(title: "Builder's Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, iconName: "profile/apprentice_builder")
             }
 
-            if townHallLevel >= 11 {
-                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: 7, iconName: "profile/alchemist")
+            if alchemistMaxLevel > 0 {
+                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: alchemistMaxLevel, iconName: "profile/alchemist")
             }
 
             if townHallLevel >= 7 {
@@ -1471,12 +1652,48 @@ private struct ProfileDetailView: View {
         townHallLevel == 0 ? 6 : (townHallLevel < 10 ? 5 : 6)
     }
 
+    private var labAssistantMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: labAssistantInternalName, townHallLevel: townHallLevel)
+    }
+
+    private var builderApprenticeMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: builderApprenticeInternalName, townHallLevel: townHallLevel)
+    }
+
+    private var alchemistMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: alchemistInternalName, townHallLevel: townHallLevel)
+    }
+
     private func clampBuilderCount() {
         if dataService.builderCount > maxBuilders {
             dataService.builderCount = maxBuilders
         }
         if dataService.builderCount < 2 {
             dataService.builderCount = 2
+        }
+    }
+
+    private func clampHelperLevels() {
+        let labMax = labAssistantMaxLevel
+        let builderMax = builderApprenticeMaxLevel
+        let alchemistMax = alchemistMaxLevel
+
+        if labMax == 0 {
+            dataService.labAssistantLevel = 0
+        } else if dataService.labAssistantLevel > labMax {
+            dataService.labAssistantLevel = labMax
+        }
+
+        if builderMax == 0 {
+            dataService.builderApprenticeLevel = 0
+        } else if dataService.builderApprenticeLevel > builderMax {
+            dataService.builderApprenticeLevel = builderMax
+        }
+
+        if alchemistMax == 0 {
+            dataService.alchemistLevel = 0
+        } else if dataService.alchemistLevel > alchemistMax {
+            dataService.alchemistLevel = alchemistMax
         }
     }
 
@@ -1665,6 +1882,7 @@ private struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
+    @AppStorage("goldPassMonthlyPromptEnabled") private var goldPassMonthlyPromptEnabled = true
 
     var body: some View {
         NavigationStack {
@@ -1721,6 +1939,14 @@ private struct SettingsView: View {
                     }
 
                     Text("Notification preferences are saved per profile.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Section("Gold Pass") {
+                    Toggle("Monthly Gold Pass reminder", isOn: $goldPassMonthlyPromptEnabled)
+                        .tint(.accentColor)
+                    Text("At the season reset (08:00 UTC), ClashDash will ask you to confirm your Gold Pass boost unless this is disabled.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -1908,6 +2134,7 @@ private struct AddProfileSheet: View {
     }
 
     @State private var step: SetupStep = .tagEntry
+    @State private var displayName: String = ""
     @State private var playerTag: String = ""
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
@@ -1923,12 +2150,28 @@ private struct AddProfileSheet: View {
         normalizePlayerTag(playerTag)
     }
 
+    private var canContinueFromTagEntry: Bool {
+        !normalizedTag.isEmpty || pendingImportRawJSON != nil
+    }
+
     private var townHallLevel: Int {
         previewTownHallLevel
     }
 
     private var maxBuilders: Int {
         townHallLevel == 0 ? 6 : (townHallLevel < 10 ? 5 : 6)
+    }
+
+    private var labAssistantMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "ResearchApprentice", townHallLevel: townHallLevel)
+    }
+
+    private var builderApprenticeMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "BuilderApprentice", townHallLevel: townHallLevel)
+    }
+
+    private var alchemistMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "Alchemist", townHallLevel: townHallLevel)
     }
 
     private var goldPassBoostLabel: String {
@@ -1969,6 +2212,7 @@ private struct AddProfileSheet: View {
         dataService.fetchProfilePreview(tag: tag) { profile in
             previewTownHallLevel = profile?.townHallLevel ?? 0
             clampBuilderCount()
+            clampHelperLevels()
         }
     }
 
@@ -1996,14 +2240,24 @@ private struct AddProfileSheet: View {
     private var tagEntryView: some View {
         Form {
             Section {
+                TextField("Profile Name", text: $displayName)
+                    .autocorrectionDisabled()
+                    .textInputAutocapitalization(.words)
+            } header: {
+                Text("Profile Name")
+            } footer: {
+                Text("Optional if you use a player tag. Set a name when creating an offline profile.")
+            }
+
+            Section {
                 TextField("e.g. #9C082CCU8", text: $playerTag)
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
                     .focused($fieldFocused)
             } header: {
-                Text("Player Tag")
+                Text("Player Tag (Optional)")
             } footer: {
-                Text("Enter your Clash tag to sync your profile data.")
+                Text("Enter your Clash tag to sync your profile data, or paste your village JSON below.")
             }
 
 #if canImport(UIKit)
@@ -2033,7 +2287,7 @@ private struct AddProfileSheet: View {
                     Text("Continue")
                         .frame(maxWidth: .infinity)
                 }
-                .disabled(normalizedTag.isEmpty)
+                .disabled(!canContinueFromTagEntry)
             }
         }
         .onAppear {
@@ -2064,14 +2318,14 @@ private struct AddProfileSheet: View {
             }
 
             Section {
-                if townHallLevel >= 9 {
-                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9, iconName: "profile/lab_assistant")
+                if labAssistantMaxLevel > 0 {
+                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
                 }
-                if townHallLevel >= 10 {
-                    sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10, iconName: "profile/apprentice_builder")
+                if builderApprenticeMaxLevel > 0 {
+                    sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
                 }
-                if townHallLevel >= 11 {
-                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11, iconName: "profile/alchemist")
+                if alchemistMaxLevel > 0 {
+                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
                 }
             } header: {
                 Text("Helpers")
@@ -2131,6 +2385,14 @@ private struct AddProfileSheet: View {
                 }
             }
         }
+        .onAppear {
+            clampBuilderCount()
+            clampHelperLevels()
+        }
+        .onChangeCompat(of: townHallLevel) { _ in
+            clampBuilderCount()
+            clampHelperLevels()
+        }
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
@@ -2161,8 +2423,14 @@ private struct AddProfileSheet: View {
 
     private func saveProfile() {
         clampBuilderCount()
+        guard canContinueFromTagEntry else {
+            statusMessage = "Add a player tag or paste your village JSON to continue."
+            step = .tagEntry
+            return
+        }
         let newProfileId = dataService.addProfile(
             tag: playerTag,
+            displayName: displayName,
             builderCount: builderCount,
             builderApprenticeLevel: builderApprenticeLevel,
             labAssistantLevel: labAssistantLevel,
@@ -2179,6 +2447,26 @@ private struct AddProfileSheet: View {
     private func clampBuilderCount() {
         if builderCount > maxBuilders { builderCount = maxBuilders }
         if builderCount < 2 { builderCount = 2 }
+    }
+
+    private func clampHelperLevels() {
+        if labAssistantMaxLevel == 0 {
+            labAssistantLevel = 0
+        } else if labAssistantLevel > labAssistantMaxLevel {
+            labAssistantLevel = labAssistantMaxLevel
+        }
+
+        if builderApprenticeMaxLevel == 0 {
+            builderApprenticeLevel = 0
+        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
+            builderApprenticeLevel = builderApprenticeMaxLevel
+        }
+
+        if alchemistMaxLevel == 0 {
+            alchemistLevel = 0
+        } else if alchemistLevel > alchemistMaxLevel {
+            alchemistLevel = alchemistMaxLevel
+        }
     }
 
 #if canImport(UIKit)
@@ -2277,36 +2565,7 @@ private struct HelpSheetView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
-
-                    helpCard(title: "IMPORTANT NOTE ⚠️", bullets: [
-                        "This app is currently still in early development",
-                        "most things related to builder base are either missing or incomplete, this is low on the current priority list",
-                        "Some things may work unexpectedly, please report it via the feedback form in Settings"
-                    ])
-
-                    helpCard(title: "Importing Data", bullets: [
-                        "Copy the exported JSON from Clash of Clans",
-                        "Tap the + button on the Home tab",
-                        "Choose Paste & Import to sync timers"
-                    ])
-
-                    helpCard(title: "Managing Profiles", bullets: [
-                        "Tap the switch icon next to your profile name to change players",
-                        "Tap Edit within Settings to rename or update tags",
-                        "Swipe left on a profile row in Settings to delete"
-                    ])
-
-                    helpCard(title: "Widgets", bullets: [
-                        "Add ClashDash widgets from the iOS Home Screen",
-                        "Widgets read the latest data each time you import",
-                        "Open the app after timers finish so widgets stay fresh"
-                    ])
-                }
-                .padding()
-            }
+            HelpSheetContent()
             .navigationTitle("Welcome to ClashDash")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -2314,6 +2573,45 @@ private struct HelpSheetView: View {
                     Button("Done") { dismiss() }
                 }
             }
+        }
+    }
+}
+
+private struct HelpSheetContent: View {
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 24) {
+                Text("Welcome to ClashDash")
+                    .font(.system(size: 28, weight: .bold, design: .rounded))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+
+                helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
+
+                helpCard(title: "IMPORTANT NOTE ⚠️", bullets: [
+                    "This app is currently still in early development",
+                    "most things related to builder base are either missing or incomplete, this is low on the current priority list",
+                    "Some things may work unexpectedly, please report it via the feedback form in Settings"
+                ])
+
+                helpCard(title: "Importing Data", bullets: [
+                    "Copy the exported JSON from Clash of Clans",
+                    "Tap the + button on the Home tab",
+                    "Choose Paste & Import to sync timers"
+                ])
+
+                helpCard(title: "Managing Profiles", bullets: [
+                    "Tap the switch icon next to your profile name to change players",
+                    "Tap Edit within Settings to rename or update tags",
+                    "Swipe left on a profile row in Settings to delete"
+                ])
+
+                helpCard(title: "Widgets", bullets: [
+                    "Add ClashDash widgets from the iOS Home Screen",
+                    "Widgets read the latest data each time you import",
+                    "Open the app after timers finish so widgets stay fresh"
+                ])
+            }
+            .padding()
         }
     }
 
@@ -2350,7 +2648,8 @@ private struct HelpSheetView: View {
 private struct InitialSetupView: View {
     @EnvironmentObject private var dataService: DataService
     @Binding var playerTag: String
-    let onComplete: (String) -> Void
+    @Binding var displayName: String
+    let onComplete: (String, String, Bool) -> Void
 
     private enum FlowStep {
         case intro
@@ -2367,10 +2666,15 @@ private struct InitialSetupView: View {
     @State private var goldPassBoost: Int = 0
     @State private var previewTownHallLevel: Int = 0
     @State private var didSeedSettings = false
+    @State private var didImportJSON = false
     @FocusState private var fieldFocused: Bool
 
     private var normalizedTag: String {
         normalizePlayerTag(playerTag)
+    }
+
+    private var canContinueFromTagEntry: Bool {
+        !normalizedTag.isEmpty || didImportJSON
     }
 
     var body: some View {
@@ -2438,13 +2742,19 @@ private struct InitialSetupView: View {
 
     private var tagEntryContent: some View {
         VStack(alignment: .leading, spacing: 24) {
-            Text("Enter your Clash tag")
+            Text("Set up your profile")
                 .font(.system(size: 28, weight: .bold, design: .rounded))
-            Text("We only need it once to sync your player profile. You'll find it under your name inside Clash of Clans.")
+            Text("Use a player tag to sync, or import your village JSON and set a manual name.")
                 .font(.subheadline)
                 .foregroundColor(.secondary)
 
             VStack(alignment: .leading, spacing: 10) {
+                TextField("Profile Name", text: $displayName)
+                    .textInputAutocapitalization(.words)
+                    .autocorrectionDisabled()
+                    .padding(14)
+                    .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
+
                 TextField("e.g. #9C082CCU8", text: $playerTag)
                     .textInputAutocapitalization(.characters)
                     .autocorrectionDisabled()
@@ -2488,7 +2798,7 @@ private struct InitialSetupView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .disabled(normalizedTag.isEmpty)
+            .disabled(!canContinueFromTagEntry)
 
             Spacer()
         }
@@ -2506,7 +2816,7 @@ private struct InitialSetupView: View {
 
             Button {
                 persistSettings()
-                onComplete(normalizedTag)
+                onComplete(normalizedTag, displayName, didImportJSON)
             } label: {
                 Text("Save & Continue")
                     .frame(maxWidth: .infinity)
@@ -2536,16 +2846,16 @@ private struct InitialSetupView: View {
                 }
             }
 
-            if townHallLevel >= 9 {
-                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: 12, unlockedAt: 9, iconName: "profile/lab_assistant")
+            if labAssistantMaxLevel > 0 {
+                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
             }
 
-            if townHallLevel >= 10 {
-                sliderRow(title: "Builder Apprentice", value: $builderApprenticeLevel, maxLevel: 8, unlockedAt: 10, iconName: "profile/apprentice_builder")
+            if builderApprenticeMaxLevel > 0 {
+                sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
             }
 
-            if townHallLevel >= 11 {
-                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: 7, unlockedAt: 11, iconName: "profile/alchemist")
+            if alchemistMaxLevel > 0 {
+                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
             }
 
             if townHallLevel >= 7 {
@@ -2591,10 +2901,30 @@ private struct InitialSetupView: View {
         }
         .padding(16)
         .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+        .onAppear {
+            clampBuilderCount()
+            clampHelperLevels()
+        }
+        .onChangeCompat(of: townHallLevel) { _ in
+            clampBuilderCount()
+            clampHelperLevels()
+        }
     }
 
     private var maxBuilders: Int {
         townHallLevel < 10 ? 5 : 6
+    }
+
+    private var labAssistantMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "ResearchApprentice", townHallLevel: townHallLevel)
+    }
+
+    private var builderApprenticeMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "BuilderApprentice", townHallLevel: townHallLevel)
+    }
+
+    private var alchemistMaxLevel: Int {
+        dataService.helperMaxLevel(internalName: "Alchemist", townHallLevel: townHallLevel)
     }
 
     private var townHallLevel: Int {
@@ -2647,6 +2977,7 @@ private struct InitialSetupView: View {
         alchemistLevel = dataService.alchemistLevel
         goldPassBoost = dataService.goldPassBoost
         clampBuilderCount()
+        clampHelperLevels()
     }
 
     private func fetchPreviewTownHall() {
@@ -2655,6 +2986,7 @@ private struct InitialSetupView: View {
         dataService.fetchProfilePreview(tag: tag) { profile in
             previewTownHallLevel = profile?.townHallLevel ?? 0
             clampBuilderCount()
+            clampHelperLevels()
         }
     }
 
@@ -2663,8 +2995,29 @@ private struct InitialSetupView: View {
         if builderCount < 2 { builderCount = 2 }
     }
 
+    private func clampHelperLevels() {
+        if labAssistantMaxLevel == 0 {
+            labAssistantLevel = 0
+        } else if labAssistantLevel > labAssistantMaxLevel {
+            labAssistantLevel = labAssistantMaxLevel
+        }
+
+        if builderApprenticeMaxLevel == 0 {
+            builderApprenticeLevel = 0
+        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
+            builderApprenticeLevel = builderApprenticeMaxLevel
+        }
+
+        if alchemistMaxLevel == 0 {
+            alchemistLevel = 0
+        } else if alchemistLevel > alchemistMaxLevel {
+            alchemistLevel = alchemistMaxLevel
+        }
+    }
+
     private func persistSettings() {
         clampBuilderCount()
+        clampHelperLevels()
         dataService.builderCount = builderCount
         dataService.builderApprenticeLevel = builderApprenticeLevel
         dataService.labAssistantLevel = labAssistantLevel
@@ -2741,6 +3094,7 @@ private struct InitialSetupView: View {
             return
         }
         dataService.parseJSONFromClipboard(input: input)
+        didImportJSON = true
         let count = dataService.activeUpgrades.count
         if count > 0 {
             statusMessage = "Imported \(count) upgrades from your clipboard."

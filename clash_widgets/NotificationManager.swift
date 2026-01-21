@@ -31,6 +31,15 @@ final class NotificationManager {
             removeAllUpgradeNotifications()
             return
         }
+        let filteredUpgrades = upgrades.filter { settings.allows(category: $0.category) && $0.endTime > Date() }
+        syncNotifications(for: filteredUpgrades)
+    }
+
+    func syncNotifications(for upgrades: [BuildingUpgrade]) {
+        guard !upgrades.isEmpty else {
+            removeAllUpgradeNotifications()
+            return
+        }
 
         ensureAuthorization(promptIfNeeded: false) { granted in
             guard granted else {
@@ -38,13 +47,7 @@ final class NotificationManager {
                 return
             }
 
-            let filteredUpgrades = upgrades.filter { settings.allows(category: $0.category) && $0.endTime > Date() }
-            guard !filteredUpgrades.isEmpty else {
-                self.removeAllUpgradeNotifications()
-                return
-            }
-
-            let desiredRequests = filteredUpgrades.map { self.makeRequest(for: $0) }
+            let desiredRequests = upgrades.map { self.makeRequest(for: $0) }
             self.center.getPendingNotificationRequests { existing in
                 let managed = existing.filter { $0.identifier.hasPrefix(Self.identifierPrefix) }
                 let managedIdentifiers = Set(managed.map { $0.identifier })

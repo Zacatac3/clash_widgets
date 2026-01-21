@@ -15,7 +15,7 @@ struct BuilderRow: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
-                Text("Lv \(upgrade.targetLevel - 1) → \(upgrade.targetLevel)")
+                Text(upgrade.levelDisplayText)
                     .font(.caption2)
                     .foregroundColor(.secondary)
                 Text(formatBoostedDuration(boostedTotalDuration(for: upgrade)))
@@ -24,9 +24,17 @@ struct BuilderRow: View {
             }
 
             VStack(alignment: .leading, spacing: 6) {
-                Text(upgrade.name)
-                    .font(.headline)
-                    .lineLimit(1)
+                HStack(spacing: 6) {
+                    Text(upgrade.name)
+                        .font(.headline)
+                        .lineLimit(1)
+                    if upgrade.showsSuperchargeIcon {
+                        Image("extras/supercharge")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 16, height: 16)
+                    }
+                }
 
                 timeRemainingView
 

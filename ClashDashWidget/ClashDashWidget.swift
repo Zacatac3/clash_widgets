@@ -147,10 +147,18 @@ struct ClashDashWidgetEntryView : View {
                         .scaledToFit()
                         .frame(width: 24, height: 24)
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(upgrade.name)
-                            .font(.system(size: 10, weight: .semibold))
-                            .lineLimit(1)
-                        Text("Lv \(upgrade.targetLevel - 1) → \(upgrade.targetLevel)")
+                        HStack(spacing: 3) {
+                            Text(upgrade.name)
+                                .font(.system(size: 10, weight: .semibold))
+                                .lineLimit(1)
+                            if upgrade.showsSuperchargeIcon {
+                                Image("extras/supercharge")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        Text(upgrade.levelDisplayText)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
                     }
@@ -347,10 +355,18 @@ struct LabPetWidgetEntryView: View {
                         .scaledToFit()
                         .frame(width: 22, height: 22)
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(upgrade.name)
-                            .font(.system(size: 11, weight: .semibold))
-                            .lineLimit(1)
-                        Text("Lv \(upgrade.targetLevel - 1) → \(upgrade.targetLevel)")
+                        HStack(spacing: 3) {
+                            Text(upgrade.name)
+                                .font(.system(size: 11, weight: .semibold))
+                                .lineLimit(1)
+                            if upgrade.showsSuperchargeIcon {
+                                Image("extras/supercharge")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        Text(upgrade.levelDisplayText)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
                     }
@@ -519,11 +535,19 @@ struct BuilderBaseWidgetEntryView: View {
                         .scaledToFit()
                         .frame(width: 18, height: 18)
                     VStack(alignment: .leading, spacing: 0) {
-                        Text(upgrade.name)
-                            .font(.system(size: 10, weight: .semibold))
-                            .lineLimit(1)
-                        Text("Lv \(upgrade.targetLevel - 1) → \(upgrade.targetLevel)")
-                            .font(.system(size: 7))
+                        HStack(spacing: 3) {
+                            Text(upgrade.name)
+                                .font(.system(size: 11, weight: .semibold))
+                                .lineLimit(1)
+                            if upgrade.showsSuperchargeIcon {
+                                Image("extras/supercharge")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 8, height: 8)
+                            }
+                        }
+                        Text(upgrade.levelDisplayText)
+                            .font(.system(size: 8))
                             .foregroundColor(.secondary)
                     }
                     Spacer()
