@@ -191,6 +191,8 @@ struct BuildingUpgrade: Identifiable, Codable {
 struct CoCExport: Codable {
     let tag: String?
     let timestamp: Int
+    let helpers: [ExportHelper]?
+    let guardians: [ExportGuardian]?
     let buildings: [Building]?
     let buildings2: [Building]? 
     let traps: [Trap]?
@@ -203,12 +205,30 @@ struct CoCExport: Codable {
     let spells: [ExportSpell]?
 }
 
+struct ExportGuardian: Codable {
+    let data: Int
+    let lvl: Int?
+    let timer: Int?
+}
+
 struct Building: Codable {
     let data: Int // dataId from mapping.json
-    let lvl: Int
+    let lvl: Int?
     let timer: Int? // Presence of timer = active upgrade
     let cnt: Int?
     let supercharge: Int?
+    let types: [BuildingType]?
+}
+
+struct BuildingType: Codable {
+    let data: Int
+    let modules: [BuildingModule]?
+}
+
+struct BuildingModule: Codable {
+    let data: Int
+    let lvl: Int?
+    let timer: Int?
 }
 
 struct Trap: Codable {
@@ -240,6 +260,24 @@ struct ExportSpell: Codable {
     let data: Int
     let lvl: Int
     let timer: Int?
+}
+
+struct ExportHelper: Codable {
+    let data: Int
+    let lvl: Int
+    let helperCooldown: Int?
+
+    private enum CodingKeys: String, CodingKey {
+        case data
+        case lvl
+        case helperCooldown = "helper_cooldown"
+    }
+}
+
+struct HelperCooldownEntry: Identifiable, Codable {
+    let id: Int
+    let level: Int
+    let cooldownSeconds: Int
 }
 
 struct ParsedBuildingLevel: Codable {

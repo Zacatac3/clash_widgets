@@ -14,9 +14,9 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
-    @AppStorage("goldPassMonthlyPromptEnabled") private var goldPassMonthlyPromptEnabled = true
     @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
     @AppStorage("lastGoldPassResetPrompt") private var lastGoldPassResetPrompt: Double = 0
+    @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
     @State private var initialSetupName: String = ""
@@ -52,6 +52,10 @@ struct ContentView: View {
                 .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                 .tag(Tab.equipment)
 
+            ProgressOverviewView()
+                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
+                .tag(Tab.progress)
+
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(Tab.settings)
@@ -59,7 +63,8 @@ struct ContentView: View {
         .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
         .environmentObject(dataService)
         .sheet(isPresented: $showGoldPassResetPrompt) {
-            GoldPassResetPrompt(boost: $dataService.goldPassBoost)
+            GoldPassResetPrompt()
+                .environmentObject(dataService)
         }
         .onAppear {
             dataService.pruneCompletedUpgrades()
@@ -126,14 +131,23 @@ struct ContentView: View {
         let resetDate = goldPassResetDate(for: referenceDate)
         let resetTime = resetDate.timeIntervalSince1970
 
+        if forceGoldPassResetTrigger {
+            forceGoldPassResetTrigger = false
+            lastGoldPassResetApplied = 0
+            lastGoldPassResetPrompt = 0
+            dataService.resetGoldPassBoostForAllProfiles()
+            showGoldPassResetPrompt = true
+            return
+        }
+
         if referenceDate >= resetDate, lastGoldPassResetApplied < resetTime {
             lastGoldPassResetApplied = resetTime
             dataService.resetGoldPassBoostForAllProfiles()
         }
 
-        if goldPassMonthlyPromptEnabled,
-           referenceDate >= resetDate,
-           lastGoldPassResetPrompt < resetTime {
+          if referenceDate >= resetDate,
+              lastGoldPassResetPrompt < resetTime,
+              dataService.profiles.contains(where: { $0.goldPassReminderEnabled }) {
             lastGoldPassResetPrompt = resetTime
             showGoldPassResetPrompt = true
         }
@@ -280,11 +294,7 @@ private struct WhatsNewView: View {
 
 private struct GoldPassResetPrompt: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var boost: Int
-
-    private var boostLabel: String {
-        boost == 0 ? "None" : "\(boost)%"
-    }
+    @EnvironmentObject private var dataService: DataService
 
     var body: some View {
         NavigationStack {
@@ -296,46 +306,13 @@ private struct GoldPassResetPrompt: View {
                     .font(.subheadline)
                     .foregroundColor(.secondary)
 
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Image(boost == 0 ? "profile/free_pass" : "profile/gold_pass")
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                        Text(boost == 0 ? "Free Pass" : "Gold Pass")
-                        Spacer()
-                        Text(boostLabel)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    Slider(
-                        value: Binding(
-                            get: { goldPassBoostToSliderValue(boost) },
-                            set: { boost = sliderValueToGoldPassBoost($0) }
-                        ),
-                        in: 0...3,
-                        step: 1
-                    )
-                    HStack {
-                        Text("0%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("10%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("15%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("20%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                ScrollView {
+                    VStack(spacing: 12) {
+                        ForEach(reminderProfiles) { profile in
+                            goldPassCard(for: profile)
+                        }
                     }
                 }
-                .padding(12)
-                .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
 
                 Spacer()
             }
@@ -348,6 +325,61 @@ private struct GoldPassResetPrompt: View {
                 }
             }
         }
+    }
+
+    private var reminderProfiles: [PlayerAccount] {
+        dataService.profiles.filter { $0.goldPassReminderEnabled }
+    }
+
+    private func goldPassCard(for profile: PlayerAccount) -> some View {
+        let boost = profile.goldPassBoost
+        let boostLabel = boost == 0 ? "None" : "\(boost)%"
+        return VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Image(boost == 0 ? "profile/free_pass" : "profile/gold_pass")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 36, height: 36)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(dataService.displayName(for: profile))
+                        .font(.headline)
+                    Text(boost == 0 ? "Free Pass" : "Gold Pass")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                Spacer()
+                Text(boostLabel)
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: Binding(
+                    get: { goldPassBoostToSliderValue(boost) },
+                    set: { dataService.updateGoldPassBoost(for: profile.id, boost: sliderValueToGoldPassBoost($0)) }
+                ),
+                in: 0...3,
+                step: 1
+            )
+            HStack {
+                Text("0%")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text("10%")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text("15%")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+                Spacer()
+                Text("20%")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+        }
+        .padding(12)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
     }
 
     private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
@@ -815,8 +847,11 @@ private struct DashboardView: View {
     @AppStorage("hasSeenClashDashOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
+    @AppStorage("homeSectionOrder") private var homeSectionOrder = "helpers,builders,lab,pets,builderBase"
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
+    @State private var showHomeOrderSheet = false
+    @State private var orderedSections: [HomeSection] = HomeSection.defaultOrder
 
     var body: some View {
         NavigationStack {
@@ -888,57 +923,8 @@ private struct DashboardView: View {
                     }
                 }
 
-                let totalBuilders = max(dataService.builderCount, 0)
-                let busyBuilders = builderVillageUpgrades.count
-                let idleBuilders = max(totalBuilders - busyBuilders, 0)
-
-                if totalBuilders > 0 {
-                    Section("Home Village Builders") {
-                        ForEach(builderVillageUpgrades) { upgrade in
-                            BuilderRow(upgrade: upgrade)
-                        }
-                        if idleBuilders > 0 {
-                            ForEach(0..<idleBuilders, id: \.self) { index in
-                                IdleBuilderRow(builderIndex: busyBuilders + index + 1)
-                            }
-                        }
-                    }
-                }
-
-                if displayedTownHallLevel >= 3 {
-                    Section("Laboratory") {
-                        if !labUpgrades.isEmpty {
-                            ForEach(labUpgrades) { upgrade in
-                                BuilderRow(upgrade: upgrade)
-                            }
-                        } else {
-                            IdleStatusRow(title: "Laboratory", status: "Idle")
-                        }
-                    }
-                }
-
-                if displayedTownHallLevel >= 14 {
-                    Section("Pets") {
-                        if !petUpgrades.isEmpty {
-                            ForEach(petUpgrades) { upgrade in
-                                BuilderRow(upgrade: upgrade)
-                            }
-                        } else {
-                            IdleStatusRow(title: "Pet House", status: "Idle")
-                        }
-                    }
-                }
-
-                if displayedTownHallLevel >= 6 {
-                    Section("Builder Base") {
-                        if !builderBaseUpgrades.isEmpty {
-                            ForEach(builderBaseUpgrades) { upgrade in
-                                BuilderRow(upgrade: upgrade)
-                            }
-                        } else {
-                            IdleStatusRow(title: "Builder Base", status: "Idle")
-                        }
-                    }
+                ForEach(orderedSections, id: \.self) { section in
+                    sectionView(for: section)
                 }
 
                 if !dataService.activeUpgrades.isEmpty {
@@ -951,11 +937,23 @@ private struct DashboardView: View {
                         }
                     }
                 }
+
+                Section {
+                    Button("Reorder Home Cards") {
+                        orderedSections = parseHomeSectionOrder()
+                        showHomeOrderSheet = true
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                }
             }
             .sheet(isPresented: $showInfoSheet) {
                 InfoSheetView(selectedPage: $infoSheetPage, items: defaultWhatsNewItems())
             }
+            .sheet(isPresented: $showHomeOrderSheet) {
+                HomeSectionOrderSheet(order: $orderedSections)
+            }
             .onAppear {
+                orderedSections = parseHomeSectionOrder()
                 if shouldShowWhatsNew {
                     infoSheetPage = .whatsNew
                     showInfoSheet = true
@@ -965,6 +963,9 @@ private struct DashboardView: View {
                     infoSheetPage = .welcome
                     showInfoSheet = true
                 }
+            }
+            .onChangeCompat(of: orderedSections) { newValue in
+                persistHomeSectionOrder(newValue)
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Upgrade Tracker")
@@ -1002,6 +1003,225 @@ private struct DashboardView: View {
                                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                         )
                         .padding(.bottom, 12)
+                }
+            }
+        }
+    }
+
+    private enum HomeSection: String, CaseIterable, Identifiable {
+        case helpers
+        case builders
+        case lab
+        case pets
+        case builderBase
+
+        var id: String { rawValue }
+
+        var title: String {
+            switch self {
+            case .helpers: return "Helpers"
+            case .builders: return "Home Village Builders"
+            case .lab: return "Laboratory"
+            case .pets: return "Pets"
+            case .builderBase: return "Builder Base"
+            }
+        }
+
+        static let defaultOrder: [HomeSection] = [.helpers, .builders, .lab, .pets, .builderBase]
+    }
+
+    private struct HelperCooldownDisplay: Identifiable {
+        let id: Int
+        let name: String
+        let iconName: String
+        let level: Int
+        let cooldownSeconds: Int
+
+        var cooldownText: String {
+            if cooldownSeconds <= 0 { return "Ready" }
+            let hours = cooldownSeconds / 3600
+            let minutes = (cooldownSeconds % 3600) / 60
+            let seconds = cooldownSeconds % 60
+            if hours > 0 { return "\(hours)h \(minutes)m" }
+            if minutes > 0 { return "\(minutes)m \(seconds)s" }
+            return "\(seconds)s"
+        }
+    }
+
+    @ViewBuilder
+    private func sectionView(for section: HomeSection) -> some View {
+        switch section {
+        case .helpers:
+            if !helperCooldowns.isEmpty {
+                Section(section.title) {
+                    helperCooldownSummaryRow
+                }
+            }
+        case .builders:
+            if totalBuilders > 0 {
+                Section(section.title) {
+                    ForEach(builderVillageUpgrades) { upgrade in
+                        BuilderRow(upgrade: upgrade)
+                    }
+                    if idleBuilders > 0 {
+                        ForEach(0..<idleBuilders, id: \.self) { index in
+                            IdleBuilderRow(builderIndex: busyBuilders + index + 1)
+                        }
+                    }
+                }
+            }
+        case .lab:
+            if displayedTownHallLevel >= 3 {
+                Section(section.title) {
+                    if !labUpgrades.isEmpty {
+                        ForEach(labUpgrades) { upgrade in
+                            BuilderRow(upgrade: upgrade)
+                        }
+                    } else {
+                        IdleStatusRow(title: "Laboratory", status: "Idle")
+                    }
+                }
+            }
+        case .pets:
+            if displayedTownHallLevel >= 14 {
+                Section(section.title) {
+                    if !petUpgrades.isEmpty {
+                        ForEach(petUpgrades) { upgrade in
+                            BuilderRow(upgrade: upgrade)
+                        }
+                    } else {
+                        IdleStatusRow(title: "Pet House", status: "Idle")
+                    }
+                }
+            }
+        case .builderBase:
+            if displayedTownHallLevel >= 6 {
+                Section(section.title) {
+                    if !builderBaseUpgrades.isEmpty {
+                        ForEach(builderBaseUpgrades) { upgrade in
+                            BuilderRow(upgrade: upgrade)
+                        }
+                    } else {
+                        IdleStatusRow(title: "Builder Base", status: "Idle")
+                    }
+                }
+            }
+        }
+    }
+
+    private var helperCooldowns: [HelperCooldownDisplay] {
+        let rawHelpers = dataService.currentHelperCooldowns()
+        let mapped = rawHelpers.compactMap { helper -> HelperCooldownDisplay? in
+            switch helper.id {
+            case 93000000:
+                return HelperCooldownDisplay(id: helper.id, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+            case 93000001:
+                return HelperCooldownDisplay(id: helper.id, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+            case 93000002:
+                return HelperCooldownDisplay(id: helper.id, name: "Alchemist", iconName: "profile/alchemist", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+            default:
+                return nil
+            }
+        }
+        return mapped.sorted { $0.id < $1.id }
+    }
+
+    private var helperCooldownSummaryRow: some View {
+        let cooldownSeconds = helperCooldowns.map { $0.cooldownSeconds }.max() ?? 0
+        let totalSeconds = 23 * 60 * 60
+        let remaining = max(min(cooldownSeconds, totalSeconds), 0)
+        let progress = totalSeconds == 0 ? 1.0 : max(0, min(1, 1 - (Double(remaining) / Double(totalSeconds))))
+
+        return HStack(spacing: 12) {
+            VStack {
+                Image("buildings_home/helper_s_hut")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 44, height: 44)
+            }
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Helper Cooldown")
+                    .font(.headline)
+                    .lineLimit(1)
+
+                Text(formatHelperCooldown(remaining))
+                    .font(.subheadline)
+                    .foregroundColor(remaining > 0 ? .orange : .green)
+
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 8)
+
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.green)
+                            .frame(width: geo.size.width * CGFloat(progress), height: 8)
+                    }
+                }
+                .frame(height: 8)
+            }
+        }
+        .padding(.vertical, 4)
+    }
+
+    private func formatHelperCooldown(_ seconds: Int) -> String {
+        if seconds <= 0 { return "Ready" }
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let secs = seconds % 60
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m \(secs)s" }
+        return "\(secs)s"
+    }
+
+    private var totalBuilders: Int {
+        max(dataService.builderCount, 0)
+    }
+
+    private var busyBuilders: Int {
+        builderVillageUpgrades.count
+    }
+
+    private var idleBuilders: Int {
+        max(totalBuilders - busyBuilders, 0)
+    }
+
+    private func parseHomeSectionOrder() -> [HomeSection] {
+        let raw = homeSectionOrder.split(separator: ",").map { String($0) }
+        let parsed = raw.compactMap { HomeSection(rawValue: $0) }
+        if parsed.isEmpty { return HomeSection.defaultOrder }
+        let missing = HomeSection.defaultOrder.filter { !parsed.contains($0) }
+        return parsed + missing
+    }
+
+    private func persistHomeSectionOrder(_ order: [HomeSection]) {
+        homeSectionOrder = order.map { $0.rawValue }.joined(separator: ",")
+    }
+
+    private struct HomeSectionOrderSheet: View {
+        @Binding var order: [HomeSection]
+        @Environment(\.dismiss) private var dismiss
+
+        var body: some View {
+            NavigationStack {
+                List {
+                    ForEach(order, id: \.self) { section in
+                        Text(section.title)
+                    }
+                    .onMove { offsets, destination in
+                        order.move(fromOffsets: offsets, toOffset: destination)
+                    }
+                }
+                .navigationTitle("Reorder Home Cards")
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        EditButton()
+                    }
                 }
             }
         }
@@ -1137,6 +1357,7 @@ private struct TownHallBadgeView: View {
 private struct ProfileDetailView: View {
     @EnvironmentObject private var dataService: DataService
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
+    @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
     #if canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
@@ -1403,79 +1624,96 @@ private struct ProfileDetailView: View {
 
     private var profileSettingsCard: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Profile Settings")
-                .font(.headline)
-
-            Stepper(value: $dataService.builderCount, in: 2...maxBuilders) {
+            Button {
+                profileSettingsExpanded.toggle()
+            } label: {
                 HStack {
-                    Image("profile/home_builder")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                    Text("Builders")
+                    Text("Profile Settings")
+                        .font(.headline)
                     Spacer()
-                    Text("\(dataService.builderCount)")
+                    Image(systemName: profileSettingsExpanded ? "chevron.up" : "chevron.down")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
             }
+            .buttonStyle(.plain)
 
-            if labAssistantMaxLevel > 0 {
-                sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: labAssistantMaxLevel, iconName: "profile/lab_assistant")
-            }
-
-            if builderApprenticeMaxLevel > 0 {
-                sliderRow(title: "Builder's Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, iconName: "profile/apprentice_builder")
-            }
-
-            if alchemistMaxLevel > 0 {
-                sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: alchemistMaxLevel, iconName: "profile/alchemist")
-            }
-
-            if townHallLevel >= 7 {
-                VStack(alignment: .leading, spacing: 6) {
+            if profileSettingsExpanded {
+                Stepper(value: $dataService.builderCount, in: 2...maxBuilders) {
                     HStack {
-                        Image(profileGoldPassIconName)
+                        Image("profile/home_builder")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 36, height: 36)
-                        Text(profileGoldPassTitle)
+                        Text("Builders")
                         Spacer()
-                        Text(profileGoldPassBoostLabel)
+                        Text("\(dataService.builderCount)")
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-                    Slider(
-                        value: Binding(
-                            get: { goldPassBoostToSliderValue(dataService.goldPassBoost) },
-                            set: { dataService.goldPassBoost = sliderValueToGoldPassBoost($0) }
-                        ),
-                        in: 0...3,
-                        step: 1
-                    )
-                    HStack {
-                        Text("0%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("10%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("15%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("20%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
+                }
+
+                if labAssistantMaxLevel > 0 {
+                    sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: labAssistantMaxLevel, iconName: "profile/lab_assistant")
+                }
+
+                if builderApprenticeMaxLevel > 0 {
+                    sliderRow(title: "Builder's Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, iconName: "profile/apprentice_builder")
+                }
+
+                if alchemistMaxLevel > 0 {
+                    sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: alchemistMaxLevel, iconName: "profile/alchemist")
+                }
+
+                if townHallLevel >= 7 {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Image(profileGoldPassIconName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 36, height: 36)
+                            Text(profileGoldPassTitle)
+                            Spacer()
+                            Text(profileGoldPassBoostLabel)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Slider(
+                            value: Binding(
+                                get: { goldPassBoostToSliderValue(dataService.goldPassBoost) },
+                                set: { dataService.goldPassBoost = sliderValueToGoldPassBoost($0) }
+                            ),
+                            in: 0...3,
+                            step: 1
+                        )
+                        HStack {
+                            Text("0%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("10%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("15%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            Spacer()
+                            Text("20%")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
                     }
                 }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding()
-        .background(RoundedRectangle(cornerRadius: 20).fill(Color(.secondarySystemBackground)))
+        .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+            .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
+        )
     }
 
     private var heroShowcase: some View {
@@ -1541,7 +1779,11 @@ private struct ProfileDetailView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding()
-            .background(RoundedRectangle(cornerRadius: 20).fill(Color(.secondarySystemBackground)))
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                    .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
+            )
         )
     }
 
@@ -1586,6 +1828,12 @@ private struct ProfileDetailView: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+                    .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 20)
+                            .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
+                    )
                 }
             }
         }
@@ -1882,7 +2130,8 @@ private struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
-    @AppStorage("goldPassMonthlyPromptEnabled") private var goldPassMonthlyPromptEnabled = true
+    @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
+    @State private var forceGoldPassResetToggle = false
 
     var body: some View {
         NavigationStack {
@@ -1944,9 +2193,20 @@ private struct SettingsView: View {
                 }
 
                 Section("Gold Pass") {
-                    Toggle("Monthly Gold Pass reminder", isOn: $goldPassMonthlyPromptEnabled)
+                    Toggle("Monthly Gold Pass reminder", isOn: $dataService.goldPassReminderEnabled)
                         .tint(.accentColor)
-                    Text("At the season reset (08:00 UTC), ClashDash will ask you to confirm your Gold Pass boost unless this is disabled.")
+                    Text("At the season reset (08:00 UTC), ClashDash will ask you to confirm your Gold Pass boost for this profile unless this is disabled.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+
+                    Toggle("Force new Gold Pass month", isOn: $forceGoldPassResetToggle)
+                        .tint(.accentColor)
+                        .onChangeCompat(of: forceGoldPassResetToggle) { enabled in
+                            guard enabled else { return }
+                            forceGoldPassResetTrigger = true
+                            forceGoldPassResetToggle = false
+                        }
+                    Text("Resets Gold Pass boosts for all profiles and shows the monthly confirmation sheet on next open.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -2435,7 +2695,8 @@ private struct AddProfileSheet: View {
             builderApprenticeLevel: builderApprenticeLevel,
             labAssistantLevel: labAssistantLevel,
             alchemistLevel: alchemistLevel,
-            goldPassBoost: goldPassBoost
+            goldPassBoost: goldPassBoost,
+            goldPassReminderEnabled: goldPassBoost > 0
         )
         if let pendingImportRawJSON {
             dataService.selectProfile(newProfileId)
@@ -3023,6 +3284,7 @@ private struct InitialSetupView: View {
         dataService.labAssistantLevel = labAssistantLevel
         dataService.alchemistLevel = alchemistLevel
         dataService.goldPassBoost = goldPassBoost
+        dataService.goldPassReminderEnabled = goldPassBoost > 0
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {

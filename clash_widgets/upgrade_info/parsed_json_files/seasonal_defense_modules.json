@@ -102,7 +102,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000000
   },
   {
     "internalName": "HookTowerAttackModule",
@@ -207,7 +208,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000001
   },
   {
     "internalName": "HookTowerEffectModule",
@@ -312,7 +314,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000002
   },
   {
     "internalName": "LazyLaserHPModule",
@@ -417,7 +420,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000003
   },
   {
     "internalName": "LazyLaserAttackModule",
@@ -522,7 +526,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000004
   },
   {
     "internalName": "LazyLaserEffectModule",
@@ -627,7 +632,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000005
   },
   {
     "internalName": "LogLobberHPModule",
@@ -732,7 +738,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000006
   },
   {
     "internalName": "LogLobberAttackModule",
@@ -837,7 +844,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000007
   },
   {
     "internalName": "LogLobberEffectModule",
@@ -942,7 +950,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000008
   },
   {
     "internalName": "FlameSpinnerHPModule",
@@ -1047,7 +1056,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000009
   },
   {
     "internalName": "FlameSpinnerAttackModule",
@@ -1152,7 +1162,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000010
   },
   {
     "internalName": "FlameSpinnerEffectModule",
@@ -1257,7 +1268,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000011
   },
   {
     "internalName": "CrusherMortarHPModule",
@@ -1362,7 +1374,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000012
   },
   {
     "internalName": "CrusherMortarAttackModule",
@@ -1467,7 +1480,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000013
   },
   {
     "internalName": "CrusherMortarEffectModule",
@@ -1572,7 +1586,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000014
   },
   {
     "internalName": "SunBeamHPModule",
@@ -1677,7 +1692,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000015
   },
   {
     "internalName": "SunBeamAttackModule",
@@ -1782,7 +1798,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000016
   },
   {
     "internalName": "SunBeamEffectModule",
@@ -1887,7 +1904,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000017
   },
   {
     "internalName": "SlowdownTowerHPModule",
@@ -1992,7 +2010,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000018
   },
   {
     "internalName": "SlowdownTowerAttackModule",
@@ -2097,7 +2116,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000019
   },
   {
     "internalName": "SlowdownTowerEffectModule",
@@ -2202,7 +2222,8 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000020
   },
   {
     "internalName": "HeroBoosterHPModule",
@@ -2307,7 +2328,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000021
   },
   {
     "internalName": "HeroBoosterAttackModule",
@@ -2412,7 +2434,8 @@
         "BuildCost": "12000000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000022
   },
   {
     "internalName": "HeroBoosterEffectModule",
@@ -2517,6 +2540,7 @@
         "BuildCost": "115000",
         "buildTimeSeconds": 259200
       }
-    ]
+    ],
+    "id": 102000023
   }
 ]

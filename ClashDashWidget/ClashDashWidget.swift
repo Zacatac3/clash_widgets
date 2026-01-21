@@ -313,6 +313,183 @@ struct LabPetProvider: TimelineProvider {
     }
 }
 
+// Helper cooldown small widget
+struct HelperCooldownStatus: Identifiable {
+    let id: Int
+    let name: String
+    let iconName: String
+    let level: Int
+    let cooldownSeconds: Int
+
+    var cooldownText: String {
+        if cooldownSeconds <= 0 {
+            return "Ready"
+        }
+        let hours = cooldownSeconds / 3600
+        let minutes = (cooldownSeconds % 3600) / 60
+        let seconds = cooldownSeconds % 60
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        }
+        if minutes > 0 {
+            return "\(minutes)m \(seconds)s"
+        }
+        return "\(seconds)s"
+    }
+}
+
+struct HelperCooldownWidgetEntry: TimelineEntry {
+    let date: Date
+    let helpers: [HelperCooldownStatus]
+}
+
+struct HelperCooldownProvider: TimelineProvider {
+    let appGroup = "group.Zachary-Buschmann.clash-widgets"
+
+    func placeholder(in context: Context) -> HelperCooldownWidgetEntry {
+        HelperCooldownWidgetEntry(date: Date(), helpers: placeholderHelpers())
+    }
+
+    func getSnapshot(in context: Context, completion: @escaping (HelperCooldownWidgetEntry) -> ()) {
+        completion(HelperCooldownWidgetEntry(date: Date(), helpers: loadHelpers()))
+    }
+
+    func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
+        let entry = HelperCooldownWidgetEntry(date: Date(), helpers: loadHelpers())
+        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+        completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
+    }
+
+    private func loadHelpers() -> [HelperCooldownStatus] {
+        if let state = PersistentStore.loadState(),
+           let rawJSON = state.currentProfile?.rawJSON, !rawJSON.isEmpty,
+           let helpers = parseHelpers(rawJSON: rawJSON) {
+            return helpers
+        }
+        let sharedDefaults = UserDefaults(suiteName: appGroup)
+        if let rawJSON = sharedDefaults?.string(forKey: "saved_raw_json"), !rawJSON.isEmpty,
+           let helpers = parseHelpers(rawJSON: rawJSON) {
+            return helpers
+        }
+        return []
+    }
+
+    private func parseHelpers(rawJSON: String) -> [HelperCooldownStatus]? {
+        guard let data = rawJSON.data(using: .utf8),
+              let export = try? JSONDecoder().decode(CoCExport.self, from: data) else {
+            return nil
+        }
+        let helpers = export.helpers ?? []
+        let mapped = helpers.compactMap { helper -> HelperCooldownStatus? in
+            switch helper.data {
+            case 93000000:
+                return HelperCooldownStatus(id: helper.data, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+            case 93000001:
+                return HelperCooldownStatus(id: helper.data, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+            case 93000002:
+                return HelperCooldownStatus(id: helper.data, name: "Alchemist", iconName: "profile/alchemist", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+            default:
+                return nil
+            }
+        }
+        return mapped.sorted { $0.id < $1.id }
+    }
+
+    private func placeholderHelpers() -> [HelperCooldownStatus] {
+        [
+            HelperCooldownStatus(id: 93000000, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: 1, cooldownSeconds: 0),
+            HelperCooldownStatus(id: 93000001, name: "Lab Assistant", iconName: "profile/lab_assistant", level: 1, cooldownSeconds: 0),
+            HelperCooldownStatus(id: 93000002, name: "Alchemist", iconName: "profile/alchemist", level: 1, cooldownSeconds: 0)
+        ]
+    }
+}
+
+struct HelperCooldownWidgetEntryView: View {
+    var entry: HelperCooldownWidgetEntry
+
+    var body: some View {
+        let cooldownSeconds = entry.helpers.map { $0.cooldownSeconds }.max() ?? 0
+        let totalSeconds = 23 * 60 * 60
+        let remaining = max(min(cooldownSeconds, totalSeconds), 0)
+        let progress = max(0, min(1, 1 - (Double(remaining) / Double(totalSeconds))))
+
+        return VStack(spacing: 6) {
+            HStack {
+                Spacer()
+                Image("buildings_home/helper_s_hut")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 64, height: 64)
+                Spacer()
+            }
+
+            HStack {
+                Text("Helper's Hut")
+                    .font(.system(size: 11, weight: .semibold))
+                    .lineLimit(1)
+                Spacer()
+                Text(formatHelperCooldown(remaining))
+                    .font(.system(size: 10))
+                    .foregroundColor(remaining > 0 ? .orange : .green)
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.2))
+                        .frame(height: 6)
+
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.green)
+                        .frame(width: geo.size.width * CGFloat(progress), height: 6)
+                }
+            }
+            .frame(height: 6)
+
+            if entry.helpers.isEmpty {
+                HStack(spacing: 6) {
+                    Image(systemName: "hourglass")
+                        .font(.system(size: 9))
+                        .foregroundColor(.secondary)
+                    Text("No helper data")
+                        .font(.system(size: 9))
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+        .padding(8)
+        .widgetURL(URL(string: "clashdash://refresh"))
+    }
+
+    private func formatHelperCooldown(_ seconds: Int) -> String {
+        if seconds <= 0 { return "Ready" }
+        let hours = seconds / 3600
+        let minutes = (seconds % 3600) / 60
+        let secs = seconds % 60
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m \(secs)s" }
+        return "\(secs)s"
+    }
+}
+
+struct HelperCooldownWidget: Widget {
+    let kind: String = "HelperCooldownWidget"
+
+    var body: some WidgetConfiguration {
+        StaticConfiguration(kind: kind, provider: HelperCooldownProvider()) { entry in
+            if #available(iOS 17.0, *) {
+                HelperCooldownWidgetEntryView(entry: entry)
+                    .containerBackground(.fill.tertiary, for: .widget)
+            } else {
+                HelperCooldownWidgetEntryView(entry: entry)
+            }
+        }
+        .configurationDisplayName("Helper Cooldowns")
+        .description("Track helper cooldown timers.")
+        .supportedFamilies([.systemSmall])
+    }
+}
+
 struct LabPetWidgetEntryView: View {
     var entry: LabPetProvider.Entry
     let maxSlots = 2

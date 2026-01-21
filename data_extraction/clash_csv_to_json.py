@@ -392,7 +392,7 @@ def main() -> None:
     )
     seasonal = build_grouped_json(
         seasonal_rows,
-        id_prefix=None,
+        id_prefix=102,
         level_field=None,
         level_fields=[
             "BuildTimeD",
@@ -445,6 +445,17 @@ def main() -> None:
         os.path.join(MAPS_DIR, "villager_apprentices_json_map.json"),
         villagers,
     )
+
+    guardians_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "guardians.csv"))
+    guardians = build_grouped_json(
+        guardians_rows,
+        id_prefix=107,
+        level_field="Level",
+        level_fields=[],
+        include_tid=True,
+    )
+    write_buildings_json(os.path.join(PARSED_DIR, "guardians.json"), guardians)
+    update_id_map(os.path.join(MAPS_DIR, "guardians_json_map.json"), guardians)
 
     weapons_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "weapons.csv"))
     weapons = build_grouped_json(

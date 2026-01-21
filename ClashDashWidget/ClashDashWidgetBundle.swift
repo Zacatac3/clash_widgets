@@ -14,5 +14,6 @@ struct ClashDashWidgetBundle: WidgetBundle {
         ClashDashWidget()
         LabPetWidget()
         BuilderBaseWidget()
+        HelperCooldownWidget()
     }
 }

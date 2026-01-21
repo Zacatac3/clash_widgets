@@ -1,0 +1,9 @@
+Features of the app:
+- Upgrade tracking via JSON expport
+- Home Screen Widgets for builders, Lab/pets, and builder base as well as helpers cooldowns
+- Multiple profile support
+- Notification Support (Profile specific)
+- API Sync for enhanced profile information
+- Rich equipment tracking with upgrade costs and totals to max 
+- Gold Pass Support
+- 

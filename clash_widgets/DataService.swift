@@ -123,6 +123,13 @@ class DataService: ObservableObject {
             persistChanges(reloadWidgets: false)
         }
     }
+    @Published var goldPassReminderEnabled: Bool = false {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.goldPassReminderEnabled = goldPassReminderEnabled }
+            persistChanges(reloadWidgets: false)
+        }
+    }
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
@@ -177,13 +184,13 @@ class DataService: ObservableObject {
 
         var results: [RemainingBuildingUpgrade] = []
         for building in buildingList {
+            guard let currentLevel = building.lvl else { continue }
             guard let parsed = byId[building.data] else { continue }
             let available = parsed.levels.filter { level in
                 guard let requiredTH = level.townHallLevel else { return true }
                 return requiredTH <= townHallLevel
             }
             guard let maxAvailable = available.map({ $0.level }).max() else { continue }
-            let currentLevel = building.lvl
             let targetLevel = currentLevel + 1
             guard currentLevel < maxAvailable else { continue }
             guard let nextLevel = available.first(where: { $0.level == targetLevel }) else { continue }
@@ -206,6 +213,24 @@ class DataService: ObservableObject {
         }
 
         return results.sorted { $0.name < $1.name }
+    }
+
+    func currentHelperCooldowns() -> [HelperCooldownEntry] {
+        guard let raw = currentProfile?.rawJSON, !raw.isEmpty else { return [] }
+        return helperCooldowns(from: raw)
+    }
+
+    func helperCooldowns(from rawJSON: String) -> [HelperCooldownEntry] {
+        guard let data = rawJSON.data(using: .utf8) else { return [] }
+        guard let export = try? JSONDecoder().decode(CoCExport.self, from: data) else { return [] }
+        let helpers = export.helpers ?? []
+        return helpers.map { helper in
+            HelperCooldownEntry(
+                id: helper.data,
+                level: helper.lvl,
+                cooldownSeconds: max(helper.helperCooldown ?? 0, 0)
+            )
+        }
     }
 
     func loadParsedBuildingsData() -> [ParsedBuilding]? {
@@ -426,7 +451,8 @@ class DataService: ObservableObject {
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
-        goldPassBoost: Int = 0
+        goldPassBoost: Int = 0,
+        goldPassReminderEnabled: Bool = false
     ) -> UUID {
         let normalizedTag = normalizeTag(tag)
         let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -443,7 +469,8 @@ class DataService: ObservableObject {
             builderApprenticeLevel: builderApprenticeLevel,
             labAssistantLevel: labAssistantLevel,
             alchemistLevel: alchemistLevel,
-            goldPassBoost: goldPassBoost
+            goldPassBoost: goldPassBoost,
+            goldPassReminderEnabled: goldPassReminderEnabled
         )
         profiles.append(profile)
         selectedProfileID = profile.id
@@ -865,6 +892,21 @@ class DataService: ObservableObject {
         labAssistantLevel = profile.labAssistantLevel
         alchemistLevel = profile.alchemistLevel
         goldPassBoost = profile.goldPassBoost
+        goldPassReminderEnabled = profile.goldPassReminderEnabled
+    }
+
+    func updateGoldPassBoost(for profileId: UUID, boost: Int) {
+        ensureProfiles()
+        guard let index = profiles.firstIndex(where: { $0.id == profileId }) else { return }
+        var updated = profiles[index]
+        updated.goldPassBoost = boost
+        profiles[index] = updated
+        if profileId == selectedProfileID {
+            suppressPersistence = true
+            goldPassBoost = boost
+            suppressPersistence = false
+        }
+        persistChanges(reloadWidgets: true)
     }
 
     private func updateCurrentProfile(_ mutate: (inout PlayerAccount) -> Void) {
@@ -1050,6 +1092,7 @@ class DataService: ObservableObject {
 
         do {
             let export = try decoder.decode(CoCExport.self, from: data)
+            let helperLevels = export.helpers ?? []
             let upgrades = collectUpgrades(from: export)
                 .sorted(by: { $0.endTime < $1.endTime })
             let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage }.count
@@ -1063,6 +1106,18 @@ class DataService: ObservableObject {
                 profile.activeUpgrades = upgrades
                 if inferredBuilderCount > profile.builderCount {
                     profile.builderCount = inferredBuilderCount
+                }
+                for helper in helperLevels {
+                    switch helper.data {
+                    case 93000000:
+                        profile.builderApprenticeLevel = helper.lvl
+                    case 93000001:
+                        profile.labAssistantLevel = helper.lvl
+                    case 93000002:
+                        profile.alchemistLevel = helper.lvl
+                    default:
+                        break
+                    }
                 }
                 if let normalizedTag = normalizedTag, !normalizedTag.isEmpty {
                     profile.tag = normalizedTag
@@ -1094,6 +1149,7 @@ class DataService: ObservableObject {
 
         if let list = export.buildings {
             upgrades.append(contentsOf: convert(list, category: .builderVillage, fallbackPrefix: "Building", referenceDate: referenceDate))
+            upgrades.append(contentsOf: convertModules(list, category: .builderVillage, fallbackPrefix: "Crafted Defense", referenceDate: referenceDate))
         }
         if let list = export.buildings2 {
             upgrades.append(contentsOf: convert(list, category: .builderBase, fallbackPrefix: "Builder Base Building", referenceDate: referenceDate))
@@ -1122,18 +1178,41 @@ class DataService: ObservableObject {
         if let list = export.spells {
             upgrades.append(contentsOf: convert(list, category: .lab, fallbackPrefix: "Spell", referenceDate: referenceDate))
         }
+        if let list = export.guardians {
+            upgrades.append(contentsOf: convertGuardians(list, category: .builderVillage, fallbackPrefix: "Guardian", referenceDate: referenceDate))
+        }
 
         return upgrades
     }
 
+    private func convertModules(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
+        items.flatMap { building in
+            (building.types ?? []).flatMap { type in
+                (type.modules ?? []).compactMap { module in
+                    guard let level = module.lvl else { return nil }
+                    guard let timer = module.timer, timer > 0 else { return nil }
+                    return buildUpgrade(
+                        dataId: module.data,
+                        currentLevel: level,
+                        remainingSeconds: TimeInterval(timer),
+                        category: category,
+                        fallbackPrefix: fallbackPrefix,
+                        referenceDate: referenceDate
+                    )
+                }
+            }
+        }
+    }
+
     private func convert(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         items.compactMap { item in
+            guard let level = item.lvl else { return nil }
             guard let timer = item.timer, timer > 0 else { return nil }
             let superchargeLevel = item.supercharge
             let superchargeTargetLevel = superchargeLevel.map { $0 + 1 }
             return buildUpgrade(
                 dataId: item.data,
-                currentLevel: item.lvl,
+                currentLevel: level,
                 remainingSeconds: TimeInterval(timer),
                 category: category,
                 fallbackPrefix: fallbackPrefix,
@@ -1171,6 +1250,21 @@ class DataService: ObservableObject {
     private func convert(_ items: [ExportSpell], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
             (item.data, item.lvl, item.timer)
+        }
+    }
+
+    private func convertGuardians(_ items: [ExportGuardian], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
+        items.compactMap { item in
+            guard let level = item.lvl else { return nil }
+            guard let timer = item.timer, timer > 0 else { return nil }
+            return buildUpgrade(
+                dataId: item.data,
+                currentLevel: level,
+                remainingSeconds: TimeInterval(timer),
+                category: category,
+                fallbackPrefix: fallbackPrefix,
+                referenceDate: referenceDate
+            )
         }
     }
 

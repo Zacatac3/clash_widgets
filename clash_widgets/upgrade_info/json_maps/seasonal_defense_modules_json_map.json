@@ -1,98 +1,122 @@
 {
   "HookTowerHPModule": {
     "displayName": "HookTowerHPModule",
-    "internalName": "HookTowerHPModule"
+    "internalName": "HookTowerHPModule",
+    "id": 102000000
   },
   "HookTowerAttackModule": {
     "displayName": "HookTowerAttackModule",
-    "internalName": "HookTowerAttackModule"
+    "internalName": "HookTowerAttackModule",
+    "id": 102000001
   },
   "HookTowerEffectModule": {
     "displayName": "HookTowerEffectModule",
-    "internalName": "HookTowerEffectModule"
+    "internalName": "HookTowerEffectModule",
+    "id": 102000002
   },
   "LazyLaserHPModule": {
     "displayName": "LazyLaserHPModule",
-    "internalName": "LazyLaserHPModule"
+    "internalName": "LazyLaserHPModule",
+    "id": 102000003
   },
   "LazyLaserAttackModule": {
     "displayName": "LazyLaserAttackModule",
-    "internalName": "LazyLaserAttackModule"
+    "internalName": "LazyLaserAttackModule",
+    "id": 102000004
   },
   "LazyLaserEffectModule": {
     "displayName": "LazyLaserEffectModule",
-    "internalName": "LazyLaserEffectModule"
+    "internalName": "LazyLaserEffectModule",
+    "id": 102000005
   },
   "LogLobberHPModule": {
     "displayName": "Bomb Hive HP Upgrade",
-    "internalName": "LogLobberHPModule"
+    "internalName": "LogLobberHPModule",
+    "id": 102000006
   },
   "LogLobberAttackModule": {
     "displayName": "Bomb Hive DPS Upgrade",
-    "internalName": "LogLobberAttackModule"
+    "internalName": "LogLobberAttackModule",
+    "id": 102000007
   },
   "LogLobberEffectModule": {
     "displayName": "Bomb Hive Special Upgrade",
-    "internalName": "LogLobberEffectModule"
+    "internalName": "LogLobberEffectModule",
+    "id": 102000008
   },
   "FlameSpinnerHPModule": {
     "displayName": "FlameSpinnerHPModule",
-    "internalName": "FlameSpinnerHPModule"
+    "internalName": "FlameSpinnerHPModule",
+    "id": 102000009
   },
   "FlameSpinnerAttackModule": {
     "displayName": "FlameSpinnerAttackModule",
-    "internalName": "FlameSpinnerAttackModule"
+    "internalName": "FlameSpinnerAttackModule",
+    "id": 102000010
   },
   "FlameSpinnerEffectModule": {
     "displayName": "FlameSpinnerEffectModule",
-    "internalName": "FlameSpinnerEffectModule"
+    "internalName": "FlameSpinnerEffectModule",
+    "id": 102000011
   },
   "CrusherMortarHPModule": {
     "displayName": "CrusherMortarHPModule",
-    "internalName": "CrusherMortarHPModule"
+    "internalName": "CrusherMortarHPModule",
+    "id": 102000012
   },
   "CrusherMortarAttackModule": {
     "displayName": "CrusherMortarAttackModule",
-    "internalName": "CrusherMortarAttackModule"
+    "internalName": "CrusherMortarAttackModule",
+    "id": 102000013
   },
   "CrusherMortarEffectModule": {
     "displayName": "CrusherMortarEffectModule",
-    "internalName": "CrusherMortarEffectModule"
+    "internalName": "CrusherMortarEffectModule",
+    "id": 102000014
   },
   "SunBeamHPModule": {
     "displayName": "Light Beam HP Upgrade",
-    "internalName": "SunBeamHPModule"
+    "internalName": "SunBeamHPModule",
+    "id": 102000015
   },
   "SunBeamAttackModule": {
     "displayName": "Light Beam DPS Upgrade",
-    "internalName": "SunBeamAttackModule"
+    "internalName": "SunBeamAttackModule",
+    "id": 102000016
   },
   "SunBeamEffectModule": {
     "displayName": "Light Beam Special Upgrade",
-    "internalName": "SunBeamEffectModule"
+    "internalName": "SunBeamEffectModule",
+    "id": 102000017
   },
   "SlowdownTowerHPModule": {
     "displayName": "SlowdownTowerHPModule",
-    "internalName": "SlowdownTowerHPModule"
+    "internalName": "SlowdownTowerHPModule",
+    "id": 102000018
   },
   "SlowdownTowerAttackModule": {
     "displayName": "SlowdownTowerAttackModule",
-    "internalName": "SlowdownTowerAttackModule"
+    "internalName": "SlowdownTowerAttackModule",
+    "id": 102000019
   },
   "SlowdownTowerEffectModule": {
     "displayName": "SlowdownTowerEffectModule",
-    "internalName": "SlowdownTowerEffectModule"
+    "internalName": "SlowdownTowerEffectModule",
+    "id": 102000020
   },
   "HeroBoosterHPModule": {
     "displayName": "Hero Bell HP Upgrade",
-    "internalName": "HeroBoosterHPModule"
+    "internalName": "HeroBoosterHPModule",
+    "id": 102000021
   },
   "HeroBoosterAttackModule": {
     "displayName": "Hero Bell DPS Upgrade",
-    "internalName": "HeroBoosterAttackModule"
+    "internalName": "HeroBoosterAttackModule",
+    "id": 102000022
   },
   "HeroBoosterEffectModule": {
     "displayName": "Hero Bell Special Upgrade",
-    "internalName": "HeroBoosterEffectModule"
+    "internalName": "HeroBoosterEffectModule",
+    "id": 102000023
   }
 }

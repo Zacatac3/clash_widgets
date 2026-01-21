@@ -177,9 +177,10 @@ extension DataService {
         guard let list else { return [:] }
         var output: [Int: [Int: Int]] = [:]
         for item in list {
+            guard let level = item.lvl else { continue }
             let count = max(item.cnt ?? 1, 1)
             var levels = output[item.data] ?? [:]
-            levels[item.lvl, default: 0] += count
+            levels[level, default: 0] += count
             output[item.data] = levels
         }
         return output

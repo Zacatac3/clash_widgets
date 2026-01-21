@@ -16,6 +16,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var labAssistantLevel: Int
     var alchemistLevel: Int
     var goldPassBoost: Int
+    var goldPassReminderEnabled: Bool
 
     init(
         id: UUID = UUID(),
@@ -32,7 +33,8 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
-        goldPassBoost: Int = 0
+        goldPassBoost: Int = 0,
+        goldPassReminderEnabled: Bool = false
     ) {
         self.id = id
         self.displayName = displayName
@@ -49,6 +51,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.labAssistantLevel = labAssistantLevel
         self.alchemistLevel = alchemistLevel
         self.goldPassBoost = goldPassBoost
+        self.goldPassReminderEnabled = goldPassReminderEnabled
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -67,6 +70,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         case labAssistantLevel
         case alchemistLevel
         case goldPassBoost
+        case goldPassReminderEnabled
     }
 
     init(from decoder: Decoder) throws {
@@ -86,6 +90,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.labAssistantLevel = try container.decodeIfPresent(Int.self, forKey: .labAssistantLevel) ?? 0
         self.alchemistLevel = try container.decodeIfPresent(Int.self, forKey: .alchemistLevel) ?? 0
         self.goldPassBoost = try container.decodeIfPresent(Int.self, forKey: .goldPassBoost) ?? 0
+        self.goldPassReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .goldPassReminderEnabled) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -105,6 +110,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         try container.encode(labAssistantLevel, forKey: .labAssistantLevel)
         try container.encode(alchemistLevel, forKey: .alchemistLevel)
         try container.encode(goldPassBoost, forKey: .goldPassBoost)
+        try container.encode(goldPassReminderEnabled, forKey: .goldPassReminderEnabled)
     }
 }
 
