@@ -50,12 +50,12 @@
     "id": 12000009
   },
   "Ejector2": {
-    "displayName": "Ejector2",
+    "displayName": "bb_Spring Trap",
     "internalName": "Ejector2",
     "id": 12000010
   },
   "Pusher": {
-    "displayName": "Pusher",
+    "displayName": "bb_Push Trap",
     "internalName": "Pusher",
     "id": 12000011
   },
@@ -65,12 +65,12 @@
     "id": 12000012
   },
   "AirGroundTrap": {
-    "displayName": "AirGroundTrap",
+    "displayName": "bb_Mine",
     "internalName": "AirGroundTrap",
     "id": 12000013
   },
   "MegaAirGroundTrap": {
-    "displayName": "MegaAirGroundTrap",
+    "displayName": "bb_Mega Mine",
     "internalName": "MegaAirGroundTrap",
     "id": 12000014
   },

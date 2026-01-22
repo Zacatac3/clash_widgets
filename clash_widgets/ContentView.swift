@@ -8,6 +8,33 @@ import UIImageColors
 #if canImport(WebKit)
 import WebKit
 #endif
+#if canImport(UniformTypeIdentifiers)
+import UniformTypeIdentifiers
+#endif
+
+#if canImport(UIKit)
+private func clipboardTextFromPasteboard() -> String? {
+    let pasteboard = UIPasteboard.general
+    let candidates: [(String, [String.Encoding])] = [
+        ("public.utf8-plain-text", [.utf8]),
+        ("public.utf16-plain-text", [.utf16, .utf16LittleEndian, .utf16BigEndian]),
+        ("public.utf32-plain-text", [.utf32, .utf32LittleEndian, .utf32BigEndian]),
+        ("public.text", [.utf8, .utf16, .utf16LittleEndian, .utf16BigEndian])
+    ]
+
+    for (type, encodings) in candidates {
+        if let data = pasteboard.data(forPasteboardType: type) {
+            for encoding in encodings {
+                if let decoded = String(data: data, encoding: encoding), !decoded.isEmpty {
+                    return decoded
+                }
+            }
+        }
+    }
+
+    return pasteboard.string
+}
+#endif
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @StateObject private var dataService: DataService
@@ -19,7 +46,6 @@ struct ContentView: View {
     @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
-    @State private var initialSetupName: String = ""
     @State private var showGoldPassResetPrompt = false
 
     init() {
@@ -52,10 +78,6 @@ struct ContentView: View {
                 .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                 .tag(Tab.equipment)
 
-            ProgressOverviewView()
-                .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
-                .tag(Tab.progress)
-
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gearshape") }
                 .tag(Tab.settings)
@@ -84,7 +106,6 @@ struct ContentView: View {
         }
         .onAppear {
             initialSetupTag = dataService.playerTag
-            initialSetupName = dataService.profileName
             showInitialSetup = !hasCompletedInitialSetup
         }
         .onChangeCompat(of: hasCompletedInitialSetup) { newValue in
@@ -96,26 +117,31 @@ struct ContentView: View {
             }
         }
         .fullScreenCover(isPresented: $showInitialSetup) {
-            InitialSetupView(playerTag: $initialSetupTag, displayName: $initialSetupName) { cleanedTag, displayName, didImport in
-                handleInitialSetupSubmission(tag: cleanedTag, displayName: displayName, didImport: didImport)
+            InitialSetupView(playerTag: $initialSetupTag) { submission in
+                handleInitialSetupSubmission(submission)
             }
             .environmentObject(dataService)
             .interactiveDismissDisabled(true)
         }
     }
 
-    private func handleInitialSetupSubmission(tag rawTag: String, displayName: String, didImport: Bool) {
-        let normalized = normalizePlayerTag(rawTag)
-        let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !normalized.isEmpty || didImport || !trimmedName.isEmpty else { return }
+    private func handleInitialSetupSubmission(_ submission: ProfileSetupSubmission) {
+        let normalized = submission.tag
+        guard !normalized.isEmpty || submission.rawJSON != nil else { return }
         initialSetupTag = normalized
-        if !trimmedName.isEmpty {
-            dataService.profileName = trimmedName
+        if let rawJSON = submission.rawJSON {
+            dataService.parseJSONFromClipboard(input: rawJSON)
         }
         if !normalized.isEmpty {
             dataService.playerTag = normalized
             dataService.refreshCurrentProfile(force: true)
         }
+        dataService.builderCount = submission.builderCount
+        dataService.builderApprenticeLevel = submission.builderApprenticeLevel
+        dataService.labAssistantLevel = submission.labAssistantLevel
+        dataService.alchemistLevel = submission.alchemistLevel
+        dataService.goldPassBoost = submission.goldPassBoost
+        dataService.goldPassReminderEnabled = submission.goldPassBoost > 0
         hasCompletedInitialSetup = true
         showInitialSetup = false
         selectedTab = .dashboard
@@ -223,7 +249,6 @@ private struct InfoSheetView: View {
                 TabView(selection: $selectedPage) {
                     HelpSheetContent()
                         .tag(InfoSheetPage.welcome)
-
                     WhatsNewContent(items: items)
                         .tag(InfoSheetPage.whatsNew)
                 }
@@ -847,7 +872,7 @@ private struct DashboardView: View {
     @AppStorage("hasSeenClashDashOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
-    @AppStorage("homeSectionOrder") private var homeSectionOrder = "helpers,builders,lab,pets,builderBase"
+    @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
     @State private var showHomeOrderSheet = false
@@ -1014,6 +1039,7 @@ private struct DashboardView: View {
         case lab
         case pets
         case builderBase
+        case starLab
 
         var id: String { rawValue }
 
@@ -1024,10 +1050,11 @@ private struct DashboardView: View {
             case .lab: return "Laboratory"
             case .pets: return "Pets"
             case .builderBase: return "Builder Base"
+            case .starLab: return "Star Laboratory"
             }
         }
 
-        static let defaultOrder: [HomeSection] = [.helpers, .builders, .lab, .pets, .builderBase]
+        static let defaultOrder: [HomeSection] = [.builders, .lab, .pets, .helpers, .builderBase, .starLab]
     }
 
     private struct HelperCooldownDisplay: Identifiable {
@@ -1106,6 +1133,18 @@ private struct DashboardView: View {
                     }
                 }
             }
+        case .starLab:
+            if displayedBuilderHallLevel >= 6 {
+                Section(section.title) {
+                    if !starLabUpgrades.isEmpty {
+                        ForEach(starLabUpgrades) { upgrade in
+                            BuilderRow(upgrade: upgrade)
+                        }
+                    } else {
+                        IdleStatusRow(title: "Star Laboratory", status: "Idle")
+                    }
+                }
+            }
         }
     }
 
@@ -1177,7 +1216,11 @@ private struct DashboardView: View {
     }
 
     private var totalBuilders: Int {
-        max(dataService.builderCount, 0)
+        max(dataService.builderCount, 0) + (goblinBuilderActive ? 1 : 0)
+    }
+
+    private var goblinBuilderActive: Bool {
+        builderVillageUpgrades.contains { $0.usesGoblin }
     }
 
     private var busyBuilders: Int {
@@ -1249,12 +1292,23 @@ private struct DashboardView: View {
         return dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
     }
 
+    private var displayedBuilderHallLevel: Int {
+        if let cached = dataService.cachedProfile?.builderHallLevel {
+            return cached
+        }
+        return dataService.currentProfile?.cachedProfile?.builderHallLevel ?? 0
+    }
+
     private var builderVillageUpgrades: [BuildingUpgrade] {
         dataService.activeUpgrades.filter { $0.category == .builderVillage }
     }
 
     private var labUpgrades: [BuildingUpgrade] {
         dataService.activeUpgrades.filter { $0.category == .lab }
+    }
+
+    private var starLabUpgrades: [BuildingUpgrade] {
+        dataService.activeUpgrades.filter { $0.category == .starLab }
     }
 
     private var petUpgrades: [BuildingUpgrade] {
@@ -1267,9 +1321,17 @@ private struct DashboardView: View {
 
     private func pasteAndImport() {
         #if canImport(UIKit)
-        guard let input = UIPasteboard.general.string else { return }
-        dataService.parseJSONFromClipboard(input: input)
-        importStatus = "Imported \(dataService.activeUpgrades.count) upgrades"
+        guard let input = clipboardTextFromPasteboard() else { return }
+        switch dataService.importClipboardToMatchingProfile(input: input) {
+        case .success(_, let upgradesCount, let switched):
+            importStatus = switched
+            ? "Imported \(upgradesCount) upgrades and switched profiles"
+            : "Imported \(upgradesCount) upgrades"
+        case .missingProfile(let tag):
+            importStatus = "Profile #\(tag) not found. Add it in Settings first."
+        case .invalidJSON:
+            importStatus = "Could not parse clipboard data."
+        }
         DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
             importStatus = nil
         }
@@ -2131,13 +2193,45 @@ private struct SettingsView: View {
     @State private var showFeedbackForm = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
+    @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
     @State private var forceGoldPassResetToggle = false
+
+    private var canCollapseProfiles: Bool {
+        dataService.profiles.count >= 2
+    }
 
     var body: some View {
         NavigationStack {
             Form {
                 Section("Profiles") {
-                    ForEach(sortedProfiles) { profile in
+                    if canCollapseProfiles {
+                        Button {
+                            profilesSectionExpanded.toggle()
+                        } label: {
+                            HStack {
+                                Text(profilesSectionExpanded ? "Show current profile" : "Show all profiles")
+                                    .font(.headline)
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: profilesSectionExpanded ? "chevron.up" : "chevron.down")
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .buttonStyle(.plain)
+                    }
+
+                    let profilesToShow: [PlayerAccount] = {
+                        let expanded = profilesSectionExpanded || !canCollapseProfiles
+                        if expanded {
+                            return sortedProfiles
+                        }
+                        if let current = dataService.currentProfile {
+                            return [current]
+                        }
+                        return []
+                    }()
+
+                    ForEach(profilesToShow) { profile in
                         profileRow(profile)
                     }
 
@@ -2188,6 +2282,18 @@ private struct SettingsView: View {
                     }
 
                     Text("Notification preferences are saved per profile.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
+                Section("Clipboard") {
+                    Button {
+                        openAppSettings()
+                    } label: {
+                        Label("Open App Settings", systemImage: "gearshape")
+                    }
+
+                    Text("To stop the paste prompt, go to Settings → Apps → ClashDash → Paste From Other Apps and set it to Allow.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -2282,6 +2388,13 @@ private struct SettingsView: View {
     private func notificationCategoryToggle(title: String, binding: Binding<Bool>) -> some View {
         Toggle(title, isOn: binding)
             .disabled(!dataService.notificationSettings.notificationsEnabled)
+    }
+
+    private func openAppSettings() {
+        #if canImport(UIKit)
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+        #endif
     }
 
     private func townHallLevel(for profile: PlayerAccount) -> Int {
@@ -2384,18 +2497,26 @@ private struct InlineWebView: UIViewRepresentable {
 }
 #endif
 
-private struct AddProfileSheet: View {
+private struct ProfileSetupSubmission {
+    let tag: String
+    let builderCount: Int
+    let builderApprenticeLevel: Int
+    let labAssistantLevel: Int
+    let alchemistLevel: Int
+    let goldPassBoost: Int
+    let rawJSON: String?
+}
+
+private struct ProfileSetupPane: View {
     @EnvironmentObject private var dataService: DataService
-    @Environment(\.dismiss) private var dismiss
+    @Binding var playerTag: String
+    let title: String
+    let subtitle: String
+    let submitTitle: String
+    let showCancel: Bool
+    let onCancel: (() -> Void)?
+    let onSubmit: (ProfileSetupSubmission) -> Void
 
-    private enum SetupStep {
-        case tagEntry
-        case settings
-    }
-
-    @State private var step: SetupStep = .tagEntry
-    @State private var displayName: String = ""
-    @State private var playerTag: String = ""
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
     @State private var labAssistantLevel: Int = 0
@@ -2404,14 +2525,27 @@ private struct AddProfileSheet: View {
     @State private var previewTownHallLevel: Int = 0
     @State private var statusMessage: String?
     @State private var pendingImportRawJSON: String?
-    @FocusState private var fieldFocused: Bool
+    @State private var didImportJSON = false
+    @State private var didSeedSettings = false
+    @State private var showOptionalTag = false
+    @State private var importedTag: String?
+
+    private enum HelperId {
+        static let builderApprentice = 93000000
+        static let labAssistant = 93000001
+        static let alchemist = 93000002
+    }
 
     private var normalizedTag: String {
         normalizePlayerTag(playerTag)
     }
 
-    private var canContinueFromTagEntry: Bool {
-        !normalizedTag.isEmpty || pendingImportRawJSON != nil
+    private var canContinue: Bool {
+        didImportJSON || pendingImportRawJSON != nil || !normalizedTag.isEmpty
+    }
+
+    private var showSettings: Bool {
+        didImportJSON || pendingImportRawJSON != nil || !normalizedTag.isEmpty
     }
 
     private var townHallLevel: Int {
@@ -2466,192 +2600,217 @@ private struct AddProfileSheet: View {
         }
     }
 
-    private func fetchPreviewTownHall() {
-        let tag = normalizePlayerTag(playerTag)
-        guard !tag.isEmpty else { return }
-        dataService.fetchProfilePreview(tag: tag) { profile in
-            previewTownHallLevel = profile?.townHallLevel ?? 0
-            clampBuilderCount()
-            clampHelperLevels()
-        }
-    }
-
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                switch step {
-                case .tagEntry:
-                    tagEntryView
-                case .settings:
-                    settingsView
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    Text(title)
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                    Text(subtitle)
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+
+#if canImport(UIKit)
+                    Button {
+                        importVillageDataFromClipboard()
+                    } label: {
+                        Label("Paste & Import Village Data", systemImage: "plus")
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 48)
+                            .font(.headline)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .tint(.blue)
+#endif
+
+                    DisclosureGroup(isExpanded: $showOptionalTag) {
+                        TextField("e.g. #2CJJRQJ0", text: $playerTag)
+                            .textInputAutocapitalization(.characters)
+                            .autocorrectionDisabled()
+                            .keyboardType(.asciiCapable)
+                            .padding(12)
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                            .onChangeCompat(of: playerTag) { newValue in
+                                let sanitized = sanitizeInput(newValue)
+                                if sanitized != newValue {
+                                    playerTag = sanitized
+                                }
+                            }
+                        Text("Optional. Not required for setup.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    } label: {
+                        Text("Optional: Player Tag")
+                            .font(.headline)
+                    }
+
+                    if let statusMessage {
+                        Text(statusMessage)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
+
+                    if showSettings {
+                        settingsFields
+                    }
                 }
+                .padding(20)
             }
-            .navigationTitle(step == .tagEntry ? "New Profile" : "Profile Settings")
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { dismiss() }
+                if showCancel {
+                    ToolbarItem(placement: .cancellationAction) {
+                        Button("Cancel") { onCancel?() }
+                    }
                 }
             }
-            .animation(.easeInOut, value: step)
+            .safeAreaInset(edge: .bottom) {
+                Button {
+                    submitProfile()
+                } label: {
+                    Text(submitTitle)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 6)
+                }
+                .buttonStyle(.borderedProminent)
+                .padding(.horizontal, 20)
+                .padding(.top, 12)
+                .padding(.bottom, 8)
+                .background(Color(.systemGroupedBackground))
+                .disabled(!canContinue)
+            }
+            .onAppear { seedSettingsIfNeeded() }
+            .onChangeCompat(of: townHallLevel) { _ in
+                clampBuilderCount()
+                clampHelperLevels()
+            }
         }
     }
 
-    private var tagEntryView: some View {
-        Form {
-            Section {
-                TextField("Profile Name", text: $displayName)
-                    .autocorrectionDisabled()
-                    .textInputAutocapitalization(.words)
-            } header: {
-                Text("Profile Name")
-            } footer: {
-                Text("Optional if you use a player tag. Set a name when creating an offline profile.")
-            }
-
-            Section {
-                TextField("e.g. #9C082CCU8", text: $playerTag)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .focused($fieldFocused)
-            } header: {
-                Text("Player Tag (Optional)")
-            } footer: {
-                Text("Enter your Clash tag to sync your profile data, or paste your village JSON below.")
-            }
-
-#if canImport(UIKit)
-            Section {
-                Button {
-                    importVillageDataFromClipboard()
-                } label: {
-                    Label("Paste & Import Village Data", systemImage: "plus")
-                        .frame(maxWidth: .infinity)
-                }
-            }
-#endif
-
-            if let statusMessage {
-                Section {
-                    Text(statusMessage)
-                        .font(.caption)
+    private var settingsFields: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            Stepper(value: $builderCount, in: 2...maxBuilders) {
+                HStack {
+                    Image("profile/home_builder")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                    Text("Builders")
+                    Spacer()
+                    Text("\(builderCount)")
+                        .font(.subheadline)
                         .foregroundColor(.secondary)
                 }
             }
 
-            Section {
-                Button {
-                    fetchPreviewTownHall()
-                    step = .settings
-                } label: {
-                    Text("Continue")
-                        .frame(maxWidth: .infinity)
-                }
-                .disabled(!canContinueFromTagEntry)
-            }
-        }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                fieldFocused = true
-            }
-        }
-    }
-
-    private var settingsView: some View {
-        Form {
-            Section {
-                Stepper(value: $builderCount, in: 2...maxBuilders) {
+            if townHallLevel >= 7 {
+                VStack(alignment: .leading, spacing: 6) {
                     HStack {
-                        Image("profile/home_builder")
+                        Image(goldPassIconName)
                             .resizable()
                             .scaledToFit()
                             .frame(width: 36, height: 36)
-                        Text("Builders")
+                        Text(goldPassTitle)
                         Spacer()
-                        Text("\(builderCount)")
+                        Text(goldPassBoostLabel)
                             .font(.subheadline)
                             .foregroundColor(.secondary)
                     }
-                }
-            } header: {
-                Text("Builders")
-            }
-
-            Section {
-                if labAssistantMaxLevel > 0 {
-                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
-                }
-                if builderApprenticeMaxLevel > 0 {
-                    sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
-                }
-                if alchemistMaxLevel > 0 {
-                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
-                }
-            } header: {
-                Text("Helpers")
-            }
-
-            if townHallLevel >= 7 {
-                Section {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack {
-                            Image(goldPassIconName)
-                                .resizable()
-                                .scaledToFit()
-                                .frame(width: 36, height: 36)
-                            Text(goldPassTitle)
-                            Spacer()
-                            Text(goldPassBoostLabel)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        Slider(
-                            value: Binding(
-                                get: { goldPassBoostToSliderValue(goldPassBoost) },
-                                set: { goldPassBoost = sliderValueToGoldPassBoost($0) }
-                            ),
-                            in: 0...3,
-                            step: 1
-                        )
-                        HStack {
-                            Text("0%")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("10%")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("15%")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                            Spacer()
-                            Text("20%")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                        }
+                    Slider(
+                        value: Binding(
+                            get: { goldPassBoostToSliderValue(goldPassBoost) },
+                            set: { goldPassBoost = sliderValueToGoldPassBoost($0) }
+                        ),
+                        in: 0...3,
+                        step: 1
+                    )
+                    HStack {
+                        Text("0%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("10%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("15%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        Spacer()
+                        Text("20%")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
                     }
-                } header: {
-                    Text("Gold Pass")
                 }
             }
 
-            Section {
-                Button {
-                    saveProfile()
-                } label: {
-                    Text("Save Profile")
-                        .frame(maxWidth: .infinity)
-                }
+            if labAssistantMaxLevel > 0 {
+                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
+            }
+
+            if builderApprenticeMaxLevel > 0 {
+                sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
+            }
+
+            if alchemistMaxLevel > 0 {
+                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
             }
         }
-        .onAppear {
-            clampBuilderCount()
-            clampHelperLevels()
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+    }
+
+    private func submitProfile() {
+        clampBuilderCount()
+        clampHelperLevels()
+        let submission = ProfileSetupSubmission(
+            tag: (importedTag ?? normalizedTag),
+            builderCount: builderCount,
+            builderApprenticeLevel: builderApprenticeLevel,
+            labAssistantLevel: labAssistantLevel,
+            alchemistLevel: alchemistLevel,
+            goldPassBoost: goldPassBoost,
+            rawJSON: pendingImportRawJSON
+        )
+        onSubmit(submission)
+    }
+
+    private func seedSettingsIfNeeded() {
+        guard !didSeedSettings else { return }
+        didSeedSettings = true
+        builderCount = dataService.builderCount
+        builderApprenticeLevel = dataService.builderApprenticeLevel
+        labAssistantLevel = dataService.labAssistantLevel
+        alchemistLevel = dataService.alchemistLevel
+        goldPassBoost = dataService.goldPassBoost
+        clampBuilderCount()
+        clampHelperLevels()
+    }
+
+    private func clampBuilderCount() {
+        if builderCount > maxBuilders { builderCount = maxBuilders }
+        if builderCount < 2 { builderCount = 2 }
+    }
+
+    private func clampHelperLevels() {
+        if labAssistantMaxLevel == 0 {
+            labAssistantLevel = 0
+        } else if labAssistantLevel > labAssistantMaxLevel {
+            labAssistantLevel = labAssistantMaxLevel
         }
-        .onChangeCompat(of: townHallLevel) { _ in
-            clampBuilderCount()
-            clampHelperLevels()
+
+        if builderApprenticeMaxLevel == 0 {
+            builderApprenticeLevel = 0
+        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
+            builderApprenticeLevel = builderApprenticeMaxLevel
+        }
+
+        if alchemistMaxLevel == 0 {
+            alchemistLevel = 0
+        } else if alchemistLevel > alchemistMaxLevel {
+            alchemistLevel = alchemistMaxLevel
         }
     }
 
@@ -2681,74 +2840,184 @@ private struct AddProfileSheet: View {
         }
     }
 
-    private func saveProfile() {
-        clampBuilderCount()
-        guard canContinueFromTagEntry else {
-            statusMessage = "Add a player tag or paste your village JSON to continue."
-            step = .tagEntry
-            return
-        }
-        let newProfileId = dataService.addProfile(
-            tag: playerTag,
-            displayName: displayName,
-            builderCount: builderCount,
-            builderApprenticeLevel: builderApprenticeLevel,
-            labAssistantLevel: labAssistantLevel,
-            alchemistLevel: alchemistLevel,
-            goldPassBoost: goldPassBoost,
-            goldPassReminderEnabled: goldPassBoost > 0
-        )
-        if let pendingImportRawJSON {
-            dataService.selectProfile(newProfileId)
-            dataService.parseJSONFromClipboard(input: pendingImportRawJSON)
-        }
-        dismiss()
-    }
-
-    private func clampBuilderCount() {
-        if builderCount > maxBuilders { builderCount = maxBuilders }
-        if builderCount < 2 { builderCount = 2 }
-    }
-
-    private func clampHelperLevels() {
-        if labAssistantMaxLevel == 0 {
-            labAssistantLevel = 0
-        } else if labAssistantLevel > labAssistantMaxLevel {
-            labAssistantLevel = labAssistantMaxLevel
-        }
-
-        if builderApprenticeMaxLevel == 0 {
-            builderApprenticeLevel = 0
-        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
-            builderApprenticeLevel = builderApprenticeMaxLevel
-        }
-
-        if alchemistMaxLevel == 0 {
-            alchemistLevel = 0
-        } else if alchemistLevel > alchemistMaxLevel {
-            alchemistLevel = alchemistMaxLevel
-        }
-    }
-
 #if canImport(UIKit)
     private func importVillageDataFromClipboard() {
-        guard let input = UIPasteboard.general.string, !input.isEmpty else {
+        guard let input = clipboardTextFromPasteboard(), !input.isEmpty else {
             statusMessage = "Clipboard was empty—copy your export from Clash first."
             return
         }
-        guard let upgrades = dataService.previewImportUpgrades(input: input) else {
+
+        guard let export = dataService.decodeExport(from: input) else {
             statusMessage = "Could not parse the clipboard data."
             return
         }
+
         pendingImportRawJSON = input
-        let count = upgrades.count
-        if count > 0 {
-            statusMessage = "Ready to import \(count) upgrades after saving this profile."
-        } else {
-            statusMessage = "Clipboard parsed, but no upgrades were detected."
+        didImportJSON = true
+        goldPassBoost = 0
+
+        let helperLevels = dataService.helperLevels(from: export)
+        if let level = helperLevels[HelperId.builderApprentice] {
+            builderApprenticeLevel = level
         }
+        if let level = helperLevels[HelperId.labAssistant] {
+            labAssistantLevel = level
+        }
+        if let level = helperLevels[HelperId.alchemist] {
+            alchemistLevel = level
+        }
+
+        if let exportTag = export.tag?.trimmingCharacters(in: .whitespacesAndNewlines), !exportTag.isEmpty {
+            let normalized = normalizePlayerTag(exportTag)
+            importedTag = normalized
+            playerTag = normalized
+        }
+
+        let inferredTownHall = dataService.inferTownHallLevel(from: export)
+        if inferredTownHall > 0 {
+            previewTownHallLevel = inferredTownHall
+        }
+
+        if let upgrades = dataService.previewImportUpgrades(input: input) {
+            let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage && !$0.usesGoblin }.count
+            if inferredBuilderCount > builderCount {
+                builderCount = inferredBuilderCount
+            }
+        }
+
+        clampBuilderCount()
+        clampHelperLevels()
+
+        statusMessage = "Imported your JSON. Adjust the settings below if needed."
     }
 #endif
+
+    private func sanitizeInput(_ raw: String) -> String {
+        let uppercase = raw.uppercased()
+        let allowed = CharacterSet(charactersIn: "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        var sanitized = String(uppercase.filter { char in
+            guard let scalar = char.unicodeScalars.first else { return false }
+            return allowed.contains(scalar)
+        })
+
+        if let hashIndex = sanitized.firstIndex(of: "#"), hashIndex != sanitized.startIndex {
+            sanitized.remove(at: hashIndex)
+            sanitized.insert("#", at: sanitized.startIndex)
+        }
+
+        if sanitized.count > 15 {
+            sanitized = String(sanitized.prefix(15))
+        }
+
+        return sanitized
+    }
+}
+
+private struct AddProfileSheet: View {
+    @EnvironmentObject private var dataService: DataService
+    @Environment(\.dismiss) private var dismiss
+    @State private var playerTag: String = ""
+    @State private var showDuplicateTagAlert = false
+    @State private var duplicateTagValue = ""
+    @State private var showProfileLimitAlert = false
+
+    var body: some View {
+        ProfileSetupPane(
+            playerTag: $playerTag,
+            title: "New Profile",
+            subtitle: "Paste your exported village JSON to auto-fill timers and helper levels.",
+            submitTitle: "Continue",
+            showCancel: true,
+            onCancel: { dismiss() }
+        ) { submission in
+            saveProfile(submission)
+        }
+        .alert("Profile already exists", isPresented: $showDuplicateTagAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("A profile with tag #\(duplicateTagValue) already exists. Choose a different tag or switch to that profile.")
+        }
+        .alert("Profile limit reached", isPresented: $showProfileLimitAlert) {
+            Button("OK", role: .cancel) {}
+        } message: {
+            Text("You can store up to 20 profiles. Delete one before adding another.")
+        }
+    }
+
+    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                }
+                Text(title)
+                Spacer()
+                Text("Lv \(value.wrappedValue)/\(maxLevel)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: Binding(
+                    get: { Double(value.wrappedValue) },
+                    set: { value.wrappedValue = Int($0.rounded()) }
+                ),
+                in: 0...Double(maxLevel),
+                step: 1
+            )
+        }
+    }
+
+    private func saveProfile(_ submission: ProfileSetupSubmission) {
+        if dataService.profiles.count >= 20 {
+            showProfileLimitAlert = true
+            return
+        }
+        let resolvedTag: String = {
+            if !submission.tag.isEmpty {
+                return submission.tag
+            }
+            if let rawJSON = submission.rawJSON,
+               let export = dataService.decodeExport(from: rawJSON),
+               let exportTag = export.tag, !exportTag.isEmpty {
+                return normalizePlayerTag(exportTag)
+            }
+            return ""
+        }()
+
+        if dataService.hasProfile(withTag: resolvedTag) {
+            duplicateTagValue = resolvedTag
+            showDuplicateTagAlert = true
+            return
+        }
+        let newProfileId = dataService.addProfile(
+            tag: resolvedTag,
+            displayName: "",
+            builderCount: submission.builderCount,
+            builderApprenticeLevel: submission.builderApprenticeLevel,
+            labAssistantLevel: submission.labAssistantLevel,
+            alchemistLevel: submission.alchemistLevel,
+            goldPassBoost: submission.goldPassBoost,
+            goldPassReminderEnabled: submission.goldPassBoost > 0
+        )
+
+        if let rawJSON = submission.rawJSON {
+            dataService.selectProfile(newProfileId)
+            dataService.parseJSONFromClipboard(input: rawJSON)
+        }
+
+        dataService.selectProfile(newProfileId)
+        dataService.builderCount = submission.builderCount
+        dataService.builderApprenticeLevel = submission.builderApprenticeLevel
+        dataService.labAssistantLevel = submission.labAssistantLevel
+        dataService.alchemistLevel = submission.alchemistLevel
+        dataService.goldPassBoost = submission.goldPassBoost
+        dataService.goldPassReminderEnabled = submission.goldPassBoost > 0
+
+        dismiss()
+    }
 }
 
 private struct ProfileEditorSheet: View {
@@ -2907,483 +3176,19 @@ private struct HelpSheetContent: View {
 }
 
 private struct InitialSetupView: View {
-    @EnvironmentObject private var dataService: DataService
     @Binding var playerTag: String
-    @Binding var displayName: String
-    let onComplete: (String, String, Bool) -> Void
-
-    private enum FlowStep {
-        case intro
-        case tagEntry
-        case settings
-    }
-
-    @State private var step: FlowStep = .intro
-    @State private var statusMessage: String?
-    @State private var builderCount: Int = 5
-    @State private var builderApprenticeLevel: Int = 0
-    @State private var labAssistantLevel: Int = 0
-    @State private var alchemistLevel: Int = 0
-    @State private var goldPassBoost: Int = 0
-    @State private var previewTownHallLevel: Int = 0
-    @State private var didSeedSettings = false
-    @State private var didImportJSON = false
-    @FocusState private var fieldFocused: Bool
-
-    private var normalizedTag: String {
-        normalizePlayerTag(playerTag)
-    }
-
-    private var canContinueFromTagEntry: Bool {
-        !normalizedTag.isEmpty || didImportJSON
-    }
+    let onComplete: (ProfileSetupSubmission) -> Void
 
     var body: some View {
-        NavigationStack {
-            VStack(alignment: .leading, spacing: 28) {
-                switch step {
-                case .intro:
-                    onboardingSplash
-                case .tagEntry:
-                    tagEntryContent
-                case .settings:
-                    settingsContent
-                }
-            }
-            .padding(30)
-            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-            .background(Color(.systemGroupedBackground))
-            .navigationTitle(step == .intro ? "Welcome" : (step == .tagEntry ? "Add Your Tag" : "Profile Settings"))
-            .animation(.easeInOut, value: step)
-            .onAppear { scheduleFocusIfNeeded() }
-            .onChangeCompat(of: step) { _ in scheduleFocusIfNeeded() }
-            .onAppear { seedSettingsIfNeeded() }
-        }
-    }
-
-    private var onboardingSplash: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    Text("Welcome to ClashDash")
-                        .font(.system(size: 30, weight: .bold, design: .rounded))
-
-                    helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
-
-                    helpCard(title: "Importing Data", bullets: [
-                        "Copy the exported JSON from Clash of Clans",
-                        "Tap the + button on the Home tab",
-                        "Choose Paste & Import to sync timers"
-                    ])
-
-                    helpCard(title: "Managing Profiles", bullets: [
-                        "Use the Switch Village button to change players",
-                        "Tap Edit within Settings to rename or update tags",
-                        "Swipe left on a profile row in Settings to delete"
-                    ])
-
-                    helpCard(title: "Widgets", bullets: [
-                        "Add ClashDash widgets from the iOS Home Screen",
-                        "Widgets read the latest data each time you import",
-                        "Open the app after timers finish so widgets stay fresh"
-                    ])
-                }
-                .padding(.top, 8)
-            }
-
-            Button {
-                step = .tagEntry
-            } label: {
-                Text("Continue")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-        }
-    }
-
-    private var tagEntryContent: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Text("Set up your profile")
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            Text("Use a player tag to sync, or import your village JSON and set a manual name.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
-            VStack(alignment: .leading, spacing: 10) {
-                TextField("Profile Name", text: $displayName)
-                    .textInputAutocapitalization(.words)
-                    .autocorrectionDisabled()
-                    .padding(14)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
-
-                TextField("e.g. #9C082CCU8", text: $playerTag)
-                    .textInputAutocapitalization(.characters)
-                    .autocorrectionDisabled()
-                    .keyboardType(.asciiCapable)
-                    .focused($fieldFocused)
-                    .padding(14)
-                    .background(RoundedRectangle(cornerRadius: 14).fill(Color(.secondarySystemBackground)))
-                    .onChangeCompat(of: playerTag) { newValue in
-                        let sanitized = sanitizeInput(newValue)
-                        if sanitized != newValue {
-                            playerTag = sanitized
-                        }
-                    }
-
-                Text("ClashDash removes the # symbol automatically—just type the characters you see in game.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-
-#if canImport(UIKit)
-            Button {
-                importVillageDataFromClipboard()
-            } label: {
-                Label("Paste & Import Village Data", systemImage: "plus")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.bordered)
-#endif
-
-            if let statusMessage {
-                Text(statusMessage)
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
-            }
-
-            Button {
-                fetchPreviewTownHall()
-                step = .settings
-            } label: {
-                Text("Continue")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-            .disabled(!canContinueFromTagEntry)
-
-            Spacer()
-        }
-    }
-
-    private var settingsContent: some View {
-        VStack(alignment: .leading, spacing: 24) {
-            Text("Configure your profile")
-                .font(.system(size: 28, weight: .bold, design: .rounded))
-            Text("Set your builders and assistants based on your Town Hall level.")
-                .font(.subheadline)
-                .foregroundColor(.secondary)
-
-            settingsFields
-
-            Button {
-                persistSettings()
-                onComplete(normalizedTag, displayName, didImportJSON)
-            } label: {
-                Text("Save & Continue")
-                    .frame(maxWidth: .infinity)
-            }
-            .buttonStyle(.borderedProminent)
-
-            Spacer()
-            Text("Need to start over later? Use Settings → Reset to Factory Defaults.")
-                .font(.caption2)
-                .foregroundColor(.secondary)
-        }
-    }
-
-    private var settingsFields: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Stepper(value: $builderCount, in: 2...maxBuilders) {
-                HStack {
-                    Image("profile/home_builder")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                    Text("Builders")
-                    Spacer()
-                    Text("\(builderCount)")
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
-                }
-            }
-
-            if labAssistantMaxLevel > 0 {
-                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
-            }
-
-            if builderApprenticeMaxLevel > 0 {
-                sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
-            }
-
-            if alchemistMaxLevel > 0 {
-                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
-            }
-
-            if townHallLevel >= 7 {
-                VStack(alignment: .leading, spacing: 6) {
-                    HStack {
-                        Image(goldPassIconName)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 36, height: 36)
-                        Text(goldPassTitle)
-                        Spacer()
-                        Text(goldPassBoostLabel)
-                            .font(.subheadline)
-                            .foregroundColor(.secondary)
-                    }
-                    Slider(
-                        value: Binding(
-                            get: { goldPassBoostToSliderValue(goldPassBoost) },
-                            set: { goldPassBoost = sliderValueToGoldPassBoost($0) }
-                        ),
-                        in: 0...3,
-                        step: 1
-                    )
-                    HStack {
-                        Text("0%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("10%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("15%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                        Spacer()
-                        Text("20%")
-                            .font(.caption2)
-                            .foregroundColor(.secondary)
-                    }
-                }
-            }
-        }
-        .padding(16)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
-        .onAppear {
-            clampBuilderCount()
-            clampHelperLevels()
-        }
-        .onChangeCompat(of: townHallLevel) { _ in
-            clampBuilderCount()
-            clampHelperLevels()
-        }
-    }
-
-    private var maxBuilders: Int {
-        townHallLevel < 10 ? 5 : 6
-    }
-
-    private var labAssistantMaxLevel: Int {
-        dataService.helperMaxLevel(internalName: "ResearchApprentice", townHallLevel: townHallLevel)
-    }
-
-    private var builderApprenticeMaxLevel: Int {
-        dataService.helperMaxLevel(internalName: "BuilderApprentice", townHallLevel: townHallLevel)
-    }
-
-    private var alchemistMaxLevel: Int {
-        dataService.helperMaxLevel(internalName: "Alchemist", townHallLevel: townHallLevel)
-    }
-
-    private var townHallLevel: Int {
-        if previewTownHallLevel > 0 {
-            return previewTownHallLevel
-        }
-        return dataService.cachedProfile?.townHallLevel
-            ?? dataService.currentProfile?.cachedProfile?.townHallLevel
-            ?? 0
-    }
-
-    private var goldPassBoostLabel: String {
-        goldPassBoost == 0 ? "None" : "\(goldPassBoost)%"
-    }
-
-    private var goldPassTitle: String {
-        goldPassBoost == 0 ? "Free Pass" : "Gold Pass"
-    }
-
-    private var goldPassIconName: String {
-        goldPassBoost == 0 ? "profile/free_pass" : "profile/gold_pass"
-    }
-
-    private func goldPassBoostToSliderValue(_ boost: Int) -> Double {
-        switch boost {
-        case 0: return 0
-        case 10: return 1
-        case 15: return 2
-        case 20: return 3
-        default: return 0
-        }
-    }
-
-    private func sliderValueToGoldPassBoost(_ value: Double) -> Int {
-        switch Int(value.rounded()) {
-        case 0: return 0
-        case 1: return 10
-        case 2: return 15
-        case 3: return 20
-        default: return 0
-        }
-    }
-
-    private func seedSettingsIfNeeded() {
-        guard !didSeedSettings else { return }
-        didSeedSettings = true
-        builderCount = dataService.builderCount
-        builderApprenticeLevel = dataService.builderApprenticeLevel
-        labAssistantLevel = dataService.labAssistantLevel
-        alchemistLevel = dataService.alchemistLevel
-        goldPassBoost = dataService.goldPassBoost
-        clampBuilderCount()
-        clampHelperLevels()
-    }
-
-    private func fetchPreviewTownHall() {
-        let tag = normalizePlayerTag(playerTag)
-        guard !tag.isEmpty else { return }
-        dataService.fetchProfilePreview(tag: tag) { profile in
-            previewTownHallLevel = profile?.townHallLevel ?? 0
-            clampBuilderCount()
-            clampHelperLevels()
-        }
-    }
-
-    private func clampBuilderCount() {
-        if builderCount > maxBuilders { builderCount = maxBuilders }
-        if builderCount < 2 { builderCount = 2 }
-    }
-
-    private func clampHelperLevels() {
-        if labAssistantMaxLevel == 0 {
-            labAssistantLevel = 0
-        } else if labAssistantLevel > labAssistantMaxLevel {
-            labAssistantLevel = labAssistantMaxLevel
-        }
-
-        if builderApprenticeMaxLevel == 0 {
-            builderApprenticeLevel = 0
-        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
-            builderApprenticeLevel = builderApprenticeMaxLevel
-        }
-
-        if alchemistMaxLevel == 0 {
-            alchemistLevel = 0
-        } else if alchemistLevel > alchemistMaxLevel {
-            alchemistLevel = alchemistMaxLevel
-        }
-    }
-
-    private func persistSettings() {
-        clampBuilderCount()
-        clampHelperLevels()
-        dataService.builderCount = builderCount
-        dataService.builderApprenticeLevel = builderApprenticeLevel
-        dataService.labAssistantLevel = labAssistantLevel
-        dataService.alchemistLevel = alchemistLevel
-        dataService.goldPassBoost = goldPassBoost
-        dataService.goldPassReminderEnabled = goldPassBoost > 0
-    }
-
-    private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                if let iconName {
-                    Image(iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                }
-                Text(title)
-                Spacer()
-                Text("Lv \(value.wrappedValue)/\(maxLevel)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            Slider(
-                value: Binding(
-                    get: { Double(value.wrappedValue) },
-                    set: { value.wrappedValue = Int($0.rounded()) }
-                ),
-                in: 0...Double(maxLevel),
-                step: 1
-            )
-        }
-    }
-
-    @ViewBuilder
-    private func helpCard(title: String, description: String? = nil, bullets: [String] = []) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
-            Text(title)
-                .font(.headline)
-            if let description {
-                Text(description)
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            if !bullets.isEmpty {
-                VStack(alignment: .leading, spacing: 6) {
-                    ForEach(bullets, id: \.self) { bullet in
-                        HStack(alignment: .top, spacing: 8) {
-                            Image(systemName: "checkmark.circle")
-                                .font(.caption)
-                                .foregroundColor(.accentColor)
-                            Text(bullet)
-                                .font(.subheadline)
-                        }
-                    }
-                }
-            }
-        }
-        .padding()
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
-    }
-
-    private func scheduleFocusIfNeeded() {
-        guard step == .tagEntry else { return }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.35) {
-            fieldFocused = true
-        }
-    }
-
-#if canImport(UIKit)
-    private func importVillageDataFromClipboard() {
-        guard let input = UIPasteboard.general.string, !input.isEmpty else {
-            statusMessage = "Clipboard was empty—copy your export from Clash first."
-            return
-        }
-        dataService.parseJSONFromClipboard(input: input)
-        didImportJSON = true
-        let count = dataService.activeUpgrades.count
-        if count > 0 {
-            statusMessage = "Imported \(count) upgrades from your clipboard."
-        } else {
-            statusMessage = "Processed the clipboard data, but no upgrades were detected."
-        }
-    }
-#endif
-
-    private func sanitizeInput(_ raw: String) -> String {
-        let uppercase = raw.uppercased()
-        let allowed = CharacterSet(charactersIn: "#ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
-        var sanitized = String(uppercase.filter { char in
-            guard let scalar = char.unicodeScalars.first else { return false }
-            return allowed.contains(scalar)
-        })
-
-        if let hashIndex = sanitized.firstIndex(of: "#"), hashIndex != sanitized.startIndex {
-            sanitized.remove(at: hashIndex)
-            sanitized.insert("#", at: sanitized.startIndex)
-        }
-
-        if sanitized.count > 15 {
-            sanitized = String(sanitized.prefix(15))
-        }
-
-        return sanitized
+        ProfileSetupPane(
+            playerTag: $playerTag,
+            title: "Set up your profile",
+            subtitle: "Paste your exported village JSON to auto-fill timers and helper levels.",
+            submitTitle: "Continue",
+            showCancel: false,
+            onCancel: nil,
+            onSubmit: onComplete
+        )
     }
 }
 

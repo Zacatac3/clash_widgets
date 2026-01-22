@@ -166,6 +166,28 @@ def build_grouped_json(
     return items
 
 
+def build_seasonal_archetypes_json(rows: List[Dict[str, str]], id_prefix: int) -> List[Dict[str, Any]]:
+    items: List[Dict[str, Any]] = []
+    non_blank_index = -1
+    base_id = id_prefix * 1_000_000
+
+    for row in rows:
+        name = row.get("Name", "").strip()
+        if not name:
+            continue
+        non_blank_index += 1
+        modules_raw = row.get("Modules", "").strip()
+        modules = [m.strip() for m in modules_raw.split(";") if m.strip()]
+        items.append({
+            "id": base_id + non_blank_index,
+            "internalName": name,
+            "specialAbility": row.get("SpecialAbility", "").strip(),
+            "modules": modules,
+        })
+
+    return items
+
+
 def load_json_map(map_path: str) -> Dict[str, Dict[str, Any]]:
     if not os.path.exists(map_path):
         return {}
@@ -420,6 +442,18 @@ def main() -> None:
     update_id_map(
         os.path.join(MAPS_DIR, "seasonal_defense_modules_json_map.json"),
         seasonal,
+    )
+
+    archetype_rows = read_csv_rows(
+        os.path.join(EXTRACTED_DIR, "seasonal_defense_archetypes.csv")
+    )
+    archetypes = build_seasonal_archetypes_json(archetype_rows, id_prefix=103)
+    write_buildings_json(
+        os.path.join(PARSED_DIR, "seasonal_defense_archetypes.json"), archetypes
+    )
+    update_id_map(
+        os.path.join(MAPS_DIR, "seasonal_defense_archetypes_json_map.json"),
+        archetypes,
     )
 
     villager_rows = read_csv_rows(

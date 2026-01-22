@@ -1,0 +1,82 @@
+[
+  {
+    "id": 103000000,
+    "internalName": "HookTower",
+    "specialAbility": "SeasonalDefenseHookTower",
+    "modules": [
+      "HookTowerHPModule",
+      "HookTowerAttackModule",
+      "HookTowerEffectModule"
+    ]
+  },
+  {
+    "id": 103000001,
+    "internalName": "SunBeam",
+    "specialAbility": "SeasonalDefenseSunBeam",
+    "modules": [
+      "SunBeamHPModule",
+      "SunBeamAttackModule",
+      "SunBeamEffectModule"
+    ]
+  },
+  {
+    "id": 103000002,
+    "internalName": "LogLobber",
+    "specialAbility": "SeasonalDefenseLogLobber",
+    "modules": [
+      "LogLobberHPModule",
+      "LogLobberAttackModule",
+      "LogLobberEffectModule"
+    ]
+  },
+  {
+    "id": 103000003,
+    "internalName": "FlameSpinner",
+    "specialAbility": "SeasonalDefenseFlameSpinner",
+    "modules": [
+      "FlameSpinnerHPModule",
+      "FlameSpinnerAttackModule",
+      "FlameSpinnerEffectModule"
+    ]
+  },
+  {
+    "id": 103000004,
+    "internalName": "CrusherMortar",
+    "specialAbility": "SeasonalDefenseCrusherMortar",
+    "modules": [
+      "CrusherMortarHPModule",
+      "CrusherMortarAttackModule",
+      "CrusherMortarEffectModule"
+    ]
+  },
+  {
+    "id": 103000005,
+    "internalName": "LazyLaser",
+    "specialAbility": "SeasonalDefenseLazyLaser",
+    "modules": [
+      "LazyLaserHPModule",
+      "LazyLaserAttackModule",
+      "LazyLaserEffectModule"
+    ]
+  },
+  {
+    "id": 103000006,
+    "internalName": "SlowdownTower",
+    "specialAbility": "SeasonalDefenseSlowdownTower",
+    "modules": [
+      "SlowdownTowerHPModule",
+      "SlowdownTowerAttackModule",
+      "SlowdownTowerEffectModule"
+    ]
+  },
+  {
+    "id": 103000007,
+    "internalName": "HeroBooster",
+    "specialAbility": "SeasonalDefenseHeroBooster",
+    "modules": [
+      "HeroBoosterHPModule",
+      "HeroBoosterAttackModule",
+      "HeroBoosterEffectModule"
+    ]
+  }
+]

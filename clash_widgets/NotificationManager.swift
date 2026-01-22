@@ -117,6 +117,8 @@ final class NotificationManager {
             return "builder_village"
         case .lab:
             return "laboratory"
+        case .starLab:
+            return "star_lab"
         case .pets:
             return "pet_house"
         case .builderBase:

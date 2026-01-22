@@ -39,7 +39,16 @@ struct BuilderRow: View {
                 timeRemainingView
 
                 // Progress bar
-                progressBarView
+                ZStack(alignment: .topTrailing) {
+                    progressBarView
+                    if upgrade.usesGoblin {
+                        Image("profile/goblin_builder")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 30, height: 30)
+                            .offset(y: -36)
+                    }
+                }
             }
         }
         .padding(.vertical, 4)
@@ -154,12 +163,13 @@ struct BuilderRow: View {
     private func iconName(for upgrade: BuildingUpgrade) -> String {
         if let dataId = upgrade.dataId, String(dataId).hasPrefix("102") {
             let craftedName = craftedDefenseAssetName(from: upgrade.name)
-            return "crafted_defenses/\(craftedName)"
+            return "buildings_home/crafted_defenses/\(craftedName)"
         }
         let folder: String
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
+        case .starLab: folder = "builder_base"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -198,21 +208,13 @@ struct BuilderRow: View {
     }
 
     private func craftedDefenseAssetName(from name: String) -> String {
-        let parts = name.split(separator: " ").map(String.init)
-        var trimmedParts = parts
-        if trimmedParts.count >= 3,
-           trimmedParts.last?.localizedCaseInsensitiveCompare("Upgrade") == .orderedSame {
-            trimmedParts.remove(at: trimmedParts.count - 2)
-        }
-        let trimmedName = trimmedParts.joined(separator: " ")
-
         func sanitize(_ s: String) -> String {
             return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
                 .joined(separator: "_")
                 .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
         }
 
-        return sanitize(trimmedName.lowercased())
+        return sanitize(name.lowercased())
     }
 }
 

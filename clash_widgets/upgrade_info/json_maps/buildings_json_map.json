@@ -172,97 +172,97 @@
   "Town Hall2": {
     "internalName": "Town Hall2",
     "id": 1000034,
-    "displayName": "Town Hall2"
+    "displayName": "bb_Builder Hall"
   },
   "Elixir Pump2": {
     "internalName": "Elixir Pump2",
     "id": 1000035,
-    "displayName": "Elixir Pump2"
+    "displayName": "bb_Elixir Collector"
   },
   "Elixir Storage2": {
     "internalName": "Elixir Storage2",
     "id": 1000036,
-    "displayName": "Elixir Storage2"
+    "displayName": "bb_Elixir Storage"
   },
   "Gold Mine2": {
     "internalName": "Gold Mine2",
     "id": 1000037,
-    "displayName": "Gold Mine2"
+    "displayName": "bb_Gold Mine"
   },
   "Gold Storage2": {
     "internalName": "Gold Storage2",
     "id": 1000038,
-    "displayName": "Gold Storage2"
+    "displayName": "bb_Gold Storage"
   },
   "Clock Tower": {
     "internalName": "Clock Tower",
     "id": 1000039,
-    "displayName": "Clock Tower"
+    "displayName": "bb_Clock Tower"
   },
   "Barrack2": {
     "internalName": "Barrack2",
     "id": 1000040,
-    "displayName": "Barrack2"
+    "displayName": "bb_Builder BBarracks"
   },
   "Double Cannon": {
     "internalName": "Double Cannon",
     "id": 1000041,
-    "displayName": "Double Cannon"
+    "displayName": "bb_Double Cannon"
   },
   "Troop Housing2": {
     "internalName": "Troop Housing2",
     "id": 1000042,
-    "displayName": "Troop Housing2"
+    "displayName": "bb_Army Camp"
   },
   "Tesla Tower2": {
     "internalName": "Tesla Tower2",
     "id": 1000043,
-    "displayName": "Tesla Tower2"
+    "displayName": "bb_Hidden Tesla"
   },
   "Cannon2": {
     "internalName": "Cannon2",
     "id": 1000044,
-    "displayName": "Cannon2"
+    "displayName": "bb_Cannon"
   },
   "Multi Mortar": {
     "internalName": "Multi Mortar",
     "id": 1000045,
-    "displayName": "Multi Mortar"
+    "displayName": "bb_Multi Mortar"
   },
   "Laboratory2": {
     "internalName": "Laboratory2",
     "id": 1000046,
-    "displayName": "Laboratory2"
+    "displayName": "bb_Star Laboratory"
   },
   "Worker Building2": {
     "internalName": "Worker Building2",
     "id": 1000047,
-    "displayName": "Worker Building2"
+    "displayName": "bb_Master Builder's Hut"
   },
   "Archer Tower2": {
     "internalName": "Archer Tower2",
     "id": 1000048,
-    "displayName": "Archer Tower2"
+    "displayName": "bb_Archer Tower"
   },
   "Reinforcement Camp": {
     "internalName": "Reinforcement Camp",
     "id": 1000049,
-    "displayName": "Reinforcement Camp"
+    "displayName": "bb_Reinforcement Camp"
   },
   "Air Defense Mini": {
     "internalName": "Air Defense Mini",
     "id": 1000050,
-    "displayName": "Air Defense Mini"
+    "displayName": "bb_Firecrackers"
   },
   "Guard Post": {
     "internalName": "Guard Post",
     "id": 1000051,
-    "displayName": "Guard Post"
+    "displayName": "bb_Guard Post"
   },
   "Mega Tesla": {
     "internalName": "Mega Tesla",
     "id": 1000052,
-    "displayName": "Mega Tesla"
+    "displayName": "bb_Mega Tesla"
   },
   "Hero Altar Warmachine": {
     "internalName": "Hero Altar Warmachine",
@@ -272,27 +272,27 @@
   "Air Defense2": {
     "internalName": "Air Defense2",
     "id": 1000054,
-    "displayName": "Air Defense2"
+    "displayName": "bb_Air Bombs"
   },
   "Crusher": {
     "internalName": "Crusher",
     "id": 1000055,
-    "displayName": "Crusher"
+    "displayName": "bb_Crusher"
   },
   "Flamer": {
     "internalName": "Flamer",
     "id": 1000056,
-    "displayName": "Flamer"
+    "displayName": "bb_Roaster"
   },
   "Giant Cannon": {
     "internalName": "Giant Cannon",
     "id": 1000057,
-    "displayName": "Giant Cannon"
+    "displayName": "bb_Giant Cannon"
   },
   "Gem Mine": {
     "internalName": "Gem Mine",
     "id": 1000058,
-    "displayName": "Gem Mine"
+    "displayName": "bb_Gem Mine"
   },
   "SiegeWorkshop": {
     "internalName": "SiegeWorkshop",
@@ -317,7 +317,7 @@
   "LavaLauncher": {
     "internalName": "LavaLauncher",
     "id": 1000063,
-    "displayName": "LavaLauncher"
+    "displayName": "bb_Lava Launcher"
   },
   "Builder6Home": {
     "internalName": "Builder6Home",
@@ -327,7 +327,7 @@
   "Builder6Unlock": {
     "internalName": "Builder6Unlock",
     "id": 1000065,
-    "displayName": "Builder6Unlock"
+    "displayName": "bb_B.O.B Control"
   },
   "Hero Altar Royal Champion": {
     "internalName": "Hero Altar Royal Champion",
@@ -392,7 +392,7 @@
   "Outpost Stage2": {
     "internalName": "Outpost Stage2",
     "id": 1000078,
-    "displayName": "Outpost Stage2"
+    "displayName": "bb_O.T.T.O's Outpost"
   },
   "Merged Archer Cannon": {
     "internalName": "Merged Archer Cannon",
@@ -407,12 +407,12 @@
   "Xbow_BB": {
     "internalName": "Xbow_BB",
     "id": 1000081,
-    "displayName": "Xbow_BB"
+    "displayName": "bb_X-Bow"
   },
   "Recovery Building": {
     "internalName": "Recovery Building",
     "id": 1000082,
-    "displayName": "Recovery Building"
+    "displayName": "bb_Healing Hut"
   },
   "ClashoweenBuilding": {
     "internalName": "ClashoweenBuilding",

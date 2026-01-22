@@ -155,42 +155,42 @@
     "id": 4000030
   },
   "Barbarian2": {
-    "displayName": "Barbarian2",
+    "displayName": "bb_Raged Barbarian",
     "internalName": "Barbarian2",
     "id": 4000031
   },
   "Archer2": {
-    "displayName": "Archer2",
+    "displayName": "bb_Sneaky Archer",
     "internalName": "Archer2",
     "id": 4000032
   },
   "Gargoyle2": {
-    "displayName": "Gargoyle2",
+    "displayName": "bb_Beta Minion",
     "internalName": "Gargoyle2",
     "id": 4000033
   },
   "Giant2": {
-    "displayName": "Giant2",
+    "displayName": "bb_Boxer Giant",
     "internalName": "Giant2",
     "id": 4000034
   },
   "Bomber2": {
-    "displayName": "Bomber2",
+    "displayName": "bb_Bomber",
     "internalName": "Bomber2",
     "id": 4000035
   },
   "PEKKA2": {
-    "displayName": "PEKKA2",
+    "displayName": "bb_Power P.E.K.K.A",
     "internalName": "PEKKA2",
     "id": 4000036
   },
   "Moving Cannon": {
-    "displayName": "Moving Cannon",
+    "displayName": "bb_Cannon Cart",
     "internalName": "Moving Cannon",
     "id": 4000037
   },
   "Balloon2": {
-    "displayName": "Balloon2",
+    "displayName": "bb_Drop Ship",
     "internalName": "Balloon2",
     "id": 4000038
   },
@@ -205,12 +205,12 @@
     "id": 4000040
   },
   "BabyDragon2": {
-    "displayName": "BabyDragon2",
+    "displayName": "bb_Baby Dragon",
     "internalName": "BabyDragon2",
     "id": 4000041
   },
   "Dark Witch": {
-    "displayName": "Dark Witch",
+    "displayName": "bb_Night Witch",
     "internalName": "Dark Witch",
     "id": 4000042
   },
@@ -350,7 +350,7 @@
     "id": 4000069
   },
   "Hog Glider": {
-    "displayName": "Hog Glider",
+    "displayName": "bb_Hog Glider",
     "internalName": "Hog Glider",
     "id": 4000070
   },
@@ -530,7 +530,7 @@
     "id": 4000105
   },
   "Electrofire Wizard": {
-    "displayName": "Electrofire Wizard",
+    "displayName": "bb_Electrofire Wizard",
     "internalName": "Electrofire Wizard",
     "id": 4000106
   },

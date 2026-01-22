@@ -47,6 +47,7 @@ extension AppearancePreference {
 enum UpgradeCategory: String, Codable {
     case builderVillage
     case lab
+    case starLab
     case pets
     case builderBase
 }
@@ -66,6 +67,8 @@ struct NotificationSettings: Codable, Equatable {
             return builderNotificationsEnabled
         case .lab:
             return labNotificationsEnabled
+        case .starLab:
+            return builderBaseNotificationsEnabled
         case .pets:
             return petNotificationsEnabled
         case .builderBase:
@@ -87,13 +90,16 @@ struct BuildingUpgrade: Identifiable, Codable {
     let startTime: Date
     let totalDuration: TimeInterval
     
-    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, superchargeLevel: Int? = nil, superchargeTargetLevel: Int? = nil, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
+    let usesGoblin: Bool
+    
+    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, superchargeLevel: Int? = nil, superchargeTargetLevel: Int? = nil, usesGoblin: Bool = false, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
         self.id = id
         self.dataId = dataId
         self.name = name
         self.targetLevel = targetLevel
         self.superchargeLevel = superchargeLevel
         self.superchargeTargetLevel = superchargeTargetLevel
+        self.usesGoblin = usesGoblin
         self.endTime = endTime
         self.category = category
         self.startTime = startTime
@@ -101,7 +107,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, endTime, category, startTime, totalDuration
+        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration
     }
     
     init(from decoder: Decoder) throws {
@@ -112,6 +118,7 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.targetLevel = try container.decode(Int.self, forKey: .targetLevel)
         self.superchargeLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeLevel)
         self.superchargeTargetLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeTargetLevel)
+        self.usesGoblin = try container.decodeIfPresent(Bool.self, forKey: .usesGoblin) ?? false
         self.endTime = try container.decode(Date.self, forKey: .endTime)
         self.category = try container.decodeIfPresent(UpgradeCategory.self, forKey: .category) ?? .builderVillage
         self.startTime = try container.decodeIfPresent(Date.self, forKey: .startTime) ?? Date()
@@ -126,6 +133,7 @@ struct BuildingUpgrade: Identifiable, Codable {
         try container.encode(targetLevel, forKey: .targetLevel)
         try container.encodeIfPresent(superchargeLevel, forKey: .superchargeLevel)
         try container.encodeIfPresent(superchargeTargetLevel, forKey: .superchargeTargetLevel)
+        try container.encode(usesGoblin, forKey: .usesGoblin)
         try container.encode(endTime, forKey: .endTime)
         try container.encode(category, forKey: .category)
         try container.encode(startTime, forKey: .startTime)
@@ -188,27 +196,77 @@ struct BuildingUpgrade: Identifiable, Codable {
 }
 
 // Deep JSON Export Models
-struct CoCExport: Codable {
+struct CoCExport: Decodable {
     let tag: String?
-    let timestamp: Int
+    let timestamp: Int?
     let helpers: [ExportHelper]?
     let guardians: [ExportGuardian]?
     let buildings: [Building]?
-    let buildings2: [Building]? 
+    let buildings2: [Building]?
     let traps: [Trap]?
     let traps2: [Trap]?
     let heroes: [ExportHero]?
     let heroes2: [ExportHero]?
     let pets: [ExportPet]?
+    let siegeMachines: [ExportSiegeMachine]?
     let units: [ExportUnit]?
     let units2: [ExportUnit]?
     let spells: [ExportSpell]?
+
+    private enum CodingKeys: String, CodingKey {
+        case tag
+        case timestamp
+        case helpers
+        case guardians
+        case buildings
+        case buildings2
+        case traps
+        case traps2
+        case heroes
+        case heroes2
+        case pets
+        case siegeMachines = "siege_machines"
+        case units
+        case units2
+        case spells
+    }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        tag = try container.decodeIfPresent(String.self, forKey: .tag)
+
+        if let value = try? container.decodeIfPresent(Int.self, forKey: .timestamp) {
+            timestamp = value
+        } else if let value = try? container.decodeIfPresent(Double.self, forKey: .timestamp) {
+            timestamp = Int(value)
+        } else if let value = try? container.decodeIfPresent(String.self, forKey: .timestamp), let intValue = Int(value) {
+            timestamp = intValue
+        } else {
+            timestamp = nil
+        }
+
+        helpers = try container.decodeIfPresent([ExportHelper].self, forKey: .helpers)
+        guardians = try container.decodeIfPresent([ExportGuardian].self, forKey: .guardians)
+        buildings = try container.decodeIfPresent([Building].self, forKey: .buildings)
+        buildings2 = try container.decodeIfPresent([Building].self, forKey: .buildings2)
+        traps = try container.decodeIfPresent([Trap].self, forKey: .traps)
+        traps2 = try container.decodeIfPresent([Trap].self, forKey: .traps2)
+        heroes = try container.decodeIfPresent([ExportHero].self, forKey: .heroes)
+        heroes2 = try container.decodeIfPresent([ExportHero].self, forKey: .heroes2)
+        pets = try container.decodeIfPresent([ExportPet].self, forKey: .pets)
+        siegeMachines = try container.decodeIfPresent([ExportSiegeMachine].self, forKey: .siegeMachines)
+        units = try container.decodeIfPresent([ExportUnit].self, forKey: .units)
+        units2 = try container.decodeIfPresent([ExportUnit].self, forKey: .units2)
+        spells = try container.decodeIfPresent([ExportSpell].self, forKey: .spells)
+    }
+
 }
 
 struct ExportGuardian: Codable {
     let data: Int
     let lvl: Int?
     let timer: Int?
+    let extra: Bool?
 }
 
 struct Building: Codable {
@@ -217,6 +275,7 @@ struct Building: Codable {
     let timer: Int? // Presence of timer = active upgrade
     let cnt: Int?
     let supercharge: Int?
+    let extra: Bool?
     let types: [BuildingType]?
 }
 
@@ -229,6 +288,7 @@ struct BuildingModule: Codable {
     let data: Int
     let lvl: Int?
     let timer: Int?
+    let extra: Bool?
 }
 
 struct Trap: Codable {
@@ -236,33 +296,45 @@ struct Trap: Codable {
     let lvl: Int
     let timer: Int?
     let cnt: Int?
+    let extra: Bool?
 }
 
 struct ExportHero: Codable {
     let data: Int
     let lvl: Int
     let timer: Int?
+    let extra: Bool?
 }
 
 struct ExportPet: Codable {
     let data: Int
     let lvl: Int
     let timer: Int?
+    let extra: Bool?
+}
+
+struct ExportSiegeMachine: Codable {
+    let data: Int
+    let lvl: Int
+    let timer: Int?
+    let extra: Bool?
 }
 
 struct ExportUnit: Codable {
     let data: Int
     let lvl: Int
     let timer: Int?
+    let extra: Bool?
 }
 
 struct ExportSpell: Codable {
     let data: Int
     let lvl: Int
     let timer: Int?
+    let extra: Bool?
 }
 
-struct ExportHelper: Codable {
+struct ExportHelper: Decodable {
     let data: Int
     let lvl: Int
     let helperCooldown: Int?
@@ -272,6 +344,14 @@ struct ExportHelper: Codable {
         case lvl
         case helperCooldown = "helper_cooldown"
     }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        data = try container.decode(Int.self, forKey: .data)
+        lvl = try container.decode(Int.self, forKey: .lvl)
+        helperCooldown = try container.decodeIfPresent(Int.self, forKey: .helperCooldown)
+    }
+
 }
 
 struct HelperCooldownEntry: Identifiable, Codable {

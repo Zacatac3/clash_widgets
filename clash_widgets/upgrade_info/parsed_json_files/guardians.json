@@ -1,0 +1,92 @@
+[
+  {
+    "internalName": "InfernoArtillery",
+    "levels": [
+      {
+        "level": 1
+      },
+      {
+        "level": 2
+      },
+      {
+        "level": 3
+      },
+      {
+        "level": 4
+      },
+      {
+        "level": 5
+      }
+    ],
+    "tid": "TID_INFERNO_GUARDIAN",
+    "id": 107000000
+  },
+  {
+    "internalName": "MeleeAreaaaa",
+    "levels": [
+      {
+        "level": 1
+      },
+      {
+        "level": 2
+      },
+      {
+        "level": 3
+      },
+      {
+        "level": 4
+      },
+      {
+        "level": 5
+      }
+    ],
+    "tid": "TID_MELEE_AREA_GUARDIAN",
+    "id": 107000001
+  },
+  {
+    "internalName": "Eagle",
+    "levels": [
+      {
+        "level": 1
+      }
+    ],
+    "tid": "TID_EAGLE_GUARDIAN",
+    "id": 107000002
+  },
+  {
+    "internalName": "GigaInferno",
+    "levels": [
+      {
+        "level": 1
+      }
+    ],
+    "tid": "TID_GIGA_INFERNO_GUARDIAN",
+    "id": 107000003
+  },
+  {
+    "internalName": "Assassins",
+    "levels": [
+      {
+        "level": 1
+      },
+      {
+        "level": 2
+      },
+      {
+        "level": 3
+      }
+    ],
+    "tid": "TID_ASSASSINS_GUARDIAN",
+    "id": 107000004
+  },
+  {
+    "internalName": "Reviver",
+    "levels": [
+      {
+        "level": 1
+      }
+    ],
+    "tid": "TID_REVIVER_GUARDIAN",
+    "id": 107000005
+  }
+]

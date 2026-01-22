@@ -5,6 +5,10 @@ import WidgetKit
 class DataService: ObservableObject {
     static let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
+    private static let apiDailyLimit = 100
+    private static let apiDailyCountKey = "clashdash.api.daily.count"
+    private static let apiDailyDateKey = "clashdash.api.daily.date"
+
     private let apiKey: String?
     private let persistenceQueue = DispatchQueue(label: "com.zacharybuschmann.clashdash.persistence", qos: .utility)
     private let notificationManager = NotificationManager.shared
@@ -133,6 +137,8 @@ class DataService: ObservableObject {
 
     private var upgradeDurations: [Int: [Double]] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
+    private lazy var characterNameToId: [String: Int] = Self.loadNameToIdMap(fileName: "characters_json_map.json")
+    private lazy var seasonalDefenseModuleNameOverrides: [Int: String] = Self.loadSeasonalDefenseModuleNameOverrides()
     var cachedParsedBuildings: [ParsedBuilding]?
     var cachedTownHallLevels: [TownHallLevelCounts]?
     var cachedBuildingNameToId: [String: Int]?
@@ -218,6 +224,67 @@ class DataService: ObservableObject {
     func currentHelperCooldowns() -> [HelperCooldownEntry] {
         guard let raw = currentProfile?.rawJSON, !raw.isEmpty else { return [] }
         return helperCooldowns(from: raw)
+    }
+
+    func decodeExport(from rawJSON: String) -> CoCExport? {
+        guard let data = sanitizedClipboardData(from: rawJSON) else { return nil }
+        return try? JSONDecoder().decode(CoCExport.self, from: data)
+    }
+
+    enum ClipboardImportResult {
+        case success(profileId: UUID, upgradesCount: Int, switched: Bool)
+        case missingProfile(tag: String)
+        case invalidJSON
+    }
+
+    func importClipboardToMatchingProfile(input: String) -> ClipboardImportResult {
+        guard let export = decodeExport(from: input) else { return .invalidJSON }
+        let normalizedTag = normalizeTag(export.tag ?? "")
+        guard !normalizedTag.isEmpty else { return .invalidJSON }
+
+        guard let matchedProfile = profiles.first(where: { normalizeTag($0.tag) == normalizedTag }) else {
+            return .missingProfile(tag: normalizedTag)
+        }
+
+        let didSwitch = selectedProfileID != matchedProfile.id
+        if didSwitch {
+            selectedProfileID = matchedProfile.id
+        }
+
+        parseJSONFromClipboard(input: input)
+        return .success(profileId: matchedProfile.id, upgradesCount: activeUpgrades.count, switched: didSwitch)
+    }
+
+    func helperLevels(from rawJSON: String) -> [Int: Int] {
+        guard let export = decodeExport(from: rawJSON) else { return [:] }
+        return helperLevels(from: export)
+    }
+
+    func helperLevels(from export: CoCExport) -> [Int: Int] {
+        var output: [Int: Int] = [:]
+        let helpers = export.helpers ?? []
+        for helper in helpers {
+            output[helper.data] = helper.lvl
+        }
+        return output
+    }
+
+    func inferTownHallLevel(from rawJSON: String) -> Int {
+        guard let export = decodeExport(from: rawJSON) else { return 0 }
+        return inferTownHallLevel(from: export)
+    }
+
+    func inferTownHallLevel(from export: CoCExport) -> Int {
+        let buildings = export.buildings ?? []
+        var bestLevel = 0
+        for building in buildings {
+            let name = mapping[building.data]?.lowercased() ?? ""
+            guard name.contains("town hall") || name.contains("townhall") else { continue }
+            if let level = building.lvl, level > bestLevel {
+                bestLevel = level
+            }
+        }
+        return bestLevel
     }
 
     func helperCooldowns(from rawJSON: String) -> [HelperCooldownEntry] {
@@ -454,6 +521,9 @@ class DataService: ObservableObject {
         goldPassBoost: Int = 0,
         goldPassReminderEnabled: Bool = false
     ) -> UUID {
+        if profiles.count >= 20 {
+            return selectedProfileID ?? profiles.first?.id ?? UUID()
+        }
         let normalizedTag = normalizeTag(tag)
         let trimmedName = displayName.trimmingCharacters(in: .whitespacesAndNewlines)
         let resolvedName: String
@@ -521,6 +591,15 @@ class DataService: ObservableObject {
             return profile.displayName
         }
         return profile.tag.isEmpty ? "Profile" : profile.tag
+    }
+
+    func hasProfile(withTag tag: String, excluding id: UUID? = nil) -> Bool {
+        let normalized = normalizeTag(tag)
+        guard !normalized.isEmpty else { return false }
+        return profiles.contains { profile in
+            if let id, profile.id == id { return false }
+            return normalizeTag(profile.tag) == normalized
+        }
     }
 
     func clearData() {
@@ -599,6 +678,10 @@ class DataService: ObservableObject {
     }
 
     func fetchProfilePreview(tag: String, completion: @escaping (PlayerProfile?) -> Void) {
+        guard canPerformApiRequest() else {
+            completion(nil)
+            return
+        }
         guard let apiKey = apiKey, !apiKey.isEmpty else {
             completion(nil)
             return
@@ -613,6 +696,7 @@ class DataService: ObservableObject {
             return
         }
 
+        recordApiRequest()
         var request = URLRequest(url: url)
         request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
 
@@ -633,6 +717,10 @@ class DataService: ObservableObject {
     }
 
     private func refreshCurrentProfileIfNeeded(force: Bool) {
+        guard canPerformApiRequest() else {
+            refreshErrorMessage = "Daily API limit reached (100). Try again tomorrow."
+            return
+        }
         guard let apiKey = apiKey, !apiKey.isEmpty else { return }
         guard let profile = currentProfile else { return }
         guard !profile.tag.isEmpty else { return }
@@ -654,7 +742,40 @@ class DataService: ObservableObject {
 
         if refreshedProfilesThisLaunch.contains(profile.id) { return }
         refreshedProfilesThisLaunch.insert(profile.id)
+        recordApiRequest()
         performProfileRefresh(for: profile, apiKey: apiKey)
+    }
+
+    private func canPerformApiRequest() -> Bool {
+        let defaults = UserDefaults.standard
+        let todayKey = currentApiDayKey()
+        let storedDate = defaults.string(forKey: Self.apiDailyDateKey)
+        if storedDate != todayKey {
+            defaults.set(todayKey, forKey: Self.apiDailyDateKey)
+            defaults.set(0, forKey: Self.apiDailyCountKey)
+        }
+        let count = defaults.integer(forKey: Self.apiDailyCountKey)
+        return count < Self.apiDailyLimit
+    }
+
+    private func recordApiRequest() {
+        let defaults = UserDefaults.standard
+        let todayKey = currentApiDayKey()
+        let storedDate = defaults.string(forKey: Self.apiDailyDateKey)
+        if storedDate != todayKey {
+            defaults.set(todayKey, forKey: Self.apiDailyDateKey)
+            defaults.set(0, forKey: Self.apiDailyCountKey)
+        }
+        let count = defaults.integer(forKey: Self.apiDailyCountKey)
+        defaults.set(min(count + 1, Self.apiDailyLimit), forKey: Self.apiDailyCountKey)
+    }
+
+    private func currentApiDayKey() -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = Calendar(identifier: .gregorian)
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: Date())
     }
 
     private func performProfileRefresh(for profile: PlayerAccount, apiKey: String) {
@@ -1087,7 +1208,7 @@ class DataService: ObservableObject {
     }
 
     func parseJSONFromClipboard(input: String) {
-        guard let data = input.data(using: .utf8) else { return }
+        guard let data = sanitizedClipboardData(from: input) else { return }
         let decoder = JSONDecoder()
 
         do {
@@ -1095,7 +1216,7 @@ class DataService: ObservableObject {
             let helperLevels = export.helpers ?? []
             let upgrades = collectUpgrades(from: export)
                 .sorted(by: { $0.endTime < $1.endTime })
-            let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage }.count
+            let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage && !$0.usesGoblin }.count
             let importTimestamp = Date()
             let normalizedTag = export.tag?.replacingOccurrences(of: "#", with: "").uppercased()
 
@@ -1121,9 +1242,7 @@ class DataService: ObservableObject {
                 }
                 if let normalizedTag = normalizedTag, !normalizedTag.isEmpty {
                     profile.tag = normalizedTag
-                    if profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-                        profile.displayName = normalizedTag
-                    }
+                    profile.displayName = normalizedTag
                 }
             }
             suppressPersistence = false
@@ -1136,11 +1255,30 @@ class DataService: ObservableObject {
     }
 
     func previewImportUpgrades(input: String) -> [BuildingUpgrade]? {
-        guard let data = input.data(using: .utf8) else { return nil }
+        guard let data = sanitizedClipboardData(from: input) else { return nil }
         let decoder = JSONDecoder()
         guard let export = try? decoder.decode(CoCExport.self, from: data) else { return nil }
         return collectUpgrades(from: export)
             .sorted(by: { $0.endTime < $1.endTime })
+    }
+
+    private func sanitizedClipboardData(from input: String) -> Data? {
+        let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
+        if let data = trimmed.data(using: .utf8), data.count > 0 {
+            return data
+        }
+
+        if let start = trimmed.firstIndex(of: "{"),
+           let end = trimmed.lastIndex(of: "}") {
+            let slice = String(trimmed[start...end])
+            return slice.data(using: .utf8)
+        }
+
+        let sanitized = trimmed.unicodeScalars.filter { scalar in
+            scalar.value == 9 || scalar.value == 10 || scalar.value == 13 || scalar.value >= 32
+        }
+        let cleaned = String(String.UnicodeScalarView(sanitized))
+        return cleaned.data(using: .utf8)
     }
 
     private func collectUpgrades(from export: CoCExport) -> [BuildingUpgrade] {
@@ -1169,11 +1307,14 @@ class DataService: ObservableObject {
         if let list = export.pets {
             upgrades.append(contentsOf: convert(list, category: .pets, fallbackPrefix: "Pet", referenceDate: referenceDate))
         }
+        if let list = export.siegeMachines {
+            upgrades.append(contentsOf: convert(list, category: .lab, fallbackPrefix: "Siege Machine", referenceDate: referenceDate))
+        }
         if let list = export.units {
             upgrades.append(contentsOf: convert(list, category: .lab, fallbackPrefix: "Unit", referenceDate: referenceDate))
         }
         if let list = export.units2 {
-            upgrades.append(contentsOf: convert(list, category: .lab, fallbackPrefix: "Secondary Unit", referenceDate: referenceDate))
+            upgrades.append(contentsOf: convert(list, category: .starLab, fallbackPrefix: "Star Lab Unit", referenceDate: referenceDate))
         }
         if let list = export.spells {
             upgrades.append(contentsOf: convert(list, category: .lab, fallbackPrefix: "Spell", referenceDate: referenceDate))
@@ -1188,89 +1329,103 @@ class DataService: ObservableObject {
     private func convertModules(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         items.flatMap { building in
             (building.types ?? []).flatMap { type in
-                (type.modules ?? []).compactMap { module in
-                    guard let level = module.lvl else { return nil }
-                    guard let timer = module.timer, timer > 0 else { return nil }
-                    return buildUpgrade(
-                        dataId: module.data,
-                        currentLevel: level,
-                        remainingSeconds: TimeInterval(timer),
-                        category: category,
-                        fallbackPrefix: fallbackPrefix,
-                        referenceDate: referenceDate
-                    )
+                (type.modules ?? []).flatMap { module -> [BuildingUpgrade] in
+                    guard let level = module.lvl, let timer = module.timer, timer > 0 else { return [] }
+                    let displayNameOverride = seasonalDefenseModuleNameOverrides[module.data]
+                    return [
+                        buildUpgrade(
+                            dataId: module.data,
+                            currentLevel: level,
+                            remainingSeconds: TimeInterval(timer),
+                            category: category,
+                            fallbackPrefix: fallbackPrefix,
+                            referenceDate: referenceDate,
+                            usesGoblin: module.extra ?? false,
+                            displayNameOverride: displayNameOverride
+                        )
+                    ]
                 }
             }
         }
     }
 
     private func convert(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
-        items.compactMap { item in
-            guard let level = item.lvl else { return nil }
-            guard let timer = item.timer, timer > 0 else { return nil }
+        items.flatMap { item -> [BuildingUpgrade] in
+            guard let level = item.lvl, let timer = item.timer, timer > 0 else { return [] }
             let superchargeLevel = item.supercharge
             let superchargeTargetLevel = superchargeLevel.map { $0 + 1 }
-            return buildUpgrade(
-                dataId: item.data,
-                currentLevel: level,
-                remainingSeconds: TimeInterval(timer),
-                category: category,
-                fallbackPrefix: fallbackPrefix,
-                referenceDate: referenceDate,
-                superchargeLevel: superchargeLevel,
-                superchargeTargetLevel: superchargeTargetLevel
-            )
+            return [
+                buildUpgrade(
+                    dataId: item.data,
+                    currentLevel: level,
+                    remainingSeconds: TimeInterval(timer),
+                    category: category,
+                    fallbackPrefix: fallbackPrefix,
+                    referenceDate: referenceDate,
+                    superchargeLevel: superchargeLevel,
+                    superchargeTargetLevel: superchargeTargetLevel,
+                    usesGoblin: item.extra ?? false
+                )
+            ]
         }
     }
 
     private func convert(_ items: [Trap], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+            (item.data, item.lvl, item.timer, item.extra ?? false)
         }
     }
 
     private func convert(_ items: [ExportHero], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+            (item.data, item.lvl, item.timer, item.extra ?? false)
         }
     }
 
     private func convert(_ items: [ExportPet], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+            (item.data, item.lvl, item.timer, item.extra ?? false)
+        }
+    }
+
+    private func convert(_ items: [ExportSiegeMachine], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
+        convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
+            (item.data, item.lvl, item.timer, item.extra ?? false)
         }
     }
 
     private func convert(_ items: [ExportUnit], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+            (item.data, item.lvl, item.timer, item.extra ?? false)
         }
     }
 
     private func convert(_ items: [ExportSpell], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         convert(items, category: category, fallbackPrefix: fallbackPrefix, referenceDate: referenceDate) { item in
-            (item.data, item.lvl, item.timer)
+            (item.data, item.lvl, item.timer, item.extra ?? false)
         }
     }
 
     private func convertGuardians(_ items: [ExportGuardian], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
-        items.compactMap { item in
-            guard let level = item.lvl else { return nil }
-            guard let timer = item.timer, timer > 0 else { return nil }
-            return buildUpgrade(
-                dataId: item.data,
-                currentLevel: level,
-                remainingSeconds: TimeInterval(timer),
-                category: category,
-                fallbackPrefix: fallbackPrefix,
-                referenceDate: referenceDate
-            )
+        items.flatMap { item -> [BuildingUpgrade] in
+            guard let level = item.lvl, let timer = item.timer, timer > 0 else { return [] }
+            return [
+                buildUpgrade(
+                    dataId: item.data,
+                    currentLevel: level,
+                    remainingSeconds: TimeInterval(timer),
+                    category: category,
+                    fallbackPrefix: fallbackPrefix,
+                    referenceDate: referenceDate,
+                    usesGoblin: item.extra ?? false
+                )
+            ]
         }
     }
 
-    private func convert<T>(_ items: [T], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date, extractor: (T) -> (Int, Int, Int?)) -> [BuildingUpgrade] {
+    private func convert<T>(_ items: [T], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date, extractor: (T) -> (Int, Int, Int?, Bool)) -> [BuildingUpgrade] {
         items.compactMap { item in
-            let (dataId, level, timer) = extractor(item)
+            let (dataId, level, timer, usesGoblin) = extractor(item)
             guard let timer = timer, timer > 0 else { return nil }
             return buildUpgrade(
                 dataId: dataId,
@@ -1278,7 +1433,8 @@ class DataService: ObservableObject {
                 remainingSeconds: TimeInterval(timer),
                 category: category,
                 fallbackPrefix: fallbackPrefix,
-                referenceDate: referenceDate
+                referenceDate: referenceDate,
+                usesGoblin: usesGoblin
             )
         }
     }
@@ -1291,7 +1447,9 @@ class DataService: ObservableObject {
         fallbackPrefix: String,
         referenceDate: Date,
         superchargeLevel: Int? = nil,
-        superchargeTargetLevel: Int? = nil
+        superchargeTargetLevel: Int? = nil,
+        usesGoblin: Bool = false,
+        displayNameOverride: String? = nil
     ) -> BuildingUpgrade {
         let canonical = durationFor(
             dataId: dataId,
@@ -1302,18 +1460,33 @@ class DataService: ObservableObject {
         let totalDuration = max(canonical ?? remainingSeconds, remainingSeconds)
         let end = referenceDate.addingTimeInterval(remainingSeconds)
         let start = end.addingTimeInterval(-totalDuration)
+        let resolvedName = displayNameOverride ?? mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))"
+        let normalizedName = normalizeBuilderBasePrefixIfNeeded(resolvedName, category: category)
 
         return BuildingUpgrade(
             dataId: dataId,
-            name: mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))",
+            name: normalizedName,
             targetLevel: currentLevel + 1,
             superchargeLevel: superchargeLevel,
             superchargeTargetLevel: superchargeTargetLevel,
+            usesGoblin: usesGoblin,
             endTime: end,
             category: category,
             startTime: start,
             totalDuration: totalDuration
         )
+    }
+
+    private func normalizeBuilderBasePrefixIfNeeded(_ name: String, category: UpgradeCategory) -> String {
+        guard category == .builderBase || category == .starLab else { return name }
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        let lower = trimmed.lowercased()
+        let prefixes = ["bb_", "bb-", "bb "]
+        for prefix in prefixes where lower.hasPrefix(prefix) {
+            let dropped = trimmed.dropFirst(prefix.count)
+            return String(dropped).trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+        return name
     }
 
     private func durationFor(
@@ -1326,9 +1499,18 @@ class DataService: ObservableObject {
            let scDuration = durationForSupercharge(buildingName: buildingName, targetLevel: target) {
             return scDuration
         }
-        guard let durations = upgradeDurations[dataId], !durations.isEmpty else { return nil }
-        let index = min(max(level - 1, 0), durations.count - 1)
-        return durations[index]
+        let targetLevel = max(level + 1, 1)
+        if let durations = upgradeDurations[dataId], !durations.isEmpty {
+            let index = min(max(targetLevel - 1, 0), durations.count - 1)
+            return durations[index]
+        }
+        if !buildingName.isEmpty,
+           let characterId = characterNameToId[buildingName.lowercased()],
+           let durations = upgradeDurations[characterId], !durations.isEmpty {
+            let index = min(max(targetLevel - 1, 0), durations.count - 1)
+            return durations[index]
+        }
+        return nil
     }
 
     private func durationForSupercharge(buildingName: String, targetLevel: Int) -> TimeInterval? {
@@ -1423,6 +1605,123 @@ class DataService: ObservableObject {
         }
 
         return output.isEmpty ? nil : output
+    }
+
+    private static func loadSeasonalDefenseModuleNameOverrides() -> [Int: String] {
+        let moduleIdToInternal = loadIdToInternalNameMap(fileName: "seasonal_defense_modules_json_map.json")
+        if moduleIdToInternal.isEmpty {
+            return [:]
+        }
+        let archetypeInternalToDisplay = loadInternalNameToDisplayNameMap(fileName: "seasonal_defense_archetypes_json_map.json")
+        let moduleToArchetype = loadSeasonalDefenseModuleToArchetypeInternalMap()
+
+        var output: [Int: String] = [:]
+        for (id, moduleInternal) in moduleIdToInternal {
+            let key = moduleInternal.lowercased()
+            guard let archetypeInternal = moduleToArchetype[key] else { continue }
+            let display = archetypeInternalToDisplay[archetypeInternal] ?? archetypeInternal
+            output[id] = display
+        }
+        return output
+    }
+
+    private static func loadIdToInternalNameMap(fileName: String) -> [Int: String] {
+        let folders = candidateFolderURLs(named: "json_maps")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent(fileName)
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+            var output: [Int: String] = [:]
+            for (_, value) in raw {
+                guard let entry = value as? [String: Any] else { continue }
+                let idValue = entry["id"]
+                let id: Int?
+                if let n = idValue as? Int { id = n }
+                else if let n = idValue as? Double { id = Int(n) }
+                else if let s = idValue as? String { id = Int(s) }
+                else { id = nil }
+                guard let resolvedId = id else { continue }
+                guard let internalName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines), !internalName.isEmpty else { continue }
+                output[resolvedId] = internalName
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
+    }
+
+    private static func loadInternalNameToDisplayNameMap(fileName: String) -> [String: String] {
+        let folders = candidateFolderURLs(named: "json_maps")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent(fileName)
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+            var output: [String: String] = [:]
+            for (_, value) in raw {
+                guard let entry = value as? [String: Any] else { continue }
+                let internalName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                let displayName = (entry["displayName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                guard !internalName.isEmpty else { continue }
+                output[internalName.lowercased()] = displayName.isEmpty ? internalName : displayName
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
+    }
+
+    private static func loadSeasonalDefenseModuleToArchetypeInternalMap() -> [String: String] {
+        let folders = candidateFolderURLs(named: "parsed_json_files")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("seasonal_defense_archetypes.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+            var output: [String: String] = [:]
+            for entry in raw {
+                guard let archetypeName = (entry["internalName"] as? String)?.trimmingCharacters(in: .whitespacesAndNewlines), !archetypeName.isEmpty else { continue }
+                let modules = entry["modules"] as? [String] ?? []
+                for module in modules {
+                    let trimmed = module.trimmingCharacters(in: .whitespacesAndNewlines)
+                    guard !trimmed.isEmpty else { continue }
+                    output[trimmed.lowercased()] = archetypeName.lowercased()
+                }
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
+    }
+
+    private static func loadNameToIdMap(fileName: String) -> [String: Int] {
+        let folders = candidateFolderURLs(named: "json_maps")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent(fileName)
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: Any] else { continue }
+            var output: [String: Int] = [:]
+            for (_, value) in raw {
+                guard let entry = value as? [String: Any] else { continue }
+                let idValue = entry["id"]
+                let id: Int?
+                if let n = idValue as? Int { id = n }
+                else if let n = idValue as? Double { id = Int(n) }
+                else if let s = idValue as? String { id = Int(s) }
+                else { id = nil }
+                guard let resolvedId = id else { continue }
+
+                let display = (entry["displayName"] as? String)?.lowercased()
+                let internalName = (entry["internalName"] as? String)?.lowercased()
+                if let display, !display.isEmpty { output[display] = resolvedId }
+                if let internalName, !internalName.isEmpty { output[internalName] = resolvedId }
+            }
+            if !output.isEmpty {
+                return output
+            }
+        }
+        return [:]
     }
 
 }

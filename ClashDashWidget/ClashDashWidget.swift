@@ -14,13 +14,15 @@ struct SimpleEntry: TimelineEntry {
     let upgrades: [BuildingUpgrade]
     let builderCount: Int
     let goldPassBoost: Int
+    let builderHallLevel: Int
     let debugText: String
 
-    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, goldPassBoost: Int = 0, debugText: String) {
+    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, goldPassBoost: Int = 0, builderHallLevel: Int = 0, debugText: String) {
         self.date = date
         self.upgrades = upgrades
         self.builderCount = builderCount
         self.goldPassBoost = goldPassBoost
+        self.builderHallLevel = builderHallLevel
         self.debugText = debugText
     }
 }
@@ -52,17 +54,21 @@ struct Provider: TimelineProvider {
     
     private func loadUpgrades() -> ([BuildingUpgrade], Int, Int) {
         if let state = PersistentStore.loadState() {
-            let count = max(state.currentProfile?.builderCount ?? 5, 0)
+            let baseCount = max(state.currentProfile?.builderCount ?? 5, 0)
+            let goblinActive = state.activeUpgrades.contains { $0.category == .builderVillage && $0.usesGoblin }
+            let count = baseCount + (goblinActive ? 1 : 0)
             let boost = max(state.currentProfile?.goldPassBoost ?? 0, 0)
             return (prioritized(upgrades: state.activeUpgrades, builderCount: count), count, boost)
         }
 
-        let sharedDefaults = UserDefaults(suiteName: appGroup)
+                let sharedDefaults = UserDefaults(suiteName: appGroup)
                 guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
                             let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
                         return ([], 5, 0)
-        }
-                    return (prioritized(upgrades: decoded, builderCount: 5), 5, 0)
+                }
+                let goblinActive = decoded.contains { $0.category == .builderVillage && $0.usesGoblin }
+                let count = 5 + (goblinActive ? 1 : 0)
+                return (prioritized(upgrades: decoded, builderCount: count), count, 0)
     }
     
     private func loadDebugText() -> String {
@@ -195,6 +201,7 @@ struct ClashDashWidgetEntryView : View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
+        case .starLab: folder = "lab"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -579,6 +586,7 @@ struct LabPetWidgetEntryView: View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
+        case .starLab: folder = "lab"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -643,36 +651,53 @@ struct BuilderBaseProvider: TimelineProvider {
     }
 
     func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "BuilderBase")
+        let (upgrades, builderHallLevel) = loadUpgrades()
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, builderHallLevel: builderHallLevel, debugText: "BuilderBase")
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        let upgrades = loadUpgrades()
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, debugText: "BuilderBase")
+        let (upgrades, builderHallLevel) = loadUpgrades()
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: 5, builderHallLevel: builderHallLevel, debugText: "BuilderBase")
         let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
 
-    private func loadUpgrades() -> [BuildingUpgrade] {
+    private func loadUpgrades() -> ([BuildingUpgrade], Int) {
+        let (decoded, builderHallLevel) = loadUpgradesAndBuilderHall()
+        let builderSlots = builderHallLevel >= 6 ? 2 : 1
+        let labSlots = builderHallLevel >= 6 ? 1 : 0
+
+        let builderUpgrades = decoded
+            .filter { $0.category == .builderBase }
+            .sorted(by: { $0.endTime < $1.endTime })
+        let labUpgrades = decoded
+            .filter { $0.category == .starLab }
+            .sorted(by: { $0.endTime < $1.endTime })
+
+        let selectedBuilders = Array(builderUpgrades.prefix(builderSlots))
+        let selectedLab = Array(labUpgrades.prefix(labSlots))
+        return (selectedBuilders + selectedLab, builderHallLevel)
+    }
+
+    private func loadUpgradesAndBuilderHall() -> ([BuildingUpgrade], Int) {
+        if let state = PersistentStore.loadState() {
+            let builderHall = state.currentProfile?.cachedProfile?.builderHallLevel ?? 0
+            return (state.activeUpgrades, builderHall)
+        }
+
         let sharedDefaults = UserDefaults(suiteName: appGroup)
         guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
               let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
-            return []
+            return ([], 0)
         }
-        return Array(
-            decoded
-                .filter { $0.category == .builderBase }
-                .sorted(by: { $0.endTime < $1.endTime })
-                .prefix(3)
-        )
+        return (decoded, 0)
     }
 }
 
 struct BuilderBaseWidgetEntryView: View {
     var entry: BuilderBaseProvider.Entry
-    let maxSlots = 3
+    var maxSlots: Int { entry.builderHallLevel >= 6 ? 3 : 1 }
 
     var body: some View {
         VStack(spacing: 4) {
@@ -760,6 +785,7 @@ struct BuilderBaseWidgetEntryView: View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
+        case .starLab: folder = "lab"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -804,7 +830,7 @@ struct BuilderBaseWidget: Widget {
             }
         }
         .configurationDisplayName("Builder Base")
-        .description("Track your Builder Base upgrades.")
+        .description("Track your Builder Base builders and Star Laboratory upgrades.")
         .supportedFamilies([.systemSmall])
     }
 }

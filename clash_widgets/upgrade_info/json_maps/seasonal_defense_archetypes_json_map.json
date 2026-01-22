@@ -1,0 +1,42 @@
+{
+  "HookTower": {
+    "displayName": "HookTower",
+    "internalName": "HookTower",
+    "id": 103000000
+  },
+  "SunBeam": {
+    "displayName": "Light Beam",
+    "internalName": "SunBeam",
+    "id": 103000001
+  },
+  "LogLobber": {
+    "displayName": "Bomb Hive",
+    "internalName": "LogLobber",
+    "id": 103000002
+  },
+  "FlameSpinner": {
+    "displayName": "FlameSpinner",
+    "internalName": "FlameSpinner",
+    "id": 103000003
+  },
+  "CrusherMortar": {
+    "displayName": "CrusherMortar",
+    "internalName": "CrusherMortar",
+    "id": 103000004
+  },
+  "LazyLaser": {
+    "displayName": "LazyLaser",
+    "internalName": "LazyLaser",
+    "id": 103000005
+  },
+  "SlowdownTower": {
+    "displayName": "SlowdownTower",
+    "internalName": "SlowdownTower",
+    "id": 103000006
+  },
+  "HeroBooster": {
+    "displayName": "Hero Bell",
+    "internalName": "HeroBooster",
+    "id": 103000007
+  }
+}
