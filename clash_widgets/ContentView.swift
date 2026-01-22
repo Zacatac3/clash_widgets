@@ -43,7 +43,6 @@ struct ContentView: View {
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
     @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
     @AppStorage("lastGoldPassResetPrompt") private var lastGoldPassResetPrompt: Double = 0
-    @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
     @State private var showGoldPassResetPrompt = false
@@ -156,15 +155,6 @@ struct ContentView: View {
     private func handleGoldPassResetIfNeeded(referenceDate: Date = Date()) {
         let resetDate = goldPassResetDate(for: referenceDate)
         let resetTime = resetDate.timeIntervalSince1970
-
-        if forceGoldPassResetTrigger {
-            forceGoldPassResetTrigger = false
-            lastGoldPassResetApplied = 0
-            lastGoldPassResetPrompt = 0
-            dataService.resetGoldPassBoostForAllProfiles()
-            showGoldPassResetPrompt = true
-            return
-        }
 
         if referenceDate >= resetDate, lastGoldPassResetApplied < resetTime {
             lastGoldPassResetApplied = resetTime
@@ -2192,9 +2182,7 @@ private struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
-    @AppStorage("forceGoldPassResetTrigger") private var forceGoldPassResetTrigger = false
     @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
-    @State private var forceGoldPassResetToggle = false
 
     private var canCollapseProfiles: Bool {
         dataService.profiles.count >= 2
@@ -2305,16 +2293,6 @@ private struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
 
-                    Toggle("Force new Gold Pass month", isOn: $forceGoldPassResetToggle)
-                        .tint(.accentColor)
-                        .onChangeCompat(of: forceGoldPassResetToggle) { enabled in
-                            guard enabled else { return }
-                            forceGoldPassResetTrigger = true
-                            forceGoldPassResetToggle = false
-                        }
-                    Text("Resets Gold Pass boosts for all profiles and shows the monthly confirmation sheet on next open.")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                 }
 
                 Section("Maintenance") {

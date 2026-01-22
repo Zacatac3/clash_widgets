@@ -135,7 +135,27 @@ class DataService: ObservableObject {
         }
     }
 
+    private enum DurationIndexing {
+        case currentLevel
+        case targetLevel
+    }
+
+    private static let currentLevelDurationFiles: Set<String> = [
+        "characters.json",
+        "heroes.json",
+        "pets.json",
+        "spells.json"
+    ]
+
+    private static let parsedUnitFiles: [String] = [
+        "characters.json",
+        "heroes.json",
+        "pets.json",
+        "spells.json"
+    ]
+
     private var upgradeDurations: [Int: [Double]] = [:]
+    private var upgradeDurationIndexing: [Int: DurationIndexing] = [:]
     private lazy var mapping: [Int: String] = Self.loadNameMapping()
     private lazy var characterNameToId: [String: Int] = Self.loadNameToIdMap(fileName: "characters_json_map.json")
     private lazy var seasonalDefenseModuleNameOverrides: [Int: String] = Self.loadSeasonalDefenseModuleNameOverrides()
@@ -1067,6 +1087,7 @@ class DataService: ObservableObject {
     private func loadUpgradeDurations() {
         if let parsed = Self.loadDurationsFromParsedJSON(), !parsed.isEmpty {
             upgradeDurations = parsed
+            upgradeDurationIndexing = Self.loadDurationIndexingFromParsedJSON() ?? [:]
             return
         }
 
@@ -1133,6 +1154,46 @@ class DataService: ObservableObject {
                 if let parsed = parseParsedDurationData(data: data, durationKey: durationKey) {
                     for (id, durations) in parsed where !durations.isEmpty {
                         output[id] = durations
+                    }
+                }
+            }
+        }
+
+        return output.isEmpty ? nil : output
+    }
+
+    private static func loadDurationIndexingFromParsedJSON() -> [Int: DurationIndexing]? {
+        let files: [String] = [
+            "buildings.json",
+            "characters.json",
+            "heroes.json",
+            "pets.json",
+            "spells.json",
+            "traps.json",
+            "weapons.json",
+            "mini_levels.json",
+            "seasonal_defense_modules.json"
+        ]
+
+        var output: [Int: DurationIndexing] = [:]
+        let folders = candidateFolderURLs(named: "parsed_json_files")
+
+        for folder in folders {
+            for fileName in files {
+                let fileURL = folder.appendingPathComponent(fileName)
+                guard let data = try? Data(contentsOf: fileURL) else { continue }
+                guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+                let indexing: DurationIndexing = currentLevelDurationFiles.contains(fileName) ? .currentLevel : .targetLevel
+                for entry in raw {
+                    guard let idValue = entry["id"] else { continue }
+                    let id: Int?
+                    if let n = idValue as? Int { id = n }
+                    else if let n = idValue as? Double { id = Int(n) }
+                    else if let s = idValue as? String { id = Int(s) }
+                    else { id = nil }
+                    guard let resolvedId = id else { continue }
+                    if output[resolvedId] == nil {
+                        output[resolvedId] = indexing
                     }
                 }
             }
@@ -1499,16 +1560,50 @@ class DataService: ObservableObject {
            let scDuration = durationForSupercharge(buildingName: buildingName, targetLevel: target) {
             return scDuration
         }
+
+        if let unitDuration = durationForUnit(dataId: dataId, currentLevel: level) {
+            return unitDuration
+        }
+        if !buildingName.isEmpty,
+           let characterId = characterNameToId[buildingName.lowercased()],
+           let unitDuration = durationForUnit(dataId: characterId, currentLevel: level) {
+            return unitDuration
+        }
         let targetLevel = max(level + 1, 1)
         if let durations = upgradeDurations[dataId], !durations.isEmpty {
-            let index = min(max(targetLevel - 1, 0), durations.count - 1)
+            let index = durationIndex(for: dataId, currentLevel: level, targetLevel: targetLevel, maxIndex: durations.count - 1)
             return durations[index]
         }
         if !buildingName.isEmpty,
            let characterId = characterNameToId[buildingName.lowercased()],
            let durations = upgradeDurations[characterId], !durations.isEmpty {
-            let index = min(max(targetLevel - 1, 0), durations.count - 1)
+            let index = durationIndex(for: characterId, currentLevel: level, targetLevel: targetLevel, maxIndex: durations.count - 1)
             return durations[index]
+        }
+        return nil
+    }
+
+    private func durationIndex(for id: Int, currentLevel: Int, targetLevel: Int, maxIndex: Int) -> Int {
+        let indexing = upgradeDurationIndexing[id] ?? .targetLevel
+        let rawIndex: Int
+        switch indexing {
+        case .currentLevel:
+            rawIndex = currentLevel - 1
+        case .targetLevel:
+            rawIndex = targetLevel - 1
+        }
+        return min(max(rawIndex, 0), maxIndex)
+    }
+
+    private func durationForUnit(dataId: Int, currentLevel: Int) -> TimeInterval? {
+        guard currentLevel > 0 else { return nil }
+        for fileName in Self.parsedUnitFiles {
+            let units = cachedParsedUnits[fileName] ?? loadParsedUnits(fileName: fileName)
+            if let unit = units[dataId],
+               let entry = unit.levelsByLevel[currentLevel],
+               entry.upgradeTimeSeconds > 0 {
+                return TimeInterval(entry.upgradeTimeSeconds)
+            }
         }
         return nil
     }
