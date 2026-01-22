@@ -607,8 +607,13 @@ class DataService: ObservableObject {
     }
 
     func displayName(for profile: PlayerAccount) -> String {
-        if !profile.displayName.isEmpty {
-            return profile.displayName
+        if let cachedName = profile.cachedProfile?.name.trimmingCharacters(in: .whitespacesAndNewlines),
+           !cachedName.isEmpty {
+            return cachedName
+        }
+        let trimmed = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !trimmed.isEmpty {
+            return trimmed
         }
         return profile.tag.isEmpty ? "Profile" : profile.tag
     }
@@ -1303,7 +1308,9 @@ class DataService: ObservableObject {
                 }
                 if let normalizedTag = normalizedTag, !normalizedTag.isEmpty {
                     profile.tag = normalizedTag
-                    profile.displayName = normalizedTag
+                    if profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                        profile.displayName = normalizedTag
+                    }
                 }
             }
             suppressPersistence = false

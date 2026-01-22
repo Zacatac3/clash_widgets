@@ -1261,10 +1261,6 @@ private struct DashboardView: View {
     }
 
     private var activeProfileName: String {
-        let name = dataService.profileName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !name.isEmpty {
-            return name
-        }
         if let profile = dataService.currentProfile {
             return dataService.displayName(for: profile)
         }
