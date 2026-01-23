@@ -8,6 +8,8 @@ final class IAPManager: ObservableObject {
 
 	@Published private(set) var isAdsRemoved: Bool
 	@Published private(set) var products: [Product] = []
+	@Published private(set) var isLoadingProducts: Bool = false
+	@Published private(set) var productsError: String?
 
 	private let productID = "com.zach.clashwidgets.removeads"
 	private let adsRemovedKey = "adsRemoved"
@@ -22,11 +24,20 @@ final class IAPManager: ObservableObject {
 	}
 
 	func loadProducts() async {
+		isLoadingProducts = true
+		productsError = nil
 		do {
-			products = try await Product.products(for: [productID])
+			let loaded = try await Product.products(for: [productID])
+			products = loaded
+			if loaded.isEmpty {
+				productsError = "No products returned from the App Store."
+			}
 		} catch {
+			products = []
+			productsError = error.localizedDescription
 			NSLog("🚀 [IAP] Failed to load products: \(error.localizedDescription)")
 		}
+		isLoadingProducts = false
 	}
 
 	func purchase() async throws -> Bool {

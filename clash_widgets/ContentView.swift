@@ -4,6 +4,7 @@ import Combine
 import StoreKit
 #if canImport(UIKit)
 import UIKit
+import AppTrackingTransparency
 #if canImport(UIImageColors)
 import UIImageColors
 #endif
@@ -45,10 +46,22 @@ struct ContentView: View {
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
+    @AppStorage("hasPromptedAppTracking") private var hasPromptedAppTracking = false
     @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
+    @State private var onboardingJustCompleted = false
+    @State private var onboardingLocked = false // keep onboarding available until submission
     @AppStorage("lastGoldPassResetPrompt") private var lastGoldPassResetPrompt: Double = 0
+    @AppStorage("firstLaunchTimestamp") private var firstLaunchTimestamp: Double = 0
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
-    @State private var showInitialSetup = false
+
+    // Suppress full-screen interstitials for the initial run for a short window so
+    // they are not the first thing users see after onboarding. Does not reset on
+    // in-app factory reset (stored relative to first launch timestamp).
+    private let interstitialSuppressionWindow: TimeInterval = 2 * 60 // 2 minutes
+
+    // Replaced modal onboarding flow with a dedicated onboarding tab.
+    // Control which screen is visible using `selectedTab` (see Tab.onboarding).
+    // `showInitialSetup` variable removed to improve interoperability with system prompts.
     @State private var initialSetupTag: String = ""
     @State private var showGoldPassResetPrompt = false
     @StateObject private var interstitialManager = InterstitialAdManager()
@@ -58,6 +71,26 @@ struct ContentView: View {
     init() {
         let apiKey = Self.apiKey()
         _dataService = StateObject(wrappedValue: DataService(apiKey: apiKey))
+        // Request ATT first before showing onboarding.
+        // If ATT hasn't been prompted yet, show an intermediate waiting view
+        // that lets the user trigger ATT or skip it — this avoids requiring a restart
+        // when ATT is pre-denied or disabled.
+        let completed = UserDefaults.standard.bool(forKey: "hasCompletedInitialSetup")
+
+        // Show onboarding immediately if ATT has already been prompted (or is determined).
+        // On first launch (no completed setup) default to the Onboarding tab
+        let shouldShowOnboardingInitially = !completed
+        _selectedTab = State(initialValue: shouldShowOnboardingInitially ? .onboarding : .dashboard)
+        _onboardingLocked = State(initialValue: shouldShowOnboardingInitially)
+
+        // Initialize the first launch timestamp once (persisted across runs)
+        let existingFirst = UserDefaults.standard.double(forKey: "firstLaunchTimestamp")
+        if existingFirst <= 0 {
+            let now = Date().timeIntervalSince1970
+            UserDefaults.standard.set(now, forKey: "firstLaunchTimestamp")
+            // also mirror to AppStorage-backed property
+            // (it will be read into `firstLaunchTimestamp` on next view update)
+        }
     }
 
     private static let apiKeyXor: UInt8 = 0x5a
@@ -72,74 +105,101 @@ struct ContentView: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
-            DashboardView()
-                .tabItem { Label("Home", systemImage: "house.fill") }
-                .tag(Tab.dashboard)
-
-            ProfileDetailView()
-                .tabItem { Label("Profile", systemImage: "person.crop.circle") }
-                .tag(Tab.profile)
-
-            EquipmentView()
-                .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
-                .tag(Tab.equipment)
-
-            SettingsView()
-                .tabItem { Label("Settings", systemImage: "gearshape") }
-                .tag(Tab.settings)
-        }
-        .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
-        .environmentObject(dataService)
-        .sheet(isPresented: $showGoldPassResetPrompt) {
-            GoldPassResetPrompt()
+        Group {
+            if !hasCompletedInitialSetup {
+                // Lock the UI to the onboarding flow until setup completes.
+                NavigationStack {
+                    InitialSetupView(playerTag: $initialSetupTag) { submission in
+                        handleInitialSetupSubmission(submission)
+                    }
+                    .environmentObject(dataService)
+                    .navigationTitle("Get Started")
+                    .navigationBarTitleDisplayMode(.inline)
+                }
+                .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
                 .environmentObject(dataService)
-        }
-        .onAppear {
-            dataService.pruneCompletedUpgrades()
-            requestNotificationsIfNeeded()
-            handleGoldPassResetIfNeeded()
-            presentLaunchInterstitialIfNeeded()
-        }
-        .monitorScenePhase(scenePhase) { phase in
-            switch phase {
-            case .active, .background:
-                dataService.pruneCompletedUpgrades()
-                if phase == .active {
+                .onAppear {
+                    dataService.pruneCompletedUpgrades()
+                    initialSetupTag = dataService.playerTag
+                    onboardingLocked = true
+                    selectedTab = .onboarding
+                }
+                .onChangeCompat(of: dataService.playerTag) { newValue in
+                    if selectedTab == .onboarding {
+                        initialSetupTag = newValue
+                    }
+                }
+            } else {
+                TabView(selection: $selectedTab) {
+                    DashboardView()
+                        .tabItem { Label("Home", systemImage: "house.fill") }
+                        .tag(Tab.dashboard)
+
+                    ProfileDetailView()
+                        .tabItem { Label("Profile", systemImage: "person.crop.circle") }
+                        .tag(Tab.profile)
+
+                    EquipmentView()
+                        .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
+                        .tag(Tab.equipment)
+
+                    SettingsView()
+                        .tabItem { Label("Settings", systemImage: "gearshape") }
+                        .tag(Tab.settings)
+                }
+                .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
+                .environmentObject(dataService)
+                .sheet(isPresented: $showGoldPassResetPrompt) {
+                    GoldPassResetPrompt()
+                        .environmentObject(dataService)
+                }
+                .onAppear {
+                    dataService.pruneCompletedUpgrades()
                     handleGoldPassResetIfNeeded()
                     presentLaunchInterstitialIfNeeded()
-                } else {
-                    hasShownLaunchAd = false
+                    initialSetupTag = dataService.playerTag
+                    selectedTab = .dashboard
+                    onboardingLocked = false
                 }
-            default:
-                break
+                .monitorScenePhase(scenePhase) { phase in
+                    switch phase {
+                    case .active, .background:
+                        dataService.pruneCompletedUpgrades()
+                        if phase == .active {
+                            handleGoldPassResetIfNeeded()
+                            presentLaunchInterstitialIfNeeded()
+                        } else {
+                            hasShownLaunchAd = false
+                        }
+                    default:
+                        break
+                    }
+                }
+                .onChangeCompat(of: dataService.playerTag) { newValue in
+                    if selectedTab == .onboarding {
+                        initialSetupTag = newValue
+                    }
+                }
             }
-        }
-        
-        .onAppear {
-            initialSetupTag = dataService.playerTag
-            showInitialSetup = !hasCompletedInitialSetup
-        }
-        .onChangeCompat(of: hasCompletedInitialSetup) { newValue in
-            showInitialSetup = !newValue
-        }
-        .onChangeCompat(of: dataService.playerTag) { newValue in
-            if showInitialSetup {
-                initialSetupTag = newValue
-            }
-        }
-        .fullScreenCover(isPresented: $showInitialSetup) {
-            InitialSetupView(playerTag: $initialSetupTag) { submission in
-                handleInitialSetupSubmission(submission)
-            }
-            .environmentObject(dataService)
-            .interactiveDismissDisabled(true)
         }
     }
 
     private func presentLaunchInterstitialIfNeeded() {
+        // Do not attempt to load/present ads until onboarding/initial setup is completed
+        guard hasCompletedInitialSetup else { return }
         guard adsPreference == .fullScreen else { return }
         guard !iapManager.isAdsRemoved else { return }
+
+        // Suppress interstitials for a short grace period after the very first app
+        // launch so users don't see a full-screen ad immediately after onboarding.
+        if firstLaunchTimestamp > 0 {
+            let elapsed = Date().timeIntervalSince1970 - firstLaunchTimestamp
+            if elapsed < interstitialSuppressionWindow {
+                NSLog("📵 [ADMOB_DEBUG] Suppressing launch interstitial (first-run grace period: \(Int(interstitialSuppressionWindow))s) — elapsed \(Int(elapsed))s")
+                return
+            }
+        }
+
         guard !hasShownLaunchAd, !isAttemptingLaunchAd else { return }
 
         isAttemptingLaunchAd = true
@@ -189,7 +249,16 @@ struct ContentView: View {
         dataService.goldPassBoost = submission.goldPassBoost
         dataService.goldPassReminderEnabled = submission.goldPassBoost > 0
         hasCompletedInitialSetup = true
-        showInitialSetup = false
+        // mark that we just completed onboarding to suppress immediate prompts
+        onboardingJustCompleted = true
+        onboardingLocked = false
+        DispatchQueue.main.asyncAfter(deadline: .now() + 3.0) {
+            onboardingJustCompleted = false
+        }
+
+        // Request notifications after onboarding completes
+        requestNotificationsIfNeeded()
+        // After successful submission, ensure we switch to the main dashboard tab
         selectedTab = .dashboard
     }
 
@@ -198,6 +267,8 @@ struct ContentView: View {
         hasPromptedNotificationPermission = true
         dataService.requestNotificationAuthorizationIfNeeded { _ in }
     }
+
+
 
     private func handleGoldPassResetIfNeeded(referenceDate: Date = Date()) {
         let resetDate = goldPassResetDate(for: referenceDate)
@@ -211,6 +282,16 @@ struct ContentView: View {
           if referenceDate >= resetDate,
               lastGoldPassResetPrompt < resetTime,
               dataService.profiles.contains(where: { $0.goldPassReminderEnabled }) {
+            // Suppress the prompt if we just completed onboarding (to avoid a
+            // jarring permission/finish flow) or if the app was first opened
+            // less than 4 hours ago.
+            guard !onboardingJustCompleted else { return }
+            let firstSeen = firstLaunchTimestamp
+            if firstSeen > 0 {
+                let elapsed = referenceDate.timeIntervalSince1970 - firstSeen
+                // 4 hours = 14400 seconds
+                if elapsed < (4 * 3600) { return }
+            }
             lastGoldPassResetPrompt = resetTime
             showGoldPassResetPrompt = true
         }
@@ -237,6 +318,7 @@ struct ContentView: View {
     }
 
     private enum Tab: Hashable {
+        case onboarding
         case dashboard
         case profile
         case equipment
@@ -2428,6 +2510,8 @@ private struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
     @State private var isPurchasing = false
+    @State private var iapErrorMessage: String?
+    @State private var showIAPErrorAlert = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
@@ -2572,8 +2656,18 @@ private struct SettingsView: View {
                         Button {
                             Task {
                                 isPurchasing = true
-                                _ = try? await iapManager.purchase()
-                                isPurchasing = false
+                                do {
+                                    let success = try await iapManager.purchase()
+                                    isPurchasing = false
+                                    if !success {
+                                        iapErrorMessage = "Purchase cancelled or did not complete."
+                                        showIAPErrorAlert = true
+                                    }
+                                } catch {
+                                    isPurchasing = false
+                                    iapErrorMessage = error.localizedDescription
+                                    showIAPErrorAlert = true
+                                }
                             }
                         } label: {
                             HStack {
@@ -2581,13 +2675,39 @@ private struct SettingsView: View {
                                 Spacer()
                                 if isPurchasing {
                                     ProgressView()
+                                } else if iapManager.products.first?.displayPrice == nil {
+                                    Text("Loading…")
+                                        .bold()
                                 } else {
-                                    Text(iapManager.products.first?.displayPrice ?? "$2.99")
+                                    Text(iapPriceText)
                                         .bold()
                                 }
                             }
                         }
-                        .disabled(isPurchasing)
+                        .disabled(isPurchasing || iapManager.products.isEmpty)
+
+                        // Show loading / error / retry UI for product loading
+                        if iapManager.isLoadingProducts {
+                            Text("Loading price…")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        } else if let error = iapManager.productsError {
+                            HStack {
+                                Text("Price unavailable: \(error)")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                Spacer()
+                                Button("Retry") {
+                                    Task { await iapManager.loadProducts() }
+                                }
+                                .font(.caption2)
+                            }
+                        } else if iapManager.products.isEmpty {
+                            Button("Retry Price") {
+                                Task { await iapManager.loadProducts() }
+                            }
+                            .font(.caption2)
+                        }
 
                         Button("Restore Purchases") {
                             Task {
@@ -2652,6 +2772,11 @@ private struct SettingsView: View {
             } message: {
                 Text("All profiles, timers, and settings will be erased. You'll need to enter your player tag again before using the app.")
             }
+            .alert("Purchase Error", isPresented: $showIAPErrorAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text(iapErrorMessage ?? "Purchase failed. Please try again later.")
+            }
         }
     }
 
@@ -2659,6 +2784,19 @@ private struct SettingsView: View {
 
     private var feedbackFormURL: URL? {
         URL(string: feedbackFormURLString)
+    }
+
+    // Localized IAP price text. Prefer the App Store product's `displayPrice` when
+    // available; otherwise fall back to a localized currency string for a default
+    // amount so the UI doesn't show a hard-coded USD price.
+    private var iapPriceText: String {
+        if let display = iapManager.products.first?.displayPrice {
+            return display
+        }
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        formatter.locale = Locale.current
+        return formatter.string(from: NSNumber(value: 2.99)) ?? "$2.99"
     }
 
     private func notificationBinding(_ keyPath: WritableKeyPath<NotificationSettings, Bool>) -> Binding<Bool> {
@@ -2823,6 +2961,7 @@ private struct ProfileSetupSubmission {
 // Simple SwiftUI wrapper for a GAD banner view.
 struct BannerAdView: UIViewRepresentable {
     var adUnitID: String = "ca-app-pub-4499177240533852/7133262169"
+    @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
     func makeUIView(context: Context) -> BannerView {
         let banner = BannerView(adSize: AdSizeBanner)
@@ -2833,7 +2972,12 @@ struct BannerAdView: UIViewRepresentable {
             .flatMap { $0.windows }
             .first { $0.isKeyWindow }?.rootViewController
         banner.rootViewController = rootVC
-        banner.load(Request())
+        // Only load banner ads after the initial onboarding/setup is complete
+        if hasCompletedInitialSetup {
+            banner.load(Request())
+        } else {
+            NSLog("📵 [ADMOB_DEBUG] Skipping banner load until onboarding complete")
+        }
 
         return banner
     }
@@ -2908,9 +3052,10 @@ extension InterstitialAdManager: FullScreenContentDelegate {
 
 private struct BannerAdPlaceholder: View {
     @EnvironmentObject var iapManager: IAPManager
+    @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     
     var body: some View {
-        if !iapManager.isAdsRemoved {
+        if !iapManager.isAdsRemoved && hasCompletedInitialSetup {
             BannerAdView()
                 .frame(maxWidth: .infinity)
                 .frame(height: 50)

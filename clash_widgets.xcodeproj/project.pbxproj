@@ -64,6 +64,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		882D5B292F233D6F00930280 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		882D5B2A2F233ECE00930280 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
@@ -121,6 +123,8 @@
 		8879E7BB2F0F3B4E00FAE5F1 = {
 			isa = PBXGroup;
 			children = (
+				882D5B292F233D6F00930280 /* Products.storekit */,
+				882D5B2A2F233ECE00930280 /* Products.storekit */,
 				8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */,
 				8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */,
 				8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */,
@@ -424,7 +428,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -461,7 +465,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
