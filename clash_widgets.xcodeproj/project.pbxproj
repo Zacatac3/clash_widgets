@@ -7,13 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */; };
-		8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
+		88738B532F240BC5006D4245 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B522F240BC5006D4245 /* GoogleMobileAds */; };
+		88738B572F240BD1006D4245 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B562F240BD1006D4245 /* GoogleMobileAds */; };
+		88738B582F240BE0006D4245 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */; };
+		88738B5B2F240BE1006D4245 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */; };
+		88738B5F2F240CE6006D4245 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B5E2F240CE6006D4245 /* ColorKit */; };
+		88738B612F240CEA006D4245 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B602F240CEA006D4245 /* ColorKit */; };
+		88738B642F240D2E006D4245 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B632F240D2E006D4245 /* UIImageColors */; };
 		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
-		88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3A2F1F522C00B855B8 /* ColorKit */; };
-		88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3D2F1F551500B855B8 /* UIImageColors */; };
-		88F5A1972F22BE830022FB69 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 88F5A1962F22BE830022FB69 /* GoogleMobileAds */; };
 		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
 		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
 		A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */; };
@@ -50,6 +52,16 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		88738B5A2F240BE0006D4245 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8879EAD42F0F5C2700FAE5F1 /* Embed Foundation Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -69,7 +81,6 @@
 		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashDashWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashDashWidgetExtension.entitlements; sourceTree = "<group>"; };
 		88F5A1982F22C4DC0022FB69 /* clash-widgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "clash-widgets-Info.plist"; sourceTree = SOURCE_ROOT; };
@@ -102,9 +113,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88F5A1972F22BE830022FB69 /* GoogleMobileAds in Frameworks */,
-				88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */,
-				88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */,
+				88738B642F240D2E006D4245 /* UIImageColors in Frameworks */,
+				88738B5F2F240CE6006D4245 /* ColorKit in Frameworks */,
+				88738B532F240BC5006D4245 /* GoogleMobileAds in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,8 +123,10 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				8879EAE02F0F5C9600FAE5F1 /* SwiftUI.framework in Frameworks */,
-				8879EADF2F0F5C9600FAE5F1 /* WidgetKit.framework in Frameworks */,
+				88738B612F240CEA006D4245 /* ColorKit in Frameworks */,
+				88738B582F240BE0006D4245 /* SwiftUI.framework in Frameworks */,
+				88738B572F240BD1006D4245 /* GoogleMobileAds in Frameworks */,
+				88738B5B2F240BE1006D4245 /* WidgetKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -126,7 +139,6 @@
 				882D5B292F233D6F00930280 /* Products.storekit */,
 				882D5B2A2F233ECE00930280 /* Products.storekit */,
 				8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */,
-				8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */,
 				8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */,
 				8879EAE12F0F5C9600FAE5F1 /* ClashDashWidget */,
 				8879E8002F0F45FA00FAE5F1 /* Frameworks */,
@@ -208,9 +220,9 @@
 			);
 			name = clash_widgets;
 			packageProductDependencies = (
-				88C67E3A2F1F522C00B855B8 /* ColorKit */,
-				88C67E3D2F1F551500B855B8 /* UIImageColors */,
-				88F5A1962F22BE830022FB69 /* GoogleMobileAds */,
+				88738B522F240BC5006D4245 /* GoogleMobileAds */,
+				88738B5E2F240CE6006D4245 /* ColorKit */,
+				88738B632F240D2E006D4245 /* UIImageColors */,
 			);
 			productName = clash_widgets;
 			productReference = 8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */;
@@ -223,6 +235,7 @@
 				8879EADA2F0F5C9600FAE5F1 /* Sources */,
 				8879EADB2F0F5C9600FAE5F1 /* Frameworks */,
 				8879EADC2F0F5C9600FAE5F1 /* Resources */,
+				88738B5A2F240BE0006D4245 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -230,6 +243,8 @@
 			);
 			name = ClashDashWidgetExtension;
 			packageProductDependencies = (
+				88738B562F240BD1006D4245 /* GoogleMobileAds */,
+				88738B602F240CEA006D4245 /* ColorKit */,
 			);
 			productName = ClashDashWidgetExtension;
 			productReference = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */;
@@ -263,9 +278,9 @@
 			mainGroup = 8879E7BB2F0F3B4E00FAE5F1;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */,
-				88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */,
 				88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
+				88738B5D2F240CDA006D4245 /* XCRemoteSwiftPackageReference "ColorKit" */,
+				88738B622F240D2E006D4245 /* XCRemoteSwiftPackageReference "UIImageColors" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8879E7C52F0F3B4E00FAE5F1 /* Products */;
@@ -428,7 +443,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -445,7 +460,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -465,7 +480,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 3;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -482,7 +497,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -524,7 +539,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -537,7 +552,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -580,7 +595,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 5;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -593,7 +608,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
@@ -639,15 +654,15 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */ = {
+		88738B5D2F240CDA006D4245 /* XCRemoteSwiftPackageReference "ColorKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/Boris-Em/ColorKit.git";
+			repositoryURL = "https://github.com/Boris-Em/ColorKit";
 			requirement = {
 				branch = master;
 				kind = branch;
 			};
 		};
-		88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */ = {
+		88738B622F240D2E006D4245 /* XCRemoteSwiftPackageReference "UIImageColors" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/jathu/UIImageColors";
 			requirement = {
@@ -666,20 +681,30 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		88C67E3A2F1F522C00B855B8 /* ColorKit */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */;
-			productName = ColorKit;
-		};
-		88C67E3D2F1F551500B855B8 /* UIImageColors */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */;
-			productName = UIImageColors;
-		};
-		88F5A1962F22BE830022FB69 /* GoogleMobileAds */ = {
+		88738B522F240BC5006D4245 /* GoogleMobileAds */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
 			productName = GoogleMobileAds;
+		};
+		88738B562F240BD1006D4245 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
+		};
+		88738B5E2F240CE6006D4245 /* ColorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88738B5D2F240CDA006D4245 /* XCRemoteSwiftPackageReference "ColorKit" */;
+			productName = ColorKit;
+		};
+		88738B602F240CEA006D4245 /* ColorKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88738B5D2F240CDA006D4245 /* XCRemoteSwiftPackageReference "ColorKit" */;
+			productName = ColorKit;
+		};
+		88738B632F240D2E006D4245 /* UIImageColors */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88738B622F240D2E006D4245 /* XCRemoteSwiftPackageReference "UIImageColors" */;
+			productName = UIImageColors;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

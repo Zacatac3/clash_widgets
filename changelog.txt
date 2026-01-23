@@ -1,3 +1,7 @@
+1.0 -
+*New Features*
+- Release build
+
 1.0.1 - 
 *New Features*
 * Notification preferences now added to onboarding and new profile set-up
@@ -10,6 +14,10 @@
 * Added Restore error message for no contents to restore
 * Added help section to onboarding
 * App no longer prompts for notifications immediately, waits for user to enable notifications
+*Unranked icon now displays properly in profile tab
+*fixed app icon not tinting for dark clear and tinted modes 
 
 *Known issues*
 - on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
+* haptics are too strong when adjusting sliders
+*Widgets, when tinted or clear, have assets messed up

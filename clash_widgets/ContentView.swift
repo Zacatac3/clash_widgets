@@ -5,10 +5,8 @@ import StoreKit
 #if canImport(UIKit)
 import UIKit
 import AppTrackingTransparency
-#if !targetEnvironment(simulator)
 #if canImport(UIImageColors)
 import UIImageColors
-#endif
 #endif
 #endif
 #if canImport(WebKit)
@@ -993,7 +991,7 @@ private struct TownHallPaletteView: View {
     var body: some View {
         NavigationStack {
             List {
-                #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
+                #if canImport(UIKit) && canImport(UIImageColors)
                 ForEach(1...maxTownHallLevel, id: \.self) { level in
                     Section {
                         TownHallPaletteRow(level: level)
@@ -1012,7 +1010,7 @@ private struct TownHallPaletteView: View {
         }
     }
 
-    #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
+    #if canImport(UIKit) && canImport(UIImageColors)
     private struct TownHallPaletteRow: View {
         let level: Int
         @State private var palette: UIImageColors?
@@ -1730,7 +1728,7 @@ private struct ProfileDetailView: View {
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
     @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
-    #if !targetEnvironment(simulator) && canImport(UIImageColors)
+    #if canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
@@ -1879,7 +1877,7 @@ private struct ProfileDetailView: View {
 
     @ViewBuilder
     private var profileGradientSwatches: some View {
-        #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
+        #if canImport(UIKit) && canImport(UIImageColors)
                     if let palette = townHallPalette {
                         let swatches = [palette.primary, palette.secondary, palette.detail, palette.background]
                                 .compactMap { $0 }
@@ -1903,7 +1901,7 @@ private struct ProfileDetailView: View {
     private func profileGradient(for townHallLevel: Int) -> LinearGradient {
         #if canImport(UIKit)
         if let image = townHallImage(for: townHallLevel) {
-            #if !targetEnvironment(simulator) && canImport(UIImageColors)
+            #if canImport(UIImageColors)
             if let palette = townHallPalette {
                 let primaryColor = palette.detail ?? palette.background ?? palette.primary ?? palette.secondary ?? UIColor.systemBlue
                 let secondaryColor = palette.background ?? palette.detail ?? primaryColor
@@ -1961,7 +1959,7 @@ private struct ProfileDetailView: View {
     }
 
     private func loadTownHallPaletteIfNeeded() {
-        #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
+        #if canImport(UIKit) && canImport(UIImageColors)
         let level = townHallLevel
         guard level > 0 else {
             townHallPalette = nil
@@ -1985,7 +1983,7 @@ private struct ProfileDetailView: View {
     private func leagueAssetName(for league: String) -> String? {
         let trimmed = league.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        if trimmed.localizedCaseInsensitiveCompare("Unranked") == .orderedSame { return nil }
+        // Show an explicit icon for Unranked (asset present as 'unranked')
         if trimmed.localizedCaseInsensitiveCompare("Legend League") == .orderedSame {
             return "leagues/legend_league"
         }
