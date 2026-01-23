@@ -5,8 +5,10 @@ import StoreKit
 #if canImport(UIKit)
 import UIKit
 import AppTrackingTransparency
+#if !targetEnvironment(simulator)
 #if canImport(UIImageColors)
 import UIImageColors
+#endif
 #endif
 #endif
 #if canImport(WebKit)
@@ -45,7 +47,7 @@ struct ContentView: View {
     @StateObject private var dataService: DataService
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
-    @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
+
     @AppStorage("hasPromptedAppTracking") private var hasPromptedAppTracking = false
     @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
     @State private var onboardingJustCompleted = false
@@ -93,6 +95,9 @@ struct ContentView: View {
         }
     }
 
+    @State private var showOnboardingHelp = false
+    @State private var onboardingHelpPage: InfoSheetPage = .welcome
+
     private static let apiKeyXor: UInt8 = 0x5a
     private static let apiKeyBytes: [UInt8] = [
         63,35,16,106,63,2,27,51,21,51,16,17,12,107,11,51,22,25,16,50,56,29,57,51,21,51,16,19,15,32,15,34,23,51,19,41,19,55,46,42,0,25,19,108,19,48,19,110,3,14,
@@ -111,6 +116,20 @@ struct ContentView: View {
                 NavigationStack {
                     InitialSetupView(playerTag: $initialSetupTag) { submission in
                         handleInitialSetupSubmission(submission)
+                    }
+                    .toolbar {
+                        ToolbarItem(placement: .navigationBarLeading) {
+                            Button {
+                                onboardingHelpPage = .welcome
+                                showOnboardingHelp = true
+                            } label: {
+                                Image(systemName: "questionmark.circle")
+                            }
+                            .accessibilityLabel("Show Help")
+                        }
+                    }
+                    .sheet(isPresented: $showOnboardingHelp) {
+                        HelpSheetView()
                     }
                     .environmentObject(dataService)
                     .navigationTitle("Get Started")
@@ -180,6 +199,15 @@ struct ContentView: View {
                         initialSetupTag = newValue
                     }
                 }
+                // If ads are removed by a purchase elsewhere in the UI, clear any
+                // loaded interstitials immediately to avoid a queued ad appearing.
+                .onChangeCompat(of: iapManager.isAdsRemoved) { removed in
+                    if removed {
+                        interstitialManager.clearLoadedAd()
+                        hasShownLaunchAd = true
+                        NSLog("📵 [ADMOB_DEBUG] Ads removed – cleared loaded interstitials from ContentView observer")
+                    }
+                }
             }
         }
     }
@@ -220,6 +248,15 @@ struct ContentView: View {
                     .compactMap({ $0 as? UIWindowScene })
                     .flatMap({ $0.windows })
                     .first(where: { $0.isKeyWindow })?.rootViewController {
+                // Re-check that ads haven't been removed between load and present.
+                guard !iapManager.isAdsRemoved else {
+                    NSLog("📵 [ADMOB_DEBUG] Aborting interstitial presentation because ads were removed by purchase")
+                    isAttemptingLaunchAd = false
+                    interstitialManager.clearLoadedAd()
+                    hasShownLaunchAd = true
+                    return
+                }
+
                 interstitialManager.present(from: root) {
                     hasShownLaunchAd = true
                     isAttemptingLaunchAd = false
@@ -248,6 +285,12 @@ struct ContentView: View {
         dataService.alchemistLevel = submission.alchemistLevel
         dataService.goldPassBoost = submission.goldPassBoost
         dataService.goldPassReminderEnabled = submission.goldPassBoost > 0
+
+        // Apply any notification preferences selected during onboarding to
+        // the current profile. If the user enabled notifications here, this
+        // will trigger the permission prompt via DataService.
+        dataService.notificationSettings = submission.notificationSettings
+
         hasCompletedInitialSetup = true
         // mark that we just completed onboarding to suppress immediate prompts
         onboardingJustCompleted = true
@@ -256,18 +299,10 @@ struct ContentView: View {
             onboardingJustCompleted = false
         }
 
-        // Request notifications after onboarding completes
-        requestNotificationsIfNeeded()
+
         // After successful submission, ensure we switch to the main dashboard tab
         selectedTab = .dashboard
     }
-
-    private func requestNotificationsIfNeeded() {
-        guard !hasPromptedNotificationPermission else { return }
-        hasPromptedNotificationPermission = true
-        dataService.requestNotificationAuthorizationIfNeeded { _ in }
-    }
-
 
 
     private func handleGoldPassResetIfNeeded(referenceDate: Date = Date()) {
@@ -958,7 +993,7 @@ private struct TownHallPaletteView: View {
     var body: some View {
         NavigationStack {
             List {
-                #if canImport(UIKit) && canImport(UIImageColors)
+                #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
                 ForEach(1...maxTownHallLevel, id: \.self) { level in
                     Section {
                         TownHallPaletteRow(level: level)
@@ -977,7 +1012,7 @@ private struct TownHallPaletteView: View {
         }
     }
 
-    #if canImport(UIKit) && canImport(UIImageColors)
+    #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
     private struct TownHallPaletteRow: View {
         let level: Int
         @State private var palette: UIImageColors?
@@ -1069,12 +1104,14 @@ private struct DashboardView: View {
     @AppStorage("hasSeenClashboardOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
+    @AppStorage("hasShownWhatsNewFirstColdBoot") private var hasShownWhatsNewFirstColdBoot = false
     @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
     @State private var showHomeOrderSheet = false
     @State private var orderedSections: [HomeSection] = HomeSection.defaultOrder
+    @State private var didRunStartupSheets = false
 
     var body: some View {
         NavigationStack {
@@ -1087,14 +1124,31 @@ private struct DashboardView: View {
             }
             .onAppear {
                 orderedSections = parseHomeSectionOrder()
-                if shouldShowWhatsNew {
-                    infoSheetPage = .whatsNew
-                    showInfoSheet = true
-                    markWhatsNewSeen()
-                } else if !hasSeenOnboarding {
-                    hasSeenOnboarding = true
-                    infoSheetPage = .welcome
-                    showInfoSheet = true
+                // Prefer showing the onboarding 'Welcome' for first-time users.
+                // What's New should automatically appear only:
+                //  - once after the very first cold boot of the app (first run after
+                //    install) and never again because of navigation, and
+                //  - on subsequent runs when the app *version* changes.
+                // Use `didRunStartupSheets` to ensure this logic only runs once per
+                // app session so returning from Settings won't re-trigger it.
+                if !didRunStartupSheets {
+                    if !hasSeenOnboarding {
+                        hasSeenOnboarding = true
+                        infoSheetPage = .welcome
+                        showInfoSheet = true
+                    } else if !hasShownWhatsNewFirstColdBoot {
+                        // First cold boot after install — show Whats New once and
+                        // record that we've shown it for this install.
+                        infoSheetPage = .whatsNew
+                        showInfoSheet = true
+                        hasShownWhatsNewFirstColdBoot = true
+                        markWhatsNewSeen()
+                    } else if shouldShowWhatsNew {
+                        infoSheetPage = .whatsNew
+                        showInfoSheet = true
+                        markWhatsNewSeen()
+                    }
+                    didRunStartupSheets = true
                 }
             }
             .onChangeCompat(of: orderedSections) { newValue in
@@ -1271,15 +1325,13 @@ private struct DashboardView: View {
         // Group left-side buttons together
         ToolbarItemGroup(placement: .navigationBarLeading) {
             Button {
-                infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
+                // Default to the Welcome page when the user explicitly requests help.
+                infoSheetPage = .welcome
                 showInfoSheet = true
-                if infoSheetPage == .whatsNew {
-                    markWhatsNewSeen()
-                }
             } label: {
-                Image(systemName: "exclamationmark.circle")
+                Image(systemName: "questionmark.circle")
             }
-            .accessibilityLabel("Show Help & What's New")
+            .accessibilityLabel("Show Help")
             
             Button {
                 orderedSections = parseHomeSectionOrder()
@@ -1307,15 +1359,13 @@ private struct DashboardView: View {
         // What's New button - separate container on left
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
-                infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
+                // Default to the Welcome page when the user explicitly requests help.
+                infoSheetPage = .welcome
                 showInfoSheet = true
-                if infoSheetPage == .whatsNew {
-                    markWhatsNewSeen()
-                }
             } label: {
-                Image(systemName: "exclamationmark.circle")
+                Image(systemName: "questionmark.circle")
             }
-            .accessibilityLabel("Show Help & What's New")
+            .accessibilityLabel("Show Help")
         }
 
         // Reorder Home Cards button - separate container on left
@@ -1614,10 +1664,12 @@ private struct DashboardView: View {
     }
 
     private var shouldShowWhatsNew: Bool {
+        // Only show "What's New" when the *version* (CFBundleShortVersionString)
+        // changes — ignore build number changes to avoid showing the popup for
+        // incremental Xcode builds or unrelated app events (IAP, restores, etc.).
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        guard !version.isEmpty || !build.isEmpty else { return false }
-        return version != lastSeenAppVersion || build != lastSeenBuildNumber
+        guard !version.isEmpty else { return false }
+        return version != lastSeenAppVersion
     }
 
     private func markWhatsNewSeen() {
@@ -1678,7 +1730,7 @@ private struct ProfileDetailView: View {
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
     @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
-    #if canImport(UIImageColors)
+    #if !targetEnvironment(simulator) && canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
@@ -1827,7 +1879,7 @@ private struct ProfileDetailView: View {
 
     @ViewBuilder
     private var profileGradientSwatches: some View {
-        #if canImport(UIKit) && canImport(UIImageColors)
+        #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
                     if let palette = townHallPalette {
                         let swatches = [palette.primary, palette.secondary, palette.detail, palette.background]
                                 .compactMap { $0 }
@@ -1851,7 +1903,7 @@ private struct ProfileDetailView: View {
     private func profileGradient(for townHallLevel: Int) -> LinearGradient {
         #if canImport(UIKit)
         if let image = townHallImage(for: townHallLevel) {
-            #if canImport(UIImageColors)
+            #if !targetEnvironment(simulator) && canImport(UIImageColors)
             if let palette = townHallPalette {
                 let primaryColor = palette.detail ?? palette.background ?? palette.primary ?? palette.secondary ?? UIColor.systemBlue
                 let secondaryColor = palette.background ?? palette.detail ?? primaryColor
@@ -1909,7 +1961,7 @@ private struct ProfileDetailView: View {
     }
 
     private func loadTownHallPaletteIfNeeded() {
-        #if canImport(UIKit) && canImport(UIImageColors)
+        #if canImport(UIKit) && !targetEnvironment(simulator) && canImport(UIImageColors)
         let level = townHallLevel
         guard level > 0 else {
             townHallPalette = nil
@@ -2510,6 +2562,9 @@ private struct SettingsView: View {
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
     @State private var isPurchasing = false
+    @State private var isRestoringPurchases = false
+    @State private var restoreResultMessage: String = ""
+    @State private var showRestoreResultAlert = false
     @State private var iapErrorMessage: String?
     @State private var showIAPErrorAlert = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
@@ -2553,11 +2608,9 @@ private struct SettingsView: View {
                         return []
                     }()
 
-                    VStack(spacing: 0) {
-                        ForEach(profilesToShow) { profile in
-                            profileRow(profile)
-                                .transition(.opacity.combined(with: .move(edge: .top)))
-                        }
+                    ForEach(profilesToShow) { profile in
+                        profileRow(profile)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                     .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
 
@@ -2662,6 +2715,10 @@ private struct SettingsView: View {
                                     if !success {
                                         iapErrorMessage = "Purchase cancelled or did not complete."
                                         showIAPErrorAlert = true
+                                    } else {
+                                        // Purchase succeeded; we rely on the ContentView observer of
+                                        // `iapManager.isAdsRemoved` to clear any loaded interstitials.
+                                        NSLog("🚀 [IAP] Purchase succeeded — clearing Ads via observer")
                                     }
                                 } catch {
                                     isPurchasing = false
@@ -2709,12 +2766,40 @@ private struct SettingsView: View {
                             .font(.caption2)
                         }
 
-                        Button("Restore Purchases") {
-                            Task {
-                                await iapManager.restorePurchases()
+                        HStack {
+                            // Only show restore UI when ads haven't been removed on this
+                            // device/account — if the entitlement is already present
+                            // (e.g. recognized via App Store across devices) there's no
+                            // point in offering Restore.
+                            if !iapManager.isAdsRemoved {
+                                if isRestoringPurchases {
+                                    ProgressView()
+                                        .scaleEffect(0.9)
+                                        .padding(.trailing, 6)
+                                    Text("Restoring…")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                } else {
+                                    Button("Restore Purchases") {
+                                        Task {
+                                            isRestoringPurchases = true
+                                            let success = await iapManager.restorePurchasesAndReturnSuccess()
+                                            isRestoringPurchases = false
+                                            restoreResultMessage = success ? "Restore succeeded — ads removed if you owned it." : (iapManager.productsError ?? "No purchases found or restore cancelled.")
+                                            showRestoreResultAlert = true
+                                        }
+                                    }
+                                    .font(.caption)
+                                }
                             }
+                            Spacer()
                         }
-                        .font(.caption)
+                        
+                        .alert("Restore Purchases", isPresented: $showRestoreResultAlert) {
+                            Button("OK", role: .cancel) { }
+                        } message: {
+                            Text(restoreResultMessage)
+                        }
                     }
 
                     
@@ -2876,9 +2961,16 @@ private struct SettingsView: View {
                         Label("Delete Profile", systemImage: "trash")
                     }
                 } label: {
-                    Image(systemName: "ellipsis.circle")
+                    // Use a compact ellipsis icon for the row menu. We add a small
+                    // background to keep the control row-local and avoid the iPad
+                    // automatically promoting it into the navigation toolbar.
+                    Image(systemName: "ellipsis")
                         .font(.title3)
                         .foregroundColor(.primary)
+                        .frame(width: 36, height: 36)
+                        .background(RoundedRectangle(cornerRadius: 8).fill(Color(.tertiarySystemBackground)))
+                        .contentShape(Rectangle())
+                        .accessibilityLabel("More options")
                 }
                 .buttonStyle(.borderless)
                 
@@ -2956,6 +3048,7 @@ private struct ProfileSetupSubmission {
     let alchemistLevel: Int
     let goldPassBoost: Int
     let rawJSON: String?
+    let notificationSettings: NotificationSettings
 }
 
 // Simple SwiftUI wrapper for a GAD banner view.
@@ -3034,6 +3127,14 @@ final class InterstitialAdManager: NSObject, ObservableObject {
         interstitial.fullScreenContentDelegate = self
         interstitial.present(from: root)
     }
+
+    /// Clear any loaded interstitial and reset ready state. Call this when ads become disabled
+    /// (for example, immediately after a successful purchase) to prevent a queued ad from showing.
+    func clearLoadedAd() {
+        interstitial = nil
+        isReady = false
+        onDismiss = nil
+    }
 }
 
 extension InterstitialAdManager: FullScreenContentDelegate {
@@ -3072,6 +3173,9 @@ private struct ProfileSetupPane: View {
     let showCancel: Bool
     let onCancel: (() -> Void)?
     let onSubmit: (ProfileSetupSubmission) -> Void
+    /// When false, seed fields with clean defaults instead of copying values from
+    /// the currently-selected profile. Use this for the "Add Profile" flow.
+    let seedFromExistingProfile: Bool
 
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
@@ -3085,6 +3189,9 @@ private struct ProfileSetupPane: View {
     @State private var didSeedSettings = false
     @State private var showOptionalTag = false
     @State private var importedTag: String?
+
+    // Notification settings for this profile during setup
+    @State private var notificationSettings: NotificationSettings = .default
 
     private enum HelperId {
         static let builderApprentice = 93000000
@@ -3130,6 +3237,14 @@ private struct ProfileSetupPane: View {
 
     private var goldPassTitle: String {
         goldPassBoost == 0 ? "Free Pass" : "Gold Pass"
+    }
+
+    // Helper to expose a binding to the local notification settings struct
+    private func notificationBindingLocal(_ keyPath: WritableKeyPath<NotificationSettings, Bool>) -> Binding<Bool> {
+        Binding(
+            get: { notificationSettings[keyPath: keyPath] },
+            set: { notificationSettings[keyPath: keyPath] = $0 }
+        )
     }
 
     private var goldPassIconName: String {
@@ -3208,6 +3323,32 @@ private struct ProfileSetupPane: View {
 
                     if showSettings {
                         settingsFields
+                        // Profile-specific notification preferences (match Settings UI)
+                        VStack(alignment: .leading, spacing: 16) {
+                            Section("Notifications") {
+                                Toggle("Enable Notifications", isOn: notificationBindingLocal(\.notificationsEnabled))
+                                    .tint(.accentColor)
+
+                                if notificationSettings.notificationsEnabled {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        Toggle("Builders", isOn: notificationBindingLocal(\.builderNotificationsEnabled))
+                                        Toggle("Laboratory", isOn: notificationBindingLocal(\.labNotificationsEnabled))
+                                        Toggle("Pet House", isOn: notificationBindingLocal(\.petNotificationsEnabled))
+                                        Toggle("Builder Base", isOn: notificationBindingLocal(\.builderBaseNotificationsEnabled))
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundColor(.secondary)
+                                } else {
+                                    Text("Allow alerts to be reminded when an upgrade finishes.")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+
+                                Text("Notification preferences are saved per profile.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
                     }
                 }
                 .padding(20)
@@ -3330,7 +3471,8 @@ private struct ProfileSetupPane: View {
             labAssistantLevel: labAssistantLevel,
             alchemistLevel: alchemistLevel,
             goldPassBoost: goldPassBoost,
-            rawJSON: pendingImportRawJSON
+            rawJSON: pendingImportRawJSON,
+            notificationSettings: notificationSettings
         )
         onSubmit(submission)
     }
@@ -3338,11 +3480,24 @@ private struct ProfileSetupPane: View {
     private func seedSettingsIfNeeded() {
         guard !didSeedSettings else { return }
         didSeedSettings = true
-        builderCount = dataService.builderCount
-        builderApprenticeLevel = dataService.builderApprenticeLevel
-        labAssistantLevel = dataService.labAssistantLevel
-        alchemistLevel = dataService.alchemistLevel
-        goldPassBoost = dataService.goldPassBoost
+        if seedFromExistingProfile {
+            // Seed values from currently selected profile (existing behavior)
+            builderCount = dataService.builderCount
+            builderApprenticeLevel = dataService.builderApprenticeLevel
+            labAssistantLevel = dataService.labAssistantLevel
+            alchemistLevel = dataService.alchemistLevel
+            goldPassBoost = dataService.goldPassBoost
+            notificationSettings = dataService.notificationSettings
+        } else {
+            // Start fresh for a new profile — do not copy values from the last
+            // profile the user edited/created.
+            builderCount = 5
+            builderApprenticeLevel = 0
+            labAssistantLevel = 0
+            alchemistLevel = 0
+            goldPassBoost = 0
+            notificationSettings = .default
+        }
         clampBuilderCount()
         clampHelperLevels()
     }
@@ -3486,10 +3641,10 @@ private struct AddProfileSheet: View {
             subtitle: "Paste your exported village JSON to auto-fill timers and helper levels.",
             submitTitle: "Continue",
             showCancel: true,
-            onCancel: { dismiss() }
-        ) { submission in
-            saveProfile(submission)
-        }
+            onCancel: { dismiss() },
+            onSubmit: { submission in saveProfile(submission) },
+            seedFromExistingProfile: false
+        )
         .alert("Profile already exists", isPresented: $showDuplicateTagAlert) {
             Button("OK", role: .cancel) {}
         } message: {
@@ -3558,8 +3713,12 @@ private struct AddProfileSheet: View {
             labAssistantLevel: submission.labAssistantLevel,
             alchemistLevel: submission.alchemistLevel,
             goldPassBoost: submission.goldPassBoost,
-            goldPassReminderEnabled: submission.goldPassBoost > 0
+            goldPassReminderEnabled: submission.goldPassBoost > 0,
+            notificationSettings: submission.notificationSettings
         )
+
+        // Ensure the runtime `notificationSettings` is updated for the selected profile
+        dataService.notificationSettings = submission.notificationSettings
 
         if let rawJSON = submission.rawJSON {
             dataService.selectProfile(newProfileId)
@@ -3747,7 +3906,8 @@ private struct InitialSetupView: View {
             submitTitle: "Continue",
             showCancel: false,
             onCancel: nil,
-            onSubmit: onComplete
+            onSubmit: onComplete,
+            seedFromExistingProfile: true
         )
     }
 }

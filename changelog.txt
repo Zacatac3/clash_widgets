@@ -1,0 +1,15 @@
+1.0.1 - 
+*New Features*
+* Notification preferences now added to onboarding and new profile set-up
+
+*Fixes and Imporvements*
+* fixed interstitial ads showing up immediately following IAP 
+* fixed "what's new" pop up appearing erroneously, now fixed to show up on second app boot and when new builds are published
+* fixed "what's new splash" displaying in user onboarding instead of the "welcome" page
+* changed icon for splash screen from (!) to (?) and set default page to "welcome"
+* Added Restore error message for no contents to restore
+* Added help section to onboarding
+* App no longer prompts for notifications immediately, waits for user to enable notifications
+
+*Known issues*
+- on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu

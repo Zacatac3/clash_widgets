@@ -62,11 +62,22 @@ final class IAPManager: ObservableObject {
 	}
 
 	func restorePurchases() async {
+		_ = await restorePurchasesAndReturnSuccess()
+	}
+
+	/// Restore purchases and return true if the entitlements indicate the ads-removed
+	/// product is now owned. This is helpful for UI flows that need a success flag.
+	func restorePurchasesAndReturnSuccess() async -> Bool {
 		do {
+			NSLog("🚀 [IAP] Starting restore (AppStore.sync)")
 			try await AppStore.sync()
 			await refreshPurchasedStatus()
+			NSLog("🚀 [IAP] Restore completed; adsRemoved=\(isAdsRemoved)")
+			return isAdsRemoved
 		} catch {
+			productsError = error.localizedDescription
 			NSLog("🚀 [IAP] Restore failed: \(error.localizedDescription)")
+			return false
 		}
 	}
 

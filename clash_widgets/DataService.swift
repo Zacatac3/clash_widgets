@@ -539,7 +539,8 @@ class DataService: ObservableObject {
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
         goldPassBoost: Int = 0,
-        goldPassReminderEnabled: Bool = false
+        goldPassReminderEnabled: Bool = false,
+        notificationSettings: NotificationSettings = .default
     ) -> UUID {
         if profiles.count >= 20 {
             return selectedProfileID ?? profiles.first?.id ?? UUID()
@@ -555,6 +556,7 @@ class DataService: ObservableObject {
         let profile = PlayerAccount(
             displayName: resolvedName,
             tag: normalizedTag,
+            notificationSettings: notificationSettings,
             builderCount: builderCount,
             builderApprenticeLevel: builderApprenticeLevel,
             labAssistantLevel: labAssistantLevel,
