@@ -1186,7 +1186,8 @@ private struct DashboardView: View {
     @available(iOS 26.0, *)
     @ToolbarContentBuilder
     private var dashboardToolbar: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarLeading) {
+        // Group left-side buttons together
+        ToolbarItemGroup(placement: .navigationBarLeading) {
             Button {
                 infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
                 showInfoSheet = true
@@ -1197,11 +1198,7 @@ private struct DashboardView: View {
                 Image(systemName: "exclamationmark.circle")
             }
             .accessibilityLabel("Show Help & What's New")
-        }
-
-        ToolbarSpacer()
-
-        ToolbarItem(placement: .navigationBarLeading) {
+            
             Button {
                 orderedSections = parseHomeSectionOrder()
                 showHomeOrderSheet = true
@@ -1210,7 +1207,11 @@ private struct DashboardView: View {
             }
             .accessibilityLabel("Reorder Home Cards")
         }
+        
+        // Spacer to separate button groups visually
+        ToolbarSpacer(placement: .navigationBarLeading)
 
+        // Import button - separate on right
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(action: pasteAndImport) {
                 Image(systemName: "plus")
@@ -1221,6 +1222,7 @@ private struct DashboardView: View {
 
     @ToolbarContentBuilder
     private var dashboardToolbarFallback: some ToolbarContent {
+        // What's New button - separate container on left
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
                 infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
@@ -1234,6 +1236,7 @@ private struct DashboardView: View {
             .accessibilityLabel("Show Help & What's New")
         }
 
+        // Reorder Home Cards button - separate container on left
         ToolbarItem(placement: .navigationBarLeading) {
             Button {
                 orderedSections = parseHomeSectionOrder()
@@ -1244,6 +1247,7 @@ private struct DashboardView: View {
             .accessibilityLabel("Reorder Home Cards")
         }
 
+        // Import button - separate on right
         ToolbarItem(placement: .navigationBarTrailing) {
             Button(action: pasteAndImport) {
                 Image(systemName: "plus")
@@ -2908,8 +2912,8 @@ private struct BannerAdPlaceholder: View {
     var body: some View {
         if !iapManager.isAdsRemoved {
             BannerAdView()
+                .frame(maxWidth: .infinity)
                 .frame(height: 50)
-                .padding(.vertical, 4)
         }
     }
 }
@@ -2923,7 +2927,6 @@ private struct ProfileSetupPane: View {
     let showCancel: Bool
     let onCancel: (() -> Void)?
     let onSubmit: (ProfileSetupSubmission) -> Void
-    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
 
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
