@@ -1,8 +1,10 @@
-1.0 -
+1.0 - 1/22/2026
 *New Features*
 - Release build
 
 1.0.1 - 
+Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs and improving new user Experience
+
 *New Features*
 * Notification preferences now added to onboarding and new profile set-up
 
@@ -21,3 +23,24 @@
 - on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
 * haptics are too strong when adjusting sliders
 *Widgets, when tinted or clear, have assets messed up
+
+1.0.2 - 
+Hotfix planned for after launch and collecting user feedback
+
+1.1 -
+First major feature release planned
+
+*New Features*
+* Lock Screen widget + control
+* Shortcuts integration 
+* Potions Snacks and other boosts
+* Widget customization / themes
+* War stats widget (?)
+* Ability to set notifications to pre-notify in advance of upgrade completion
+
+1.2 (and beyond) - 
+
+*New Features*
+* Set up icloud sync for widgets / potential account management(?)
+* New more elegant UI for the home screen cards as well as widgets
+* Server hosting of assets and upgrade data to push info/asset updates without new app version
