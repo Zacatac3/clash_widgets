@@ -2,7 +2,7 @@ import Foundation
 
 struct PersistentStore {
     static let appGroupIdentifier = "group.Zachary-Buschmann.clash-widgets"
-    private static let directoryName = "ClashDashData"
+    private static let directoryName = "ClashboardData"
     private static let fileName = "app_state.json"
 
     struct AppState: Codable {
@@ -65,7 +65,7 @@ struct PersistentStore {
             if let tag = currentProfile?.tag, !tag.isEmpty {
                 return "#\(tag)"
             }
-            return "ClashDash"
+            return "Clashboard"
         }
     }
 

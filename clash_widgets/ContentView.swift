@@ -1,4 +1,7 @@
 import SwiftUI
+import GoogleMobileAds
+import Combine
+import StoreKit
 #if canImport(UIKit)
 import UIKit
 #if canImport(UIImageColors)
@@ -37,15 +40,20 @@ private func clipboardTextFromPasteboard() -> String? {
 #endif
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject var iapManager: IAPManager
     @StateObject private var dataService: DataService
     @State private var selectedTab: Tab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("hasPromptedNotificationPermission") private var hasPromptedNotificationPermission = false
     @AppStorage("lastGoldPassResetApplied") private var lastGoldPassResetApplied: Double = 0
     @AppStorage("lastGoldPassResetPrompt") private var lastGoldPassResetPrompt: Double = 0
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     @State private var showInitialSetup = false
     @State private var initialSetupTag: String = ""
     @State private var showGoldPassResetPrompt = false
+    @StateObject private var interstitialManager = InterstitialAdManager()
+    @State private var hasShownLaunchAd = false
+    @State private var isAttemptingLaunchAd = false
 
     init() {
         let apiKey = Self.apiKey()
@@ -91,6 +99,7 @@ struct ContentView: View {
             dataService.pruneCompletedUpgrades()
             requestNotificationsIfNeeded()
             handleGoldPassResetIfNeeded()
+            presentLaunchInterstitialIfNeeded()
         }
         .monitorScenePhase(scenePhase) { phase in
             switch phase {
@@ -98,11 +107,15 @@ struct ContentView: View {
                 dataService.pruneCompletedUpgrades()
                 if phase == .active {
                     handleGoldPassResetIfNeeded()
+                    presentLaunchInterstitialIfNeeded()
+                } else {
+                    hasShownLaunchAd = false
                 }
             default:
                 break
             }
         }
+        
         .onAppear {
             initialSetupTag = dataService.playerTag
             showInitialSetup = !hasCompletedInitialSetup
@@ -121,6 +134,40 @@ struct ContentView: View {
             }
             .environmentObject(dataService)
             .interactiveDismissDisabled(true)
+        }
+    }
+
+    private func presentLaunchInterstitialIfNeeded() {
+        guard adsPreference == .fullScreen else { return }
+        guard !iapManager.isAdsRemoved else { return }
+        guard !hasShownLaunchAd, !isAttemptingLaunchAd else { return }
+
+        isAttemptingLaunchAd = true
+        interstitialManager.load()
+        attemptPresentLaunchAd(retries: 20)
+    }
+
+    private func attemptPresentLaunchAd(retries: Int) {
+        guard retries > 0 else {
+            hasShownLaunchAd = true
+            isAttemptingLaunchAd = false
+            return
+        }
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
+            if interstitialManager.isReady,
+               let root = UIApplication.shared.connectedScenes
+                    .compactMap({ $0 as? UIWindowScene })
+                    .flatMap({ $0.windows })
+                    .first(where: { $0.isKeyWindow })?.rootViewController {
+                interstitialManager.present(from: root) {
+                    hasShownLaunchAd = true
+                    isAttemptingLaunchAd = false
+                    interstitialManager.load()
+                }
+            } else {
+                attemptPresentLaunchAd(retries: retries - 1)
+            }
         }
     }
 
@@ -205,6 +252,22 @@ private struct WhatsNewItem: Identifiable {
     let detail: String
 }
 
+private enum AdsPreference: String, CaseIterable, Identifiable {
+    case fullScreen
+    case banner
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .fullScreen:
+            return "Full Screen"
+        case .banner:
+            return "Banner"
+        }
+    }
+}
+
 private enum InfoSheetPage: String, CaseIterable, Identifiable {
     case welcome = "Welcome"
     case whatsNew = "What’s New"
@@ -213,11 +276,73 @@ private enum InfoSheetPage: String, CaseIterable, Identifiable {
 }
 
 private func defaultWhatsNewItems() -> [WhatsNewItem] {
-    [
-        .init(title: "Progress Dashboard", detail: "Track Town Hall completion with weighted totals."),
-        .init(title: "Equipment Filters", detail: "Equipment now respects hero unlock levels."),
-        .init(title: "Gold Pass Timing", detail: "Timers and progress bars reflect Gold Pass boosts.")
-    ]
+    loadWhatsNewItems()
+}
+
+private func loadWhatsNewItems() -> [WhatsNewItem] {
+    // Try to load a `features.txt` from the app bundle first. If not present,
+    // fall back to the repository copy embedded below.
+    if let url = Bundle.main.url(forResource: "features", withExtension: "txt"),
+       let data = try? Data(contentsOf: url),
+       let text = String(data: data, encoding: .utf8) {
+        return parseFeaturesText(text)
+    }
+
+    let fallback = """
+    Features of the app:
+    - Upgrade tracking via JSON export, done with one button press
+    - Home Screen Widgets for builders, Lab/pets, and builder base as well as helpers cooldowns
+    - Multiple profile support
+    - Notification Support (Profile specific)
+    - API Sync for enhanced profile information
+    - Rich equipment tracking with upgrade costs and totals to max, adapts to custom filters
+    - Gold Pass Support, as well as monthly reminder to set gold pass boost
+    - customizability, rearrange the home tab to your needs
+    - Fededback form for reporting bugs and glitches, as well as for requesting features
+    """
+
+    return parseFeaturesText(fallback)
+}
+
+private func parseFeaturesText(_ text: String) -> [WhatsNewItem] {
+    var items: [WhatsNewItem] = []
+
+    // First box: keep a friendly note about the first build
+    items.append(.init(title: "Welcome — First Build", detail: "Thanks for trying the first build of Clashboard. Quickly track upgrades and export profile JSON with a single tap."))
+
+    let lines = text.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }
+    for line in lines {
+        guard line.hasPrefix("-") else { continue }
+        let entry = line.dropFirst().trimmingCharacters(in: .whitespacesAndNewlines)
+        let lower = entry.lowercased()
+
+        let item: WhatsNewItem
+        if lower.contains("upgrade") {
+            item = .init(title: "Upgrade Tracking", detail: "Track upgrades and export progress as JSON with a single action.")
+        } else if lower.contains("widget") || lower.contains("home screen") {
+            item = .init(title: "Home Screen Widgets", detail: "Widgets for builders, lab/pets, builder base, and helper cooldowns keep info at a glance.")
+        } else if lower.contains("multiple profile") || lower.contains("profiles") {
+            item = .init(title: "Multiple Profiles", detail: "Manage and switch between multiple player profiles effortlessly.")
+        } else if lower.contains("notification") {
+            item = .init(title: "Profile Notifications", detail: "Profile-specific notifications let you know when upgrades complete.")
+        } else if lower.contains("api sync") || lower.contains("api") {
+            item = .init(title: "API Sync", detail: "Sync with the API for richer, up-to-date profile data.")
+        } else if lower.contains("equipment") {
+            item = .init(title: "Equipment Tracking", detail: "Track equipment upgrades, costs, and totals, adapted to your filters.")
+        } else if lower.contains("gold pass") {
+            item = .init(title: "Gold Pass Support", detail: "Set Gold Pass boosts per profile and receive monthly reminders.")
+        } else if lower.contains("customiz") || lower.contains("rearrange") {
+            item = .init(title: "Customizable Home", detail: "Rearrange the home tab to match your workflow and preferences.")
+        } else if lower.contains("feedback") || lower.contains("fedeback") {
+            item = .init(title: "Feedback", detail: "Send bug reports or feature requests through the in-app feedback form.")
+        } else {
+            item = .init(title: String(entry.prefix(40)), detail: entry)
+        }
+
+        items.append(item)
+    }
+
+    return items
 }
 
 private struct InfoSheetView: View {
@@ -859,10 +984,11 @@ private struct TownHallPaletteView: View {
 private struct DashboardView: View {
     @EnvironmentObject private var dataService: DataService
     @State private var importStatus: String?
-    @AppStorage("hasSeenClashDashOnboarding") private var hasSeenOnboarding = false
+    @AppStorage("hasSeenClashboardOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
     @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
     @State private var showHomeOrderSheet = false
@@ -870,97 +996,7 @@ private struct DashboardView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section("Selected Profile") {
-                    VStack(alignment: .leading, spacing: 10) {
-                        HStack(alignment: .top, spacing: 12) {
-                            TownHallBadgeView(level: displayedTownHallLevel)
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(activeProfileName)
-                                    .font(.headline)
-                                    .lineLimit(1)
-                                Text(currentTagText)
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                if let lastSync = dataService.currentProfile?.lastAPIFetchDate {
-                                    Text("Synced \(lastSync, style: .relative) ago")
-                                        .font(.caption2)
-                                        .foregroundColor(.secondary)
-                                }
-                            }
-                            Spacer(minLength: 12)
-                            Button(action: { dataService.refreshCurrentProfile(force: true) }) {
-                                if dataService.isRefreshingProfile {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                } else {
-                                    Label("Refresh", systemImage: "arrow.clockwise")
-                                        .labelStyle(.iconOnly)
-                                        .font(.title3)
-                                }
-                            }
-                            .buttonStyle(.borderless)
-                            .disabled(dataService.playerTag.isEmpty)
-                            .accessibilityLabel("Refresh Player Data")
-                        }
-
-                        if let lastDate = dataService.lastImportDate {
-                            Text("Village export updated \(lastDate, style: .relative) ago")
-                                .font(.caption2)
-                                .foregroundColor(.secondary)
-                        }
-
-                        if let status = importStatus {
-                            Text(status)
-                                .font(.caption2)
-                                .foregroundColor(.green)
-                        }
-
-                        if let error = dataService.refreshErrorMessage {
-                            Text(error)
-                                .font(.caption2)
-                                .foregroundColor(.red)
-                        }
-
-                        if dataService.profiles.count > 1 {
-                            profileSwitchMenu
-                                .padding(.top, 8)
-                        }
-                    }
-                    .padding(.vertical, 4)
-                }
-
-                if dataService.activeUpgrades.isEmpty {
-                    Section {
-                        Text("No active upgrades tracked. Paste your exported JSON to start tracking timers.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
-                }
-
-                ForEach(orderedSections, id: \.self) { section in
-                    sectionView(for: section)
-                }
-
-                if !dataService.activeUpgrades.isEmpty {
-                    Section {
-                        Button(role: .destructive) {
-                            dataService.clearData()
-                        } label: {
-                            Text("Clear All Tracking Data")
-                                .frame(maxWidth: .infinity, alignment: .center)
-                        }
-                    }
-                }
-
-                Section {
-                    Button("Reorder Home Cards") {
-                        orderedSections = parseHomeSectionOrder()
-                        showHomeOrderSheet = true
-                    }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                }
-            }
+            dashboardList
             .sheet(isPresented: $showInfoSheet) {
                 InfoSheetView(selectedPage: $infoSheetPage, items: defaultWhatsNewItems())
             }
@@ -983,26 +1019,12 @@ private struct DashboardView: View {
                 persistHomeSectionOrder(newValue)
             }
             .listStyle(.insetGrouped)
-            .navigationTitle("Upgrade Tracker")
+            .navigationTitle("Clashboard")
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
-                        showInfoSheet = true
-                        if infoSheetPage == .whatsNew {
-                            markWhatsNewSeen()
-                        }
-                    } label: {
-                        Image(systemName: "exclamationmark.circle")
-                    }
-                    .accessibilityLabel("Show Help & What's New")
-                }
-
-                ToolbarItemGroup(placement: .navigationBarTrailing) {
-                    Button(action: pasteAndImport) {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("Import Village Data")
+                if #available(iOS 26.0, *) {
+                    dashboardToolbar
+                } else {
+                    dashboardToolbarFallback
                 }
             }
             .overlay(alignment: .bottom) {
@@ -1021,6 +1043,102 @@ private struct DashboardView: View {
                 }
             }
         }
+    }
+
+    private var dashboardList: some View {
+        List {
+            Section("Selected Profile") {
+                selectedProfileSection
+            }
+
+            if adsPreference == .banner {
+                Section {
+                    BannerAdPlaceholder()
+                }
+            }
+
+            if dataService.activeUpgrades.isEmpty {
+                Section {
+                    Text("No active upgrades tracked. Paste your exported JSON to start tracking timers.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+
+            ForEach(orderedSections, id: \.self) { section in
+                sectionView(for: section)
+            }
+
+            if !dataService.activeUpgrades.isEmpty {
+                Section {
+                    Button(role: .destructive) {
+                        dataService.clearData()
+                    } label: {
+                        Text("Clear All Tracking Data")
+                            .frame(maxWidth: .infinity, alignment: .center)
+                    }
+                }
+            }
+        }
+    }
+
+    private var selectedProfileSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                TownHallBadgeView(level: displayedTownHallLevel)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(activeProfileName)
+                        .font(.headline)
+                        .lineLimit(1)
+                    Text(currentTagText)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    if let lastSync = dataService.currentProfile?.lastAPIFetchDate {
+                        Text("Synced \(lastSync, style: .relative) ago")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                Spacer(minLength: 12)
+                Button(action: { dataService.refreshCurrentProfile(force: true) }) {
+                    if dataService.isRefreshingProfile {
+                        ProgressView()
+                            .progressViewStyle(.circular)
+                    } else {
+                        Label("Refresh", systemImage: "arrow.clockwise")
+                            .labelStyle(.iconOnly)
+                            .font(.title3)
+                    }
+                }
+                .buttonStyle(.borderless)
+                .disabled(dataService.playerTag.isEmpty)
+                .accessibilityLabel("Refresh Player Data")
+            }
+
+            if let lastDate = dataService.lastImportDate {
+                Text("Village export updated \(lastDate, style: .relative) ago")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+
+            if let status = importStatus {
+                Text(status)
+                    .font(.caption2)
+                    .foregroundColor(.green)
+            }
+
+            if let error = dataService.refreshErrorMessage {
+                Text(error)
+                    .font(.caption2)
+                    .foregroundColor(.red)
+            }
+
+            if dataService.profiles.count > 1 {
+                profileSwitchMenu
+                    .padding(.top, 8)
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     private enum HomeSection: String, CaseIterable, Identifiable {
@@ -1062,6 +1180,75 @@ private struct DashboardView: View {
             if hours > 0 { return "\(hours)h \(minutes)m" }
             if minutes > 0 { return "\(minutes)m \(seconds)s" }
             return "\(seconds)s"
+        }
+    }
+
+    @available(iOS 26.0, *)
+    @ToolbarContentBuilder
+    private var dashboardToolbar: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
+                showInfoSheet = true
+                if infoSheetPage == .whatsNew {
+                    markWhatsNewSeen()
+                }
+            } label: {
+                Image(systemName: "exclamationmark.circle")
+            }
+            .accessibilityLabel("Show Help & What's New")
+        }
+
+        ToolbarSpacer()
+
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                orderedSections = parseHomeSectionOrder()
+                showHomeOrderSheet = true
+            } label: {
+                Image(systemName: "arrow.up.and.down.circle")
+            }
+            .accessibilityLabel("Reorder Home Cards")
+        }
+
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button(action: pasteAndImport) {
+                Image(systemName: "plus")
+            }
+            .accessibilityLabel("Import Village Data")
+        }
+    }
+
+    @ToolbarContentBuilder
+    private var dashboardToolbarFallback: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                infoSheetPage = shouldShowWhatsNew ? .whatsNew : .welcome
+                showInfoSheet = true
+                if infoSheetPage == .whatsNew {
+                    markWhatsNewSeen()
+                }
+            } label: {
+                Image(systemName: "exclamationmark.circle")
+            }
+            .accessibilityLabel("Show Help & What's New")
+        }
+
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                orderedSections = parseHomeSectionOrder()
+                showHomeOrderSheet = true
+            } label: {
+                Image(systemName: "arrow.up.and.down.circle")
+            }
+            .accessibilityLabel("Reorder Home Cards")
+        }
+
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button(action: pasteAndImport) {
+                Image(systemName: "plus")
+            }
+            .accessibilityLabel("Import Village Data")
         }
     }
 
@@ -1159,7 +1346,7 @@ private struct DashboardView: View {
         let cooldownSeconds = helperCooldowns.map { $0.cooldownSeconds }.max() ?? 0
         let totalSeconds = 23 * 60 * 60
         let remaining = max(min(cooldownSeconds, totalSeconds), 0)
-        let progress = totalSeconds == 0 ? 1.0 : max(0, min(1, 1 - (Double(remaining) / Double(totalSeconds))))
+        let progress = max(0, min(1, 1 - (Double(remaining) / Double(totalSeconds))))
 
         return HStack(spacing: 12) {
             VStack {
@@ -1247,13 +1434,11 @@ private struct DashboardView: View {
                         order.move(fromOffsets: offsets, toOffset: destination)
                     }
                 }
+                .environment(\.editMode, .constant(.active))
                 .navigationTitle("Reorder Home Cards")
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") { dismiss() }
-                    }
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        EditButton()
                     }
                 }
             }
@@ -1406,6 +1591,7 @@ private struct ProfileDetailView: View {
     @EnvironmentObject private var dataService: DataService
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
     @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     #if canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
@@ -1425,6 +1611,15 @@ private struct ProfileDetailView: View {
                 } else {
                     VStack(spacing: 20) {
                         profileSummaryCard
+                        if adsPreference == .banner {
+                            VStack {
+                                BannerAdPlaceholder()
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemGroupedBackground)))
+                            .shadow(color: .black.opacity(0.03), radius: 1, x: 0, y: 1)
+                        }
                         profileSettingsCard
                         heroShowcase
                         achievementsSection
@@ -1720,7 +1915,15 @@ private struct ProfileDetailView: View {
                                 .resizable()
                                 .scaledToFit()
                                 .frame(width: 36, height: 36)
-                            Text(profileGoldPassTitle)
+                            HStack(spacing: 6) {
+                                Text(profileGoldPassTitle)
+                                    .font(.body)
+                                TimelineView(.periodic(from: .now, by: 60.0)) { timelineContext in
+                                    Text(timeUntilGoldPassReset(from: timelineContext.date))
+                                        .font(.callout)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
                             Spacer()
                             Text(profileGoldPassBoostLabel)
                                 .font(.subheadline)
@@ -1752,6 +1955,7 @@ private struct ProfileDetailView: View {
                                 .foregroundColor(.secondary)
                         }
                     }
+
                 }
             }
         }
@@ -2050,6 +2254,47 @@ private struct ProfileDetailView: View {
         default: return 0
         }
     }
+
+    private func timeUntilGoldPassReset(from date: Date) -> String {
+        let resetDate = nextGoldPassResetDate(for: date)
+        let diff = Int(resetDate.timeIntervalSince(date))
+        
+        if diff <= 0 { return "Resetting..." }
+        
+        let days = diff / 86400
+        let hours = (diff % 86400) / 3600
+        let minutes = (diff % 3600) / 60
+        let seconds = diff % 60
+        
+        if days > 0 {
+            return "\(days)d \(hours)h"
+        } else if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else {
+            return "\(minutes)m \(seconds)s"
+        }
+    }
+
+    private func nextGoldPassResetDate(for date: Date) -> Date {
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = TimeZone(secondsFromGMT: 0) ?? .gmt
+        let components = calendar.dateComponents([.year, .month], from: date)
+
+        var resetComponents = DateComponents()
+        resetComponents.year = components.year
+        resetComponents.month = components.month
+        resetComponents.day = 1
+        resetComponents.hour = 8
+        resetComponents.minute = 0
+        resetComponents.second = 0
+
+        let resetThisMonth = calendar.date(from: resetComponents) ?? date
+        if date < resetThisMonth {
+            return resetThisMonth
+        } else {
+            return calendar.date(byAdding: .month, value: 1, to: resetThisMonth) ?? resetThisMonth
+        }
+    }
 }
 
 private struct StatGrid: View {
@@ -2173,12 +2418,15 @@ private enum AchievementFilter: String, CaseIterable, Identifiable {
 
 private struct SettingsView: View {
     @EnvironmentObject private var dataService: DataService
+    @EnvironmentObject var iapManager: IAPManager
     @State private var showAddProfile = false
     @State private var profileToEdit: PlayerAccount?
     @State private var showResetConfirmation = false
     @State private var showFeedbackForm = false
+    @State private var isPurchasing = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
 
     private var canCollapseProfiles: Bool {
         dataService.profiles.count >= 2
@@ -2190,7 +2438,9 @@ private struct SettingsView: View {
                 Section("Profiles") {
                     if canCollapseProfiles {
                         Button {
-                            profilesSectionExpanded.toggle()
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                profilesSectionExpanded.toggle()
+                            }
                         } label: {
                             HStack {
                                 Text(profilesSectionExpanded ? "Show current profile" : "Show all profiles")
@@ -2215,9 +2465,13 @@ private struct SettingsView: View {
                         return []
                     }()
 
-                    ForEach(profilesToShow) { profile in
-                        profileRow(profile)
+                    VStack(spacing: 0) {
+                        ForEach(profilesToShow) { profile in
+                            profileRow(profile)
+                                .transition(.opacity.combined(with: .move(edge: .top)))
+                        }
                     }
+                    .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
 
                     Button {
                         showAddProfile = true
@@ -2270,14 +2524,14 @@ private struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
 
-                Section("Clipboard") {
+                Section("Paste Settings") {
                     Button {
                         openAppSettings()
                     } label: {
                         Label("Open App Settings", systemImage: "gearshape")
                     }
 
-                    Text("To stop the paste prompt, go to Settings → Apps → ClashDash → Paste From Other Apps and set it to Allow.")
+                    Text("To stop the paste prompt, go to Settings → Apps → Clashboard → Paste From Other Apps and set it to Allow.")
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
@@ -2285,10 +2539,61 @@ private struct SettingsView: View {
                 Section("Gold Pass") {
                     Toggle("Monthly Gold Pass reminder", isOn: $dataService.goldPassReminderEnabled)
                         .tint(.accentColor)
-                    Text("At the season reset (08:00 UTC), ClashDash will ask you to confirm your Gold Pass boost for this profile unless this is disabled.")
+                    Text("At the season reset (08:00 UTC), Clashboard will ask you to confirm your Gold Pass boost for this profile unless this is disabled.")
                         .font(.caption)
                         .foregroundColor(.secondary)
 
+                }
+
+                Section("Ads") {
+                    if iapManager.isAdsRemoved {
+                        HStack {
+                            Image(systemName: "checkmark.seal.fill")
+                                .foregroundColor(.green)
+                            Text("Ad-Free Premium Active")
+                                .fontWeight(.medium)
+                        }
+                    } else {
+                        Picker("Ad Experience", selection: $adsPreference) {
+                            ForEach(AdsPreference.allCases) { preference in
+                                Text(preference.label).tag(preference)
+                            }
+                        }
+                        .pickerStyle(.segmented)
+
+                        Text("Choose between a single full-screen ad on launch or smaller banner ads inside the app.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+
+                        Button {
+                            Task {
+                                isPurchasing = true
+                                _ = try? await iapManager.purchase()
+                                isPurchasing = false
+                            }
+                        } label: {
+                            HStack {
+                                Text("Unlock Ad-Free")
+                                Spacer()
+                                if isPurchasing {
+                                    ProgressView()
+                                } else {
+                                    Text(iapManager.products.first?.displayPrice ?? "$2.99")
+                                        .bold()
+                                }
+                            }
+                        }
+                        .disabled(isPurchasing)
+
+                        Button("Restore Purchases") {
+                            Task {
+                                await iapManager.restorePurchases()
+                            }
+                        }
+                        .font(.caption)
+                    }
+
+                    
                 }
 
                 Section("Maintenance") {
@@ -2313,6 +2618,7 @@ private struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
             }
+            .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
             .navigationTitle("Settings")
             .sheet(isPresented: $showAddProfile) {
                 AddProfileSheet()
@@ -2333,7 +2639,7 @@ private struct SettingsView: View {
                         .padding()
                 }
             }
-            .alert("Reset ClashDash?", isPresented: $showResetConfirmation) {
+            .alert("Reset Clashboard?", isPresented: $showResetConfirmation) {
                 Button("Cancel", role: .cancel) {}
                 Button("Reset", role: .destructive) {
                     hasCompletedInitialSetup = false
@@ -2414,10 +2720,26 @@ private struct SettingsView: View {
                     }
                 }
                 Spacer()
-                Button("Edit") {
-                    profileToEdit = profile
+                
+                Menu {
+                    Button {
+                        profileToEdit = profile
+                    } label: {
+                        Label("Edit Profile", systemImage: "pencil")
+                    }
+
+                    Button(role: .destructive) {
+                        dataService.deleteProfile(profile.id)
+                    } label: {
+                        Label("Delete Profile", systemImage: "trash")
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.title3)
+                        .foregroundColor(.primary)
                 }
                 .buttonStyle(.borderless)
+                
                 if isCurrent {
                     Image(systemName: "checkmark.circle.fill")
                         .foregroundColor(.accentColor)
@@ -2441,6 +2763,19 @@ private struct SettingsView: View {
         .onTapGesture {
             if !isCurrent {
                 dataService.selectProfile(profile.id)
+            }
+        }
+        .contextMenu {
+            Button {
+                profileToEdit = profile
+            } label: {
+                Label("Edit Profile", systemImage: "pencil")
+            }
+
+            Button(role: .destructive) {
+                dataService.deleteProfile(profile.id)
+            } label: {
+                Label("Delete Profile", systemImage: "trash")
             }
         }
         .swipeActions(edge: .trailing, allowsFullSwipe: true) {
@@ -2481,6 +2816,104 @@ private struct ProfileSetupSubmission {
     let rawJSON: String?
 }
 
+// Simple SwiftUI wrapper for a GAD banner view.
+struct BannerAdView: UIViewRepresentable {
+    var adUnitID: String = "ca-app-pub-4499177240533852/7133262169"
+
+    func makeUIView(context: Context) -> BannerView {
+        let banner = BannerView(adSize: AdSizeBanner)
+        banner.adUnitID = adUnitID
+        banner.delegate = context.coordinator
+        let rootVC = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap { $0.windows }
+            .first { $0.isKeyWindow }?.rootViewController
+        banner.rootViewController = rootVC
+        banner.load(Request())
+
+        return banner
+    }
+
+    func updateUIView(_ uiView: BannerView, context: Context) {}
+
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+
+    class Coordinator: NSObject, BannerViewDelegate {
+        func bannerViewDidReceiveAd(_ bannerView: BannerView) {
+            NSLog("🚀 [ADMOB_DEBUG] Banner Loaded Successfully ✅")
+        }
+
+        func bannerView(_ bannerView: BannerView, didFailToReceiveAdWithError error: Error) {
+            NSLog("🚀 [ADMOB_DEBUG] Banner Failed: \(error.localizedDescription) ❌")
+        }
+    }
+}
+
+// Small in-app debug reporter for ad behavior
+
+
+final class InterstitialAdManager: NSObject, ObservableObject {
+    private var interstitial: InterstitialAd?
+    @Published var isReady = false
+    private var onDismiss: (() -> Void)?
+
+    // LOAD PRODUCTION INTERSTITIAL
+    func load(adUnitID: String? = nil) {
+        let chosenID = adUnitID ?? "ca-app-pub-4499177240533852/2764621791"
+
+        let request = Request()
+        InterstitialAd.load(with: chosenID, request: request, completionHandler: { [weak self] ad, error in
+            if let ad = ad {
+                NSLog("🚀 [ADMOB_DEBUG] Interstitial Loaded Successfully ✅")
+                self?.interstitial = ad
+                self?.isReady = true
+            } else {
+                NSLog("🚀 [ADMOB_DEBUG] Interstitial Failed: \(error?.localizedDescription ?? "Unknown error") ❌")
+                self?.isReady = false
+            }
+        }
+        )
+    }
+
+    func present(from root: UIViewController, onDismiss: @escaping () -> Void) {
+        guard let interstitial = interstitial else {
+            onDismiss()
+            return
+        }
+        self.onDismiss = onDismiss
+        interstitial.fullScreenContentDelegate = self
+        interstitial.present(from: root)
+    }
+}
+
+extension InterstitialAdManager: FullScreenContentDelegate {
+    func adDidDismissFullScreenContent(_ ad: FullScreenPresentingAd) {
+        onDismiss?()
+        isReady = false
+        interstitial = nil
+    }
+
+    func ad(_ ad: FullScreenPresentingAd, didFailToPresentFullScreenContentWithError error: Error) {
+        onDismiss?()
+        isReady = false
+        interstitial = nil
+    }
+}
+
+private struct BannerAdPlaceholder: View {
+    @EnvironmentObject var iapManager: IAPManager
+    
+    var body: some View {
+        if !iapManager.isAdsRemoved {
+            BannerAdView()
+                .frame(height: 50)
+                .padding(.vertical, 4)
+        }
+    }
+}
+
 private struct ProfileSetupPane: View {
     @EnvironmentObject private var dataService: DataService
     @Binding var playerTag: String
@@ -2490,6 +2923,7 @@ private struct ProfileSetupPane: View {
     let showCancel: Bool
     let onCancel: (() -> Void)?
     let onSubmit: (ProfileSetupSubmission) -> Void
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
 
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
@@ -2678,6 +3112,8 @@ private struct ProfileSetupPane: View {
                         .foregroundColor(.secondary)
                 }
             }
+
+                
 
             if townHallLevel >= 7 {
                 VStack(alignment: .leading, spacing: 6) {
@@ -3070,7 +3506,7 @@ private struct HelpSheetView: View {
     var body: some View {
         NavigationStack {
             HelpSheetContent()
-            .navigationTitle("Welcome to ClashDash")
+            .navigationTitle("Welcome to Clashboard")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -3085,35 +3521,37 @@ private struct HelpSheetContent: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: 24) {
-                Text("Welcome to ClashDash")
+                Text("Welcome to Clashboard")
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to populate your active upgrade timers and profile data.")
+                helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to get started.")
 
                 helpCard(title: "IMPORTANT NOTE ⚠️", bullets: [
-                    "This app is currently still in early development",
-                    "most things related to builder base are either missing or incomplete, this is low on the current priority list",
-                    "Some things may work unexpectedly, please report it via the feedback form in Settings"
+                    "This app is currently still in development",
+                    "Bear with me for these initial releases, as some things will likely be broken or missing",
+                    "If anything unexpected happens, please report it via the feedback form in Settings"
                 ])
 
                 helpCard(title: "Importing Data", bullets: [
                     "Copy the exported JSON from Clash of Clans",
                     "Tap the + button on the Home tab",
-                    "Choose Paste & Import to sync timers"
+                    "Choose Paste & Import to sync timers and helper levels",
+                    "Profile Settings can be adjusted after import"
                 ])
 
                 helpCard(title: "Managing Profiles", bullets: [
-                    "Tap the switch icon next to your profile name to change players",
+                    "Tap the switch icon next to your profile name to change players, or use the profile menu in Settings",
                     "Tap Edit within Settings to rename or update tags",
                     "Swipe left on a profile row in Settings to delete"
                 ])
 
                 helpCard(title: "Widgets", bullets: [
-                    "Add ClashDash widgets from the iOS Home Screen",
+                    "Add Clashboard widgets from the iOS Home Screen",
                     "Widgets read the latest data each time you import",
-                    "Open the app after timers finish so widgets stay fresh"
+                    "Open the app after timers finish to import updated data"
                 ])
+                helpCard(title: "Disable Allow Paste Popup", description: "To stop the paste prompt, go to  Settings → Apps → Clashboard → Paste From Other Apps and set it to Allow.")
             }
             .padding()
         }
@@ -3199,6 +3637,7 @@ private struct EquipmentView: View {
     @State private var rarityFilter: EquipmentRarityFilter = .all
     @State private var selectedHeroFilter: String = EquipmentView.allHeroesLabel
     @State private var showLocked = true
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
 
     private static let allHeroesLabel = "All Heroes"
     private static let oreCostTable = OreCostTable.shared
@@ -3214,6 +3653,11 @@ private struct EquipmentView: View {
                 } else {
                     summarySection
                     filtersSection
+                    if adsPreference == .banner {
+                        Section {
+                            BannerAdPlaceholder()
+                        }
+                    }
                     equipmentSection
                 }
             }

@@ -1,6 +1,6 @@
-## ClashDash Widgets
+## Clashboard Widgets
 
-ClashDash is an iOS app with a WidgetKit extension that tracks Clash of Clans upgrade timers and builder/lab/pet house availability at a glance.
+Clashboard is an iOS app with a WidgetKit extension that tracks Clash of Clans upgrade timers and builder/lab/pet house availability at a glance.
 
 ### Features
 - Multi-profile support (store multiple player tags and switch between them).
@@ -22,7 +22,7 @@ ClashDash is an iOS app with a WidgetKit extension that tracks Clash of Clans up
 
 ### App + Widget Architecture
 - App target: `clash_widgets` (SwiftUI UI, data management, settings).
-- Widget target: `ClashDashWidget` (WidgetKit timeline + rendering).
+- Widget target: `ClashboardWidget` (WidgetKit timeline + rendering).
 - Shared storage: App Group `group.Zachary-Buschmann.clash-widgets`.
 
 ### Key Files
@@ -43,7 +43,7 @@ The app stores profiles, upgrades, and preferences to an app group container so 
 1. Open the folder [clash_widgets.xcodeproj](clash_widgets.xcodeproj) in Xcode (the rest is not needed for building the app).
 2. Select a simulator running iOS 17+, or your personal device within xcode.
 3. Build the app target and widget target.
-4. Add the “ClashDash” widget to your Home Screen to view builder timers.
+4. Add the “Clashboard” widget to your Home Screen to view builder timers.
 
 ### API Key Note
 The app currently initializes the `DataService` with a hard-coded API key in [clash_widgets/ContentView.swift](clash_widgets/ContentView.swift). This key is being used through royale API and their proxy.

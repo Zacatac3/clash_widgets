@@ -13,6 +13,7 @@
 		8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
 		88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3A2F1F522C00B855B8 /* ColorKit */; };
 		88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 88C67E3D2F1F551500B855B8 /* UIImageColors */; };
+		88F5A1972F22BE830022FB69 /* GoogleMobileAds in Frameworks */ = {isa = PBXBuildFile; productRef = 88F5A1962F22BE830022FB69 /* GoogleMobileAds */; };
 		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
 		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
 		A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */; };
@@ -35,6 +36,7 @@
 		E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */; };
 		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
+		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -68,6 +70,7 @@
 		8879EAD92F0F5C5700FAE5F1 /* ClashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashWidgetExtension.entitlements; sourceTree = "<group>"; };
 		8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashDashWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashDashWidgetExtension.entitlements; sourceTree = "<group>"; };
+		88F5A1982F22C4DC0022FB69 /* clash-widgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "clash-widgets-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
 		A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BuilderRow.swift; sourceTree = "<group>"; };
 		A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -89,6 +92,7 @@
 		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
+		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,6 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				88F5A1972F22BE830022FB69 /* GoogleMobileAds in Frameworks */,
 				88C67E3E2F1F551500B855B8 /* UIImageColors in Frameworks */,
 				88C67E3B2F1F522C00B855B8 /* ColorKit in Frameworks */,
 			);
@@ -137,9 +142,11 @@
 		8879E7C62F0F3B4E00FAE5F1 /* clash_widgets */ = {
 			isa = PBXGroup;
 			children = (
+				88F5A1982F22C4DC0022FB69 /* clash-widgets-Info.plist */,
 				A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */,
 				A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */,
 				A1B2C3032F0F3B4E00FAE5F1 /* ContentView.swift */,
+				F1A2B3C4D5E6F70012345678 /* IAPManager.swift */,
 				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
 				F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */,
 				F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */,
@@ -199,6 +206,7 @@
 			packageProductDependencies = (
 				88C67E3A2F1F522C00B855B8 /* ColorKit */,
 				88C67E3D2F1F551500B855B8 /* UIImageColors */,
+				88F5A1962F22BE830022FB69 /* GoogleMobileAds */,
 			);
 			productName = clash_widgets;
 			productReference = 8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */;
@@ -253,6 +261,7 @@
 			packageReferences = (
 				88C67E392F1F520A00B855B8 /* XCRemoteSwiftPackageReference "ColorKit" */,
 				88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */,
+				88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 8879E7C52F0F3B4E00FAE5F1 /* Products */;
@@ -305,6 +314,7 @@
 				C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */,
 				A1B2C4062F0F3B4E00FAE5F1 /* SecurityHelper.swift in Sources */,
 				A1B2C4072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift in Sources */,
+				F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,11 +428,15 @@
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "clash-widgets-Info.plist";
+				INFOPLIST_KEY_GADApplicationIdentifier = "ca-app-pub-4499177240533852~7645248117";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your advertising identifier to deliver relevant ads and measure ad performance. You can opt out in Settings > Privacy > Tracking.";
+				INFOPLIST_KEY_SKAdNetworkItems = "{\n    SKAdNetworkIdentifier = \"cstr6suwn9.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"2fnua5tdw4.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"ydx93a7ass.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"prcb7njmu6.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"v9wttpbfk9.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"n9x2a789qt.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"m8dbw4sv7c.skadnetwork\";\n}";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -451,11 +465,15 @@
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "clash-widgets-Info.plist";
+				INFOPLIST_KEY_GADApplicationIdentifier = "ca-app-pub-4499177240533852~7645248117";
+				INFOPLIST_KEY_NSUserTrackingUsageDescription = "We use your advertising identifier to deliver relevant ads and measure ad performance. You can opt out in Settings > Privacy > Tracking.";
+				INFOPLIST_KEY_SKAdNetworkItems = "{\n    SKAdNetworkIdentifier = \"cstr6suwn9.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"2fnua5tdw4.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"ydx93a7ass.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"prcb7njmu6.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"v9wttpbfk9.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"n9x2a789qt.skadnetwork\";\n} {\n    SKAdNetworkIdentifier = \"m8dbw4sv7c.skadnetwork\";\n}";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -506,7 +524,7 @@
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ClashDashWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = Clashboard;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -562,7 +580,7 @@
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = ClashDashWidget;
+				INFOPLIST_KEY_CFBundleDisplayName = Clashboard;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 26.2;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -633,6 +651,14 @@
 				minimumVersion = 2.2.0;
 			};
 		};
+		88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googleads/swift-package-manager-google-mobile-ads.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.14.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -645,6 +671,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 88C67E3C2F1F550200B855B8 /* XCRemoteSwiftPackageReference "UIImageColors" */;
 			productName = UIImageColors;
+		};
+		88F5A1962F22BE830022FB69 /* GoogleMobileAds */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 88F5A1952F22BE5C0022FB69 /* XCRemoteSwiftPackageReference "swift-package-manager-google-mobile-ads" */;
+			productName = GoogleMobileAds;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
