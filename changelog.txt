@@ -20,9 +20,10 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 *fixed app icon not tinting for dark clear and tinted modes 
 
 *Known issues*
-- on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
+* on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
 * haptics are too strong when adjusting sliders
 *Widgets, when tinted or clear, have assets messed up
+* helper timer does not increment
 
 1.0.2 - 
 Hotfix planned for after launch and collecting user feedback
