@@ -25,8 +25,13 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 *Widgets, when tinted or clear, have assets messed up
 * helper timer does not increment
 
+— Upcoming / Unreleased Updates —
+
 1.0.2 - 
 Hotfix planned for after launch and collecting user feedback
+
+*Fixes and Improvements*
+* Add "in progess" filter to achievements section
 
 1.1 -
 First major feature release planned
@@ -45,3 +50,4 @@ First major feature release planned
 * Set up icloud sync for widgets / potential account management(?)
 * New more elegant UI for the home screen cards as well as widgets
 * Server hosting of assets and upgrade data to push info/asset updates without new app version
+* add gem rewards to achievements and remaining helper costs in gems 
