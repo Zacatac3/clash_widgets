@@ -14,7 +14,7 @@
 		88738B5F2F240CE6006D4245 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B5E2F240CE6006D4245 /* ColorKit */; };
 		88738B612F240CEA006D4245 /* ColorKit in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B602F240CEA006D4245 /* ColorKit */; };
 		88738B642F240D2E006D4245 /* UIImageColors in Frameworks */ = {isa = PBXBuildFile; productRef = 88738B632F240D2E006D4245 /* UIImageColors */; };
-		8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		8879EAED2F0F5C9700FAE5F1 /* ClashboardWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 8879EADE2F0F5C9600FAE5F1 /* ClashboardWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8879EB512F0F713000FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */; };
 		A1B2C4012F0F3B4E00FAE5F1 /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */; };
 		A1B2C4022F0F3B4E00FAE5F1 /* BuilderRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3022F0F3B4E00FAE5F1 /* BuilderRow.swift */; };
@@ -68,7 +68,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				8879EAED2F0F5C9700FAE5F1 /* ClashDashWidgetExtension.appex in Embed Foundation Extensions */,
+				8879EAED2F0F5C9700FAE5F1 /* ClashboardWidget.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -78,10 +78,10 @@
 /* Begin PBXFileReference section */
 		882D5B292F233D6F00930280 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		882D5B2A2F233ECE00930280 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
-		8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = clash_widgets.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		8879E7C42F0F3B4E00FAE5F1 /* Clashboard.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Clashboard.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879E8012F0F45FA00FAE5F1 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		8879E8032F0F45FA00FAE5F1 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashDashWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		8879EADE2F0F5C9600FAE5F1 /* ClashboardWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = ClashboardWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		8879EAF22F0F5CA500FAE5F1 /* ClashDashWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ClashDashWidgetExtension.entitlements; sourceTree = "<group>"; };
 		88F5A1982F22C4DC0022FB69 /* clash-widgets-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "clash-widgets-Info.plist"; sourceTree = SOURCE_ROOT; };
 		A1B2C3012F0F3B4E00FAE5F1 /* APIClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIClient.swift; sourceTree = "<group>"; };
@@ -149,8 +149,8 @@
 		8879E7C52F0F3B4E00FAE5F1 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */,
-				8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */,
+				8879E7C42F0F3B4E00FAE5F1 /* Clashboard.app */,
+				8879EADE2F0F5C9600FAE5F1 /* ClashboardWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -225,7 +225,7 @@
 				88738B632F240D2E006D4245 /* UIImageColors */,
 			);
 			productName = clash_widgets;
-			productReference = 8879E7C42F0F3B4E00FAE5F1 /* clash_widgets.app */;
+			productReference = 8879E7C42F0F3B4E00FAE5F1 /* Clashboard.app */;
 			productType = "com.apple.product-type.application";
 		};
 		8879EADD2F0F5C9600FAE5F1 /* ClashDashWidgetExtension */ = {
@@ -247,7 +247,7 @@
 				88738B602F240CEA006D4245 /* ColorKit */,
 			);
 			productName = ClashDashWidgetExtension;
-			productReference = 8879EADE2F0F5C9600FAE5F1 /* ClashDashWidgetExtension.appex */;
+			productReference = 8879EADE2F0F5C9600FAE5F1 /* ClashboardWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
@@ -443,7 +443,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -456,13 +456,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -480,7 +481,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -493,13 +494,14 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
@@ -539,7 +541,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -554,7 +556,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
@@ -595,7 +597,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 5;
+				CURRENT_PROJECT_VERSION = 7;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -610,7 +612,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MARKETING_VERSION = 1.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;

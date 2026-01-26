@@ -2,6 +2,64 @@ import SwiftUI
 import UIKit
 import Foundation
 
+// In-file AssetResolver for app target (keeps resolver available to app code regardless of project file membership)
+final class AppAssetResolver {
+    static let shared = AppAssetResolver()
+    private var idMap: [Int: String] = [:]
+
+    private init() {
+        loadMaps()
+    }
+
+    private func loadMaps() {
+        let names = ["buildings_json_map", "seasonal_defense_modules_json_map", "seasonal_defense_archetypes_json_map", "spells_json_map", "pets_json_map", "heroes_json_map", "weapons_json_map"]
+        for name in names {
+            if let url = Bundle.main.url(forResource: name, withExtension: "json", subdirectory: "upgrade_info/json_maps"),
+               let data = try? Data(contentsOf: url),
+               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                for (_, v) in root {
+                    if let entry = v as? [String: Any], let id = entry["id"] as? Int, let internalName = entry["internalName"] as? String {
+                        idMap[id] = internalName
+                    }
+                }
+            }
+        }
+        // Load asset_map.json overrides if present in app group
+        if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets"),
+           let overridesData = try? Data(contentsOf: container.appendingPathComponent("asset_map.json")),
+           let dict = try? JSONDecoder().decode([String: String].self, from: overridesData) {
+            // populate overrides for quick lookup by sanitized key
+            for (k, v) in dict { idMap[Int.max - k.hashValue] = v }
+        }
+    }
+
+    func assetSlug(for name: String) -> String? {
+        // Fallback to reading asset_map.json in app group
+        if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets"),
+           let overridesData = try? Data(contentsOf: container.appendingPathComponent("asset_map.json")),
+           let dict = try? JSONDecoder().decode([String: String].self, from: overridesData) {
+            let key = Self.sanitize(name)
+            return dict[name] ?? dict[key]
+        }
+        return nil
+    }
+
+    func assetName(for upgrade: BuildingUpgrade) -> String {
+        if let dataId = upgrade.dataId, let internalName = idMap[dataId] {
+            return Self.sanitize(internalName)
+        }
+        return Self.sanitize(upgrade.name)
+    }
+
+    private static func sanitize(_ s: String) -> String {
+        return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined(separator: "_")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+            .lowercased()
+    }
+}
+
+
 struct BuilderRow: View {
     @EnvironmentObject private var dataService: DataService
     let upgrade: BuildingUpgrade
@@ -161,10 +219,6 @@ struct BuilderRow: View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        if let dataId = upgrade.dataId, String(dataId).hasPrefix("102") {
-            let craftedName = craftedDefenseAssetName(from: upgrade.name)
-            return "buildings_home/crafted_defenses/\(craftedName)"
-        }
         let folder: String
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
@@ -174,28 +228,29 @@ struct BuilderRow: View {
         case .builderBase: folder = "builder_base"
         }
 
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-        }
-
-        let nameLower = sanitize(upgrade.name.lowercased())
-        let nameOriginal = sanitize(upgrade.name)
-
+        // Use unified ID-based asset resolver for consistent asset loading
+        let assetName = AppAssetResolver.shared.assetName(for: upgrade)
+        
         var variations: [String] = []
-        if let override = AssetNameResolver.shared.assetSlug(for: upgrade.name) {
+        // First try with ID-resolved asset name
+        variations.append("\(folder)/\(assetName)")
+        
+        // Then try asset map override
+        if let override = AppAssetResolver.shared.assetSlug(for: upgrade.name) {
             variations.append("\(folder)/\(override)")
         }
 
-        // Try precise path and variants with different capitalization
+        // Then try direct asset name
+        variations.append(assetName)
+        
+        // Try variants with different capitalization
+        let nameOriginal = upgrade.name.components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined(separator: "_")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
         variations.append(contentsOf: [
             "\(folder)/\(nameOriginal)",
-            "\(folder)/\(nameLower)",
-            "\(folder)_\(nameOriginal)",
-            "\(folder)_\(nameLower)",
-            nameOriginal,
-            nameLower
+            "\(folder)/\(assetName)",
+            nameOriginal
         ])
 
         for variant in variations {
@@ -204,17 +259,7 @@ struct BuilderRow: View {
             }
         }
         
-        return "\(folder)/\(nameLower)" // Default fallback
-    }
-
-    private func craftedDefenseAssetName(from name: String) -> String {
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-        }
-
-        return sanitize(name.lowercased())
+        return "\(folder)/\(assetName)" // Default fallback
     }
 }
 

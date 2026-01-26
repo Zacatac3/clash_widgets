@@ -311,12 +311,30 @@ class DataService: ObservableObject {
         guard let data = rawJSON.data(using: .utf8) else { return [] }
         guard let export = try? JSONDecoder().decode(CoCExport.self, from: data) else { return [] }
         let helpers = export.helpers ?? []
+
+        // If the export includes a timestamp, compute absolute expiry dates so remaining time
+        // can be calculated relative to now and will continue to decrement after import.
+        let exportDate: Date
+        if let ts = export.timestamp {
+            exportDate = Date(timeIntervalSince1970: TimeInterval(ts))
+        } else {
+            exportDate = Date()
+        }
+
         return helpers.map { helper in
-            HelperCooldownEntry(
-                id: helper.data,
-                level: helper.lvl,
-                cooldownSeconds: max(helper.helperCooldown ?? 0, 0)
-            )
+            let rawSeconds = max(helper.helperCooldown ?? 0, 0)
+            let expiresAt = exportDate.addingTimeInterval(TimeInterval(rawSeconds))
+            let remaining = max(0, Int(expiresAt.timeIntervalSinceNow))
+            return HelperCooldownEntry(id: helper.data, level: helper.lvl, cooldownSeconds: remaining, expiresAt: expiresAt)
+        }
+    }
+
+    private func helperDisplayName(for id: Int) -> String {
+        switch id {
+        case 93000000: return "Builder's Apprentice"
+        case 93000001: return "Lab Assistant"
+        case 93000002: return "Alchemist"
+        default: return "Helper"
         }
     }
 
@@ -936,6 +954,34 @@ class DataService: ObservableObject {
             combined.append(contentsOf: filtered)
         }
         notificationManager.syncNotifications(for: combined)
+
+        // Also schedule helper notifications where applicable
+        scheduleHelperNotifications()
+    }
+
+    private func scheduleHelperNotifications() {
+        let now = Date()
+        var requests: [NotificationManager.HelperNotificationRequest] = []
+
+        for profile in profiles {
+            let settings = profile.notificationSettings
+            guard settings.notificationsEnabled && settings.helperNotificationsEnabled else { continue }
+            let raw = profile.rawJSON
+            guard !raw.isEmpty else { continue }
+
+            let helpers = helperCooldowns(from: raw)
+            for helper in helpers {
+                if let expires = helper.expiresAt, expires > now {
+                    let helperName = helperDisplayName(for: helper.id)
+                    let identifier = "com.zacharybuschmann.clashdash.helper.\(profile.id.uuidString).\(helper.id)"
+                    let title = "Helper ready to work"
+                    let body = "\(helperName) is ready to work."
+                    requests.append(NotificationManager.HelperNotificationRequest(identifier: identifier, title: title, body: body, date: expires))
+                }
+            }
+        }
+
+        notificationManager.syncHelperNotifications(for: requests)
     }
 
     private func saveToStorage() {
@@ -1319,6 +1365,9 @@ class DataService: ObservableObject {
 
             applyCurrentProfile()
             persistChanges(reloadWidgets: true)
+            // Schedule helper notifications immediately after an import so the user
+            // receives alerts when helper cooldowns expire.
+            scheduleHelperNotifications()
         } catch {
             print("Failed to parse clipboard JSON: \(error)")
         }

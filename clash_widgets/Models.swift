@@ -58,6 +58,8 @@ struct NotificationSettings: Codable, Equatable {
     var labNotificationsEnabled: Bool = true
     var petNotificationsEnabled: Bool = true
     var builderBaseNotificationsEnabled: Bool = true
+    // Helper specific notifications (helpers ready to work)
+    var helperNotificationsEnabled: Bool = true
 
     static var `default`: NotificationSettings { NotificationSettings() }
 
@@ -358,6 +360,14 @@ struct HelperCooldownEntry: Identifiable, Codable {
     let id: Int
     let level: Int
     let cooldownSeconds: Int
+    let expiresAt: Date?
+
+    func remainingSeconds(referenceDate: Date = Date()) -> Int {
+        if let expiresAt = expiresAt {
+            return max(0, Int(expiresAt.timeIntervalSince(referenceDate)))
+        }
+        return max(0, cooldownSeconds)
+    }
 }
 
 struct ParsedBuildingLevel: Codable {

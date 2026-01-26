@@ -125,4 +125,70 @@ final class NotificationManager {
             return "builder_base"
         }
     }
+
+    // MARK: - Helper notifications
+
+    private static let helperIdentifierPrefix = "com.zacharybuschmann.clashdash.helper."
+
+    struct HelperNotificationRequest {
+        let identifier: String
+        let title: String
+        let body: String
+        let date: Date
+    }
+
+    func syncHelperNotifications(for requests: [HelperNotificationRequest]) {
+        guard !requests.isEmpty else {
+            removeAllHelperNotifications()
+            return
+        }
+
+        ensureAuthorization(promptIfNeeded: false) { granted in
+            guard granted else {
+                self.removeAllHelperNotifications()
+                return
+            }
+
+            let desired = requests.map { self.makeRequest(for: $0) }
+            self.center.getPendingNotificationRequests { existing in
+                let managed = existing.filter { $0.identifier.hasPrefix(Self.helperIdentifierPrefix) }
+                let managedIdentifiers = Set(managed.map { $0.identifier })
+                let desiredIdentifiers = Set(desired.map { $0.identifier })
+
+                let identifiersToRemove = Array(managedIdentifiers.subtracting(desiredIdentifiers))
+                if !identifiersToRemove.isEmpty {
+                    self.center.removePendingNotificationRequests(withIdentifiers: identifiersToRemove)
+                }
+
+                let existingSet = managedIdentifiers
+                let newRequests = desired.filter { !existingSet.contains($0.identifier) }
+                for request in newRequests {
+                    self.center.add(request)
+                }
+            }
+        }
+    }
+
+    private func makeRequest(for helper: HelperNotificationRequest) -> UNNotificationRequest {
+        let content = UNMutableNotificationContent()
+        content.title = helper.title
+        content.body = helper.body
+        content.sound = .default
+        content.threadIdentifier = "helpers"
+
+        let interval = max(helper.date.timeIntervalSinceNow, 1)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        return UNNotificationRequest(identifier: helper.identifier, content: content, trigger: trigger)
+    }
+
+    func removeAllHelperNotifications() {
+        center.getPendingNotificationRequests { requests in
+            let identifiers = requests
+                .filter { $0.identifier.hasPrefix(Self.helperIdentifierPrefix) }
+                .map { $0.identifier }
+            guard !identifiers.isEmpty else { return }
+            self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
+        }
+    }
 }
+

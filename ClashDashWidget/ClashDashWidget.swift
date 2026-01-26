@@ -81,11 +81,13 @@ struct Provider: TimelineProvider {
     }
 
     private func prioritized(upgrades: [BuildingUpgrade], builderCount: Int) -> [BuildingUpgrade] {
+        // Hard limit to 6 builders displayed in widget to prevent layout overflow
+        let displayLimit = min(builderCount, 6)
         return Array(
             upgrades
                 .filter { $0.category == .builderVillage }
                 .sorted(by: { $0.endTime < $1.endTime })
-                .prefix(max(builderCount, 0))
+                .prefix(max(displayLimit, 0))
         )
     }
 }
@@ -107,7 +109,7 @@ struct ClashDashWidgetEntryView : View {
 
             // 3x2 Grid for 6 Builders (3 columns x 2 rows)
             LazyVGrid(columns: columns, spacing: 4) {
-                ForEach(0..<max(entry.builderCount, 0), id: \.self) { index in
+                ForEach(0..<max(min(entry.builderCount, 6), 0), id: \.self) { index in
                     builderCell(for: index)
                         .frame(minHeight: 56)
                 }
@@ -327,20 +329,23 @@ struct HelperCooldownStatus: Identifiable {
     let iconName: String
     let level: Int
     let cooldownSeconds: Int
+    let expiresAt: Date?
 
-    var cooldownText: String {
-        if cooldownSeconds <= 0 {
-            return "Ready"
+    func remainingSeconds(referenceDate: Date = Date()) -> Int {
+        if let expiresAt = expiresAt {
+            return max(0, Int(expiresAt.timeIntervalSince(referenceDate)))
         }
-        let hours = cooldownSeconds / 3600
-        let minutes = (cooldownSeconds % 3600) / 60
-        let seconds = cooldownSeconds % 60
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        }
-        if minutes > 0 {
-            return "\(minutes)m \(seconds)s"
-        }
+        return max(0, cooldownSeconds)
+    }
+
+    func cooldownText(referenceDate: Date = Date()) -> String {
+        let remaining = remainingSeconds(referenceDate: referenceDate)
+        if remaining <= 0 { return "Helper ready to work" }
+        let hours = remaining / 3600
+        let minutes = (remaining % 3600) / 60
+        let seconds = remaining % 60
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m \(seconds)s" }
         return "\(seconds)s"
     }
 }
@@ -363,7 +368,22 @@ struct HelperCooldownProvider: TimelineProvider {
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let entry = HelperCooldownWidgetEntry(date: Date(), helpers: loadHelpers())
-        let nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+
+        // Schedule next update based on active helper cooldowns so the widget stays responsive.
+        let remainingValues = entry.helpers.map { $0.remainingSeconds() }
+        let minRemaining = remainingValues.min() ?? -1
+        let nextUpdate: Date
+        if minRemaining < 0 {
+            // No active helpers: refresh every 15 minutes
+            nextUpdate = Calendar.current.date(byAdding: .minute, value: 15, to: Date())!
+        } else if minRemaining <= 30 {
+            // Near expiry (within 30 seconds): refresh every 30 seconds to respect widget budget
+            nextUpdate = Date().addingTimeInterval(30)
+        } else {
+            // Active but not urgent: refresh every 5 minutes to respect widget refresh budget
+            nextUpdate = Calendar.current.date(byAdding: .minute, value: 5, to: Date())!
+        }
+
         completion(Timeline(entries: [entry], policy: .after(nextUpdate)))
     }
 
@@ -387,14 +407,27 @@ struct HelperCooldownProvider: TimelineProvider {
             return nil
         }
         let helpers = export.helpers ?? []
+
+        // Derive an export timestamp if available so helper expiry can be calculated
+        let exportDate: Date
+        if let ts = export.timestamp {
+            exportDate = Date(timeIntervalSince1970: TimeInterval(ts))
+        } else {
+            exportDate = Date()
+        }
+
         let mapped = helpers.compactMap { helper -> HelperCooldownStatus? in
+            let rawSeconds = max(helper.helperCooldown ?? 0, 0)
+            let expiresAt = exportDate.addingTimeInterval(TimeInterval(rawSeconds))
+            let remaining = max(0, Int(expiresAt.timeIntervalSinceNow))
+
             switch helper.data {
             case 93000000:
-                return HelperCooldownStatus(id: helper.data, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+                return HelperCooldownStatus(id: helper.data, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.lvl, cooldownSeconds: remaining, expiresAt: expiresAt)
             case 93000001:
-                return HelperCooldownStatus(id: helper.data, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+                return HelperCooldownStatus(id: helper.data, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.lvl, cooldownSeconds: remaining, expiresAt: expiresAt)
             case 93000002:
-                return HelperCooldownStatus(id: helper.data, name: "Alchemist", iconName: "profile/alchemist", level: helper.lvl, cooldownSeconds: max(helper.helperCooldown ?? 0, 0))
+                return HelperCooldownStatus(id: helper.data, name: "Alchemist", iconName: "profile/alchemist", level: helper.lvl, cooldownSeconds: remaining, expiresAt: expiresAt)
             default:
                 return nil
             }
@@ -404,9 +437,9 @@ struct HelperCooldownProvider: TimelineProvider {
 
     private func placeholderHelpers() -> [HelperCooldownStatus] {
         [
-            HelperCooldownStatus(id: 93000000, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: 1, cooldownSeconds: 0),
-            HelperCooldownStatus(id: 93000001, name: "Lab Assistant", iconName: "profile/lab_assistant", level: 1, cooldownSeconds: 0),
-            HelperCooldownStatus(id: 93000002, name: "Alchemist", iconName: "profile/alchemist", level: 1, cooldownSeconds: 0)
+            HelperCooldownStatus(id: 93000000, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: 1, cooldownSeconds: 0, expiresAt: nil),
+            HelperCooldownStatus(id: 93000001, name: "Lab Assistant", iconName: "profile/lab_assistant", level: 1, cooldownSeconds: 0, expiresAt: nil),
+            HelperCooldownStatus(id: 93000002, name: "Alchemist", iconName: "profile/alchemist", level: 1, cooldownSeconds: 0, expiresAt: nil)
         ]
     }
 }
@@ -430,28 +463,61 @@ struct HelperCooldownWidgetEntryView: View {
                 Spacer()
             }
 
-            HStack {
-                Text("Helper's Hut")
-                    .font(.system(size: 11, weight: .semibold))
-                    .lineLimit(1)
-                Spacer()
-                Text(formatHelperCooldown(remaining))
-                    .font(.system(size: 10))
-                    .foregroundColor(remaining > 0 ? .orange : .green)
-            }
+            if remaining > 0 && remaining <= 3600 {
+                TimelineView(.periodic(from: Date(), by: 1)) { context in
+                    let remainingNow = entry.helpers.map { helper in
+                        helper.remainingSeconds(referenceDate: context.date)
+                    }.max() ?? 0
+                    let clamped = max(min(remainingNow, totalSeconds), 0)
+                    let progressNow = max(0, min(1, 1 - (Double(clamped) / Double(totalSeconds))))
 
-            GeometryReader { geo in
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.gray.opacity(0.2))
-                        .frame(height: 6)
+                    HStack {
+                        Text("Helper's Hut")
+                            .font(.system(size: 11, weight: .semibold))
+                            .lineLimit(1)
+                        Spacer()
+                        Text(entry.helpers.first?.cooldownText(referenceDate: context.date) ?? (clamped <= 0 ? "Helper ready to work" : "0s"))
+                            .font(.system(size: 10))
+                            .foregroundColor(clamped > 0 ? .orange : .green)
+                    }
 
-                    RoundedRectangle(cornerRadius: 4)
-                        .fill(Color.green)
-                        .frame(width: geo.size.width * CGFloat(progress), height: 6)
+                    GeometryReader { geo in
+                        ZStack(alignment: .leading) {
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.gray.opacity(0.2))
+                                .frame(height: 6)
+
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(Color.green)
+                                .frame(width: geo.size.width * CGFloat(progressNow), height: 6)
+                        }
+                    }
+                    .frame(height: 6)
                 }
+            } else {
+                HStack {
+                    Text("Helper's Hut")
+                        .font(.system(size: 11, weight: .semibold))
+                        .lineLimit(1)
+                    Spacer()
+                    Text(formatHelperCooldown(remaining))
+                        .font(.system(size: 10))
+                        .foregroundColor(remaining > 0 ? .orange : .green)
+                }
+
+                GeometryReader { geo in
+                    ZStack(alignment: .leading) {
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 6)
+
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(Color.green)
+                            .frame(width: geo.size.width * CGFloat(progress), height: 6)
+                    }
+                }
+                .frame(height: 6)
             }
-            .frame(height: 6)
 
             if entry.helpers.isEmpty {
                 HStack(spacing: 6) {
@@ -469,7 +535,7 @@ struct HelperCooldownWidgetEntryView: View {
     }
 
     private func formatHelperCooldown(_ seconds: Int) -> String {
-        if seconds <= 0 { return "Ready" }
+        if seconds <= 0 { return "Helper ready to work" }
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
         let secs = seconds % 60

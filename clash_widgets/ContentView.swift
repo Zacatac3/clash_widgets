@@ -59,6 +59,9 @@ struct ContentView: View {
     // in-app factory reset (stored relative to first launch timestamp).
     private let interstitialSuppressionWindow: TimeInterval = 2 * 60 // 2 minutes
 
+    // Ensure interstitials do not show more than once every 4 hours.
+    @AppStorage("lastInterstitialShownAt") private var lastInterstitialShownAt: Double = 0
+
     // Replaced modal onboarding flow with a dedicated onboarding tab.
     // Control which screen is visible using `selectedTab` (see Tab.onboarding).
     // `showInitialSetup` variable removed to improve interoperability with system prompts.
@@ -116,7 +119,7 @@ struct ContentView: View {
                         handleInitialSetupSubmission(submission)
                     }
                     .toolbar {
-                        ToolbarItem(placement: .navigationBarLeading) {
+                        ToolbarItem(placement: .navigationBarTrailing) {
                             Button {
                                 onboardingHelpPage = .welcome
                                 showOnboardingHelp = true
@@ -226,6 +229,14 @@ struct ContentView: View {
             }
         }
 
+        // Enforce global 4-hour throttling for launch interstitials.
+        let now = Date().timeIntervalSince1970
+        let fourHours: TimeInterval = 4 * 3600
+        if now - lastInterstitialShownAt < fourHours {
+            NSLog("📵 [ADMOB_DEBUG] Suppressing launch interstitial (throttled: last shown \(Int(now - lastInterstitialShownAt))s ago)")
+            return
+        }
+
         guard !hasShownLaunchAd, !isAttemptingLaunchAd else { return }
 
         isAttemptingLaunchAd = true
@@ -258,6 +269,8 @@ struct ContentView: View {
                 interstitialManager.present(from: root) {
                     hasShownLaunchAd = true
                     isAttemptingLaunchAd = false
+                    // Record the time the interstitial was shown to enforce the 4-hour limit.
+                    self.lastInterstitialShownAt = Date().timeIntervalSince1970
                     interstitialManager.load()
                 }
             } else {
@@ -343,11 +356,10 @@ struct ContentView: View {
         resetComponents.minute = 0
         resetComponents.second = 0
 
-        let currentReset = calendar.date(from: resetComponents) ?? date
-        if date >= currentReset {
-            return currentReset
-        }
-        return calendar.date(byAdding: .month, value: -1, to: currentReset) ?? currentReset
+        // Return the current month's reset (1st of the month at 08:00 UTC).
+        // Previously this returned the previous month's reset when called before
+        // the current reset time, which caused the prompt to fire early.
+        return calendar.date(from: resetComponents) ?? date
     }
 
     private enum Tab: Hashable {
@@ -419,11 +431,23 @@ private func loadWhatsNewItems() -> [WhatsNewItem] {
     return parseFeaturesText(fallback)
 }
 
+private struct WhatsNewSection: Identifiable {
+    let id = UUID()
+    let dateLabel: String
+    let bullets: [String]
+}
+
+private func defaultWhatsNewSections() -> [WhatsNewSection] {
+    // Most recent first. Populate with placeholders for now.
+    return [
+        WhatsNewSection(dateLabel: "xx/xx/2026 - Post Release Bug Fixes and Tweaks", bullets: ["Streamlined Onboarding - Now contains instructions & Split into two pages", "For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "many other various fixes and improvements"]),
+        WhatsNewSection(dateLabel: "1/25/26 - Hot Fix", bullets: ["Imporved new user experience"," fixed ads showing up after purchasing ad-free", "pop-ups no longer show up when not supposed to", "fixed various minor bugs"]),
+        WhatsNewSection(dateLabel: "1/23/26 - Initial Version", bullets: ["Initial version with core features"," Broken Onboarding and helper timers", "other known issues"])
+    ]
+}
+
 private func parseFeaturesText(_ text: String) -> [WhatsNewItem] {
     var items: [WhatsNewItem] = []
-
-    // First box: keep a friendly note about the first build
-    items.append(.init(title: "Welcome — First Build", detail: "Thanks for trying the first build of Clashboard. Quickly track upgrades and export profile JSON with a single tap."))
 
     let lines = text.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }
     for line in lines {
@@ -433,7 +457,7 @@ private func parseFeaturesText(_ text: String) -> [WhatsNewItem] {
 
         let item: WhatsNewItem
         if lower.contains("upgrade") {
-            item = .init(title: "Upgrade Tracking", detail: "Track upgrades and export progress as JSON with a single action.")
+            item = .init(title: "1/25/26 - Hotfix & Improvements", detail: "")
         } else if lower.contains("widget") || lower.contains("home screen") {
             item = .init(title: "Home Screen Widgets", detail: "Widgets for builders, lab/pets, builder base, and helper cooldowns keep info at a glance.")
         } else if lower.contains("multiple profile") || lower.contains("profiles") {
@@ -463,7 +487,7 @@ private func parseFeaturesText(_ text: String) -> [WhatsNewItem] {
 private struct InfoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var selectedPage: InfoSheetPage
-    let items: [WhatsNewItem]
+    let sections: [WhatsNewSection]
 
     var body: some View {
         NavigationStack {
@@ -479,7 +503,7 @@ private struct InfoSheetView: View {
                 TabView(selection: $selectedPage) {
                     HelpSheetContent()
                         .tag(InfoSheetPage.welcome)
-                    WhatsNewContent(items: items)
+                    WhatsNewContent(sections: sections)
                         .tag(InfoSheetPage.whatsNew)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
@@ -496,23 +520,46 @@ private struct InfoSheetView: View {
 }
 
 private struct WhatsNewContent: View {
-    let items: [WhatsNewItem]
+    let sections: [WhatsNewSection]
+
+    @State private var showMissingChangelogAlert = false
+    @AppStorage("fullChangelogURL") private var fullChangelogURL: String = "https://zacatac3.github.io/changelog"
 
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                Text("What’s New")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                HStack(alignment: .firstTextBaseline) {
+                    Text("What’s New")
+                        .font(.system(size: 28, weight: .bold, design: .rounded))
+                        .frame(maxWidth: .infinity, alignment: .leading)
+
+                    Button("Full Changelog") {
+                        // Open the configured changelog URL in the browser; if not configured, show an alert.
+                        if let url = URL(string: fullChangelogURL), !fullChangelogURL.isEmpty {
+                            UIApplication.shared.open(url)
+                        } else {
+                            showMissingChangelogAlert = true
+                        }
+                    }
+                    .buttonStyle(.bordered)
+                }
 
                 LazyVStack(spacing: 12) {
-                    ForEach(items) { item in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text(item.title)
+                    ForEach(sections) { section in
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text(section.dateLabel)
                                 .font(.headline)
-                            Text(item.detail)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                ForEach(section.bullets, id: \.self) { bullet in
+                                    HStack(alignment: .top, spacing: 8) {
+                                        Text("•")
+                                        Text(bullet)
+                                            .font(.subheadline)
+                                            .foregroundColor(.secondary)
+                                    }
+                                }
+                            }
                         }
                         .padding()
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -525,16 +572,21 @@ private struct WhatsNewContent: View {
             }
             .padding()
         }
+        .alert("Changelog URL not configured", isPresented: $showMissingChangelogAlert) {
+            Button("OK", role: .cancel) { }
+        } message: {
+            Text("Set the full changelog URL in Settings to enable this link.")
+        }
     }
 }
 
 private struct WhatsNewView: View {
     @Environment(\.dismiss) private var dismiss
-    let items: [WhatsNewItem]
+    let sections: [WhatsNewSection]
 
     var body: some View {
         NavigationStack {
-            WhatsNewContent(items: items)
+            WhatsNewContent(sections: sections)
             .navigationTitle("What’s New")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -543,6 +595,41 @@ private struct WhatsNewView: View {
                     }
                 }
             }
+        }
+    }
+}
+
+private struct ChangelogView: View {
+    @Environment(\.dismiss) private var dismiss
+    @State private var changelogText: String = ""
+
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                Text(changelogText)
+                    .font(.system(.body, design: .monospaced))
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding()
+            }
+            .navigationTitle("Changelog")
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .task {
+                loadChangelog()
+            }
+        }
+    }
+
+    private func loadChangelog() {
+        if let url = Bundle.main.url(forResource: "changelog", withExtension: "txt"),
+           let data = try? Data(contentsOf: url),
+           let text = String(data: data, encoding: .utf8) {
+            changelogText = text
+        } else {
+            changelogText = "Changelog not available."
         }
     }
 }
@@ -1115,7 +1202,7 @@ private struct DashboardView: View {
         NavigationStack {
             dashboardList
             .sheet(isPresented: $showInfoSheet) {
-                InfoSheetView(selectedPage: $infoSheetPage, items: defaultWhatsNewItems())
+                InfoSheetView(selectedPage: $infoSheetPage, sections: defaultWhatsNewSections())
             }
             .sheet(isPresented: $showHomeOrderSheet) {
                 HomeSectionOrderSheet(order: $orderedSections)
@@ -1267,10 +1354,35 @@ private struct DashboardView: View {
                     .foregroundColor(.red)
             }
 
-            if dataService.profiles.count > 1 {
-                profileSwitchMenu
-                    .padding(.top, 8)
+            // Always show import controls here (previously only shown when multiple profiles).
+            VStack(spacing: 8) {
+                Button(action: pasteAndImport) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "plus")
+                        Text("Import Data")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.borderedProminent)
+                .tint(.accentColor)
+                .accessibilityLabel("Import Village Data")
+                .frame(maxWidth: .infinity)
+
+                Button(action: {
+                    if let url = URL(string: "clashofclans://action=OpenMoreSettings") {
+                        UIApplication.shared.open(url)
+                    }
+                }) {
+                    HStack(spacing: 12) {
+                        Image(systemName: "gearshape")
+                        Text("Open Game Settings")
+                    }
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
+                .frame(maxWidth: .infinity)
             }
+            .padding(.top, 8)
         }
         .padding(.vertical, 4)
     }
@@ -1305,12 +1417,21 @@ private struct DashboardView: View {
         let iconName: String
         let level: Int
         let cooldownSeconds: Int
+        let expiresAt: Date?
 
-        var cooldownText: String {
-            if cooldownSeconds <= 0 { return "Ready" }
-            let hours = cooldownSeconds / 3600
-            let minutes = (cooldownSeconds % 3600) / 60
-            let seconds = cooldownSeconds % 60
+        func remainingSeconds(referenceDate: Date = Date()) -> Int {
+            if let expiresAt = expiresAt {
+                return max(0, Int(expiresAt.timeIntervalSince(referenceDate)))
+            }
+            return max(0, cooldownSeconds)
+        }
+
+        func cooldownText(referenceDate: Date = Date()) -> String {
+            let remaining = remainingSeconds(referenceDate: referenceDate)
+            if remaining <= 0 { return "Helper ready to work" }
+            let hours = remaining / 3600
+            let minutes = (remaining % 3600) / 60
+            let seconds = remaining % 60
             if hours > 0 { return "\(hours)h \(minutes)m" }
             if minutes > 0 { return "\(minutes)m \(seconds)s" }
             return "\(seconds)s"
@@ -1330,25 +1451,26 @@ private struct DashboardView: View {
                 Image(systemName: "questionmark.circle")
             }
             .accessibilityLabel("Show Help")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
             
             Button {
                 orderedSections = parseHomeSectionOrder()
                 showHomeOrderSheet = true
             } label: {
-                Image(systemName: "arrow.up.and.down.circle")
+                Image(systemName: "slider.horizontal.3")
             }
             .accessibilityLabel("Reorder Home Cards")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
         }
         
         // Spacer to separate button groups visually
         ToolbarSpacer(placement: .navigationBarLeading)
 
-        // Import button - separate on right
+        // Profile switcher moved to the top-right
         ToolbarItem(placement: .navigationBarTrailing) {
-            Button(action: pasteAndImport) {
-                Image(systemName: "plus")
-            }
-            .accessibilityLabel("Import Village Data")
+            ProfileSwitcherMenu()
         }
     }
 
@@ -1364,6 +1486,8 @@ private struct DashboardView: View {
                 Image(systemName: "questionmark.circle")
             }
             .accessibilityLabel("Show Help")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
         }
 
         // Reorder Home Cards button - separate container on left
@@ -1372,17 +1496,16 @@ private struct DashboardView: View {
                 orderedSections = parseHomeSectionOrder()
                 showHomeOrderSheet = true
             } label: {
-                Image(systemName: "arrow.up.and.down.circle")
+                Image(systemName: "slider.horizontal.3")
             }
             .accessibilityLabel("Reorder Home Cards")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
         }
 
-        // Import button - separate on right
+        // Profile switcher moved to the top-right
         ToolbarItem(placement: .navigationBarTrailing) {
-            Button(action: pasteAndImport) {
-                Image(systemName: "plus")
-            }
-            .accessibilityLabel("Import Village Data")
+            ProfileSwitcherMenu()
         }
     }
 
@@ -1464,11 +1587,11 @@ private struct DashboardView: View {
         let mapped = rawHelpers.compactMap { helper -> HelperCooldownDisplay? in
             switch helper.id {
             case 93000000:
-                return HelperCooldownDisplay(id: helper.id, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+                return HelperCooldownDisplay(id: helper.id, name: "Builder's Apprentice", iconName: "profile/apprentice_builder", level: helper.level, cooldownSeconds: helper.cooldownSeconds, expiresAt: helper.expiresAt)
             case 93000001:
-                return HelperCooldownDisplay(id: helper.id, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+                return HelperCooldownDisplay(id: helper.id, name: "Lab Assistant", iconName: "profile/lab_assistant", level: helper.level, cooldownSeconds: helper.cooldownSeconds, expiresAt: helper.expiresAt)
             case 93000002:
-                return HelperCooldownDisplay(id: helper.id, name: "Alchemist", iconName: "profile/alchemist", level: helper.level, cooldownSeconds: helper.cooldownSeconds)
+                return HelperCooldownDisplay(id: helper.id, name: "Alchemist", iconName: "profile/alchemist", level: helper.level, cooldownSeconds: helper.cooldownSeconds, expiresAt: helper.expiresAt)
             default:
                 return nil
             }
@@ -1477,12 +1600,59 @@ private struct DashboardView: View {
     }
 
     private var helperCooldownSummaryRow: some View {
-        let cooldownSeconds = helperCooldowns.map { $0.cooldownSeconds }.max() ?? 0
+        // Determine the current maximum remaining helper cooldown
+        let maxRemaining = helperCooldowns.map { $0.remainingSeconds() }.max() ?? 0
         let totalSeconds = 23 * 60 * 60
+
+        if maxRemaining > 0 && maxRemaining <= 3600 {
+            // Update every second when within the last hour so the countdown looks live
+            return AnyView(TimelineView(.periodic(from: Date(), by: 1)) { context in
+                let remaining = helperCooldowns.map { $0.remainingSeconds(referenceDate: context.date) }.max() ?? 0
+                let clamped = max(min(remaining, totalSeconds), 0)
+                let progress = max(0, min(1, 1 - (Double(clamped) / Double(totalSeconds))))
+                let topText = helperCooldowns.max(by: { $0.remainingSeconds(referenceDate: context.date) < $1.remainingSeconds(referenceDate: context.date) })?.cooldownText(referenceDate: context.date) ?? (clamped <= 0 ? "Helper ready to work" : "0s")
+
+                HStack(spacing: 12) {
+                    VStack {
+                        Image("buildings_home/helper_s_hut")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 44, height: 44)
+                    }
+
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Helper Cooldown")
+                            .font(.headline)
+                            .lineLimit(1)
+
+                        Text(topText)
+                            .font(.subheadline)
+                            .foregroundColor(clamped > 0 ? .orange : .green)
+
+                        GeometryReader { geo in
+                            ZStack(alignment: .leading) {
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.gray.opacity(0.2))
+                                    .frame(height: 8)
+
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(Color.green)
+                                    .frame(width: geo.size.width * CGFloat(progress), height: 8)
+                            }
+                        }
+                        .frame(height: 8)
+                    }
+                }
+            })
+        }
+
+        // Fallback static view for non-urgent states (updates on normal view refresh)
+        let cooldownSeconds = helperCooldowns.map { $0.remainingSeconds() }.max() ?? 0
         let remaining = max(min(cooldownSeconds, totalSeconds), 0)
         let progress = max(0, min(1, 1 - (Double(remaining) / Double(totalSeconds))))
+        let topText = helperCooldowns.max(by: { $0.remainingSeconds() < $1.remainingSeconds() })?.cooldownText() ?? (remaining <= 0 ? "Helper ready to work" : "0s")
 
-        return HStack(spacing: 12) {
+        return AnyView(HStack(spacing: 12) {
             VStack {
                 Image("buildings_home/helper_s_hut")
                     .resizable()
@@ -1495,7 +1665,7 @@ private struct DashboardView: View {
                     .font(.headline)
                     .lineLimit(1)
 
-                Text(formatHelperCooldown(remaining))
+                Text(topText)
                     .font(.subheadline)
                     .foregroundColor(remaining > 0 ? .orange : .green)
 
@@ -1513,11 +1683,11 @@ private struct DashboardView: View {
                 .frame(height: 8)
             }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 4))
     }
 
     private func formatHelperCooldown(_ seconds: Int) -> String {
-        if seconds <= 0 { return "Ready" }
+        if seconds <= 0 { return "Helper ready to work" }
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
         let secs = seconds % 60
@@ -2652,6 +2822,7 @@ private struct SettingsView: View {
                         notificationCategoryToggle(title: "Laboratory", binding: notificationBinding(\.labNotificationsEnabled))
                         notificationCategoryToggle(title: "Pet House", binding: notificationBinding(\.petNotificationsEnabled))
                         notificationCategoryToggle(title: "Builder Base", binding: notificationBinding(\.builderBaseNotificationsEnabled))
+                        notificationCategoryToggle(title: "Helpers", binding: notificationBinding(\.helperNotificationsEnabled))
                     } else {
                         Text("Allow alerts to be reminded when an upgrade finishes.")
                             .font(.caption)
@@ -3174,6 +3345,10 @@ private struct ProfileSetupPane: View {
     /// When false, seed fields with clean defaults instead of copying values from
     /// the currently-selected profile. Use this for the "Add Profile" flow.
     let seedFromExistingProfile: Bool
+    /// Show the onboarding-specific instruction UI (image + detailed steps).
+    /// This is true only for the first-run onboarding flow; Add Profile from
+    /// Settings should pass `false` so it keeps the compact layout + optional tag.
+    let showOnboardingInstructions: Bool
 
     @State private var builderCount: Int = 5
     @State private var builderApprenticeLevel: Int = 0
@@ -3269,6 +3444,8 @@ private struct ProfileSetupPane: View {
         }
     }
 
+    @State private var step: Int = 1 // 1 = import page, 2 = settings page
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -3279,48 +3456,182 @@ private struct ProfileSetupPane: View {
                         .font(.subheadline)
                         .foregroundColor(.secondary)
 
+                    if step == 1 {
+                        // Page 1: import controls and tag
+                        if showOnboardingInstructions {
+                            VStack(alignment: .leading, spacing: 12) {
+                                // Instruction container (rounded) matching screenshot style
+                                VStack(alignment: .leading, spacing: 12) {
+                                    HStack(alignment: .center, spacing: 12) {
+                                        Image(systemName: "doc.on.clipboard.fill")
+                                            .foregroundColor(.white)
+                                            .padding(8)
+                                            .background(Circle().fill(Color.accentColor))
+                                        Text("Getting Started")
+                                            .font(.headline)
+                                    }
+
+                                    // Steps (no inner container)
+                                    VStack(alignment: .leading, spacing: 14) {
+                                        HStack(alignment: .top, spacing: 12) {
+                                            Circle()
+                                                .fill(Color.accentColor)
+                                                .frame(width: 28, height: 28)
+                                                .overlay(Text("1").font(.subheadline).foregroundColor(.white))
+                                            Text("1. Open the Clash of Clans Settings (or use the \"Open Game Settings\" button)")
+                                                .font(.body)
+                                        }
+
+                                        HStack(alignment: .top, spacing: 12) {
+                                            Circle()
+                                                .fill(Color.accentColor)
+                                                .frame(width: 28, height: 28)
+                                                .overlay(Text("2").font(.subheadline).foregroundColor(.white))
+                                            Text("2. Within 'More Settings', scroll to the bottom and press the \"Copy\" button inside 'Data Export'")
+                                                .font(.body)
+                                        }
+
+                                        HStack(alignment: .top, spacing: 12) {
+                                            Circle()
+                                                .fill(Color.accentColor)
+                                                .frame(width: 28, height: 28)
+                                                .overlay(Text("3").font(.subheadline).foregroundColor(.white))
+                                            Text("3. Press the Paste & Import Village Data button below")
+                                                .font(.body)
+                                        }
+                                    }
+
+                                    // Dynamic image sizing: load the UIImage and constrain by its pixel width (now inside the card)
+                                    #if canImport(UIKit)
+                                    if let ui = UIImage(named: "import_help") {
+                                        Image(uiImage: ui)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: min(ui.size.width, UIScreen.main.bounds.width - 48))
+                                            .cornerRadius(12)
+                                            .padding(.top, 8)
+                                    } else {
+                                        // Fallback placeholder box if image asset isn't available
+                                        RoundedRectangle(cornerRadius: 12)
+                                            .fill(Color(.secondarySystemFill))
+                                            .frame(height: 180)
+                                            .overlay(Text("Import help image missing").font(.caption).foregroundColor(.secondary))
+                                            .padding(.top, 8)
+                                    }
+                                    #else
+                                    Image("import_help")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .cornerRadius(12)
+                                        .padding(.top, 8)
+                                    #endif
+                                }
+                                .padding(14)
+                                .background(RoundedRectangle(cornerRadius: 14).fill(Color(UIColor { trait in
+                                    trait.userInterfaceStyle == .dark ? UIColor.secondarySystemBackground : UIColor.systemGray5
+                                })))
+                                .accessibilityIdentifier("onboarding.getting_started_card")
+                                .foregroundColor(.primary)
+
 #if canImport(UIKit)
-                    Button {
-                        importVillageDataFromClipboard()
-                    } label: {
-                        Label("Paste & Import Village Data", systemImage: "plus")
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 48)
-                            .font(.headline)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .tint(.blue)
+                                Button {
+                                    importVillageDataFromClipboard()
+                                } label: {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "plus")
+                                        Text("Paste & Import Village Data")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 48)
+                                    .font(.headline)
+                                }
+                                .buttonStyle(.borderedProminent)
+                                .tint(.accentColor)
 #endif
 
-                    DisclosureGroup(isExpanded: $showOptionalTag) {
-                        TextField("e.g. #2CJJRQJ0", text: $playerTag)
-                            .textInputAutocapitalization(.characters)
-                            .autocorrectionDisabled()
-                            .keyboardType(.asciiCapable)
-                            .padding(12)
-                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
-                            .onChangeCompat(of: playerTag) { newValue in
-                                let sanitized = sanitizeInput(newValue)
-                                if sanitized != newValue {
-                                    playerTag = sanitized
+                                Button {
+                                    if let url = URL(string: "clashofclans://action=OpenMoreSettings") {
+                                        UIApplication.shared.open(url)
+                                    }
+                                } label: {
+                                    HStack(spacing: 12) {
+                                        Image(systemName: "gearshape")
+                                        Text("Open Game Settings")
+                                    }
+                                    .frame(maxWidth: .infinity)
+                                    .frame(height: 44)
+                                }
+                                .buttonStyle(.bordered)
+
+                                if let statusMessage {
+                                    Text(statusMessage)
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
                                 }
                             }
-                        Text("Optional. Not required for setup.")
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    } label: {
-                        Text("Optional: Player Tag")
-                            .font(.headline)
-                    }
+                        } else {
+#if canImport(UIKit)
+                            Button {
+                                importVillageDataFromClipboard()
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "plus")
+                                    Text("Paste & Import Village Data")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 48)
+                                .font(.headline)
+                            }
+                            .buttonStyle(.borderedProminent)
+                            .tint(.accentColor)
+#endif
 
-                    if let statusMessage {
-                        Text(statusMessage)
-                            .font(.caption)
-                            .foregroundColor(.secondary)
-                    }
+                            Button {
+                                if let url = URL(string: "clashofclans://action=OpenMoreSettings") {
+                                    UIApplication.shared.open(url)
+                                }
+                            } label: {
+                                HStack(spacing: 12) {
+                                    Image(systemName: "gearshape")
+                                    Text("Open Game Settings")
+                                }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 44)
+                            }
+                            .buttonStyle(.bordered)
 
-                    if showSettings {
+                            // Keep optional tag available when not in the onboarding flow
+                            DisclosureGroup(isExpanded: $showOptionalTag) {
+                                TextField("e.g. #2CJJRQJ0", text: $playerTag)
+                                    .textInputAutocapitalization(.characters)
+                                    .autocorrectionDisabled()
+                                    .keyboardType(.asciiCapable)
+                                    .padding(12)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                                    .onChangeCompat(of: playerTag) { newValue in
+                                        let sanitized = sanitizeInput(newValue)
+                                        if sanitized != newValue {
+                                            playerTag = sanitized
+                                        }
+                                    }
+                                Text("Optional. Not required for setup.")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            } label: {
+                                Text("Optional: Player Tag")
+                                    .font(.headline)
+                            }
+
+                            if let statusMessage {
+                                Text(statusMessage)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                    } else {
+                        // Page 2: settings (builders, gold pass, notifications)
                         settingsFields
+
                         // Profile-specific notification preferences (match Settings UI)
                         VStack(alignment: .leading, spacing: 16) {
                             Section("Notifications") {
@@ -3333,6 +3644,7 @@ private struct ProfileSetupPane: View {
                                         Toggle("Laboratory", isOn: notificationBindingLocal(\.labNotificationsEnabled))
                                         Toggle("Pet House", isOn: notificationBindingLocal(\.petNotificationsEnabled))
                                         Toggle("Builder Base", isOn: notificationBindingLocal(\.builderBaseNotificationsEnabled))
+                                        Toggle("Helpers", isOn: notificationBindingLocal(\.helperNotificationsEnabled))
                                     }
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
@@ -3349,23 +3661,30 @@ private struct ProfileSetupPane: View {
                         }
                     }
                 }
-                .padding(20)
+                .padding(EdgeInsets(top: showOnboardingInstructions ? 4 : 20, leading: 20, bottom: 20, trailing: 20))
             }
             .background(Color(.systemGroupedBackground))
-            .navigationTitle(title)
+            .navigationTitle(showOnboardingInstructions ? "" : title)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                if showCancel {
-                    ToolbarItem(placement: .cancellationAction) {
-                        Button("Cancel") { onCancel?() }
+                // Keep Back on the left when on page 2
+                if step == 2 {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Back") { step = 1 }
                     }
                 }
             }
             .safeAreaInset(edge: .bottom) {
                 Button {
-                    submitProfile()
+                    if step == 1 {
+                        // Move to settings page
+                        step = 2
+                    } else {
+                        // Final submit
+                        submitProfile()
+                    }
                 } label: {
-                    Text(submitTitle)
+                    Text(step == 1 ? "Next" : submitTitle)
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 6)
                 }
@@ -3374,7 +3693,7 @@ private struct ProfileSetupPane: View {
                 .padding(.top, 12)
                 .padding(.bottom, 8)
                 .background(Color(.systemGroupedBackground))
-                .disabled(!canContinue)
+                .disabled(step == 1 && !canContinue)
             }
             .onAppear { seedSettingsIfNeeded() }
             .onChangeCompat(of: townHallLevel) { _ in
@@ -3443,16 +3762,20 @@ private struct ProfileSetupPane: View {
                 }
             }
 
-            if labAssistantMaxLevel > 0 {
-                sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
-            }
+            // Helper sliders are only shown when seeded from an existing profile. For
+            // new profiles/onboarding helpers are expected to come from imported JSON.
+            if seedFromExistingProfile {
+                if labAssistantMaxLevel > 0 {
+                    sliderRow(title: "Lab Assistant", value: $labAssistantLevel, maxLevel: labAssistantMaxLevel, unlockedAt: 9, iconName: "profile/lab_assistant")
+                }
 
-            if builderApprenticeMaxLevel > 0 {
-                sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
-            }
+                if builderApprenticeMaxLevel > 0 {
+                    sliderRow(title: "Builder's Apprentice", value: $builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, unlockedAt: 10, iconName: "profile/apprentice_builder")
+                }
 
-            if alchemistMaxLevel > 0 {
-                sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
+                if alchemistMaxLevel > 0 {
+                    sliderRow(title: "Alchemist", value: $alchemistLevel, maxLevel: alchemistMaxLevel, unlockedAt: 11, iconName: "profile/alchemist")
+                }
             }
         }
         .padding(16)
@@ -3494,7 +3817,11 @@ private struct ProfileSetupPane: View {
             labAssistantLevel = 0
             alchemistLevel = 0
             goldPassBoost = 0
-            notificationSettings = .default
+            // For new profiles (onboarding / add profile), enable notifications by default
+            // so users see and can configure per-category toggles (including Helpers).
+            var defaultSettings = NotificationSettings.default
+            defaultSettings.notificationsEnabled = true
+            notificationSettings = defaultSettings
         }
         clampBuilderCount()
         clampHelperLevels()
@@ -3599,7 +3926,7 @@ private struct ProfileSetupPane: View {
         clampBuilderCount()
         clampHelperLevels()
 
-        statusMessage = "Imported your JSON. Adjust the settings below if needed."
+        statusMessage = "Imported your player data successfully."
     }
 #endif
 
@@ -3636,12 +3963,13 @@ private struct AddProfileSheet: View {
         ProfileSetupPane(
             playerTag: $playerTag,
             title: "New Profile",
-            subtitle: "Paste your exported village JSON to auto-fill timers and helper levels.",
+            subtitle: " ",
             submitTitle: "Continue",
             showCancel: true,
             onCancel: { dismiss() },
             onSubmit: { submission in saveProfile(submission) },
-            seedFromExistingProfile: false
+            seedFromExistingProfile: false,
+            showOnboardingInstructions: false
         )
         .alert("Profile already exists", isPresented: $showDuplicateTagAlert) {
             Button("OK", role: .cancel) {}
@@ -3825,48 +4153,118 @@ private struct HelpSheetView: View {
 private struct HelpSheetContent: View {
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 24) {
-                Text("Welcome to Clashboard")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .frame(maxWidth: .infinity, alignment: .leading)
+            VStack(alignment: .leading, spacing: 28) {
+                // Header
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Welcome to Clashboard")
+                        .font(.system(size: 32, weight: .bold, design: .rounded))
+                    Text("Follow these steps to sync your village data.")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.bottom, 8)
 
-                helpCard(title: "Quick Start", description: "Import your exported village JSON from Clash of Clans to get started.")
+                // 1. Setup Guide (Numbered for clarity)
+                VStack(alignment: .leading, spacing: 16) {
+                    sectionHeader(title: "Getting Started", icon: "arrow.down.doc.fill")
+                    
+                    stepRow(number: "1", text: "Press the Open Game settings button or Open Clash of Clans and go to Settings.")
+                    stepRow(number: "2", text: "In More Settings**, scroll to the bottom, and tap Export JSON Data.")
+                    stepRow(number: "3", text: "Return here and tap **Paste and Import Data**.")
+                }
+                .padding()
+                .background(Color(.secondarySystemBackground))
+                .cornerRadius(12)
 
-                helpCard(title: "IMPORTANT NOTE ⚠️", bullets: [
-                    "This app is currently still in development",
-                    "Bear with me for these initial releases, as some things will likely be broken or missing",
-                    "If anything unexpected happens, please report it via the feedback form in Settings"
+                // 2. Profile Management
+                helpCard(title: "Managing Profiles", icon: "person.2.fill", bullets: [
+                    "Switch players by tapping the Switch Profile button in the top-right.",
+                    "Edit or rename profiles within the Settings menu.",
+                    "Delete a profile by swiping left on its row in Settings."
                 ])
 
-                helpCard(title: "Importing Data", bullets: [
-                    "Copy the exported JSON from Clash of Clans",
-                    "Tap the + button on the Home tab",
-                    "Choose Paste & Import to sync timers and helper levels",
-                    "Profile Settings can be adjusted after import"
+                // 3. Widgets & Updates
+                helpCard(title: "Live Widgets", icon: "square.grid.2x2.fill", bullets: [
+                    "Add Clashboard widgets to your Home Screen for quick tracking.",
+                    "Widgets refresh every time you import fresh data.",
+                    "Import again once an upgrade finishes to keep timers accurate."
                 ])
 
-                helpCard(title: "Managing Profiles", bullets: [
-                    "Tap the switch icon next to your profile name to change players, or use the profile menu in Settings",
-                    "Tap Edit within Settings to rename or update tags",
-                    "Swipe left on a profile row in Settings to delete"
-                ])
+                // 4. Troubleshooting (Settings shortcut)
+                VStack(alignment: .leading, spacing: 12) {
+                    sectionHeader(title: "Fixing 'Allow Paste' Popups", icon: " clergyman")
+                    Text("To stop the manual paste prompt, enable 'Allow' in System Settings.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+                    
+                    Button(action: {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Label("Open App Settings", systemImage: "gearshape.fill")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .cornerRadius(8)
+                    }
+                }
+                .padding()
+                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.3), lineWidth: 1))
 
-                helpCard(title: "Widgets", bullets: [
-                    "Add Clashboard widgets from the iOS Home Screen",
-                    "Widgets read the latest data each time you import",
-                    "Open the app after timers finish to import updated data"
-                ])
-                helpCard(title: "Disable Allow Paste Popup", description: "To stop the paste prompt, go to  Settings → Apps → Clashboard → Paste From Other Apps and set it to Allow.")
+                // 5. Disclaimer
+                VStack(alignment: .center, spacing: 8) {
+                    Text("⚠️ Disclaimer")
+                        .font(.headline)
+                    Text("Clashboard is still in active development. If something breaks, please use the Feedback Form in Settings.")
+                        .font(.caption)
+                        .multilineTextAlignment(.center)
+                        .foregroundColor(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.top, 20)
             }
             .padding()
         }
     }
 
+    // Helper views for cleaner code
     @ViewBuilder
-    private func helpCard(title: String, description: String? = nil, bullets: [String] = []) -> some View {
-        VStack(alignment: .leading, spacing: 8) {
+    private func sectionHeader(title: String, icon: String) -> some View {
+        HStack {
+            Image(systemName: icon)
+                .foregroundColor(.blue)
             Text(title)
                 .font(.headline)
+        }
+    }
+
+    @ViewBuilder
+    private func stepRow(number: String, text: String) -> some View {
+        HStack(alignment: .top, spacing: 12) {
+            Text(number)
+                .font(.caption.bold())
+                .foregroundColor(.white)
+                .frame(width: 20, height: 20)
+                .background(Circle().fill(Color.blue))
+            Text(text)
+                .font(.subheadline)
+        }
+    }
+
+    @ViewBuilder
+    private func helpCard(title: String, icon: String? = nil, description: String? = nil, bullets: [String] = []) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack(alignment: .center, spacing: 8) {
+                if let icon {
+                    Image(systemName: icon)
+                        .font(.title3)
+                        .foregroundColor(.accentColor)
+                }
+                Text(title)
+                    .font(.headline)
+            }
             if let description {
                 Text(description)
                     .font(.subheadline)
@@ -3899,13 +4297,14 @@ private struct InitialSetupView: View {
     var body: some View {
         ProfileSetupPane(
             playerTag: $playerTag,
-            title: "Set up your profile",
-            subtitle: "Paste your exported village JSON to auto-fill timers and helper levels.",
+            title: "Set up Your Profile",
+            subtitle: "Follow the steps to sync your village data.",
             submitTitle: "Continue",
             showCancel: false,
             onCancel: nil,
             onSubmit: onComplete,
-            seedFromExistingProfile: true
+            seedFromExistingProfile: false,
+            showOnboardingInstructions: true
         )
     }
 }

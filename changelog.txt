@@ -16,14 +16,17 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 * Added Restore error message for no contents to restore
 * Added help section to onboarding
 * App no longer prompts for notifications immediately, waits for user to enable notifications
+* notification settings now part of new profile set-up
 *Unranked icon now displays properly in profile tab
 *fixed app icon not tinting for dark clear and tinted modes 
+*changed display name for app/widgets from "clash_widgets" to production name "Clashboard
 
 *Known issues*
 * on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
 * haptics are too strong when adjusting sliders
 *Widgets, when tinted or clear, have assets messed up
 * helper timer does not increment
+* Widgets not showing
 
 — Upcoming / Unreleased Updates —
 
@@ -31,18 +34,32 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 Hotfix planned for after launch and collecting user feedback
 
 *Fixes and Improvements*
+- Helper timers now increment on the widget and home page
+- gold pass reminder no longer occurs before first season reset
+- Added "Full Changelog" button to what's new
+- Swapped places of "Import Data" and profile switcher
+- added "open game settings" button to home and profile setup
+- split onboarding into two pages for simplicity
+- added detailed instructions to onboarding, improved flow
+
+*Fixes and Improvements* PLANNED*
 * Add "in progess" filter to achievements section
+* remove / fix restore purchases button
+* Helper notifications, reset helper timer without import
 
 1.1 -
 First major feature release planned
 
 *New Features*
-* Lock Screen widget + control
+* Lock Screen widget + toggle
 * Shortcuts integration 
 * Potions Snacks and other boosts
 * Widget customization / themes
 * War stats widget (?)
 * Ability to set notifications to pre-notify in advance of upgrade completion
+* Remove ? Hide selected home screen cards
+* add gem rewards to achievements and remaining helper costs in gems 
+*Upgrade history
 
 1.2 (and beyond) - 
 
@@ -50,4 +67,4 @@ First major feature release planned
 * Set up icloud sync for widgets / potential account management(?)
 * New more elegant UI for the home screen cards as well as widgets
 * Server hosting of assets and upgrade data to push info/asset updates without new app version
-* add gem rewards to achievements and remaining helper costs in gems 
+* Add "Progres" section to track time/cost remaining for each town hall
