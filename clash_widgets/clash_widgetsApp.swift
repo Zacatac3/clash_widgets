@@ -8,22 +8,20 @@
 import SwiftUI
 import WidgetKit
 import GoogleMobileAds
+import UserMessagingPlatform
 import AppTrackingTransparency
 import AdSupport
+import Combine
 
 @main
 struct ClashboardApp: App {
     @StateObject private var iapManager = IAPManager.shared
+    private let adConsentManager = AdConsentManager.shared
     
     init() {
         print("🚀 App Init Started")
-        // Start Google Mobile Ads early so ad views don't request before initialization.
         // Ensure test-device registration is cleared for production
         MobileAds.shared.requestConfiguration.testDeviceIdentifiers = []
-        
-        MobileAds.shared.start { _ in
-            NSLog("🚀 [ADMOB_DEBUG] AdMob Initialized ✅ (init)")
-        }
     }
 
     var body: some Scene {
@@ -31,6 +29,9 @@ struct ClashboardApp: App {
             ContentView()
                 .environmentObject(iapManager)
                 .onAppear {
+                    // Request EU consent first
+                    adConsentManager.gatherConsent()
+                    
                     // Slight delay to ensure UI is ready
                     DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
                         NSLog("🚀 [ADMOB_DEBUG] Requesting tracking...")
@@ -41,8 +42,6 @@ struct ClashboardApp: App {
                             
                             // Ensure test device identifiers are empty for production
                             MobileAds.shared.requestConfiguration.testDeviceIdentifiers = []
-
-                            // AdMob already started in init; we keep ATT handling here.
                         }
                     }
                 }
@@ -54,6 +53,42 @@ struct ClashboardApp: App {
                     // Also refresh when app comes to foreground normally
                     WidgetCenter.shared.reloadAllTimelines()
                 }
+        }
+    }
+}
+
+// MARK: - Ad Consent Manager (EU Compliance)
+class AdConsentManager {
+    static let shared = AdConsentManager()
+
+    func gatherConsent() {
+        let parameters = RequestParameters()
+        
+        // Uncomment for testing EU consent flow on simulator:
+        // let debugSettings = DebugSettings()
+        // debugSettings.testDeviceIdentifiers = ["YOUR_TEST_ID"]
+        // debugSettings.geography = .EEA
+        // parameters.debugSettings = debugSettings
+
+        ConsentInformation.shared.requestConsentInfoUpdate(with: parameters) { error in
+            if let error = error {
+                NSLog("🚀 [UMP_ERROR] \(error.localizedDescription)")
+                return
+            }
+
+            // This only shows if consent is required (e.g., first launch in EU)
+            ConsentForm.loadAndPresentIfRequired(from: nil) { loadError in
+                if let loadError = loadError {
+                    NSLog("🚀 [UMP_LOAD_ERROR] \(loadError.localizedDescription)")
+                    return
+                }
+
+                // Once consent is collected or not needed, start AdMob
+                if ConsentInformation.shared.canRequestAds {
+                    NSLog("🚀 [ADMOB_DEBUG] AdMob Initialized ✅ (after consent)")
+                    MobileAds.shared.start()
+                }
+            }
         }
     }
 }

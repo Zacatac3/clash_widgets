@@ -29,7 +29,7 @@ enum ProfileSelection: String, AppEnum, CaseDisplayRepresentable {
     
     // Compile-time static display representations (no runtime computation allowed)
     static var caseDisplayRepresentations: [ProfileSelection: DisplayRepresentation] = [
-        .automatic: DisplayRepresentation(title: LocalizedStringResource("🔄 Automatic (Last Opened)")),
+        .automatic: DisplayRepresentation(title: LocalizedStringResource("Last Opened Profile")),
         .profile1: DisplayRepresentation(title: LocalizedStringResource("Profile 1")),
         .profile2: DisplayRepresentation(title: LocalizedStringResource("Profile 2")),
         .profile3: DisplayRepresentation(title: LocalizedStringResource("Profile 3")),

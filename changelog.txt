@@ -25,7 +25,6 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 * on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
 * haptics are too strong when adjusting sliders
 *Widgets, when tinted or clear, have assets messed up
-* helper timer does not increment
 * Widgets not showing
 
 — Upcoming / Unreleased Updates —
@@ -52,6 +51,12 @@ Hotfix planned for after launch and collecting user feedback
 - lowered iOS requirement to iOS 18.0
 - 4 builders now makes the widget 2x2 for better looks
 - added notifications for helpers
+
+1.0.3/1.1 - early feb
+- Added EU consent form
+Planned:
+- profile label on widgets
+- fix wonky haptics
 
 1.1 -
 First major feature release planned
