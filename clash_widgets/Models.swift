@@ -630,3 +630,26 @@ struct HouseElement: Codable, Identifiable {
         case elementID = "id"
     }
 }
+
+// MARK: - Hero JSON Models (parsed_json_files/heroes.json)
+struct HeroJSON: Codable {
+    let internalName: String
+    let levels: [HeroJSONLevel]
+}
+
+struct HeroJSONLevel: Codable {
+    let level: Int
+    let TID: String?
+    let UpgradeTimeH: String?
+    let UpgradeResource: String?
+    let UpgradeCost: String?
+    let RequiredTownHallLevel: String
+    let RequiredHeroTavernLevel: String
+    let upgradeTimeSeconds: Int?
+}
+
+struct HeroMapping: Codable {
+    let displayName: String
+    let internalName: String
+    let id: Int
+}

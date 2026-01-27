@@ -442,6 +442,7 @@ private struct WhatsNewSection: Identifiable {
 private func defaultWhatsNewSections() -> [WhatsNewSection] {
     // Most recent first. Populate with placeholders for now.
     return [
+        WhatsNewSection(dateLabel: "1/27/2026 - Critical Widget Fix", bullets: ["Widgets fixed: Widgets should now work on all iOS/iPadOS versions and devices", "Added EU consent form", "fixed league icons naming error", "fixed hero levels in the profile tab not being relevant to current town hall", "wall costs now display billions properly", "wall costs now scale with gold pass"]),
         WhatsNewSection(dateLabel: "1/27/2026 - Post Release Bug Fixes and Tweaks", bullets: ["New Walls Section on the home screen","Widgets can now be set to a certain profile (press and hold on the widget, and press 'edit widget')","Streamlined Onboarding - Now contains instructions & Split into two pages, and For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "Added notifications for helpers", "many other various fixes and improvements"]),
         WhatsNewSection(dateLabel: "1/25/26 - Hot Fix", bullets: ["Imporved new user experience"," fixed ads showing up after purchasing ad-free", "pop-ups no longer show up when not supposed to", "fixed various minor bugs"]),
         WhatsNewSection(dateLabel: "1/23/26 - Initial Version", bullets: ["Initial version with core features"," Broken Onboarding and helper timers", "other known issues"])
@@ -2544,6 +2545,10 @@ private struct DashboardView: View {
         let wallData = wallProgressData.filter { $0.upgradesRemaining > 0 && $0.level < maxWallLevel }
         let totalCost = wallData.reduce(0) { $0 + $1.totalCostForLevel }
         
+        // Apply gold pass boost if applicable
+        let goldPassBoost = dataService.currentProfile?.goldPassBoost ?? 0
+        let boostedTotalCost = applyGoldPassDiscount(to: totalCost, boostPercentage: goldPassBoost)
+        
         return VStack(alignment: .leading, spacing: 12) {
             if wallData.isEmpty {
                 Text("All walls maxed out!")
@@ -2571,11 +2576,13 @@ private struct DashboardView: View {
                             
                             Spacer()
                             
+                            let boostedLevelCost = applyGoldPassDiscount(to: wallLevel.totalCostForLevel, boostPercentage: goldPassBoost)
+                            let boostedPerWallCost = applyGoldPassDiscount(to: wallLevel.costPerLevel, boostPercentage: goldPassBoost)
                             VStack(alignment: .trailing, spacing: 2) {
-                                Text(formatCost(wallLevel.totalCostForLevel))
+                                Text(formatCost(boostedLevelCost))
                                     .font(.headline)
                                     .foregroundColor(.accentColor)
-                                Text("\(wallLevel.costPerLevel.formattedCompact())/wall")
+                                Text("\(boostedPerWallCost.formattedCompact())/wall")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
                             }
@@ -2591,7 +2598,7 @@ private struct DashboardView: View {
                     Text("Total Cost to Max All Walls")
                         .font(.headline)
                     Spacer()
-                    Text(formatCost(totalCost))
+                    Text(formatCost(boostedTotalCost))
                         .font(.headline)
                         .foregroundColor(.accentColor)
                 }
@@ -2601,13 +2608,42 @@ private struct DashboardView: View {
     }
 
     private func formatCost(_ cost: Int) -> String {
-        if cost >= 1_000_000 {
-            return String(format: "%.1fM", Double(cost) / 1_000_000)
-        } else if cost >= 1_000 {
-            return String(format: "%.0fK", Double(cost) / 1_000)
+        let value = Double(cost)
+        
+        if value >= 1_000_000_000 {
+            // Billions: 2-3 significant figures
+            let billions = value / 1_000_000_000
+            if billions >= 100 {
+                return String(format: "%.0fB", billions)
+            } else if billions >= 10 {
+                return String(format: "%.1fB", billions)
+            } else {
+                return String(format: "%.2fB", billions)
+            }
+        } else if value >= 1_000_000 {
+            // Millions: 2-3 significant figures
+            let millions = value / 1_000_000
+            if millions >= 100 {
+                return String(format: "%.0fM", millions)
+            } else if millions >= 10 {
+                return String(format: "%.1fM", millions)
+            } else {
+                return String(format: "%.2fM", millions)
+            }
+        } else if value >= 1_000 {
+            return String(format: "%.0fK", value / 1_000)
         } else {
-            return "\(cost)"
+            return "\(Int(value))"
         }
+    }
+
+    private func applyGoldPassDiscount(to cost: Int, boostPercentage: Int) -> Int {
+        if boostPercentage <= 0 {
+            return cost
+        }
+        // Gold Pass applies a discount (e.g., 10% boost = 10% reduction in cost)
+        let discountFactor = Double(100 - boostPercentage) / 100.0
+        return Int(Double(cost) * discountFactor)
     }
 
     private func pasteAndImport() {
@@ -3124,6 +3160,7 @@ private struct ProfileDetailView: View {
                 Text("Hero Levels")
                     .font(.headline)
                 ForEach(sortedHeroes, id: \.name) { hero in
+                    let actualMaxLevel = getMaxHeroLevel(heroName: hero.name, townHallLevel: townHallLevel)
                     HStack {
                         if let assetName = heroAssetName(hero.name) {
                             Image(assetName)
@@ -3139,12 +3176,12 @@ private struct ProfileDetailView: View {
                         VStack(alignment: .leading) {
                             Text(hero.name)
                                 .font(.subheadline)
-                            Text("Level \(hero.level) / \(hero.maxLevel)")
+                            Text("Level \(hero.level) / \(actualMaxLevel)")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
-                        ProgressView(value: Double(hero.level), total: Double(hero.maxLevel))
+                        ProgressView(value: Double(hero.level), total: Double(actualMaxLevel))
                             .progressViewStyle(.linear)
                             .frame(width: 120)
                     }
@@ -3179,6 +3216,137 @@ private struct ProfileDetailView: View {
         default:
             return nil
         }
+    }
+
+    private func getMaxHeroLevel(heroName: String, townHallLevel: Int) -> Int {
+        // Load heroes.json and find max level for this hero at the given town hall level
+        guard let heroesData = loadHeroesJSON() else {
+            return 100 // Fallback default
+        }
+        
+        // Convert display name to internal name using the mapping
+        let internalName = getHeroInternalName(for: heroName) ?? heroName
+        
+        // Find the hero in the JSON using internal name
+        if let hero = heroesData.first(where: { $0.internalName.lowercased() == internalName.lowercased() }) {
+            // Get the Hero Tavern level for this town hall
+            let heroTavernLevel = getHeroTavernLevel(for: townHallLevel)
+            
+            // Find the max level available with this Hero Tavern level and town hall
+            var maxLevel = 1
+            for level in hero.levels {
+                if let tavernLevelRequired = Int(level.RequiredHeroTavernLevel),
+                   let thLevelRequired = Int(level.RequiredTownHallLevel),
+                   tavernLevelRequired <= heroTavernLevel && thLevelRequired <= townHallLevel {
+                    maxLevel = level.level
+                }
+            }
+            return maxLevel
+        }
+        
+        return 100 // Fallback default
+    }
+    
+    private func getHeroTavernLevel(for townHallLevel: Int) -> Int {
+        // Hero Tavern levels by town hall level
+        let heroTavernByTH: [Int: Int] = [
+            7: 1,
+            8: 2,
+            9: 3,
+            10: 4,
+            11: 5,
+            12: 6,
+            13: 7,
+            14: 8,
+            15: 9,
+            16: 10,
+            17: 11,
+            18: 12
+        ]
+        
+        return heroTavernByTH[townHallLevel] ?? 1
+    }
+    
+    private func loadHeroesJSON() -> [HeroJSON]? {
+        // Try multiple possible paths for the heroes.json file
+        let possiblePaths = [
+            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files"),
+            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "upgrade_info"),
+            Bundle.main.url(forResource: "heroes", withExtension: "json")
+        ]
+        
+        var url: URL?
+        for path in possiblePaths {
+            if let validPath = path, FileManager.default.fileExists(atPath: validPath.path) {
+                url = validPath
+                break
+            }
+        }
+        
+        guard let url = url else {
+            NSLog("❌ [HEROES_JSON] Could not find heroes.json in bundle")
+            return nil
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let heroes = try decoder.decode([HeroJSON].self, from: data)
+            NSLog("✅ [HEROES_JSON] Successfully loaded \(heroes.count) heroes from \(url.lastPathComponent)")
+            return heroes
+        } catch {
+            NSLog("❌ [HEROES_JSON] Error loading heroes.json: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    private func loadHeroesMapping() -> [String: HeroMapping]? {
+        // Load the heroes_json_map.json file for display name to internal name mapping
+        let possiblePaths = [
+            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "upgrade_info/json_maps"),
+            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "upgrade_info"),
+            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json")
+        ]
+        
+        var url: URL?
+        for path in possiblePaths {
+            if let validPath = path, FileManager.default.fileExists(atPath: validPath.path) {
+                url = validPath
+                break
+            }
+        }
+        
+        guard let url = url else {
+            NSLog("⚠️ [HEROES_MAP] Could not find heroes_json_map.json in bundle")
+            return nil
+        }
+        
+        do {
+            let data = try Data(contentsOf: url)
+            let decoder = JSONDecoder()
+            let mapping = try decoder.decode([String: HeroMapping].self, from: data)
+            NSLog("✅ [HEROES_MAP] Successfully loaded heroes mapping with \(mapping.count) entries")
+            return mapping
+        } catch {
+            NSLog("⚠️ [HEROES_MAP] Error loading heroes_json_map.json: \(error.localizedDescription)")
+            return nil
+        }
+    }
+    
+    private func getHeroInternalName(for displayName: String) -> String? {
+        // Use the mapping to convert display name to internal name
+        guard let mapping = loadHeroesMapping() else {
+            return nil
+        }
+        
+        // Search through the mapping to find the entry with matching display name
+        for (_, heroMap) in mapping {
+            if heroMap.displayName.lowercased() == displayName.lowercased() {
+                return heroMap.internalName
+            }
+        }
+        
+        return nil
     }
 
     private var achievementsSection: some View {

@@ -52,11 +52,20 @@ Hotfix planned for after launch and collecting user feedback
 - 4 builders now makes the widget 2x2 for better looks
 - added notifications for helpers
 
-1.0.3/1.1 - early feb
+1.0.3 - 1/27/26
+Main Fix:
+- Widgets fixed: Widgets should now work on all iOS/iPadOS versions and devices
+
 - Added EU consent form
+- fixed league icons naming error
+- fixed hero levels in the profile tab not being relevant to current town hall
+- wall costs now display billions properly
+- wall costs now scale with gold pass
+
 Planned:
 - profile label on widgets
 - fix wonky haptics
+- Proirity notifications
 
 1.1 -
 First major feature release planned
