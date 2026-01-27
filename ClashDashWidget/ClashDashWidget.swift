@@ -262,7 +262,7 @@ struct ClashDashWidgetEntryView : View {
     }
 
     var body: some View {
-        VStack(spacing: 6) {
+        VStack(spacing: 2) {
             // Dynamic grid: 2x2 for 4 builders, 3x2 for 5-6 builders
             LazyVGrid(columns: columns, spacing: 4) {
                 ForEach(0..<max(min(entry.builderCount, 6), 0), id: \.self) { index in
@@ -272,7 +272,7 @@ struct ClashDashWidgetEntryView : View {
             }
             .padding(.horizontal, 6)
             
-            // Status line (always visible)
+            // Status line (always visible) - with extra padding on bottom to avoid widget edge
             HStack {
                 Spacer()
                 if entry.upgrades.count >= entry.builderCount {
@@ -293,6 +293,7 @@ struct ClashDashWidgetEntryView : View {
                 Spacer()
             }
             .frame(minHeight: 16)
+            .padding(.bottom, 8)
         }
         .padding(12)
         .widgetURL(URL(string: "clashdash://refresh"))
@@ -731,7 +732,7 @@ struct HelperCooldownWidgetEntryView: View {
                         .frame(height: 6)
 
                         // Status on separate line
-                        Text(entry.helpers.first?.cooldownText(referenceDate: context.date) ?? (clamped <= 0 ? "Helper ready to work" : "0s"))
+                        Text(entry.helpers.first?.cooldownText(referenceDate: context.date) ?? (clamped <= 0 ? "Ready to Work" : "0s"))
                             .font(.system(size: 10))
                             .foregroundColor(clamped > 0 ? .orange : .green)
                     }
@@ -774,7 +775,7 @@ struct HelperCooldownWidgetEntryView: View {
     }
 
     private func formatHelperCooldown(_ seconds: Int) -> String {
-        if seconds <= 0 { return "Helper ready to work" }
+        if seconds <= 0 { return "Ready to Work" }
         let hours = seconds / 3600
         let minutes = (seconds % 3600) / 60
         let secs = seconds % 60
