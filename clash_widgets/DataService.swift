@@ -2,6 +2,11 @@ import Foundation
 import Combine
 import WidgetKit
 
+enum Village {
+    case home
+    case builder
+}
+
 class DataService: ObservableObject {
     static let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
@@ -305,6 +310,45 @@ class DataService: ObservableObject {
             }
         }
         return bestLevel
+    }
+
+    func getTownHallLevel(from village: Village) -> Int {
+        // Strategy: Default to JSON import, fallback to API
+        
+        // First, try to get from JSON export
+        if let profile = currentProfile,
+           let export = decodeExport(from: profile.rawJSON) {
+            if village == .home {
+                // Find town hall building in export
+                if let townHall = export.buildings?.first(where: { building in
+                    let name = mapping[building.data]?.lowercased() ?? ""
+                    return name.contains("town hall") || name.contains("townhall")
+                }), let level = townHall.lvl {
+                    return level
+                }
+            } else if village == .builder {
+                // Find builder hall building in export
+                if let builderHall = export.buildings?.first(where: { building in
+                    let name = mapping[building.data]?.lowercased() ?? ""
+                    return name.contains("builder hall") || name.contains("builderhall") || name.contains("builder base")
+                }), let level = builderHall.lvl {
+                    return level
+                }
+            }
+        }
+        
+        // Fallback to API cached profile
+        if village == .home {
+            if let cached = cachedProfile?.townHallLevel {
+                return cached
+            }
+            return currentProfile?.cachedProfile?.townHallLevel ?? 0
+        } else {
+            if let cached = cachedProfile?.builderHallLevel {
+                return cached
+            }
+            return currentProfile?.cachedProfile?.builderHallLevel ?? 0
+        }
     }
 
     func helperCooldowns(from rawJSON: String) -> [HelperCooldownEntry] {

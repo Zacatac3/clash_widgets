@@ -1486,7 +1486,7 @@ private struct ProgressOverviewView: View {
     }
 
     private var currentTownHall: Int {
-        dataService.cachedProfile?.townHallLevel ?? dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
+        dataService.getTownHallLevel(from: .home)
     }
 
     private func reload() {
@@ -2368,17 +2368,13 @@ private struct DashboardView: View {
     }
 
     private var displayedTownHallLevel: Int {
-        if let cached = dataService.cachedProfile?.townHallLevel {
-            return cached
-        }
-        return dataService.currentProfile?.cachedProfile?.townHallLevel ?? 0
+        // Default to JSON export, fallback to API
+        return dataService.getTownHallLevel(from: .home)
     }
 
     private var displayedBuilderHallLevel: Int {
-        if let cached = dataService.cachedProfile?.builderHallLevel {
-            return cached
-        }
-        return dataService.currentProfile?.cachedProfile?.builderHallLevel ?? 0
+        // Default to JSON export, fallback to API
+        return dataService.getTownHallLevel(from: .builder)
     }
 
     private var builderVillageUpgrades: [BuildingUpgrade] {
@@ -3127,14 +3123,18 @@ private struct ProfileDetailView: View {
     }
 
     private var heroShowcase: some View {
-        guard let heroes = resolvedProfile?.heroes, !heroes.isEmpty else {
+        // Get heroes from export (JSON import) first, fallback to API
+        let heroesToDisplay = getHeroesForDisplay()
+        
+        guard !heroesToDisplay.isEmpty else {
             return AnyView(EmptyView())
         }
+        
         let excludedHeroes: Set<String> = [
             "battle machine",
             "battle copter"
         ]
-        let filteredHeroes = heroes.filter { hero in
+        let filteredHeroes = heroesToDisplay.filter { hero in
             !excludedHeroes.contains(hero.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
         }
         guard !filteredHeroes.isEmpty else {
@@ -3347,6 +3347,69 @@ private struct ProfileDetailView: View {
         }
         
         return nil
+    }
+
+    private func getHeroesForDisplay() -> [HeroProfile] {
+        // Strategy: Default to JSON import (ID 28xxx), fallback to API if missing
+        var heroesFromJSON: [HeroProfile] = []
+        var apiHeroes: [HeroProfile] = []
+        
+        // Get heroes from export (JSON import) and convert ExportHero to HeroProfile
+        if let profile = dataService.currentProfile,
+           let export = dataService.decodeExport(from: profile.rawJSON),
+           let exportHeroes = export.heroes {
+            heroesFromJSON = convertExportHeroes(exportHeroes)
+        }
+        
+        // Get heroes from API
+        if let apiHeroes_ = resolvedProfile?.heroes {
+            apiHeroes = apiHeroes_
+        }
+        
+        // If no JSON heroes, return API heroes
+        if heroesFromJSON.isEmpty {
+            return apiHeroes
+        }
+        
+        // Build result: prefer JSON for heroes that exist, fill gaps with API
+        var result: [HeroProfile] = []
+        var processedNames: Set<String> = []
+        
+        // First pass: add heroes from JSON (primary source)
+        for jsonHero in heroesFromJSON {
+            processedNames.insert(jsonHero.name.lowercased())
+            result.append(jsonHero)
+        }
+        
+        // Second pass: add missing heroes from API
+        for apiHero in apiHeroes {
+            if !processedNames.contains(apiHero.name.lowercased()) {
+                result.append(apiHero)
+                processedNames.insert(apiHero.name.lowercased())
+            }
+        }
+        
+        return result
+    }
+    
+    private func convertExportHeroes(_ exportHeroes: [ExportHero]) -> [HeroProfile] {
+        guard let mapping = loadHeroesMapping() else { return [] }
+        
+        var result: [HeroProfile] = []
+        for exportHero in exportHeroes {
+            // Find the hero mapping by ID
+            if let heroMapping = mapping.values.first(where: { $0.id == exportHero.data }) {
+                let hero = HeroProfile(
+                    name: heroMapping.displayName,
+                    level: exportHero.lvl,
+                    maxLevel: 100, // Default fallback, will be refined by getMaxHeroLevel
+                    village: "home",
+                    equipment: nil
+                )
+                result.append(hero)
+            }
+        }
+        return result
     }
 
     private var achievementsSection: some View {

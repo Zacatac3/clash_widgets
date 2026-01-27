@@ -61,6 +61,7 @@ Main Fix:
 - fixed hero levels in the profile tab not being relevant to current town hall
 - wall costs now display billions properly
 - wall costs now scale with gold pass
+- Changed Hero levels and Town Hall level to draw from import instead of API, for edge case scenarios 
 
 Planned:
 - profile label on widgets
