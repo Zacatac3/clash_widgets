@@ -163,6 +163,10 @@ struct ContentView: View {
                         .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                         .tag(Tab.equipment)
 
+                    AssetsCatalogView()
+                        .tabItem { Label("Assets", systemImage: "photo.on.rectangle.angled") }
+                        .tag(Tab.assetsCatalog)
+
                     SettingsView()
                         .tabItem { Label("Settings", systemImage: "gearshape") }
                         .tag(Tab.settings)
@@ -369,6 +373,7 @@ struct ContentView: View {
         case equipment
         case progress
         case palette
+        case assetsCatalog
         case settings
     }
 }
@@ -1040,7 +1045,13 @@ private struct ProgressOverviewView: View {
 
     private func resourceImage(_ name: String) -> Image {
         #if canImport(UIKit)
-        if let image = UIImage(named: "resources/\(name)") ?? UIImage(named: name) {
+        // Try the provided name first, then resources/ prefix. If the asset name contained a folder
+        // component (e.g. "heroes/Barbarian_King"), also try the last path component as a fallback.
+        if let image = UIImage(named: name) ?? UIImage(named: "resources/\(name)") {
+            return Image(uiImage: image)
+        }
+        if let last = name.split(separator: "/").last.map(String.init),
+           let image = UIImage(named: last) ?? UIImage(named: "resources/\(last)") {
             return Image(uiImage: image)
         }
         return Image(systemName: "questionmark.square")
