@@ -604,6 +604,239 @@ private struct WhatsNewView: View {
     }
 }
 
+// MARK: - Assets Catalog View
+private struct AssetsCatalogView: View {
+    enum Mode: String, CaseIterable, Identifiable {
+        case byId = "By ID"
+        case byAsset = "By Asset"
+        var id: String { rawValue }
+    }
+
+    @State private var assets: [AssetRecord] = []
+    @State private var assetsByAssetName: [AssetRecord] = []
+    @State private var selectedMode: Mode = .byId
+
+    private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 4)
+
+    var body: some View {
+        NavigationStack {
+            VStack {
+                Picker("Mode", selection: $selectedMode) {
+                    ForEach(Mode.allCases) { mode in
+                        Text(mode.rawValue).tag(mode)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+
+                ScrollView {
+                    LazyVGrid(columns: columns, spacing: 16) {
+                        ForEach(selectedMode == .byId ? assets : assetsByAssetName) { asset in
+                            VStack(spacing: 6) {
+                                Group {
+                                    #if canImport(UIKit)
+                                    if let ui = UIImage(named: asset.slug) {
+                                        Image(uiImage: ui)
+                                            .resizable()
+                                            .scaledToFit()
+                                    } else if let ui2 = UIImage(named: "buildings_home/\(asset.slug)") {
+                                        Image(uiImage: ui2)
+                                            .resizable()
+                                            .scaledToFit()
+                                    } else {
+                                        Image(systemName: "photo")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .foregroundColor(.secondary)
+                                    }
+                                    #else
+                                    Image(asset.slug)
+                                        .resizable()
+                                        .scaledToFit()
+                                    #endif
+                                }
+                                .frame(height: 48)
+
+                                VStack(spacing: 2) {
+                                    if let id = asset.dataId {
+                                        Text("#\(id)")
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                    } else {
+                                        Text("")
+                                            .font(.caption2)
+                                    }
+                                    Text(asset.displayName)
+                                        .font(.caption)
+                                        .lineLimit(2)
+                                        .multilineTextAlignment(.center)
+                                }
+                            }
+                            .padding(8)
+                            .background(RoundedRectangle(cornerRadius: 8).fill(Color(.secondarySystemBackground)))
+                        }
+                    }
+                    .padding()
+                }
+            }
+            .navigationTitle("Assets Catalog")
+            .onAppear(perform: buildAssetLists)
+        }
+    }
+
+    // Build both lists: by ID (existing map-driven) and by Asset (scan local imageset folders and match them to maps)
+    private func buildAssetLists() {
+        // First, build maps from JSON files
+        var displayToId: [String: Int] = [:]
+        var slugToEntry: [String: (display: String, id: Int?)] = [:]
+
+        // Load mapping.json (id -> display name)
+        if let url = Bundle.main.url(forResource: "upgrade_info/mapping", withExtension: "json") {
+            if let data = try? Data(contentsOf: url), let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                for (k, v) in dict {
+                    if let id = Int(k), let disp = v as? String {
+                        displayToId[disp] = id
+                    }
+                }
+            }
+        }
+
+        // Scan json_maps to build internalName -> (display, id)
+        if let mapsURL = Bundle.main.url(forResource: "upgrade_info/json_maps", withExtension: nil) {
+            let fm = FileManager.default
+            if let enumerator = fm.enumerator(at: mapsURL, includingPropertiesForKeys: nil) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.pathExtension == "json" {
+                        if let data = try? Data(contentsOf: fileURL),
+                           let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                            for (_, v) in root {
+                                if let entry = v as? [String: Any] {
+                                    let display = (entry["displayName"] as? String) ?? (entry["internalName"] as? String) ?? "Unnamed"
+                                    let internalName = (entry["internalName"] as? String) ?? display
+                                    let id = (entry["id"] as? Int)
+                                    let slug = Self.sanitize(internalName)
+                                    slugToEntry[slug] = (display: display, id: id ?? displayToId[display])
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // asset_map.json overrides (display -> slug)
+        var assetOverrides: [String: String] = [:]
+        if let url = Bundle.main.url(forResource: "asset_map", withExtension: "json") {
+            if let data = try? Data(contentsOf: url), let dict = try? JSONDecoder().decode([String: String].self, from: data) {
+                assetOverrides = dict
+                for (display, slug) in dict {
+                    let s = Self.sanitize(slug)
+                    slugToEntry[s] = (display: display, id: displayToId[display])
+                }
+            }
+        }
+
+        // Build 'By ID' list from slugToEntry (map-driven)
+        var byIdRecords: [AssetRecord] = []
+        for (slug, (display, id)) in slugToEntry {
+            let exists = Self.imageExists(named: slug)
+            byIdRecords.append(AssetRecord(slug: slug, displayName: display, dataId: id, imageExists: exists))
+        }
+
+        byIdRecords.sort { lhs, rhs in
+            if let li = lhs.dataId, let ri = rhs.dataId { return li < ri }
+            if lhs.dataId != nil { return true }
+            if rhs.dataId != nil { return false }
+            return lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending
+        }
+
+        // Build 'By Asset' list by scanning .imageset directories in likely project asset folders
+        var foundAssets: [String] = []
+        let fm = FileManager.default
+        var candidateRoots: [URL] = []
+
+        if let resourceURL = Bundle.main.resourceURL {
+            candidateRoots.append(resourceURL)
+            candidateRoots.append(resourceURL.deletingLastPathComponent())
+        }
+        if let cwd = URL(string: FileManager.default.currentDirectoryPath) {
+            candidateRoots.append(cwd)
+        }
+        if let env = ProcessInfo.processInfo.environment["PWD"], let pwd = URL(string: env) {
+            candidateRoots.append(pwd)
+        }
+
+        // Also try common relative paths
+        candidateRoots.append(URL(fileURLWithPath: "./clash_widgets/Assets.xcassets", isDirectory: true))
+        candidateRoots.append(URL(fileURLWithPath: "./ClashDashWidget/Assets.xcassets", isDirectory: true))
+
+        for root in candidateRoots {
+            if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.pathExtension == "imageset" {
+                        let name = fileURL.deletingPathExtension().lastPathComponent
+                        let slug = Self.sanitize(name)
+                        if !foundAssets.contains(slug) {
+                            foundAssets.append(slug)
+                        }
+                    }
+                }
+            }
+        }
+
+        // Create records for by-asset list
+        var byAssetRecords: [AssetRecord] = []
+        for slug in foundAssets {
+            let mapped = slugToEntry[slug]
+            let display = mapped?.display ?? slug.replacingOccurrences(of: "_", with: " ").capitalized
+            let id = mapped?.id
+            let exists = Self.imageExists(named: slug)
+            byAssetRecords.append(AssetRecord(slug: slug, displayName: display, dataId: id, imageExists: exists))
+        }
+
+        // Also include any images we can detect via UIImageNamed list of common slugs (fallback)
+        let fallbackSlugs = byIdRecords.map { $0.slug } + byAssetRecords.map { $0.slug }
+        for slug in fallbackSlugs where !foundAssets.contains(slug) {
+            if Self.imageExists(named: slug) {
+                let mapped = slugToEntry[slug]
+                let display = mapped?.display ?? slug.replacingOccurrences(of: "_", with: " ").capitalized
+                let id = mapped?.id
+                byAssetRecords.append(AssetRecord(slug: slug, displayName: display, dataId: id, imageExists: true))
+            }
+        }
+
+        byAssetRecords.sort { lhs, rhs in lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending }
+
+        DispatchQueue.main.async {
+            self.assets = byIdRecords
+            self.assetsByAssetName = byAssetRecords
+        }
+    }
+
+    private static func sanitize(_ s: String) -> String {
+        return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined(separator: "_")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+            .lowercased()
+    }
+
+    private static func imageExists(named name: String) -> Bool {
+        #if canImport(UIKit)
+        return UIImage(named: name) != nil || UIImage(named: "buildings_home/\(name)") != nil
+        #else
+        return false
+        #endif
+    }
+}
+
+private struct AssetRecord: Identifiable, Hashable {
+    let id = UUID()
+    let slug: String
+    let displayName: String
+    let dataId: Int?
+    let imageExists: Bool
+}
+
 private struct ChangelogView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var changelogText: String = ""
