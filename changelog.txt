@@ -2,7 +2,7 @@
 *New Features*
 - Release build
 
-1.0.1 - 
+1.0.1 - 1/25/2026
 Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs and improving new user Experience
 
 *New Features*
@@ -30,8 +30,12 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 
 — Upcoming / Unreleased Updates —
 
-1.0.2 - 
+1.0.2 - 1/27/2026
 Hotfix planned for after launch and collecting user feedback
+
+*New Features*
+- Widgets now allow for displaying both most recent profile as well as a specific profile
+- Walls section in the home screen showing remaining wall costs
 
 *Fixes and Improvements*
 - Helper timers now increment on the widget and home page
@@ -41,11 +45,13 @@ Hotfix planned for after launch and collecting user feedback
 - added "open game settings" button to home and profile setup
 - split onboarding into two pages for simplicity
 - added detailed instructions to onboarding, improved flow
-
-*Fixes and Improvements* PLANNED*
-* Add "in progess" filter to achievements section
-* remove / fix restore purchases button
-* Helper notifications, reset helper timer without import
+- goblin builder no longer breaks widgets, simply displays the 6 shortest upgrades
+- Widgets should look the same across screen sizes
+- Better asset fallback to prevent missing assets in almost all causes
+- Widgets are now better with longer troop/building names
+- lowered iOS requirement to iOS 18.0
+- 4 builders now makes the widget 2x2 for better looks
+- added notifications for helpers
 
 1.1 -
 First major feature release planned
@@ -59,6 +65,7 @@ First major feature release planned
 * Ability to set notifications to pre-notify in advance of upgrade completion
 * Remove ? Hide selected home screen cards
 * add gem rewards to achievements and remaining helper costs in gems 
+*Hide sections on the home screen
 *Upgrade history
 
 1.2 (and beyond) - 

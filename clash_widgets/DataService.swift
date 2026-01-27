@@ -1453,14 +1453,16 @@ class DataService: ObservableObject {
                     let displayNameOverride = seasonalDefenseModuleNameOverrides[module.data]
                     return [
                         buildUpgrade(
-                            dataId: module.data,
+                            dataId: type.data,  // Use the BUILDING ID (103xxxxxx) for asset/name lookup
                             currentLevel: level,
                             remainingSeconds: TimeInterval(timer),
                             category: category,
                             fallbackPrefix: fallbackPrefix,
                             referenceDate: referenceDate,
                             usesGoblin: module.extra ?? false,
-                            displayNameOverride: displayNameOverride
+                            displayNameOverride: displayNameOverride,
+                            isSeasonalDefense: true,
+                            durationDataId: module.data  // Use the MODULE ID (102xxxxxx) for duration lookup
                         )
                     ]
                 }
@@ -1568,12 +1570,15 @@ class DataService: ObservableObject {
         superchargeLevel: Int? = nil,
         superchargeTargetLevel: Int? = nil,
         usesGoblin: Bool = false,
-        displayNameOverride: String? = nil
+        displayNameOverride: String? = nil,
+        isSeasonalDefense: Bool = false,
+        durationDataId: Int? = nil
     ) -> BuildingUpgrade {
+        let durationId = durationDataId ?? dataId
         let canonical = durationFor(
-            dataId: dataId,
+            dataId: durationId,
             fromLevel: currentLevel,
-            buildingName: mapping[dataId] ?? "",
+            buildingName: mapping[durationId] ?? "",
             superchargeTargetLevel: superchargeTargetLevel
         )
         let totalDuration = max(canonical ?? remainingSeconds, remainingSeconds)
@@ -1592,7 +1597,8 @@ class DataService: ObservableObject {
             endTime: end,
             category: category,
             startTime: start,
-            totalDuration: totalDuration
+            totalDuration: totalDuration,
+            isSeasonalDefense: isSeasonalDefense
         )
     }
 

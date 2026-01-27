@@ -91,10 +91,11 @@ struct BuildingUpgrade: Identifiable, Codable {
     let category: UpgradeCategory
     let startTime: Date
     let totalDuration: TimeInterval
+    let isSeasonalDefense: Bool?
     
     let usesGoblin: Bool
     
-    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, superchargeLevel: Int? = nil, superchargeTargetLevel: Int? = nil, usesGoblin: Bool = false, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0) {
+    init(id: UUID = UUID(), dataId: Int? = nil, name: String, targetLevel: Int, superchargeLevel: Int? = nil, superchargeTargetLevel: Int? = nil, usesGoblin: Bool = false, endTime: Date, category: UpgradeCategory, startTime: Date = Date(), totalDuration: TimeInterval = 0, isSeasonalDefense: Bool? = false) {
         self.id = id
         self.dataId = dataId
         self.name = name
@@ -106,10 +107,11 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.category = category
         self.startTime = startTime
         self.totalDuration = totalDuration
+        self.isSeasonalDefense = isSeasonalDefense
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration
+        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration, isSeasonalDefense
     }
     
     init(from decoder: Decoder) throws {
@@ -125,6 +127,7 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.category = try container.decodeIfPresent(UpgradeCategory.self, forKey: .category) ?? .builderVillage
         self.startTime = try container.decodeIfPresent(Date.self, forKey: .startTime) ?? Date()
         self.totalDuration = try container.decodeIfPresent(TimeInterval.self, forKey: .totalDuration) ?? max(0, endTime.timeIntervalSince(Date()))
+        self.isSeasonalDefense = try container.decodeIfPresent(Bool.self, forKey: .isSeasonalDefense)
     }
     
     func encode(to encoder: Encoder) throws {
@@ -140,6 +143,7 @@ struct BuildingUpgrade: Identifiable, Codable {
         try container.encode(category, forKey: .category)
         try container.encode(startTime, forKey: .startTime)
         try container.encode(totalDuration, forKey: .totalDuration)
+        try container.encodeIfPresent(isSeasonalDefense, forKey: .isSeasonalDefense)
     }
 
     var levelDisplayText: String {

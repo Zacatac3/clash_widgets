@@ -34,13 +34,22 @@ final class AppAssetResolver {
     }
 
     func assetSlug(for name: String) -> String? {
-        // Fallback to reading asset_map.json in app group
+        // 1) Prefer runtime app-group overrides (used for temporary overrides during debugging)
         if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets"),
            let overridesData = try? Data(contentsOf: container.appendingPathComponent("asset_map.json")),
            let dict = try? JSONDecoder().decode([String: String].self, from: overridesData) {
             let key = Self.sanitize(name)
+            if let v = dict[name] ?? dict[key] { return v }
+        }
+
+        // 2) Fallback to the bundled asset_map.json (stable mapping shipped with the app)
+        if let bundleURL = Bundle.main.url(forResource: "asset_map", withExtension: "json"),
+           let data = try? Data(contentsOf: bundleURL),
+           let dict = try? JSONDecoder().decode([String: String].self, from: data) {
+            let key = Self.sanitize(name)
             return dict[name] ?? dict[key]
         }
+
         return nil
     }
 
@@ -228,30 +237,21 @@ struct BuilderRow: View {
         case .builderBase: folder = "builder_base"
         }
 
-        // Use unified ID-based asset resolver for consistent asset loading
-        let assetName = AppAssetResolver.shared.assetName(for: upgrade)
+        // Sanitize display name: convert to lowercase and replace non-alphanumerics with underscores
+        let sanitizedName = Self.sanitize(upgrade.name)
         
         var variations: [String] = []
-        // First try with ID-resolved asset name
-        variations.append("\(folder)/\(assetName)")
         
-        // Then try asset map override
-        if let override = AppAssetResolver.shared.assetSlug(for: upgrade.name) {
-            variations.append("\(folder)/\(override)")
+        // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
+        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
+            variations.append("crafted_defenses/\(sanitizedName)")
         }
-
-        // Then try direct asset name
-        variations.append(assetName)
         
-        // Try variants with different capitalization
-        let nameOriginal = upgrade.name.components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .joined(separator: "_")
-            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-        variations.append(contentsOf: [
-            "\(folder)/\(nameOriginal)",
-            "\(folder)/\(assetName)",
-            nameOriginal
-        ])
+        // Try category-specific folder
+        variations.append("\(folder)/\(sanitizedName)")
+        
+        // Try direct sanitized name
+        variations.append(sanitizedName)
 
         for variant in variations {
             if UIImage(named: variant) != nil {
@@ -259,7 +259,14 @@ struct BuilderRow: View {
             }
         }
         
-        return "\(folder)/\(assetName)" // Default fallback
+        return "\(folder)/\(sanitizedName)" // Default fallback
+    }
+    
+    private static func sanitize(_ s: String) -> String {
+        return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined(separator: "_")
+            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
+            .lowercased()
     }
 }
 

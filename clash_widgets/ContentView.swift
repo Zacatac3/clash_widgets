@@ -163,9 +163,6 @@ struct ContentView: View {
                         .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
                         .tag(Tab.equipment)
 
-                    AssetsCatalogView()
-                        .tabItem { Label("Assets", systemImage: "photo.on.rectangle.angled") }
-                        .tag(Tab.assetsCatalog)
 
                     SettingsView()
                         .tabItem { Label("Settings", systemImage: "gearshape") }
@@ -445,7 +442,7 @@ private struct WhatsNewSection: Identifiable {
 private func defaultWhatsNewSections() -> [WhatsNewSection] {
     // Most recent first. Populate with placeholders for now.
     return [
-        WhatsNewSection(dateLabel: "xx/xx/2026 - Post Release Bug Fixes and Tweaks", bullets: ["Streamlined Onboarding - Now contains instructions & Split into two pages", "For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "many other various fixes and improvements"]),
+        WhatsNewSection(dateLabel: "1/27/2026 - Post Release Bug Fixes and Tweaks", bullets: ["New Walls Section on the home screen","Widgets can now be set to a certain profile (press and hold on the widget, and press 'edit widget')","Streamlined Onboarding - Now contains instructions & Split into two pages, and For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "Added notifications for helpers", "many other various fixes and improvements"]),
         WhatsNewSection(dateLabel: "1/25/26 - Hot Fix", bullets: ["Imporved new user experience"," fixed ads showing up after purchasing ad-free", "pop-ups no longer show up when not supposed to", "fixed various minor bugs"]),
         WhatsNewSection(dateLabel: "1/23/26 - Initial Version", bullets: ["Initial version with core features"," Broken Onboarding and helper timers", "other known issues"])
     ]
@@ -613,36 +610,49 @@ private struct AssetsCatalogView: View {
         var id: String { rawValue }
     }
 
+    enum MappingSort: String, CaseIterable, Identifiable {
+        case id = "ID"
+        case alpha = "A–Z"
+        var id: String { rawValue }
+    }
+
     @State private var assets: [AssetRecord] = []
     @State private var assetsByAssetName: [AssetRecord] = []
     @State private var assetsByMapping: [AssetRecord] = []
-    @State private var selectedMode: Mode = .byId
+    @State private var selectedMode: Mode = .byMapping
+    @State private var assetSubfolders: [String] = []
+    @State private var slugToImagesetURL: [String: URL] = [:]
+    @State private var mappingSort: MappingSort = .id
 
     private let columns = Array(repeating: GridItem(.flexible(), spacing: 12), count: 4)
 
     var body: some View {
         NavigationStack {
             VStack {
-                Picker("Mode", selection: $selectedMode) {
-                    ForEach(Mode.allCases) { mode in
-                        Text(mode.rawValue).tag(mode)
+                HStack(spacing: 12) {
+                    Text("By Mapping")
+                        .font(.headline)
+                        .padding(.horizontal)
+
+                    Picker("Sort", selection: $mappingSort) {
+                        ForEach(MappingSort.allCases) { s in
+                            Text(s.rawValue).tag(s)
+                        }
                     }
+                    .pickerStyle(.segmented)
+                    .frame(maxWidth: 240)
+
+                    Spacer()
                 }
-                .pickerStyle(.segmented)
-                .padding(.horizontal)
 
                 ScrollView {
                     LazyVGrid(columns: columns, spacing: 16) {
-                        ForEach(currentItems(for: selectedMode)) { asset in
+                        ForEach(mappingItemsSorted()) { asset in
                             VStack(spacing: 6) {
                                 Group {
                                     #if canImport(UIKit)
-                                    if let ui = UIImage(named: asset.slug) {
+                                    if let ui = uiImageForAsset(asset.slug) {
                                         Image(uiImage: ui)
-                                            .resizable()
-                                            .scaledToFit()
-                                    } else if let ui2 = UIImage(named: "buildings_home/\(asset.slug)") {
-                                        Image(uiImage: ui2)
                                             .resizable()
                                             .scaledToFit()
                                     } else {
@@ -686,11 +696,27 @@ private struct AssetsCatalogView: View {
         }
     }
 
+    private func mappingItemsSorted() -> [AssetRecord] {
+        switch mappingSort {
+        case .id:
+            return assetsByMapping.sorted { lhs, rhs in
+                if let li = lhs.dataId, let ri = rhs.dataId { return li < ri }
+                if lhs.dataId != nil { return true }
+                if rhs.dataId != nil { return false }
+                return lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending
+            }
+        case .alpha:
+            return assetsByMapping.sorted { lhs, rhs in
+                lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending
+            }
+        }
+    }
+
     private func currentItems(for mode: Mode) -> [AssetRecord] {
         switch mode {
         case .byId: return assets
         case .byAsset: return assetsByAssetName
-        case .byMapping: return assetsByMapping
+        case .byMapping: return mappingItemsSorted()
         }
     }
 
@@ -783,9 +809,12 @@ private struct AssetsCatalogView: View {
 
             // Enumerate in background and publish incrementally to avoid spikes
             var byAssetRecords: [AssetRecord] = []
-            let batchSize = 50
-            var batch: [AssetRecord] = []
+            var slugToImagesetURLLocal: [String: URL] = [:]
+            let excludedFoldersSet = Set(["leagues", "resources", "town_hall", "profile", "images"].map { $0.lowercased() })
 
+            // Enumerate files and collect records without publishing incrementally
+            var detectedFolders = Set<String>()
+            var slugToFolders: [String: Set<String>] = [:]
             for root in candidateRoots {
                 if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
                     for case let fileURL as URL in enumerator {
@@ -795,76 +824,233 @@ private struct AssetsCatalogView: View {
                             if foundAssets.contains(slug) { continue }
                             foundAssets.append(slug)
 
+                            // Capture parent folder (asset subfolder) for later UIImage lookup
+                            let parentFolder = fileURL.deletingLastPathComponent().lastPathComponent
+                            if parentFolder != "Assets.xcassets" && !parentFolder.isEmpty {
+                                detectedFolders.insert(parentFolder)
+                                // record folder for this slug as well
+                                slugToFolders[slug.lowercased(), default: []].insert(parentFolder.lowercased())
+                            }
+
+                            // Cache the imageset url for faster lookups later
+                            slugToImagesetURLLocal[slug.lowercased()] = fileURL
+
                             let mapped = slugToEntry[slug]
                             let display = mapped?.display ?? slug.replacingOccurrences(of: "_", with: " ").capitalized
                             let id = mapped?.id
                             let exists = Self.imageExistsOnDisk(named: slug)
                             let record = AssetRecord(slug: slug, displayName: display, dataId: id, imageExists: exists)
                             byAssetRecords.append(record)
-
-                            batch.append(record)
-                            if batch.count >= batchSize {
-                                let toPublish = batch
-                                batch.removeAll()
-                                DispatchQueue.main.async {
-                                    self.assetsByAssetName.append(contentsOf: toPublish)
-                                }
-                                // Small sleep/yield to avoid hogging CPU for extremely large trees
-                                Thread.sleep(forTimeInterval: 0.01)
-                            }
                         }
                     }
                 }
             }
+
+
 
             // Fallback detection for assets present via compiled UIImage
             // Check existing slugs from byIdRecords and byAssetRecords
             let fallbackSlugs = Set(byIdRecords.map { $0.slug } + byAssetRecords.map { $0.slug })
             for slug in fallbackSlugs where !foundAssets.contains(slug) {
                 if Self.imageExistsInBundle(named: slug) {
+                    // If compiled image is in a known subfolder, record it for mapping exclusion logic
+                    var recorded = false
+                    for folder in detectedFolders {
+                        if UIImage(named: "\(folder)/\(slug)") != nil {
+                            slugToFolders[slug.lowercased(), default: []].insert(folder.lowercased())
+                            recorded = true
+                            break
+                        }
+                    }
+
+                    // If not found in discovered folders, explicitly probe excluded folders (to detect compiled-only league images)
+                    if !recorded {
+                        for ex in excludedFoldersSet {
+                            if UIImage(named: "\(ex)/\(slug)") != nil {
+                                slugToFolders[slug.lowercased(), default: []].insert(ex)
+                                recorded = true
+                                break
+                            }
+                        }
+                    }
+
                     let mapped = slugToEntry[slug]
                     let display = mapped?.display ?? slug.replacingOccurrences(of: "_", with: " ").capitalized
                     let id = mapped?.id
                     let record = AssetRecord(slug: slug, displayName: display, dataId: id, imageExists: true)
                     byAssetRecords.append(record)
-                    batch.append(record)
-                    if batch.count >= batchSize {
-                        let toPublish = batch
-                        batch.removeAll()
-                        DispatchQueue.main.async {
-                            self.assetsByAssetName.append(contentsOf: toPublish)
+                }
+            }
+
+            // Build 'By Mapping' list from mapping.json directly (ordered by ID)
+            var byMappingRecords: [AssetRecord] = []
+            // local map: slug -> parent folder(s)
+
+            if let url = Bundle.main.url(forResource: "upgrade_info/mapping", withExtension: "json") {
+                if let data = try? Data(contentsOf: url), let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
+                    let sortedKeys = dict.keys.compactMap { Int($0) }.sorted()
+
+                    // Note: exclude certain asset subfolders from the mapping page (leagues, resources, town_hall, profile, images).
+                    // "crafted_defenses" was previously a subfolder of "buildings_home", but it is now a top-level folder and should be included.
+                    let excludedFolders = Set(["leagues", "resources", "town_hall", "profile", "images"].map { $0.lowercased() })
+
+                    // Build reverse index: id -> candidate slugs from json_maps (secondary lookup)
+                    var idToSlugs: [Int: [String]] = [:]
+                    for (slug, entry) in slugToEntry {
+                        if let id = entry.id {
+                            idToSlugs[id, default: []].append(slug)
+                        }
+                    }
+
+                    func findFolderForSlug(_ slug: String) -> String? {
+                        // 1) check discovered slugToFolders
+                        if let folders = slugToFolders[slug.lowercased()], !folders.isEmpty {
+                            // prefer a non-excluded folder if present
+                            for f in folders where !excludedFolders.contains(f) { return f }
+                            // otherwise return first (even if excluded)
+                            return folders.first
+                        }
+
+                        // 2) check known assetSubfolders by probing UIImage (prefer non-excluded)
+                        for folder in assetSubfolders {
+                            let lower = folder.lowercased()
+                            if excludedFolders.contains(lower) { continue }
+                            if UIImage(named: "\(folder)/\(slug)") != nil { return folder.lowercased() }
+                        }
+
+                        // 2b) if not found, check explicitly for excluded folders (compiled-only assets)
+                        for ex in excludedFolders {
+                            if UIImage(named: "\(ex)/\(slug)") != nil { return ex }
+                        }
+
+                        // 3) fallback: scan candidate roots for a matching imageset and return its parent
+                        let fm = FileManager.default
+                        let candidates: [URL?] = [
+                            Bundle.main.resourceURL,
+                            URL(fileURLWithPath: "./clash_widgets/Assets.xcassets", isDirectory: true),
+                            URL(fileURLWithPath: "./ClashDashWidget/Assets.xcassets", isDirectory: true)
+                        ]
+                        for rootOptional in candidates {
+                            guard let root = rootOptional else { continue }
+                            if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
+                                for case let fileURL as URL in enumerator {
+                                    if fileURL.pathExtension == "imageset" && fileURL.deletingPathExtension().lastPathComponent.lowercased() == slug.lowercased() {
+                                        let parent = fileURL.deletingLastPathComponent().lastPathComponent.lowercased()
+                                        return parent
+                                    }
+                                }
+                            }
+                        }
+
+                        return nil
+                    }
+
+                    func slugHasImage(_ s: String) -> Bool {
+                        let lower = s.lowercased()
+                        // fast-check: cached imageset URL
+                        if slugToImagesetURLLocal[lower] != nil { return true }
+                        // disk/bundle checks
+                        if Self.imageExistsOnDisk(named: s) || Self.imageExistsInBundle(named: s) { return true }
+                        // look for compiled assets in non-excluded subfolders
+                        for folder in assetSubfolders {
+                            let lowerF = folder.lowercased()
+                            if excludedFolders.contains(lowerF) { continue }
+                            if UIImage(named: "\(folder)/\(s)") != nil { return true }
+                        }
+                        return false
+                    }
+
+                    for key in sortedKeys {
+                        let display = dict[String(key)] as? String ?? ""
+                        let slugFromOverride = assetOverrides[display]
+                        let mappingSlug = Self.sanitize(slugFromOverride ?? display)
+
+                        // PRIMARY: try mapping.json slug first
+                        var chosenSlug: String? = nil
+
+                        // Special-case seasonal defense archetypes: these IDs (103...) should prefer assets in
+                        // the top-level `crafted_defenses` folder (archetype assets) even if other fallbacks exist.
+                        if key >= 103_000_000 && key < 104_000_000 {
+                            // Check cached imageset URL first
+                            if let url = slugToImagesetURLLocal[mappingSlug], url.deletingLastPathComponent().lastPathComponent.lowercased() == "crafted_defenses" {
+                                chosenSlug = mappingSlug
+                            }
+                            // Check compiled bundle name
+                            if chosenSlug == nil, UIImage(named: "crafted_defenses/\(mappingSlug)") != nil {
+                                chosenSlug = mappingSlug
+                            }
+                            // Check raw file on disk under crafted_defenses
+                            if chosenSlug == nil {
+                                let craftedPath = URL(fileURLWithPath: "./clash_widgets/Assets.xcassets/crafted_defenses/\(mappingSlug).imageset")
+                                if FileManager.default.fileExists(atPath: craftedPath.path) {
+                                    chosenSlug = mappingSlug
+                                }
+                            }
+                        }
+
+                        if chosenSlug == nil, slugHasImage(mappingSlug) {
+                            chosenSlug = mappingSlug
+                        }
+
+                        // SECONDARY: fall back to id-derived slugs (from json_maps)
+                        if chosenSlug == nil, let candidates = idToSlugs[key] {
+                            for cand in candidates {
+                                if slugHasImage(cand) {
+                                    chosenSlug = cand
+                                    break
+                                }
+                            }
+                        }
+
+                        // TERTIARY: handle module -> archetype mapping for seasonal defenses
+                        // Modules' internal names often end with HPModule/AttackModule/EffectModule; try deriving the archetype
+                        if chosenSlug == nil, let candidates = idToSlugs[key] {
+                            for cand in candidates {
+                                let lower = cand.lowercased()
+                                let suffixes = ["hpmodule","attackmodule","effectmodule","module"]
+                                for suffix in suffixes where lower.hasSuffix(suffix) {
+                                    let base = String(lower.dropLast(suffix.count))
+                                    if base.isEmpty { continue }
+                                    // Check if we have an archetype entry with that base internal name
+                                    if let archEntry = slugToEntry[base], let archId = archEntry.id {
+                                        // Look up display name in mapping.json for the archetype id
+                                        if let archDisplay = dict[String(archId)] as? String {
+                                            let archMappingSlug = Self.sanitize(archDisplay)
+                                            if slugHasImage(archMappingSlug) {
+                                                chosenSlug = archMappingSlug
+                                                break
+                                            }
+                                        }
+                                    }
+                                }
+                                if chosenSlug != nil { break }
+                            }
+                        }
+
+                        // If chosen slug was found, ensure it's not exclusively in an excluded folder (unless crafted_defenses)
+                        if let finalSlug = chosenSlug {
+                            let folder = findFolderForSlug(finalSlug)
+                            if let f = folder {
+                                let lower = f.lowercased()
+                                if excludedFolders.contains(lower) && lower != "crafted_defenses" {
+                                    // skip assets that are only present inside excluded folders
+                                    continue
+                                }
+                            }
+                            byMappingRecords.append(AssetRecord(slug: finalSlug, displayName: display, dataId: key, imageExists: true))
+                        } else {
+                            // No image found — still include mapping entry (imageExists = false) so mapping page reflects mapping.json
+                            byMappingRecords.append(AssetRecord(slug: mappingSlug, displayName: display, dataId: key, imageExists: false))
                         }
                     }
                 }
             }
 
-            // publish remaining batch
-            if !batch.isEmpty {
-                let toPublish = batch
-                DispatchQueue.main.async {
-                    self.assetsByAssetName.append(contentsOf: toPublish)
-                }
-            }
-
-            // Sort final by-asset list and ensure main thread update
-            byAssetRecords.sort { lhs, rhs in lhs.displayName.localizedCaseInsensitiveCompare(rhs.displayName) == .orderedAscending }
-
-            // Build 'By Mapping' list from mapping.json directly (ordered by ID)
-            var byMappingRecords: [AssetRecord] = []
-            if let url = Bundle.main.url(forResource: "upgrade_info/mapping", withExtension: "json") {
-                if let data = try? Data(contentsOf: url), let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                    let sortedKeys = dict.keys.compactMap { Int($0) }.sorted()
-                    for key in sortedKeys {
-                        let display = dict[String(key)] as? String ?? ""
-                        let slugFromOverride = assetOverrides[display]
-                        let slug = Self.sanitize(slugFromOverride ?? display)
-                        let exists = Self.imageExistsOnDisk(named: slug) || Self.imageExistsInBundle(named: slug)
-                        byMappingRecords.append(AssetRecord(slug: slug, displayName: display, dataId: key, imageExists: exists))
-                    }
-                }
-            }
-
             DispatchQueue.main.async {
+                // publish discovered asset subfolders and cached imageset URLs first so uiImageForAsset can use them
+                self.assetSubfolders = Array(detectedFolders).sorted()
+                self.slugToImagesetURL = slugToImagesetURLLocal
+
                 // set the id-based list and ensure the by-asset list is deduplicated and sorted
                 self.assets = byIdRecords
                 self.assetsByAssetName = Array(Set(self.assetsByAssetName)).sorted { $0.displayName.localizedCaseInsensitiveCompare($1.displayName) == .orderedAscending }
@@ -880,25 +1066,118 @@ private struct AssetsCatalogView: View {
             .lowercased()
     }
 
+    private func uiImageForAsset(_ slug: String) -> UIImage? {
+        #if canImport(UIKit)
+        let lowerSlug = slug.lowercased()
+        let excluded = Set(["leagues", "resources", "town_hall", "profile", "images"].map { $0.lowercased() })
+
+        // 1) Prefer images in non-excluded detected subfolders (fast)
+        for folder in assetSubfolders {
+            let lower = folder.lowercased()
+            if excluded.contains(lower) { continue }
+            if let img = UIImage(named: "\(folder)/\(slug)") { return img }
+        }
+
+        // 2) If we have a cached imageset URL, load its first image file directly (fast, avoids rescanning)
+        if let imagesetURL = slugToImagesetURL[lowerSlug] {
+            let fm = FileManager.default
+            if let items = try? fm.contentsOfDirectory(at: imagesetURL, includingPropertiesForKeys: nil) {
+                for item in items {
+                    let ext = item.pathExtension.lowercased()
+                    if ext == "png" || ext == "jpg" || ext == "jpeg" {
+                        if let data = try? Data(contentsOf: item), let img = UIImage(data: data) {
+                            return img
+                        }
+                    }
+                }
+            }
+        }
+
+        // 3) Plain-name lookup only if it is NOT provided by an excluded folder (avoid leagues overriding troops)
+        if let plain = UIImage(named: slug) {
+            var foundExcluded = false
+            for ex in excluded {
+                if UIImage(named: "\(ex)/\(slug)") != nil {
+                    foundExcluded = true
+                    break
+                }
+            }
+            if !foundExcluded { return plain }
+        }
+
+        // 4) As a last resort, scan candidate roots for a matching imageset and load a file inside
+        let fm = FileManager.default
+        let candidates: [URL] = [
+            URL(fileURLWithPath: "./clash_widgets/Assets.xcassets", isDirectory: true),
+            URL(fileURLWithPath: "./ClashDashWidget/Assets.xcassets", isDirectory: true),
+            Bundle.main.resourceURL ?? URL(fileURLWithPath: "./")
+        ]
+        for root in candidates {
+            if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.pathExtension == "imageset" && fileURL.deletingPathExtension().lastPathComponent.lowercased() == lowerSlug {
+                        if let items = try? fm.contentsOfDirectory(at: fileURL, includingPropertiesForKeys: nil) {
+                            for item in items {
+                                let ext = item.pathExtension.lowercased()
+                                if ext == "png" || ext == "jpg" || ext == "jpeg" {
+                                    if let data = try? Data(contentsOf: item), let img = UIImage(data: data) {
+                                        return img
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return nil
+        #else
+        return nil
+        #endif
+    }
+
     private static func imageExistsInBundle(named name: String) -> Bool {
         #if canImport(UIKit)
-        return UIImage(named: name) != nil || UIImage(named: "buildings_home/\(name)") != nil
+        if UIImage(named: name) != nil { return true }
+        if UIImage(named: "buildings_home/\(name)") != nil { return true }
+
+        // Recursively look for raw .imageset folders that match the name
+        let fm = FileManager.default
+        let candidateRoots: [URL?] = [Bundle.main.resourceURL, URL(fileURLWithPath: "./clash_widgets/Assets.xcassets", isDirectory: true), URL(fileURLWithPath: "./ClashDashWidget/Assets.xcassets", isDirectory: true)]
+        for rootOptional in candidateRoots {
+            guard let root = rootOptional else { continue }
+            if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.pathExtension == "imageset" && fileURL.deletingPathExtension().lastPathComponent.lowercased() == name.lowercased() {
+                        return true
+                    }
+                }
+            }
+        }
+        return false
         #else
         return false
         #endif
     }
 
     private static func imageExistsOnDisk(named name: String) -> Bool {
-        // Look for raw .imageset folders in workspace locations — faster than UIImage lookups and safe on background threads
+        // Recursively look for raw .imageset folders in workspace locations — faster than UIImage lookups and safe on background threads
         let fm = FileManager.default
-        let candidates = [
+        let candidates: [URL?] = [
             URL(fileURLWithPath: "./clash_widgets/Assets.xcassets", isDirectory: true),
             URL(fileURLWithPath: "./ClashDashWidget/Assets.xcassets", isDirectory: true),
-            Bundle.main.resourceURL ?? URL(fileURLWithPath: "./")
+            Bundle.main.resourceURL
         ]
-        for root in candidates {
-            let imageset = root.appendingPathComponent("\(name).imageset")
-            if fm.fileExists(atPath: imageset.path) { return true }
+        for rootOptional in candidates {
+            guard let root = rootOptional else { continue }
+            if let enumerator = fm.enumerator(at: root, includingPropertiesForKeys: nil) {
+                for case let fileURL as URL in enumerator {
+                    if fileURL.pathExtension == "imageset" && fileURL.deletingPathExtension().lastPathComponent.lowercased() == name.lowercased() {
+                        return true
+                    }
+                }
+            }
         }
         return false
     }
@@ -1711,6 +1990,7 @@ private struct DashboardView: View {
         case builders
         case lab
         case pets
+        case walls
         case builderBase
         case starLab
 
@@ -1722,12 +2002,13 @@ private struct DashboardView: View {
             case .builders: return "Home Village Builders"
             case .lab: return "Laboratory"
             case .pets: return "Pets"
+            case .walls: return "Walls"
             case .builderBase: return "Builder Base"
             case .starLab: return "Star Laboratory"
             }
         }
 
-        static let defaultOrder: [HomeSection] = [.builders, .lab, .pets, .helpers, .builderBase, .starLab]
+        static let defaultOrder: [HomeSection] = [.builders, .lab, .pets, .builderBase, .walls, .helpers, .starLab]
     }
 
     private struct HelperCooldownDisplay: Identifiable {
@@ -1874,6 +2155,12 @@ private struct DashboardView: View {
                     }
                 }
             }
+        case .walls:
+            if displayedTownHallLevel >= 2 {
+                Section(section.title) {
+                    wallProgressSummary
+                }
+            }
         case .builderBase:
             if displayedTownHallLevel >= 6 {
                 Section(section.title) {
@@ -1933,7 +2220,7 @@ private struct DashboardView: View {
 
                 HStack(spacing: 12) {
                     VStack {
-                        Image("buildings_home/helper_s_hut")
+                        Image("buildings_home/helper_hut")
                             .resizable()
                             .scaledToFit()
                             .frame(width: 44, height: 44)
@@ -1973,7 +2260,7 @@ private struct DashboardView: View {
 
         return AnyView(HStack(spacing: 12) {
             VStack {
-                Image("buildings_home/helper_s_hut")
+                Image("buildings_home/helper_hut")
                     .resizable()
                     .scaledToFit()
                     .frame(width: 44, height: 44)
@@ -2111,6 +2398,216 @@ private struct DashboardView: View {
 
     private var builderBaseUpgrades: [BuildingUpgrade] {
         dataService.activeUpgrades.filter { $0.category == .builderBase }
+    }
+
+    // MARK: - Walls Progress
+
+    private struct WallLevelProgress: Identifiable {
+        var id: Int { level }
+        let level: Int
+        let currentCount: Int
+        let maxCountForTH: Int
+        let upgradesRemaining: Int
+        let costPerLevel: Int
+        let totalCostForLevel: Int
+    }
+
+    private var wallProgressData: [WallLevelProgress] {
+        guard let profile = dataService.currentProfile else { return [] }
+        
+        let th = displayedTownHallLevel
+        
+        // Decode export and get wall data
+        guard let export = dataService.decodeExport(from: profile.rawJSON) else { return [] }
+        
+        // Load townhall limits and building costs
+        guard let thLimitsData = loadTownHallLimits(),
+              let buildingCosts = loadBuildingCosts() else {
+            return []
+        }
+        
+        // Get max wall count for this TH
+        let maxWallCount = (thLimitsData[th]?["Wall"] as? NSNumber)?.intValue ?? 0
+        if maxWallCount <= 0 { return [] }
+        
+        // Count walls by level from export
+        var wallsByLevel: [Int: Int] = [:]
+        if let buildings = export.buildings {
+            for building in buildings {
+                // Wall has data ID 1000010
+                if building.data == 1000010, let level = building.lvl, let count = building.cnt {
+                    wallsByLevel[level] = count
+                }
+            }
+        }
+        
+        if wallsByLevel.isEmpty { return [] }
+        
+        var progress: [WallLevelProgress] = []
+        
+        // Get max wall level for this TH
+        let maxWallLevel = wallMaxLevelForTH(th)
+        
+        for level in 1...maxWallLevel {
+            let currentCount = wallsByLevel[level] ?? 0
+            
+            // Check if we can upgrade from this level (next level must not require higher TH)
+            let nextLevelThRequirement = buildingCosts[level + 1]?.thRequirement ?? 999
+            let canUpgradeAtCurrentTH = nextLevelThRequirement <= th
+            
+            let cost = canUpgradeAtCurrentTH ? (buildingCosts[level + 1]?.cost ?? 0) : 0
+            
+            // Upgrades remaining = how many walls at this level need to be upgraded
+            let upgradesRemaining = canUpgradeAtCurrentTH ? currentCount : 0
+            let totalCostForLevel = cost * upgradesRemaining
+            
+            if currentCount > 0 || level <= (wallsByLevel.keys.max() ?? 1) {
+                let wallProgress = WallLevelProgress(
+                    level: level,
+                    currentCount: currentCount,
+                    maxCountForTH: maxWallCount,
+                    upgradesRemaining: upgradesRemaining,
+                    costPerLevel: cost,
+                    totalCostForLevel: totalCostForLevel
+                )
+                progress.append(wallProgress)
+            }
+        }
+        
+        return progress
+    }
+
+    private func wallMaxLevelForTH(_ th: Int) -> Int {
+        // Determine max wall level based on TH
+        switch th {
+        case 2...3: return 3
+        case 4...5: return 6
+        case 6...7: return 9
+        case 8...9: return 10
+        case 10...11: return 12
+        case 12...13: return 13
+        case 14: return 15
+        case 15: return 16
+        case 16: return 17
+        case 17: return 18
+        default: return 19
+        }
+    }
+
+    private func loadTownHallLimits() -> [Int: [String: Any]]? {
+        guard let url = Bundle.main.url(forResource: "townhall_levels", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files") else {
+            return nil
+        }
+        guard let data = try? Data(contentsOf: url),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return nil
+        }
+        
+        var result: [Int: [String: Any]] = [:]
+        for entry in json {
+            if let thLevel = entry["townHallLevel"] as? Int,
+               let counts = entry["counts"] as? [String: Any] {
+                result[thLevel] = counts
+            }
+        }
+        return result
+    }
+
+    private func loadBuildingCosts() -> [Int: (cost: Int, thRequirement: Int)]? {
+        guard let url = Bundle.main.url(forResource: "buildings", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files") else {
+            return nil
+        }
+        guard let data = try? Data(contentsOf: url),
+              let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+            return nil
+        }
+        
+        var result: [Int: (cost: Int, thRequirement: Int)] = [:]
+        for building in json {
+            if let id = building["id"] as? Int, id == 1000010, // Wall building ID
+               let levels = building["levels"] as? [[String: Any]] {
+                for levelInfo in levels {
+                    if let level = levelInfo["level"] as? Int,
+                       let cost = levelInfo["buildCost"] as? Int,
+                       let thReq = levelInfo["townHallLevel"] as? Int {
+                        result[level] = (cost: cost, thRequirement: thReq)
+                    }
+                }
+            }
+        }
+        return result
+    }
+
+    private var wallProgressSummary: some View {
+        let th = displayedTownHallLevel
+        let maxWallLevel = wallMaxLevelForTH(th)
+        let wallData = wallProgressData.filter { $0.upgradesRemaining > 0 && $0.level < maxWallLevel }
+        let totalCost = wallData.reduce(0) { $0 + $1.totalCostForLevel }
+        
+        return VStack(alignment: .leading, spacing: 12) {
+            if wallData.isEmpty {
+                Text("All walls maxed out!")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            } else {
+                // Display each wall level
+                ForEach(wallData, id: \.level) { wallLevel in
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack {
+                            HStack(spacing: 8) {
+                                Image("resources/wall_\(wallLevel.level)")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 32, height: 32)
+                                
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text("Wall Level \(wallLevel.level)")
+                                        .font(.headline)
+                                    Text("\(wallLevel.currentCount) walls • \(wallLevel.upgradesRemaining) remaining")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            
+                            Spacer()
+                            
+                            VStack(alignment: .trailing, spacing: 2) {
+                                Text(formatCost(wallLevel.totalCostForLevel))
+                                    .font(.headline)
+                                    .foregroundColor(.accentColor)
+                                Text("\(wallLevel.costPerLevel.formattedCompact())/wall")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+                }
+                
+                Divider()
+                
+                // Total cost
+                HStack {
+                    Text("Total Cost to Max All Walls")
+                        .font(.headline)
+                    Spacer()
+                    Text(formatCost(totalCost))
+                        .font(.headline)
+                        .foregroundColor(.accentColor)
+                }
+                .padding(.vertical, 4)
+            }
+        }
+    }
+
+    private func formatCost(_ cost: Int) -> String {
+        if cost >= 1_000_000 {
+            return String(format: "%.1fM", Double(cost) / 1_000_000)
+        } else if cost >= 1_000 {
+            return String(format: "%.0fK", Double(cost) / 1_000)
+        } else {
+            return "\(cost)"
+        }
     }
 
     private func pasteAndImport() {
@@ -3095,8 +3592,8 @@ private struct SettingsView: View {
                         return []
                     }()
 
-                    ForEach(profilesToShow) { profile in
-                        profileRow(profile)
+                    ForEach(Array(profilesToShow.enumerated()), id: \.element.id) { index, profile in
+                        profileRow(profile, profileNumber: getProfileNumber(profile))
                             .transition(.opacity.combined(with: .move(edge: .top)))
                     }
                     .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
@@ -3414,17 +3911,38 @@ private struct SettingsView: View {
         }
     }
 
+    private func getProfileNumber(_ profile: PlayerAccount) -> Int? {
+        // Find which widget profile slot this profile is assigned to (1-10)
+        let allProfiles = dataService.profiles
+        if let index = allProfiles.firstIndex(where: { $0.id == profile.id }) {
+            return index + 1  // Convert 0-based to 1-based (profile 1-10)
+        }
+        return nil
+    }
+
     private func isCurrentProfile(_ profile: PlayerAccount) -> Bool {
         profile.id == dataService.selectedProfileID
     }
 
     @ViewBuilder
-    private func profileRow(_ profile: PlayerAccount) -> some View {
+    private func profileRow(_ profile: PlayerAccount, profileNumber: Int?) -> some View {
         let isCurrent = isCurrentProfile(profile)
 
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 12) {
-                TownHallBadgeView(level: townHallLevel(for: profile))
+                VStack(spacing: 4) {
+                    TownHallBadgeView(level: townHallLevel(for: profile))
+                    if let profileNum = profileNumber {
+                        Text("Profile #\(profileNum)")
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(RoundedRectangle(cornerRadius: 4).fill(Color(.quaternarySystemFill)))
+                    }
+                }
+                .frame(alignment: .top)
+                
                 VStack(alignment: .leading, spacing: 4) {
                     Text(dataService.displayName(for: profile))
                         .font(.headline)
@@ -3780,7 +4298,7 @@ private struct ProfileSetupPane: View {
                         if showOnboardingInstructions {
                             VStack(alignment: .leading, spacing: 12) {
                                 // Instruction container (rounded) matching screenshot style
-                                VStack(alignment: .leading, spacing: 12) {
+                                VStack(alignment: .leading, spacing: 16) {
                                     HStack(alignment: .center, spacing: 12) {
                                         Image(systemName: "doc.on.clipboard.fill")
                                             .foregroundColor(.white)
@@ -3820,32 +4338,14 @@ private struct ProfileSetupPane: View {
                                         }
                                     }
 
-                                    // Dynamic image sizing: load the UIImage and constrain by its pixel width (now inside the card)
-                                    #if canImport(UIKit)
-                                    if let ui = UIImage(named: "import_help") {
-                                        Image(uiImage: ui)
-                                            .resizable()
-                                            .scaledToFit()
-                                            .frame(width: min(ui.size.width, UIScreen.main.bounds.width - 48))
-                                            .cornerRadius(12)
-                                            .padding(.top, 8)
-                                    } else {
-                                        // Fallback placeholder box if image asset isn't available
-                                        RoundedRectangle(cornerRadius: 12)
-                                            .fill(Color(.secondarySystemFill))
-                                            .frame(height: 180)
-                                            .overlay(Text("Import help image missing").font(.caption).foregroundColor(.secondary))
-                                            .padding(.top, 8)
-                                    }
-                                    #else
-                                    Image("import_help")
+                                    // Help image
+                                    Image("images/onboarding_help")
                                         .resizable()
                                         .scaledToFit()
-                                        .cornerRadius(12)
-                                        .padding(.top, 8)
-                                    #endif
+                                        .cornerRadius(8)
+                                        .frame(maxHeight: 300)
                                 }
-                                .padding(14)
+                                .padding(16)
                                 .background(RoundedRectangle(cornerRadius: 14).fill(Color(UIColor { trait in
                                     trait.userInterfaceStyle == .dark ? UIColor.secondarySystemBackground : UIColor.systemGray5
                                 })))
@@ -5379,3 +5879,14 @@ private extension View {
     }
 }
 
+extension Int {
+    func formattedCompact() -> String {
+        if self >= 1_000_000 {
+            return String(format: "%.1fM", Double(self) / 1_000_000)
+        } else if self >= 1_000 {
+            return String(format: "%.0fK", Double(self) / 1_000)
+        } else {
+            return "\(self)"
+        }
+    }
+}
