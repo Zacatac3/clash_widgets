@@ -98,6 +98,8 @@ struct WidgetProfileIntent: WidgetConfigurationIntent {
     }
 }
 
+// MARK: - Widget Rendering Mode for Tinted/Clear Modes
+// Use desaturated rendering mode to prevent images from becoming solid accent color blobs
 struct SimpleEntry: TimelineEntry {
     let date: Date
     let upgrades: [BuildingUpgrade]

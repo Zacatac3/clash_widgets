@@ -1451,6 +1451,45 @@ private extension UIColor {
 }
 #endif
 
+// MARK: - Helper Gem Cost Data Structures
+struct HelperData: Codable {
+    let internalName: String
+    let levels: [HelperLevel]
+}
+
+struct HelperLevel: Codable {
+    let level: Int
+    let RequiredTownHallLevel: String
+    let Cost: String
+}
+
+struct HelperGemInfo {
+    let id: String
+    let displayName: String
+    let iconName: String
+    let levels: [HelperLevelInfo]
+    let totalCost: Int
+}
+
+struct HelperGemCostInfo {
+    let id: String
+    let displayName: String
+    let category: String
+    let iconName: String
+    let currentLevel: Int
+    let maxLevel: Int
+    let isUnlocked: Bool
+    let remainingLevels: Int
+    let remainingLevelCosts: [HelperLevelInfo]
+    let remainingTotalCost: Int
+}
+
+struct HelperLevelInfo {
+    let level: Int
+    let cost: Int
+    let requiredTH: Int
+}
+
 private struct ProgressOverviewView: View {
     @EnvironmentObject private var dataService: DataService
     @State private var rows: [TownHallProgress] = []
@@ -1790,11 +1829,13 @@ private struct DashboardView: View {
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
     @AppStorage("hasShownWhatsNewFirstColdBoot") private var hasShownWhatsNewFirstColdBoot = false
     @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
+    @AppStorage("hiddenHomeSections") private var hiddenHomeSections = ""
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
     @State private var showHomeOrderSheet = false
     @State private var orderedSections: [HomeSection] = HomeSection.defaultOrder
+    @State private var hiddenSections: Set<String> = []
     @State private var didRunStartupSheets = false
 
     var body: some View {
@@ -1804,10 +1845,11 @@ private struct DashboardView: View {
                 InfoSheetView(selectedPage: $infoSheetPage, sections: defaultWhatsNewSections())
             }
             .sheet(isPresented: $showHomeOrderSheet) {
-                HomeSectionOrderSheet(order: $orderedSections)
+                HomeSectionOrderSheet(order: $orderedSections, hidden: $hiddenSections)
             }
             .onAppear {
                 orderedSections = parseHomeSectionOrder()
+                hiddenSections = parseHiddenSections()
                 // Prefer showing the onboarding 'Welcome' for first-time users.
                 // What's New should automatically appear only:
                 //  - once after the very first cold boot of the app (first run after
@@ -1837,6 +1879,9 @@ private struct DashboardView: View {
             }
             .onChangeCompat(of: orderedSections) { newValue in
                 persistHomeSectionOrder(newValue)
+            }
+            .onChangeCompat(of: hiddenSections) { newValue in
+                persistHiddenSections(newValue)
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Clashboard")
@@ -2114,13 +2159,13 @@ private struct DashboardView: View {
     private func sectionView(for section: HomeSection) -> some View {
         switch section {
         case .helpers:
-            if !helperCooldowns.isEmpty {
+            if !hiddenSections.contains(section.rawValue) && !helperCooldowns.isEmpty {
                 Section(section.title) {
                     helperCooldownSummaryRow
                 }
             }
         case .builders:
-            if totalBuilders > 0 {
+            if !hiddenSections.contains(section.rawValue) && totalBuilders > 0 {
                 Section(section.title) {
                     ForEach(builderVillageUpgrades) { upgrade in
                         BuilderRow(upgrade: upgrade)
@@ -2133,7 +2178,7 @@ private struct DashboardView: View {
                 }
             }
         case .lab:
-            if displayedTownHallLevel >= 3 {
+            if !hiddenSections.contains(section.rawValue) && displayedTownHallLevel >= 3 {
                 Section(section.title) {
                     if !labUpgrades.isEmpty {
                         ForEach(labUpgrades) { upgrade in
@@ -2145,7 +2190,7 @@ private struct DashboardView: View {
                 }
             }
         case .pets:
-            if displayedTownHallLevel >= 14 {
+            if !hiddenSections.contains(section.rawValue) && displayedTownHallLevel >= 14 {
                 Section(section.title) {
                     if !petUpgrades.isEmpty {
                         ForEach(petUpgrades) { upgrade in
@@ -2157,13 +2202,13 @@ private struct DashboardView: View {
                 }
             }
         case .walls:
-            if displayedTownHallLevel >= 2 {
+            if !hiddenSections.contains(section.rawValue) && displayedTownHallLevel >= 2 {
                 Section(section.title) {
                     wallProgressSummary
                 }
             }
         case .builderBase:
-            if displayedTownHallLevel >= 6 {
+            if !hiddenSections.contains(section.rawValue) && displayedTownHallLevel >= 6 {
                 Section(section.title) {
                     if !builderBaseUpgrades.isEmpty {
                         ForEach(builderBaseUpgrades) { upgrade in
@@ -2175,7 +2220,7 @@ private struct DashboardView: View {
                 }
             }
         case .starLab:
-            if displayedBuilderHallLevel >= 6 {
+            if !hiddenSections.contains(section.rawValue) && displayedBuilderHallLevel >= 6 {
                 Section(section.title) {
                     if !starLabUpgrades.isEmpty {
                         ForEach(starLabUpgrades) { upgrade in
@@ -2331,22 +2376,47 @@ private struct DashboardView: View {
         homeSectionOrder = order.map { $0.rawValue }.joined(separator: ",")
     }
 
+    private func parseHiddenSections() -> Set<String> {
+        let raw = hiddenHomeSections.split(separator: ",").map { String($0) }
+        return Set(raw)
+    }
+
+    private func persistHiddenSections(_ hidden: Set<String>) {
+        hiddenHomeSections = hidden.sorted().joined(separator: ",")
+    }
+
     private struct HomeSectionOrderSheet: View {
         @Binding var order: [HomeSection]
+        @Binding var hidden: Set<String>
         @Environment(\.dismiss) private var dismiss
 
         var body: some View {
             NavigationStack {
                 List {
-                    ForEach(order, id: \.self) { section in
-                        Text(section.title)
-                    }
-                    .onMove { offsets, destination in
-                        order.move(fromOffsets: offsets, toOffset: destination)
+                    Section("Visible Cards") {
+                        ForEach(order, id: \.self) { section in
+                            HStack {
+                                Text(section.title)
+                                Spacer()
+                                Toggle("", isOn: Binding(
+                                    get: { !hidden.contains(section.rawValue) },
+                                    set: { isVisible in
+                                        if isVisible {
+                                            hidden.remove(section.rawValue)
+                                        } else {
+                                            hidden.insert(section.rawValue)
+                                        }
+                                    }
+                                ))
+                            }
+                        }
+                        .onMove { offsets, destination in
+                            order.move(fromOffsets: offsets, toOffset: destination)
+                        }
                     }
                 }
                 .environment(\.editMode, .constant(.active))
-                .navigationTitle("Reorder Home Cards")
+                .navigationTitle("Edit Home Cards")
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button("Done") { dismiss() }
@@ -2745,6 +2815,7 @@ private struct ProfileDetailView: View {
     @EnvironmentObject private var dataService: DataService
     @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
     @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
+    @AppStorage("helperGemCostsExpanded") private var helperGemCostsExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     #if canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
@@ -2775,6 +2846,7 @@ private struct ProfileDetailView: View {
                             .shadow(color: .black.opacity(0.03), radius: 1, x: 0, y: 1)
                         }
                         profileSettingsCard
+                        helperGemCostsCard
                         heroShowcase
                         achievementsSection
                     }
@@ -3120,6 +3192,186 @@ private struct ProfileDetailView: View {
             RoundedRectangle(cornerRadius: 20)
             .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
         )
+    }
+
+    private var helperGemCostsCard: some View {
+        let helpers = loadHelperGemCosts()
+        guard !helpers.isEmpty else { return AnyView(EmptyView()) }
+        
+        return AnyView(
+            VStack(alignment: .leading, spacing: 12) {
+                Button {
+                    helperGemCostsExpanded.toggle()
+                } label: {
+                    HStack {
+                        Text("Helper Gem Costs")
+                            .font(.headline)
+                        Spacer()
+                        Image(systemName: helperGemCostsExpanded ? "chevron.up" : "chevron.down")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                .buttonStyle(.plain)
+
+                if helperGemCostsExpanded {
+                    VStack(alignment: .leading, spacing: 12) {
+                        ForEach(helpers, id: \.id) { helper in
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Image(helper.iconName)
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 32, height: 32)
+                                    Text(helper.displayName)
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                    Spacer()
+                                    Text("Lv \(helper.currentLevel)/\(helper.maxLevel)")
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .foregroundColor(.blue)
+                                }
+
+                                if helper.remainingLevels > 0 {
+                                    Text("Remaining levels: \(helper.remainingLevels)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+
+                                    VStack(spacing: 6) {
+                                        ForEach(helper.remainingLevelCosts, id: \.level) { level in
+                                            HStack {
+                                                Text("Lvl \(level.level):")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                                Spacer()
+                                                HStack(spacing: 4) {
+                                                    Image("profile/gem")
+                                                        .resizable()
+                                                        .scaledToFit()
+                                                        .frame(width: 12, height: 12)
+                                                    Text("\(level.cost)")
+                                                        .font(.caption)
+                                                }
+                                                Text("TH \(level.requiredTH)")
+                                                    .font(.caption)
+                                                    .foregroundColor(.gray)
+                                            }
+                                        }
+                                    }
+
+                                    HStack {
+                                        Text("Total")
+                                            .font(.subheadline)
+                                            .fontWeight(.semibold)
+                                        Spacer()
+                                        HStack(spacing: 4) {
+                                            Image("profile/gem")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 14, height: 14)
+                                            Text("\(helper.remainingTotalCost)")
+                                                .font(.subheadline)
+                                                .fontWeight(.bold)
+                                        }
+                                    }
+                                    .padding(.vertical, 6)
+                                } else {
+                                    Text("Max level")
+                                        .font(.caption)
+                                        .foregroundColor(.green)
+                                }
+                            }
+                        }
+
+                        HStack {
+                            Text("Total")
+                                .font(.headline)
+                                .fontWeight(.bold)
+                            Spacer()
+                            HStack(spacing: 4) {
+                                Image("profile/gem")
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 16, height: 16)
+                                Text("\(helpers.reduce(0) { $0 + $1.remainingTotalCost })")
+                                    .font(.headline)
+                                    .fontWeight(.bold)
+                            }
+                        }
+                        .padding(.vertical, 8)
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
+            .overlay(
+                RoundedRectangle(cornerRadius: 20)
+                .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
+            )
+        )
+    }
+
+    private func loadHelperGemCosts() -> [HelperGemCostInfo] {
+        guard townHallLevel >= 9 else { return [] }
+        
+        guard let jsonPath = Bundle.main.path(forResource: "villager_apprentices", ofType: "json", inDirectory: "upgrade_info/parsed_json_files"),
+              let jsonData = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)),
+              let helpers = try? JSONDecoder().decode([HelperData].self, from: jsonData) else {
+            return []
+        }
+
+        var result: [HelperGemCostInfo] = []
+        
+        // Map helpers to their profile levels and icons
+        let helperMapping: [(internalName: String, displayName: String, category: String, iconName: String, currentLevelKeyPath: KeyPath<DataService, Int>)] = [
+            ("BuilderApprentice", "Builder's Apprentice", "Archer Queen", "profile/apprentice_builder", \DataService.builderApprenticeLevel),
+            ("ResearchApprentice", "Lab Assistant", "Lab", "profile/lab_assistant", \DataService.labAssistantLevel),
+            ("Alchemist", "Alchemist", "Lab", "profile/alchemist", \DataService.alchemistLevel)
+        ]
+
+        for mapping in helperMapping {
+            guard let helperData = helpers.first(where: { $0.internalName == mapping.internalName }) else { continue }
+            
+            // Get current helper level from dataService profile settings
+            let currentLevel = dataService[keyPath: mapping.currentLevelKeyPath]
+            let isUnlocked = currentLevel > 0
+            
+            let availableLevels = helperData.levels.filter { Int($0.RequiredTownHallLevel) ?? 0 <= townHallLevel }
+            guard !availableLevels.isEmpty else { continue }
+            
+            let maxLevel = availableLevels.last?.level ?? 0
+            let remainingLevels = max(0, maxLevel - currentLevel)
+            
+            // Only include levels after current level
+            let remainingLevelCosts = availableLevels
+                .filter { $0.level > currentLevel }
+                .map { level -> HelperLevelInfo in
+                    HelperLevelInfo(
+                        level: level.level,
+                        cost: Int(level.Cost) ?? 0,
+                        requiredTH: Int(level.RequiredTownHallLevel) ?? 9
+                    )
+                }
+            
+            let remainingTotalCost = remainingLevelCosts.reduce(0) { $0 + $1.cost }
+            
+            result.append(HelperGemCostInfo(
+                id: mapping.internalName,
+                displayName: mapping.displayName,
+                category: mapping.category,
+                iconName: mapping.iconName,
+                currentLevel: currentLevel,
+                maxLevel: maxLevel,
+                isUnlocked: isUnlocked,
+                remainingLevels: remainingLevels,
+                remainingLevelCosts: remainingLevelCosts,
+                remainingTotalCost: remainingTotalCost
+            ))
+        }
+        
+        return result
     }
 
     private var heroShowcase: some View {

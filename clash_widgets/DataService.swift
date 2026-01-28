@@ -1014,15 +1014,24 @@ class DataService: ObservableObject {
             guard !raw.isEmpty else { continue }
 
             let helpers = helperCooldowns(from: raw)
-            for helper in helpers {
+            let readyHelpers = helpers.filter { helper in
                 if let expires = helper.expiresAt, expires > now {
-                    let helperName = helperDisplayName(for: helper.id)
-                    let identifier = "com.zacharybuschmann.clashdash.helper.\(profile.id.uuidString).\(helper.id)"
-                    let title = "Helper ready to work"
-                    let body = "\(helperName) is ready to work."
-                    requests.append(NotificationManager.HelperNotificationRequest(identifier: identifier, title: title, body: body, date: expires))
+                    return true
                 }
+                return false
             }
+
+            guard !readyHelpers.isEmpty else { continue }
+
+            // Find the earliest expiration time among ready helpers
+            let earliestExpiry = readyHelpers.compactMap { $0.expiresAt }.min() ?? now
+
+            // Create a single consolidated notification
+            let helperNames = readyHelpers.map { helperDisplayName(for: $0.id) }.joined(separator: ", ")
+            let identifier = "com.zacharybuschmann.clashdash.helper.\(profile.id.uuidString).consolidated"
+            let title = "Helpers ready to work"
+            let body = readyHelpers.count == 1 ? "\(helperNames) is ready to work." : "\(helperNames) are ready to work."
+            requests.append(NotificationManager.HelperNotificationRequest(identifier: identifier, title: title, body: body, date: earliestExpiry))
         }
 
         notificationManager.syncHelperNotifications(for: requests)

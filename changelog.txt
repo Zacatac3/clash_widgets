@@ -63,25 +63,32 @@ Main Fix:
 - wall costs now scale with gold pass
 - Changed Hero levels and Town Hall level to draw from import instead of API, for edge case scenarios 
 
-Planned:
-- profile label on widgets
-- fix wonky haptics
-- Proirity notifications
+
 
 1.1 -
 First major feature release planned
+
+- Helpers now only send one notification for all helpers
+- added helper gem cost section to profile
+- when editing the home page, you can now hide individual sections
+- 
 
 *New Features*
 * Lock Screen widget + toggle
 * Shortcuts integration 
 * Potions Snacks and other boosts
-* Widget customization / themes
 * War stats widget (?)
 * Ability to set notifications to pre-notify in advance of upgrade completion
 * Remove ? Hide selected home screen cards
 * add gem rewards to achievements and remaining helper costs in gems 
 *Hide sections on the home screen
 *Upgrade history
+
+Planned:
+- profile label on widgets
+- fix wonky haptics
+- Proirity notifications
+- iPad UI
 
 1.2 (and beyond) - 
 
@@ -90,3 +97,4 @@ First major feature release planned
 * New more elegant UI for the home screen cards as well as widgets
 * Server hosting of assets and upgrade data to push info/asset updates without new app version
 * Add "Progres" section to track time/cost remaining for each town hall
+* Widget customization / themes
