@@ -4,6 +4,10 @@
 <dict>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-4499177240533852~7645248117</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>clashofclans</string>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

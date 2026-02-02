@@ -17,33 +17,12 @@ import UniformTypeIdentifiers
 #endif
 
 #if canImport(UIKit)
-private func clipboardTextFromPasteboard() -> String? {
-    let pasteboard = UIPasteboard.general
-    let candidates: [(String, [String.Encoding])] = [
-        ("public.utf8-plain-text", [.utf8]),
-        ("public.utf16-plain-text", [.utf16, .utf16LittleEndian, .utf16BigEndian]),
-        ("public.utf32-plain-text", [.utf32, .utf32LittleEndian, .utf32BigEndian]),
-        ("public.text", [.utf8, .utf16, .utf16LittleEndian, .utf16BigEndian])
-    ]
-
-    for (type, encodings) in candidates {
-        if let data = pasteboard.data(forPasteboardType: type) {
-            for encoding in encodings {
-                if let decoded = String(data: data, encoding: encoding), !decoded.isEmpty {
-                    return decoded
-                }
-            }
-        }
-    }
-
-    return pasteboard.string
-}
 #endif
 struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject var iapManager: IAPManager
     @StateObject private var dataService: DataService
-    @State private var selectedTab: Tab = .dashboard
+    @State private var selectedTab: MainTab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
     @AppStorage("hasPromptedAppTracking") private var hasPromptedAppTracking = false
@@ -63,7 +42,7 @@ struct ContentView: View {
     @AppStorage("lastInterstitialShownAt") private var lastInterstitialShownAt: Double = 0
 
     // Replaced modal onboarding flow with a dedicated onboarding tab.
-    // Control which screen is visible using `selectedTab` (see Tab.onboarding).
+    // Control which screen is visible using `selectedTab` (see MainTab.onboarding).
     // `showInitialSetup` variable removed to improve interoperability with system prompts.
     @State private var initialSetupTag: String = ""
     @State private var showGoldPassResetPrompt = false
@@ -153,20 +132,20 @@ struct ContentView: View {
                 TabView(selection: $selectedTab) {
                     DashboardView()
                         .tabItem { Label("Home", systemImage: "house.fill") }
-                        .tag(Tab.dashboard)
+                        .tag(MainTab.dashboard)
 
                     ProfileDetailView()
                         .tabItem { Label("Profile", systemImage: "person.crop.circle") }
-                        .tag(Tab.profile)
+                        .tag(MainTab.profile)
 
                     EquipmentView()
                         .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }
-                        .tag(Tab.equipment)
+                        .tag(MainTab.equipment)
 
 
                     SettingsView()
                         .tabItem { Label("Settings", systemImage: "gearshape") }
-                        .tag(Tab.settings)
+                        .tag(MainTab.settings)
                 }
                 .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
                 .environmentObject(dataService)
@@ -362,129 +341,6 @@ struct ContentView: View {
         // the current reset time, which caused the prompt to fire early.
         return calendar.date(from: resetComponents) ?? date
     }
-
-    private enum Tab: Hashable {
-        case onboarding
-        case dashboard
-        case profile
-        case equipment
-        case progress
-        case palette
-        case assetsCatalog
-        case settings
-    }
-}
-
-private struct WhatsNewItem: Identifiable {
-    let id = UUID()
-    let title: String
-    let detail: String
-}
-
-private enum AdsPreference: String, CaseIterable, Identifiable {
-    case fullScreen
-    case banner
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .fullScreen:
-            return "Full Screen"
-        case .banner:
-            return "Banner"
-        }
-    }
-}
-
-private enum InfoSheetPage: String, CaseIterable, Identifiable {
-    case welcome = "Welcome"
-    case whatsNew = "What’s New"
-
-    var id: String { rawValue }
-}
-
-private func defaultWhatsNewItems() -> [WhatsNewItem] {
-    loadWhatsNewItems()
-}
-
-private func loadWhatsNewItems() -> [WhatsNewItem] {
-    // Try to load a `features.txt` from the app bundle first. If not present,
-    // fall back to the repository copy embedded below.
-    if let url = Bundle.main.url(forResource: "features", withExtension: "txt"),
-       let data = try? Data(contentsOf: url),
-       let text = String(data: data, encoding: .utf8) {
-        return parseFeaturesText(text)
-    }
-
-    let fallback = """
-    Features of the app:
-    - Upgrade tracking via JSON export, done with one button press
-    - Home Screen Widgets for builders, Lab/pets, and builder base as well as helpers cooldowns
-    - Multiple profile support
-    - Notification Support (Profile specific)
-    - API Sync for enhanced profile information
-    - Rich equipment tracking with upgrade costs and totals to max, adapts to custom filters
-    - Gold Pass Support, as well as monthly reminder to set gold pass boost
-    - customizability, rearrange the home tab to your needs
-    - Fededback form for reporting bugs and glitches, as well as for requesting features
-    """
-
-    return parseFeaturesText(fallback)
-}
-
-private struct WhatsNewSection: Identifiable {
-    let id = UUID()
-    let dateLabel: String
-    let bullets: [String]
-}
-
-private func defaultWhatsNewSections() -> [WhatsNewSection] {
-    // Most recent first. Populate with placeholders for now.
-    return [
-        WhatsNewSection(dateLabel: "1/27/2026 - Critical Widget Fix", bullets: ["Widgets fixed: Widgets should now work on all iOS/iPadOS versions and devices", "Added EU consent form", "fixed league icons naming error", "fixed hero levels in the profile tab not being relevant to current town hall", "wall costs now display billions properly", "wall costs now scale with gold pass"]),
-        WhatsNewSection(dateLabel: "1/27/2026 - Post Release Bug Fixes and Tweaks", bullets: ["New Walls Section on the home screen","Widgets can now be set to a certain profile (press and hold on the widget, and press 'edit widget')","Streamlined Onboarding - Now contains instructions & Split into two pages, and For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "Added notifications for helpers", "many other various fixes and improvements"]),
-        WhatsNewSection(dateLabel: "1/25/26 - Hot Fix", bullets: ["Imporved new user experience"," fixed ads showing up after purchasing ad-free", "pop-ups no longer show up when not supposed to", "fixed various minor bugs"]),
-        WhatsNewSection(dateLabel: "1/23/26 - Initial Version", bullets: ["Initial version with core features"," Broken Onboarding and helper timers", "other known issues"])
-    ]
-}
-
-private func parseFeaturesText(_ text: String) -> [WhatsNewItem] {
-    var items: [WhatsNewItem] = []
-
-    let lines = text.components(separatedBy: .newlines).map { $0.trimmingCharacters(in: .whitespaces) }
-    for line in lines {
-        guard line.hasPrefix("-") else { continue }
-        let entry = line.dropFirst().trimmingCharacters(in: .whitespacesAndNewlines)
-        let lower = entry.lowercased()
-
-        let item: WhatsNewItem
-        if lower.contains("upgrade") {
-            item = .init(title: "1/25/26 - Hotfix & Improvements", detail: "")
-        } else if lower.contains("widget") || lower.contains("home screen") {
-            item = .init(title: "Home Screen Widgets", detail: "Widgets for builders, lab/pets, builder base, and helper cooldowns keep info at a glance.")
-        } else if lower.contains("multiple profile") || lower.contains("profiles") {
-            item = .init(title: "Multiple Profiles", detail: "Manage and switch between multiple player profiles effortlessly.")
-        } else if lower.contains("notification") {
-            item = .init(title: "Profile Notifications", detail: "Profile-specific notifications let you know when upgrades complete.")
-        } else if lower.contains("api sync") || lower.contains("api") {
-            item = .init(title: "API Sync", detail: "Sync with the API for richer, up-to-date profile data.")
-        } else if lower.contains("equipment") {
-            item = .init(title: "Equipment Tracking", detail: "Track equipment upgrades, costs, and totals, adapted to your filters.")
-        } else if lower.contains("gold pass") {
-            item = .init(title: "Gold Pass Support", detail: "Set Gold Pass boosts per profile and receive monthly reminders.")
-        } else if lower.contains("customiz") || lower.contains("rearrange") {
-            item = .init(title: "Customizable Home", detail: "Rearrange the home tab to match your workflow and preferences.")
-        } else if lower.contains("feedback") || lower.contains("fedeback") {
-            item = .init(title: "Feedback", detail: "Send bug reports or feature requests through the in-app feedback form.")
-        } else {
-            item = .init(title: String(entry.prefix(40)), detail: entry)
-        }
-
-        items.append(item)
-    }
-
-    return items
 }
 
 private struct InfoSheetView: View {
@@ -1338,157 +1194,6 @@ private struct GoldPassResetPrompt: View {
     }
 }
 
-#if canImport(UIKit)
-private extension UIImage {
-    var averageColor: UIColor? {
-        guard let inputImage = CIImage(image: self) else { return nil }
-        let extent = inputImage.extent
-        guard let filter = CIFilter(name: "CIAreaAverage") else { return nil }
-        filter.setValue(inputImage, forKey: kCIInputImageKey)
-        filter.setValue(CIVector(cgRect: extent), forKey: kCIInputExtentKey)
-        guard let outputImage = filter.outputImage else { return nil }
-
-        var bitmap = [UInt8](repeating: 0, count: 4)
-        let context = CIContext(options: [.workingColorSpace: NSNull()])
-        context.render(
-            outputImage,
-            toBitmap: &bitmap,
-            rowBytes: 4,
-            bounds: CGRect(x: 0, y: 0, width: 1, height: 1),
-            format: .RGBA8,
-            colorSpace: nil
-        )
-        return UIColor(
-            red: CGFloat(bitmap[0]) / 255.0,
-            green: CGFloat(bitmap[1]) / 255.0,
-            blue: CGFloat(bitmap[2]) / 255.0,
-            alpha: CGFloat(bitmap[3]) / 255.0
-        )
-    }
-
-    func croppedToOpaquePixels(alphaThreshold: UInt8 = 8) -> UIImage? {
-        guard let cgImage = cgImage else { return nil }
-        let width = cgImage.width
-        let height = cgImage.height
-        let bytesPerPixel = 4
-        let bytesPerRow = bytesPerPixel * width
-        let bitsPerComponent = 8
-
-        var pixelData = [UInt8](repeating: 0, count: height * bytesPerRow)
-        let colorSpace = CGColorSpaceCreateDeviceRGB()
-        guard let context = CGContext(
-            data: &pixelData,
-            width: width,
-            height: height,
-            bitsPerComponent: bitsPerComponent,
-            bytesPerRow: bytesPerRow,
-            space: colorSpace,
-            bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue
-        ) else {
-            return nil
-        }
-
-        context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-
-        var minX = width
-        var minY = height
-        var maxX = 0
-        var maxY = 0
-        var found = false
-
-        for y in 0..<height {
-            let rowOffset = y * bytesPerRow
-            for x in 0..<width {
-                let alpha = pixelData[rowOffset + (x * bytesPerPixel) + 3]
-                if alpha > alphaThreshold {
-                    if x < minX { minX = x }
-                    if y < minY { minY = y }
-                    if x > maxX { maxX = x }
-                    if y > maxY { maxY = y }
-                    found = true
-                }
-            }
-        }
-
-        guard found else { return nil }
-        let rect = CGRect(x: minX, y: minY, width: maxX - minX + 1, height: maxY - minY + 1)
-        guard let cropped = cgImage.cropping(to: rect) else { return nil }
-        return UIImage(cgImage: cropped, scale: scale, orientation: imageOrientation)
-    }
-}
-
-private extension UIColor {
-    func adjustedBrightness(by delta: CGFloat) -> UIColor {
-        var hue: CGFloat = 0
-        var saturation: CGFloat = 0
-        var brightness: CGFloat = 0
-        var alpha: CGFloat = 0
-        if getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
-            let newBrightness = min(max(brightness + delta, 0), 1)
-            return UIColor(hue: hue, saturation: saturation, brightness: newBrightness, alpha: alpha)
-        }
-
-        var white: CGFloat = 0
-        if getWhite(&white, alpha: &alpha) {
-            let newWhite = min(max(white + delta, 0), 1)
-            return UIColor(white: newWhite, alpha: alpha)
-        }
-
-        return self
-    }
-
-    func adjustedSaturation(by delta: CGFloat) -> UIColor {
-        var hue: CGFloat = 0
-        var saturation: CGFloat = 0
-        var brightness: CGFloat = 0
-        var alpha: CGFloat = 0
-        if getHue(&hue, saturation: &saturation, brightness: &brightness, alpha: &alpha) {
-            let newSaturation = min(max(saturation + delta, 0), 1)
-            return UIColor(hue: hue, saturation: newSaturation, brightness: brightness, alpha: alpha)
-        }
-        return self
-    }
-}
-#endif
-
-// MARK: - Helper Gem Cost Data Structures
-struct HelperData: Codable {
-    let internalName: String
-    let levels: [HelperLevel]
-}
-
-struct HelperLevel: Codable {
-    let level: Int
-    let RequiredTownHallLevel: String
-    let Cost: String
-}
-
-struct HelperGemInfo {
-    let id: String
-    let displayName: String
-    let iconName: String
-    let levels: [HelperLevelInfo]
-    let totalCost: Int
-}
-
-struct HelperGemCostInfo {
-    let id: String
-    let displayName: String
-    let category: String
-    let iconName: String
-    let currentLevel: Int
-    let maxLevel: Int
-    let isUnlocked: Bool
-    let remainingLevels: Int
-    let remainingLevelCosts: [HelperLevelInfo]
-    let remainingTotalCost: Int
-}
-
-struct HelperLevelInfo {
-    let level: Int
-    let cost: Int
-    let requiredTH: Int
-}
 
 private struct ProgressOverviewView: View {
     @EnvironmentObject private var dataService: DataService
@@ -1711,7 +1416,8 @@ private struct ProgressOverviewView: View {
 }
 
 private struct TownHallPaletteView: View {
-    private let maxTownHallLevel = 17
+    private let maxTownHallLevel = 18
+    @AppStorage("townHallGradientConfig") private var townHallGradientConfigJSON: String = "{}"
 
     var body: some View {
         NavigationStack {
@@ -1719,7 +1425,12 @@ private struct TownHallPaletteView: View {
                 #if canImport(UIKit) && canImport(UIImageColors)
                 ForEach(1...maxTownHallLevel, id: \.self) { level in
                     Section {
-                        TownHallPaletteRow(level: level)
+                        TownHallPaletteRow(
+                            level: level,
+                            onColorChange: { c1, c2 in
+                                setGradientColors(for: level, colorIndex1: c1, colorIndex2: c2)
+                            }
+                        )
                     }
                 }
                 #else
@@ -1734,47 +1445,134 @@ private struct TownHallPaletteView: View {
             .navigationTitle("Town Hall Palettes")
         }
     }
+    
+    private func setGradientColors(for townHallLevel: Int, colorIndex1: Int, colorIndex2: Int) {
+        var config: [Int: [Int]] = [:]
+        if let jsonData = townHallGradientConfigJSON.data(using: .utf8) {
+            config = (try? JSONDecoder().decode([Int: [Int]].self, from: jsonData)) ?? [:]
+        }
+        config[townHallLevel] = [colorIndex1, colorIndex2]
+        if let jsonData = try? JSONEncoder().encode(config),
+           let jsonString = String(data: jsonData, encoding: .utf8) {
+            townHallGradientConfigJSON = jsonString
+        }
+    }
+}
 
     #if canImport(UIKit) && canImport(UIImageColors)
     private struct TownHallPaletteRow: View {
         let level: Int
+        let onColorChange: (Int, Int) -> Void
         @State private var palette: UIImageColors?
+        @State private var selectedColor1: Int = 2
+        @State private var selectedColor2: Int = 3
 
         var body: some View {
             let image = townHallImage(for: level)
             let displayImage = image ?? UIImage(systemName: "questionmark.square")
             let swatches = paletteColors
 
-            return HStack(alignment: .center, spacing: 12) {
-                if let displayImage {
-                    Image(uiImage: displayImage)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 56, height: 56)
-                        .padding(6)
-                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.tertiarySystemBackground)))
-                }
+            return VStack(alignment: .leading, spacing: 12) {
+                HStack(alignment: .center, spacing: 12) {
+                    if let displayImage {
+                        Image(uiImage: displayImage)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 56, height: 56)
+                            .padding(6)
+                            .background(RoundedRectangle(cornerRadius: 12).fill(Color(.tertiarySystemBackground)))
+                    }
 
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("TH \(level)")
-                        .font(.headline)
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("TH \(level)")
+                            .font(.headline)
 
-                    if !swatches.isEmpty {
-                        HStack(spacing: 8) {
-                            ForEach(swatches.indices, id: \.self) { index in
-                                RoundedRectangle(cornerRadius: 6)
-                                    .fill(Color(swatches[index]))
-                                    .frame(width: 28, height: 28)
+                        if !swatches.isEmpty {
+                            HStack(spacing: 8) {
+                                ForEach(swatches.indices, id: \.self) { index in
+                                    RoundedRectangle(cornerRadius: 6)
+                                        .fill(Color(swatches[index]))
+                                        .frame(width: 28, height: 28)
+                                }
                             }
+                        } else {
+                            Text("No colors detected")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
                         }
-                    } else {
-                        Text("No colors detected")
+                    }
+
+                    Spacer()
+                }
+                .padding(.vertical, 4)
+                
+                // Gradient configuration
+                if !swatches.isEmpty {
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Gradient Colors")
                             .font(.caption)
                             .foregroundColor(.secondary)
+                        HStack(spacing: 12) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Color 1")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                Picker("", selection: $selectedColor1) {
+                                    Text("Primary (0)").tag(0)
+                                    Text("Secondary (1)").tag(1)
+                                    Text("Detail (2)").tag(2)
+                                    Text("Background (3)").tag(3)
+                                }
+                                .pickerStyle(.menu)
+                                .font(.caption)
+                                .frame(maxWidth: .infinity)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Color 2")
+                                    .font(.caption2)
+                                    .foregroundColor(.secondary)
+                                Picker("", selection: $selectedColor2) {
+                                    Text("Primary (0)").tag(0)
+                                    Text("Secondary (1)").tag(1)
+                                    Text("Detail (2)").tag(2)
+                                    Text("Background (3)").tag(3)
+                                }
+                                .pickerStyle(.menu)
+                                .font(.caption)
+                                .frame(maxWidth: .infinity)
+                            }
+                        }
+                    }
+                    .onChange(of: selectedColor1) { _, newValue in
+                        onColorChange(newValue, selectedColor2)
+                    }
+                    .onChange(of: selectedColor2) { _, newValue in
+                        onColorChange(selectedColor1, newValue)
+                    }
+                    
+                    // Gradient Preview
+                    if !swatches.isEmpty {
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Gradient Preview")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [
+                                            Color(swatches[selectedColor1]),
+                                            Color(swatches[selectedColor2])
+                                        ],
+                                        startPoint: .topLeading,
+                                        endPoint: .bottomTrailing
+                                    )
+                                )
+                                .frame(height: 60)
+                        }
+                        .padding(.top, 4)
                     }
                 }
-
-                Spacer()
             }
             .padding(.vertical, 4)
             .onAppear(perform: loadPalette)
@@ -1789,7 +1587,6 @@ private struct TownHallPaletteView: View {
         }
 
         private func loadPalette() {
-            #if canImport(UIImageColors)
             guard palette == nil else { return }
             let image = townHallImage(for: level)
             DispatchQueue.global(qos: .userInitiated).async {
@@ -1798,7 +1595,6 @@ private struct TownHallPaletteView: View {
                     palette = colors
                 }
             }
-            #endif
         }
 
         private func townHallImage(for level: Int) -> UIImage? {
@@ -1819,7 +1615,6 @@ private struct TownHallPaletteView: View {
         }
     }
     #endif
-}
 
 private struct DashboardView: View {
     @EnvironmentObject private var dataService: DataService
@@ -1828,6 +1623,7 @@ private struct DashboardView: View {
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
     @AppStorage("hasShownWhatsNewFirstColdBoot") private var hasShownWhatsNewFirstColdBoot = false
+    @AppStorage("hasShownFirstImportTip") private var hasShownFirstImportTip = false
     @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
     @AppStorage("hiddenHomeSections") private var hiddenHomeSections = ""
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
@@ -1837,6 +1633,7 @@ private struct DashboardView: View {
     @State private var orderedSections: [HomeSection] = HomeSection.defaultOrder
     @State private var hiddenSections: Set<String> = []
     @State private var didRunStartupSheets = false
+    @State private var showFirstImportTip = false
 
     var body: some View {
         NavigationStack {
@@ -1846,6 +1643,9 @@ private struct DashboardView: View {
             }
             .sheet(isPresented: $showHomeOrderSheet) {
                 HomeSectionOrderSheet(order: $orderedSections, hidden: $hiddenSections)
+            }
+            .sheet(isPresented: $showFirstImportTip) {
+                FirstImportTipSheet(isPresented: $showFirstImportTip)
             }
             .onAppear {
                 orderedSections = parseHomeSectionOrder()
@@ -1902,6 +1702,19 @@ private struct DashboardView: View {
                         .background(
                             Capsule()
                                 .fill(Color(.secondarySystemBackground))
+                                .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
+                        )
+                        .padding(.bottom, 12)
+                } else if let status = importStatus {
+                    let (message, color) = parseImportStatus(status)
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(
+                            Capsule()
+                                .fill(color)
                                 .shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
                         )
                         .padding(.bottom, 12)
@@ -1986,12 +1799,6 @@ private struct DashboardView: View {
                     .foregroundColor(.secondary)
             }
 
-            if let status = importStatus {
-                Text(status)
-                    .font(.caption2)
-                    .foregroundColor(.green)
-            }
-
             if let error = dataService.refreshErrorMessage {
                 Text(error)
                     .font(.caption2)
@@ -2006,6 +1813,7 @@ private struct DashboardView: View {
                         Text("Import Data")
                     }
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 8)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(.accentColor)
@@ -2720,6 +2528,12 @@ private struct DashboardView: View {
             importStatus = switched
             ? "Imported \(upgradesCount) upgrades and switched profiles"
             : "Imported \(upgradesCount) upgrades"
+            
+            // Show first import tip if this is the user's first import
+            if !hasShownFirstImportTip {
+                hasShownFirstImportTip = true
+                showFirstImportTip = true
+            }
         case .missingProfile(let tag):
             importStatus = "Profile #\(tag) not found. Add it in Settings first."
         case .invalidJSON:
@@ -2729,6 +2543,16 @@ private struct DashboardView: View {
             importStatus = nil
         }
         #endif
+    }
+    
+    private func parseImportStatus(_ status: String) -> (String, Color) {
+        if status.contains("not found") {
+            return (status, Color(.systemRed))
+        } else if status.contains("Could not parse") {
+            return (status, Color(.systemRed))
+        } else {
+            return (status, Color(.systemGreen))
+        }
     }
 
     private var profileSwitchMenu: some View {
@@ -2821,6 +2645,8 @@ private struct ProfileDetailView: View {
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
+    @State private var cachedHeroesMapping: [String: HeroMapping]?
+    @State private var gradientConfigCache: [Int: [Int]]?
     private let labAssistantInternalName = "ResearchApprentice"
     private let builderApprenticeInternalName = "BuilderApprentice"
     private let alchemistInternalName = "Alchemist"
@@ -2874,6 +2700,7 @@ private struct ProfileDetailView: View {
                 }
             }
             .onAppear {
+                loadGradientConfig()  // Load config early
                 dataService.refreshCurrentProfile(force: false)
                 loadTownHallPaletteIfNeeded()
                 clampHelperLevels()
@@ -2989,42 +2816,89 @@ private struct ProfileDetailView: View {
     }
 
     private func profileGradient(for townHallLevel: Int) -> LinearGradient {
-        #if canImport(UIKit)
+        #if canImport(UIKit) && canImport(UIImageColors)
         if let image = townHallImage(for: townHallLevel) {
-            #if canImport(UIImageColors)
-            if let palette = townHallPalette {
-                let primaryColor = palette.detail ?? palette.background ?? palette.primary ?? palette.secondary ?? UIColor.systemBlue
-                let secondaryColor = palette.background ?? palette.detail ?? primaryColor
-                let primary = primaryColor
-                    .adjustedSaturation(by: 0.28)
-                    .adjustedBrightness(by: 0.14)
-                let secondary = secondaryColor
-                    .adjustedSaturation(by: 0.24)
-                    .adjustedBrightness(by: 0.02)
+            // Get the gradient color indices from config
+            let (colorIndex1, colorIndex2) = getGradientColorIndices(for: townHallLevel)
+            
+            // Extract palette using the EXACT same method as the debug menu
+            if let palette = image.getColors(quality: .high) {
+                let colors: [UIColor] = [palette.primary, palette.secondary, palette.detail, palette.background]
+                    .compactMap { $0 }
+                
+                // Get the two colors for the gradient - use the EXACT colors from palette
+                guard colorIndex1 < colors.count, colorIndex2 < colors.count else {
+                    print("[DEBUG GRADIENT] Invalid color indices for TH\(townHallLevel): \(colorIndex1),\(colorIndex2)")
+                    return LinearGradient(colors: [.blue, .purple], startPoint: .topLeading, endPoint: .bottomTrailing)
+                }
+                
+                let color1 = colors[colorIndex1]
+                let color2 = colors[colorIndex2]
+                
+                print("[DEBUG GRADIENT] TH\(townHallLevel) using indices \(colorIndex1),\(colorIndex2)")
                 return LinearGradient(
-                    colors: [Color(primary).opacity(0.95), Color(secondary).opacity(0.95)],
+                    colors: [Color(color1), Color(color2)],
                     startPoint: .topLeading,
                     endPoint: .bottomTrailing
                 )
-            }
-            #endif
-
-            if let average = image.averageColor {
-                let primary = average
-                    .adjustedSaturation(by: 0.22)
-                    .adjustedBrightness(by: 0.18)
-                let secondary = average
-                    .adjustedSaturation(by: 0.18)
-                    .adjustedBrightness(by: -0.06)
-                return LinearGradient(
-                    colors: [Color(primary).opacity(0.92), Color(secondary).opacity(0.92)],
-                    startPoint: .topLeading,
-                    endPoint: .bottomTrailing
-                )
+            } else {
+                print("[DEBUG GRADIENT] Palette extraction FAILED for TH\(townHallLevel)")
+                return LinearGradient(colors: [.red, .orange], startPoint: .topLeading, endPoint: .bottomTrailing)
             }
         }
         #endif
         return LinearGradient(colors: [.purple.opacity(0.8), .blue.opacity(0.8)], startPoint: .topLeading, endPoint: .bottomTrailing)
+    }
+    
+    private func getGradientColorIndices(for townHallLevel: Int) -> (Int, Int) {
+        // Load config from file if not cached
+        if gradientConfigCache == nil {
+            loadGradientConfig()
+        }
+        
+        // Try to get configured indices for this level
+        if let config = gradientConfigCache,
+           let indices = config[townHallLevel], indices.count >= 2 {
+            print("[DEBUG] Found config for TH\(townHallLevel): indices \(indices[0]),\(indices[1])")
+            return (indices[0], indices[1])
+        }
+        
+        print("[DEBUG] No config for TH\(townHallLevel), using default (2,3). Cache: \(gradientConfigCache ?? [:])")
+        // Default: colors 2 (detail) and 3 (background)
+        return (2, 3)
+    }
+    
+    private func loadGradientConfig() {
+        guard gradientConfigCache == nil else { return }
+        
+        let possiblePaths = [
+            Bundle.main.url(forResource: "gradient_config", withExtension: "json"),
+            Bundle.main.url(forResource: "gradient_config", withExtension: "json", subdirectory: "clash_widgets"),
+            // Development fallback: check Documents directory
+            FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("gradient_config.json")
+        ]
+        
+        for path in possiblePaths {
+            if let url = path, let data = try? Data(contentsOf: url) {
+                // Decode as [String: [Int]] since JSON keys are always strings
+                if let configStr = try? JSONDecoder().decode([String: [Int]].self, from: data) {
+                    // Convert string keys to Int keys
+                    var config: [Int: [Int]] = [:]
+                    for (key, value) in configStr {
+                        if let thLevel = Int(key) {
+                            config[thLevel] = value
+                        }
+                    }
+                    gradientConfigCache = config
+                    print("[DEBUG] Loaded gradient config from \(url.lastPathComponent): \(config)")
+                    return
+                }
+            }
+        }
+        
+        // Fallback to empty config if file not found
+        print("[DEBUG] Gradient config file not found in Bundle or Documents, using defaults")
+        gradientConfigCache = [:]
     }
 
     private func townHallImage(for level: Int) -> UIImage? {
@@ -3049,7 +2923,7 @@ private struct ProfileDetailView: View {
     }
 
     private func loadTownHallPaletteIfNeeded() {
-        #if canImport(UIKit) && canImport(UIImageColors)
+        #if canImport(UIKit)
         let level = townHallLevel
         guard level > 0 else {
             townHallPalette = nil
@@ -3059,11 +2933,21 @@ private struct ProfileDetailView: View {
         if townHallPaletteLevel == level, townHallPalette != nil { return }
         townHallPaletteLevel = level
         let image = townHallImage(for: level)
+        
+        guard let image = image else {
+            print("[DEBUG TH Palette] Failed to load town hall image for level \(level)")
+            townHallPalette = nil
+            return
+        }
+        
+        print("[DEBUG TH Palette] Image loaded, size: \(image.size), scale: \(image.scale)")
+        let capturedLevel = level
         DispatchQueue.global(qos: .userInitiated).async {
-            let palette = image?.getColors(quality: .high)
+            let palette = image.getColors()
+            print("[DEBUG TH Palette] Got colors for level \(capturedLevel): \(palette != nil ? "YES" : "NO")")
             DispatchQueue.main.async {
-                if townHallPaletteLevel == level {
-                    townHallPalette = palette
+                if self.townHallPaletteLevel == capturedLevel {
+                    self.townHallPalette = palette
                 }
             }
         }
@@ -3553,6 +3437,11 @@ private struct ProfileDetailView: View {
     }
     
     private func loadHeroesMapping() -> [String: HeroMapping]? {
+        // Return cached mapping if available
+        if let cached = cachedHeroesMapping {
+            return cached
+        }
+        
         // Load the heroes_json_map.json file for display name to internal name mapping
         let possiblePaths = [
             Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "upgrade_info/json_maps"),
@@ -3578,6 +3467,8 @@ private struct ProfileDetailView: View {
             let decoder = JSONDecoder()
             let mapping = try decoder.decode([String: HeroMapping].self, from: data)
             NSLog("✅ [HEROES_MAP] Successfully loaded heroes mapping with \(mapping.count) entries")
+            // Cache the mapping
+            cachedHeroesMapping = mapping
             return mapping
         } catch {
             NSLog("⚠️ [HEROES_MAP] Error loading heroes_json_map.json: \(error.localizedDescription)")
@@ -3994,33 +3885,6 @@ private struct AchievementRow: View {
     }
 }
 
-private enum AchievementFilter: String, CaseIterable, Identifiable {
-    case all
-    case incomplete
-    case completed
-
-    var id: String { rawValue }
-
-    var title: String {
-        switch self {
-        case .all: return "All"
-        case .incomplete: return "Incomplete"
-        case .completed: return "Completed"
-        }
-    }
-
-    func shouldInclude(isComplete: Bool) -> Bool {
-        switch self {
-        case .all:
-            return true
-        case .completed:
-            return isComplete
-        case .incomplete:
-            return !isComplete
-        }
-    }
-}
-
 private struct SettingsView: View {
     @EnvironmentObject private var dataService: DataService
     @EnvironmentObject var iapManager: IAPManager
@@ -4112,7 +3976,7 @@ private struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
 
-                Section("Notifications") {
+                Section("Profile Notifications") {
                     Toggle("Enable Notifications", isOn: notificationBinding(\.notificationsEnabled))
                         .tint(.accentColor)
 
@@ -4131,6 +3995,30 @@ private struct SettingsView: View {
                     Text("Notification preferences are saved per profile.")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                }
+                
+                Section("Global Notifications") {
+                    Toggle("Open Clash of Clans", isOn: notificationBinding(\.autoOpenClashOfClansEnabled))
+                        .tint(.accentColor)
+                    Text("Tapping a notification will redirect you to the Clash of Clans app.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                    
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Pre-notify (minutes before)")
+                            Spacer()
+                            Picker("", selection: preNotifyBinding) {
+                                ForEach(0...30, id: \.self) { minutes in
+                                    Text("\(minutes) min").tag(minutes)
+                                }
+                            }
+                            .pickerStyle(.menu)
+                        }
+                        Text("Receive notifications X minutes before upgrades complete.")
+                            .font(.caption)
+                            .foregroundColor(.secondary)
+                    }
                 }
 
                 Section("Paste Settings") {
@@ -4294,6 +4182,14 @@ private struct SettingsView: View {
                         .font(.caption)
                         .foregroundColor(.secondary)
                 }
+                
+                Section {
+                    DisclosureGroup("Debug") {
+                        NavigationLink("Town Hall Palettes") {
+                            TownHallPaletteView()
+                        }
+                    }
+                }
             }
             .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
             .navigationTitle("Settings")
@@ -4356,6 +4252,13 @@ private struct SettingsView: View {
         Binding(
             get: { dataService.notificationSettings[keyPath: keyPath] },
             set: { dataService.notificationSettings[keyPath: keyPath] = $0 }
+        )
+    }
+    
+    private var preNotifyBinding: Binding<Int> {
+        Binding(
+            get: { dataService.notificationSettings.notificationOffsetMinutes },
+            set: { dataService.notificationSettings.notificationOffsetMinutes = $0 }
         )
     }
 
@@ -4437,6 +4340,11 @@ private struct SettingsView: View {
                 }
                 Spacer()
                 
+                if isCurrent {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.accentColor)
+                }
+                
                 Menu {
                     Button {
                         profileToEdit = profile
@@ -4462,11 +4370,6 @@ private struct SettingsView: View {
                         .accessibilityLabel("More options")
                 }
                 .buttonStyle(.borderless)
-                
-                if isCurrent {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.accentColor)
-                }
             }
 
             if isCurrent {
@@ -4528,17 +4431,6 @@ private struct InlineWebView: UIViewRepresentable {
     }
 }
 #endif
-
-private struct ProfileSetupSubmission {
-    let tag: String
-    let builderCount: Int
-    let builderApprenticeLevel: Int
-    let labAssistantLevel: Int
-    let alchemistLevel: Int
-    let goldPassBoost: Int
-    let rawJSON: String?
-    let notificationSettings: NotificationSettings
-}
 
 // Simple SwiftUI wrapper for a GAD banner view.
 struct BannerAdView: UIViewRepresentable {
@@ -4870,6 +4762,46 @@ private struct ProfileSetupPane: View {
                                         .font(.caption)
                                         .foregroundColor(.secondary)
                                 }
+                                
+                                // Show imported profile preview if JSON was imported (onboarding)
+                                if didImportJSON {
+                                    VStack(spacing: 12) {
+                                        HStack(spacing: 12) {
+                                            // Town Hall Image
+                                            if let thImage = townHallImage(for: previewTownHallLevel) {
+                                                Image(uiImage: thImage)
+                                                    .resizable()
+                                                    .scaledToFit()
+                                                    .frame(width: 60, height: 60)
+                                            } else {
+                                                RoundedRectangle(cornerRadius: 8)
+                                                    .fill(Color(.secondarySystemBackground))
+                                                    .frame(width: 60, height: 60)
+                                            }
+                                            
+                                            // Player Info
+                                            VStack(alignment: .leading, spacing: 4) {
+                                                if let tag = importedTag, !tag.isEmpty {
+                                                    Text(tag)
+                                                        .font(.headline)
+                                                        .lineLimit(1)
+                                                } else {
+                                                    Text("Player Tag")
+                                                        .font(.headline)
+                                                        .foregroundColor(.secondary)
+                                                }
+                                                Text("Town Hall \(previewTownHallLevel)")
+                                                    .font(.caption)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            
+                                            Spacer()
+                                        }
+                                        .padding(12)
+                                        .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                                    }
+                                    .transition(.opacity.combined(with: .scale(scale: 0.95)))
+                                }
                             }
                         } else {
 #if canImport(UIKit)
@@ -4928,6 +4860,46 @@ private struct ProfileSetupPane: View {
                                 Text(statusMessage)
                                     .font(.caption)
                                     .foregroundColor(.secondary)
+                            }
+                            
+                            // Show imported profile preview if JSON was imported
+                            if didImportJSON {
+                                VStack(spacing: 12) {
+                                    HStack(spacing: 12) {
+                                        // Town Hall Image
+                                        if let thImage = townHallImage(for: previewTownHallLevel) {
+                                            Image(uiImage: thImage)
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 60, height: 60)
+                                        } else {
+                                            RoundedRectangle(cornerRadius: 8)
+                                                .fill(Color(.secondarySystemBackground))
+                                                .frame(width: 60, height: 60)
+                                        }
+                                        
+                                        // Player Info
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            if let tag = importedTag, !tag.isEmpty {
+                                                Text(tag)
+                                                    .font(.headline)
+                                                    .lineLimit(1)
+                                            } else {
+                                                Text("Player Tag")
+                                                    .font(.headline)
+                                                    .foregroundColor(.secondary)
+                                            }
+                                            Text("Town Hall \(previewTownHallLevel)")
+                                                .font(.caption)
+                                                .foregroundColor(.secondary)
+                                        }
+                                        
+                                        Spacer()
+                                    }
+                                    .padding(12)
+                                    .background(RoundedRectangle(cornerRadius: 12).fill(Color(.secondarySystemBackground)))
+                                }
+                                .transition(.opacity.combined(with: .scale(scale: 0.95)))
                             }
                         }
                     } else {
@@ -5180,6 +5152,23 @@ private struct ProfileSetupPane: View {
         }
     }
 
+    private func townHallImage(for level: Int) -> UIImage? {
+        #if canImport(UIKit)
+        guard level > 0 else { return nil }
+        let candidates = [
+            "town_hall/th\(level)",
+            "town_hall/TownHall_\(level)",
+            "town_hall/TownHall"
+        ]
+        for name in candidates {
+            if let image = UIImage(named: name) {
+                return image
+            }
+        }
+        #endif
+        return nil
+    }
+
 #if canImport(UIKit)
     private func importVillageDataFromClipboard() {
         guard let input = clipboardTextFromPasteboard(), !input.isEmpty else {
@@ -5272,17 +5261,17 @@ private struct AddProfileSheet: View {
             onSubmit: { submission in saveProfile(submission) },
             seedFromExistingProfile: false,
             showOnboardingInstructions: false
-        )
-        .alert("Profile already exists", isPresented: $showDuplicateTagAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("A profile with tag #\(duplicateTagValue) already exists. Choose a different tag or switch to that profile.")
-        }
-        .alert("Profile limit reached", isPresented: $showProfileLimitAlert) {
-            Button("OK", role: .cancel) {}
-        } message: {
-            Text("You can store up to 20 profiles. Delete one before adding another.")
-        }
+            )
+            .alert("Profile already exists", isPresented: $showDuplicateTagAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("A profile with tag #\(duplicateTagValue) already exists. Choose a different tag or switch to that profile.")
+            }
+            .alert("Profile limit reached", isPresented: $showProfileLimitAlert) {
+                Button("OK", role: .cancel) {}
+            } message: {
+                Text("You can store up to 20 profiles. Delete one before adding another.")
+            }
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
@@ -5905,57 +5894,6 @@ private struct EquipmentEntry: Identifiable {
     }
 }
 
-private enum EquipmentRarity: String {
-    case common
-    case epic
-
-    var label: String { rawValue.capitalized }
-
-    static func from(maxLevel: Int) -> EquipmentRarity {
-        if maxLevel >= 27 {
-            return .epic
-        }
-        return .common
-    }
-
-    var maxLevel: Int {
-        switch self {
-        case .common:
-            return 18
-        case .epic:
-            return 27
-        }
-    }
-
-    var sortRank: Int {
-        switch self {
-        case .common:
-            return 0
-        case .epic:
-            return 1
-        }
-    }
-}
-
-private enum EquipmentRarityFilter: String, CaseIterable, Identifiable {
-    case all
-    case common
-    case epic
-
-    var id: String { rawValue }
-
-    var label: String {
-        switch self {
-        case .all:
-            return "All"
-        case .common:
-            return "Common"
-        case .epic:
-            return "Epic"
-        }
-    }
-}
-
 private struct EquipmentRow: View {
     let entry: EquipmentEntry
     let totals: OreTotals
@@ -6359,6 +6297,114 @@ private extension View {
                 action(newValue)
             }
         }
+    }
+}
+
+private struct FirstImportTipSheet: View {
+    @Binding var isPresented: Bool
+    
+    var body: some View {
+        NavigationStack {
+            VStack(spacing: 24) {
+                VStack(spacing: 16) {
+                    Image(systemName: "doc.text.fill")
+                        .font(.system(size: 48))
+                        .foregroundColor(.accentColor)
+                    
+                    VStack(spacing: 8) {
+                        Text("Tired of \"Allow Paste\"?")
+                            .font(.title2)
+                            .fontWeight(.bold)
+                        
+                        Text("We understand! To avoid the constant paste permission popup:")
+                            .font(.body)
+                            .foregroundColor(.secondary)
+                    }
+                }
+                
+                VStack(alignment: .leading, spacing: 16) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "1.circle.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.headline)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Open Settings")
+                                .fontWeight(.semibold)
+                            Text("Go to Settings → Apps → Clashboard")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "2.circle.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.headline)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Find Paste Setting")
+                                .fontWeight(.semibold)
+                            Text("Look for \"Paste From Other Apps\"")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                    
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "3.circle.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.headline)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Set to Allow")
+                                .fontWeight(.semibold)
+                            Text("Change the setting to \"Allow\" and you're done!")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 12).fill(Color(.quaternarySystemFill)))
+                
+                Spacer()
+                
+                VStack(spacing: 8) {
+                    Button(action: openAppSettings) {
+                        Text("Open App Settings")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color.accentColor)
+                            .foregroundColor(.white)
+                            .cornerRadius(12)
+                    }
+                    
+                    Button(action: { isPresented = false }) {
+                        Text("Got It")
+                            .frame(maxWidth: .infinity)
+                            .padding()
+                            .background(Color(.secondarySystemBackground))
+                            .foregroundColor(.primary)
+                            .cornerRadius(12)
+                    }
+                }
+            }
+            .padding()
+            .navigationTitle("Paste Tip")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button("Dismiss") {
+                        isPresented = false
+                    }
+                }
+            }
+        }
+    }
+    
+    private func openAppSettings() {
+        #if canImport(UIKit)
+        guard let url = URL(string: UIApplication.openSettingsURLString) else { return }
+        UIApplication.shared.open(url)
+        #endif
     }
 }
 

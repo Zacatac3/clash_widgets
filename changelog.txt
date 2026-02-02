@@ -1,4 +1,5 @@
 1.0 - 1/22/2026
+
 *New Features*
 - Release build
 
@@ -6,26 +7,25 @@
 Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs and improving new user Experience
 
 *New Features*
-* Notification preferences now added to onboarding and new profile set-up
+- Notification preferences now added to onboarding and new profile set-up
 
 *Fixes and Imporvements*
-* fixed interstitial ads showing up immediately following IAP 
-* fixed "what's new" pop up appearing erroneously, now fixed to show up on second app boot and when new builds are published
-* fixed "what's new splash" displaying in user onboarding instead of the "welcome" page
-* changed icon for splash screen from (!) to (?) and set default page to "welcome"
-* Added Restore error message for no contents to restore
-* Added help section to onboarding
-* App no longer prompts for notifications immediately, waits for user to enable notifications
-* notification settings now part of new profile set-up
-*Unranked icon now displays properly in profile tab
-*fixed app icon not tinting for dark clear and tinted modes 
-*changed display name for app/widgets from "clash_widgets" to production name "Clashboard
+- fixed interstitial ads showing up immediately following IAP 
+- fixed "what's new" pop up appearing erroneously, now fixed to show up on second app boot and when new builds are published
+- fixed "what's new splash" displaying in user onboarding instead of the "welcome" page
+- changed icon for splash screen from (!) to (?) and set default page to "welcome"
+- Added Restore error message for no contents to restore
+- Added help section to onboarding
+- App no longer prompts for notifications immediately, waits for user to enable notifications
+- notification settings now part of new profile set-up
+- Unranked icon now displays properly in profile tab
+- fixed app icon not tinting for dark clear and tinted modes 
+- changed display name for app/widgets from "clash_widgets" to production name "Clashboard"
 
 *Known issues*
-* on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
-* haptics are too strong when adjusting sliders
-*Widgets, when tinted or clear, have assets messed up
-* Widgets not showing
+- on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
+- haptics are too strong when adjusting sliders
+- Widgets, when tinted or clear, have assets messed up
 
 — Upcoming / Unreleased Updates —
 
@@ -65,23 +65,35 @@ Main Fix:
 
 
 
-1.1 -
-First major feature release planned
+1.1 - 2/xx/26
+Major Quality of Life Update
 
+*New Features and Additions*
 - Helpers now only send one notification for all helpers
 - added helper gem cost section to profile
 - when editing the home page, you can now hide individual sections
+- Added toggle to open Clash of Clans directly when tapping on notification
+- Notifications now specify which profile the upgrade is for
+- new setting to "Pre-Notify" a few minutes before upgrades are done
 - 
+
+*Changes and Bug Fixes*
+- Import button now taller to avoid miss taps
+- check mark and (...) button swapped in profile settings
+- user now prompted to modify paste settings after first import
+- Split notification settings by global vs profile specific settings
+- new import status visual confirmation
+- tapping a notification now automatically switches to the profile the notification was for
+- updated profile gradient handling
+
+
 
 *New Features*
 * Lock Screen widget + toggle
 * Shortcuts integration 
 * Potions Snacks and other boosts
 * War stats widget (?)
-* Ability to set notifications to pre-notify in advance of upgrade completion
-* Remove ? Hide selected home screen cards
 * add gem rewards to achievements and remaining helper costs in gems 
-*Hide sections on the home screen
 *Upgrade history
 
 Planned:

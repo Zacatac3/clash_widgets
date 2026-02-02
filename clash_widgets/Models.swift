@@ -60,6 +60,9 @@ struct NotificationSettings: Codable, Equatable {
     var builderBaseNotificationsEnabled: Bool = true
     // Helper specific notifications (helpers ready to work)
     var helperNotificationsEnabled: Bool = true
+    // Global notification settings (not profile-specific)
+    var autoOpenClashOfClansEnabled: Bool = false
+    var notificationOffsetMinutes: Int = 0
 
     static var `default`: NotificationSettings { NotificationSettings() }
 
@@ -75,6 +78,198 @@ struct NotificationSettings: Codable, Equatable {
             return petNotificationsEnabled
         case .builderBase:
             return builderBaseNotificationsEnabled
+        }
+    }
+}
+
+internal enum MainTab: Hashable {
+    case onboarding
+    case dashboard
+    case profile
+    case equipment
+    case progress
+    case palette
+    case assetsCatalog
+    case settings
+}
+
+enum AdsPreference: String, CaseIterable, Identifiable {
+    case fullScreen
+    case banner
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .fullScreen:
+            return "Full Screen"
+        case .banner:
+            return "Banner"
+        }
+    }
+}
+
+internal enum InfoSheetPage: String, CaseIterable, Identifiable {
+    case welcome = "Welcome"
+    case whatsNew = "What’s New"
+    var id: String { rawValue }
+}
+
+internal struct ProfileSetupSubmission {
+    let tag: String
+    let builderCount: Int
+    let builderApprenticeLevel: Int
+    let labAssistantLevel: Int
+    let alchemistLevel: Int
+    let goldPassBoost: Int
+    let rawJSON: String?
+    let notificationSettings: NotificationSettings
+}
+
+internal struct WhatsNewItem: Identifiable {
+    let id = UUID()
+    let title: String
+    let detail: String
+}
+
+internal struct WhatsNewSection: Identifiable {
+    let id = UUID()
+    let dateLabel: String
+    let bullets: [String]
+}
+
+// MARK: - Helper Gem Cost Data Structures
+struct HelperData: Codable {
+    let internalName: String
+    let levels: [HelperLevel]
+}
+
+struct HelperLevel: Codable {
+    let level: Int
+    let RequiredTownHallLevel: String
+    let Cost: String
+}
+
+struct HelperLevelInfo {
+    let level: Int
+    let cost: Int
+    let requiredTH: Int
+}
+
+struct HelperGemCostInfo: Identifiable {
+    let id: String
+    let displayName: String
+    let category: String
+    let iconName: String
+    let currentLevel: Int
+    let maxLevel: Int
+    let isUnlocked: Bool
+    let remainingLevels: Int
+    let remainingLevelCosts: [HelperLevelInfo]
+    let remainingTotalCost: Int
+}
+
+struct HelperGemInfo {
+    let id: String
+    let displayName: String
+    let iconName: String
+    let levels: [HelperLevelInfo]
+    let totalCost: Int
+}
+
+// MARK: - Hero Models
+
+struct HeroJSON: Codable {
+    let internalName: String
+    let levels: [HeroLevelJSON]
+}
+
+struct HeroLevelJSON: Codable {
+    let level: Int
+    let RequiredHeroTavernLevel: String
+    let RequiredTownHallLevel: String
+}
+
+struct HeroMapping: Codable {
+    let id: Int
+    let internalName: String
+    let displayName: String
+}
+
+enum AchievementFilter: String, CaseIterable, Identifiable {
+    case all
+    case incomplete
+    case completed
+
+    var id: String { rawValue }
+
+    var title: String {
+        switch self {
+        case .all: return "All"
+        case .incomplete: return "Incomplete"
+        case .completed: return "Completed"
+        }
+    }
+
+    func shouldInclude(isComplete: Bool) -> Bool {
+        switch self {
+        case .all:
+            return true
+        case .completed:
+            return isComplete
+        case .incomplete:
+            return !isComplete
+        }
+    }
+}
+
+enum EquipmentRarity: String {
+    case common
+    case epic
+
+    var label: String { rawValue.capitalized }
+
+    static func from(maxLevel: Int) -> EquipmentRarity {
+        if maxLevel >= 27 {
+            return .epic
+        }
+        return .common
+    }
+
+    var maxLevel: Int {
+        switch self {
+        case .common:
+            return 18
+        case .epic:
+            return 27
+        }
+    }
+
+    var sortRank: Int {
+        switch self {
+        case .common:
+            return 0
+        case .epic:
+            return 1
+        }
+    }
+}
+
+enum EquipmentRarityFilter: String, CaseIterable, Identifiable {
+    case all
+    case common
+    case epic
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .all:
+            return "All"
+        case .common:
+            return "Common"
+        case .epic:
+            return "Epic"
         }
     }
 }
@@ -629,27 +824,4 @@ struct HouseElement: Codable, Identifiable {
         case type
         case elementID = "id"
     }
-}
-
-// MARK: - Hero JSON Models (parsed_json_files/heroes.json)
-struct HeroJSON: Codable {
-    let internalName: String
-    let levels: [HeroJSONLevel]
-}
-
-struct HeroJSONLevel: Codable {
-    let level: Int
-    let TID: String?
-    let UpgradeTimeH: String?
-    let UpgradeResource: String?
-    let UpgradeCost: String?
-    let RequiredTownHallLevel: String
-    let RequiredHeroTavernLevel: String
-    let upgradeTimeSeconds: Int?
-}
-
-struct HeroMapping: Codable {
-    let displayName: String
-    let internalName: String
-    let id: Int
 }

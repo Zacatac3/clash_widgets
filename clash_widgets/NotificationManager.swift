@@ -1,11 +1,18 @@
 import Foundation
 import UserNotifications
+import SwiftUI
+import Combine
 
-final class NotificationManager {
+final class NotificationManager: ObservableObject {
     static let shared = NotificationManager()
 
     private let center = UNUserNotificationCenter.current()
     private static let identifierPrefix = "com.zacharybuschmann.clashdash.upgrade."
+    
+    // Store settings and profile info for notification generation
+    private var currentNotificationSettings: NotificationSettings?
+    private var allProfiles: [PlayerAccount]?
+    private var currentProfileID: UUID?
 
     func ensureAuthorization(promptIfNeeded: Bool, completion: @escaping (Bool) -> Void) {
         center.getNotificationSettings { settings in
@@ -25,12 +32,23 @@ final class NotificationManager {
             }
         }
     }
+    
+    func setProfileContext(allProfiles: [PlayerAccount], currentProfileID: UUID?) {
+        self.allProfiles = allProfiles
+        self.currentProfileID = currentProfileID
+    }
+    
+    func setNotificationSettings(_ settings: NotificationSettings) {
+        self.currentNotificationSettings = settings
+    }
 
     func syncNotifications(for upgrades: [BuildingUpgrade], settings: NotificationSettings) {
         guard settings.notificationsEnabled else {
             removeAllUpgradeNotifications()
             return
         }
+        setNotificationSettings(settings)
+        
         let filteredUpgrades = upgrades.filter { settings.allows(category: $0.category) && $0.endTime > Date() }
         syncNotifications(for: filteredUpgrades)
     }
@@ -97,11 +115,33 @@ final class NotificationManager {
     private func makeRequest(for upgrade: BuildingUpgrade) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = "Upgrade Complete"
-        content.body = "\(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
+        
+        var bodyText = "\(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
+        
+        // Add profile name if multiple profiles exist - format: "Username: upgrade x completed"
+        if let profiles = allProfiles, profiles.count > 1, let profileID = currentProfileID,
+           let profile = profiles.first(where: { $0.id == profileID }) {
+            let profileName = profile.displayName.isEmpty ? "#\(profile.tag)" : profile.displayName
+            bodyText = "\(profileName): \(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
+        }
+        
+        content.body = bodyText
         content.sound = .default
         content.threadIdentifier = Self.threadIdentifier(for: upgrade.category)
+        
+        // Store profile ID for handling notification tap
+        if let profileID = currentProfileID {
+            content.userInfo["profileID"] = profileID.uuidString
+        }
+        
+        // Include target URL for auto-redirect if enabled
+        if let settings = currentNotificationSettings, settings.autoOpenClashOfClansEnabled {
+            content.userInfo["targetURL"] = "clashofclans://"
+        }
 
-        let interval = max(upgrade.endTime.timeIntervalSinceNow, 1)
+        // Apply notification offset (pre-notify N minutes before completion)
+        let offsetSeconds = Double((currentNotificationSettings?.notificationOffsetMinutes ?? 0) * 60)
+        let interval = max(upgrade.endTime.timeIntervalSinceNow - offsetSeconds, 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
         let identifier = Self.identifier(for: upgrade.id)
         return UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)

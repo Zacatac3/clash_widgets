@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "8879E7C32F0F3B4E00FAE5F1"
-               BuildableName = "clash_widgets.app"
+               BuildableName = "Clashboard.app"
                BlueprintName = "clash_widgets"
                ReferencedContainer = "container:clash_widgets.xcodeproj">
             </BuildableReference>
@@ -45,7 +45,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8879E7C32F0F3B4E00FAE5F1"
-            BuildableName = "clash_widgets.app"
+            BuildableName = "Clashboard.app"
             BlueprintName = "clash_widgets"
             ReferencedContainer = "container:clash_widgets.xcodeproj">
          </BuildableReference>
@@ -65,7 +65,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "8879E7C32F0F3B4E00FAE5F1"
-            BuildableName = "clash_widgets.app"
+            BuildableName = "Clashboard.app"
             BlueprintName = "clash_widgets"
             ReferencedContainer = "container:clash_widgets.xcodeproj">
          </BuildableReference>

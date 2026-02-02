@@ -1,4 +1,5 @@
 import Foundation
+import SwiftUI
 
 struct PlayerAccount: Identifiable, Codable, Equatable {
     var id: UUID
@@ -119,3 +120,5 @@ extension PlayerAccount {
         lhs.id == rhs.id
     }
 }
+
+// MARK: - Profile UI Components (Appended)

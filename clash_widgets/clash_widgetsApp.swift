@@ -12,9 +12,63 @@ import UserMessagingPlatform
 import AppTrackingTransparency
 import AdSupport
 import Combine
+import UserNotifications
+
+// MARK: - App Delegate for Notification Handling
+class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    override init() {
+        super.init()
+        UNUserNotificationCenter.current().delegate = self
+    }
+    
+    // Handle notification when app is in foreground
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        let userInfo = notification.request.content.userInfo
+        handleNotificationInteraction(userInfo)
+        completionHandler([.banner, .sound, .badge])
+    }
+    
+    // Handle notification tap
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        didReceive response: UNNotificationResponse,
+        withCompletionHandler completionHandler: @escaping () -> Void
+    ) {
+        let userInfo = response.notification.request.content.userInfo
+        handleNotificationInteraction(userInfo)
+        completionHandler()
+    }
+    
+    private func handleNotificationInteraction(_ userInfo: [AnyHashable: Any]) {
+        // Extract profile ID if available
+        if let profileIDString = userInfo["profileID"] as? String,
+           let profileID = UUID(uuidString: profileIDString) {
+            // Post notification to switch profile
+            NotificationCenter.default.post(
+                name: NSNotification.Name("SwitchToProfileFromNotification"),
+                object: profileID
+            )
+        }
+        
+        // Handle redirect to Clash of Clans using trampoline strategy
+        if let targetURLString = userInfo["targetURL"] as? String,
+           let url = URL(string: targetURLString) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                if UIApplication.shared.canOpenURL(url) {
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+        }
+    }
+}
 
 @main
 struct ClashboardApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var appDelegate
     @StateObject private var iapManager = IAPManager.shared
     private let adConsentManager = AdConsentManager.shared
     
@@ -92,3 +146,4 @@ class AdConsentManager {
         }
     }
 }
+

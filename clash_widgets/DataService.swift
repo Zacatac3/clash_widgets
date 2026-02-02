@@ -193,8 +193,23 @@ class DataService: ObservableObject {
         cachedMiniLevelsNameMap = loadMiniLevelsNameMap()
         cachedHelperLevelsByName = loadHelperLevelsData()
         saveToStorage()
+        
+        // Listen for profile switch notifications from notification taps
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handleProfileSwitchFromNotification(_:)),
+            name: NSNotification.Name("SwitchToProfileFromNotification"),
+            object: nil
+        )
+        
         DispatchQueue.main.async { [weak self] in
             self?.refreshCurrentProfileIfNeeded(force: false)
+        }
+    }
+    
+    @objc private func handleProfileSwitchFromNotification(_ notification: NSNotification) {
+        if let profileID = notification.object as? UUID {
+            selectProfile(profileID)
         }
     }
 
@@ -997,6 +1012,10 @@ class DataService: ObservableObject {
             let filtered = profile.activeUpgrades.filter { settings.allows(category: $0.category) && $0.endTime > now }
             combined.append(contentsOf: filtered)
         }
+        
+        // Set profile context for notification manager to include profile names
+        notificationManager.setProfileContext(allProfiles: profiles, currentProfileID: selectedProfileID)
+        notificationManager.setNotificationSettings(notificationSettings)
         notificationManager.syncNotifications(for: combined)
 
         // Also schedule helper notifications where applicable
@@ -1937,3 +1956,4 @@ class DataService: ObservableObject {
     }
 
 }
+

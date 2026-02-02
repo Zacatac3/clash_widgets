@@ -39,6 +39,7 @@
 		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
+		G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */ = {isa = PBXBuildFile; fileRef = G1A2B3C4D5E6F70012345670 /* gradient_config.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -103,6 +104,7 @@
 		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
 		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
+		G1A2B3C4D5E6F70012345670 /* gradient_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = gradient_config.json; path = gradient_config.json; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
@@ -176,6 +178,7 @@
 				D4F1A0032F15B00000FAE5F1 /* upgrade_info */,
 				D4F1A0012F15B00000FAE5F1 /* asset_map.json */,
 				E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */,
+				G1A2B3C4D5E6F70012345670 /* gradient_config.json */,
 				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
 			);
 			path = clash_widgets;
@@ -301,6 +304,7 @@
 				D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */,
 				D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */,
 				E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */,
+				G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */,
 				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

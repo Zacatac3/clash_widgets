@@ -341,3 +341,4 @@ private final class AssetNameResolver {
             .joined(separator: "_")
     }
 }
+
