@@ -1,0 +1,502 @@
+{
+  "items": [
+    {
+      "result": "lose",
+      "endTime": "20260131T015156.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/L_dwz4AeQfIz9ci7SqsqXEDJv6uOqvV2puRFf0j0M5U.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/L_dwz4AeQfIz9ci7SqsqXEDJv6uOqvV2puRFf0j0M5U.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/L_dwz4AeQfIz9ci7SqsqXEDJv6uOqvV2puRFf0j0M5U.png"
+        },
+        "clanLevel": 5,
+        "attacks": 18,
+        "stars": 28,
+        "destructionPercentage": 98.1,
+        "expEarned": 171
+      },
+      "opponent": {
+        "tag": "#8UP82VVV",
+        "name": "Figure It Out!",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/dzH9rVqUkM5wkP4vhBasBBkJN0BJSkFBgTpIxXnRiEs.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/dzH9rVqUkM5wkP4vhBasBBkJN0BJSkFBgTpIxXnRiEs.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/dzH9rVqUkM5wkP4vhBasBBkJN0BJSkFBgTpIxXnRiEs.png"
+        },
+        "clanLevel": 27,
+        "stars": 30,
+        "destructionPercentage": 100
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260128T024958.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 25,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 288
+      },
+      "opponent": {
+        "tag": "#2PJVP8J0P",
+        "name": "ADULTS 30+ XII",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/FGeRpYQsRQXYHLgf4eTlMDmnD9F5HPNSml77OBohExI.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/FGeRpYQsRQXYHLgf4eTlMDmnD9F5HPNSml77OBohExI.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/FGeRpYQsRQXYHLgf4eTlMDmnD9F5HPNSml77OBohExI.png"
+        },
+        "clanLevel": 26,
+        "stars": 38,
+        "destructionPercentage": 92.26667
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260126T021805.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 17,
+        "stars": 30,
+        "destructionPercentage": 100,
+        "expEarned": 232
+      },
+      "opponent": {
+        "tag": "#9C8VC0P",
+        "name": "Hello 제주",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/okRRaaXs3iZIydAdPgwbu7BOQ_ekyqmwu-IO_plgvjc.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/okRRaaXs3iZIydAdPgwbu7BOQ_ekyqmwu-IO_plgvjc.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/okRRaaXs3iZIydAdPgwbu7BOQ_ekyqmwu-IO_plgvjc.png"
+        },
+        "clanLevel": 29,
+        "stars": 26,
+        "destructionPercentage": 94.7
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260124T024718.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 28,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 296
+      },
+      "opponent": {
+        "tag": "#2G0V2JGRJ",
+        "name": "Coffee Shop",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/zAALdH76FB_gpMjsD2bFax5-BHYJj-IzqHN3U9UIFuk.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/zAALdH76FB_gpMjsD2bFax5-BHYJj-IzqHN3U9UIFuk.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/zAALdH76FB_gpMjsD2bFax5-BHYJj-IzqHN3U9UIFuk.png"
+        },
+        "clanLevel": 17,
+        "stars": 43,
+        "destructionPercentage": 97.333336
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260122T015244.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 17,
+        "stars": 30,
+        "destructionPercentage": 100,
+        "expEarned": 226
+      },
+      "opponent": {
+        "tag": "#2Q9UVC9G2",
+        "name": "نجوم العالية",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/lZj3AN0-HZ8WtqtUXlogorSwmIhhMMVPgCvLcSXFOZk.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/lZj3AN0-HZ8WtqtUXlogorSwmIhhMMVPgCvLcSXFOZk.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/lZj3AN0-HZ8WtqtUXlogorSwmIhhMMVPgCvLcSXFOZk.png"
+        },
+        "clanLevel": 24,
+        "stars": 25,
+        "destructionPercentage": 95.1
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260120T014053.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 26,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 300
+      },
+      "opponent": {
+        "tag": "#2PJRCGRJL",
+        "name": "LESINCARREABLES",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/88ktvWuxSbBpnIAMxZVFPXUd491zK3o0H7XLk1YZQ34.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/88ktvWuxSbBpnIAMxZVFPXUd491zK3o0H7XLk1YZQ34.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/88ktvWuxSbBpnIAMxZVFPXUd491zK3o0H7XLk1YZQ34.png"
+        },
+        "clanLevel": 22,
+        "stars": 40,
+        "destructionPercentage": 93.4
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260118T021201.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 18,
+        "stars": 30,
+        "destructionPercentage": 100,
+        "expEarned": 223
+      },
+      "opponent": {
+        "tag": "#8LRCU99R",
+        "name": "BuckeyeBrothers",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/FxhpAmlpvwHjQqM-5lhwroYjWO8mfQiRP4evjmDi14c.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/FxhpAmlpvwHjQqM-5lhwroYjWO8mfQiRP4evjmDi14c.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/FxhpAmlpvwHjQqM-5lhwroYjWO8mfQiRP4evjmDi14c.png"
+        },
+        "clanLevel": 27,
+        "stars": 26,
+        "destructionPercentage": 93.4
+      }
+    },
+    {
+      "result": "tie",
+      "endTime": "20260116T023131.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 16,
+        "stars": 30,
+        "destructionPercentage": 100,
+        "expEarned": 181
+      },
+      "opponent": {
+        "tag": "#8LQLQJQJ",
+        "name": "Blood Trail",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/4vlpQWdltDL5Fdg00qi_YXNr-NToBM3nuTuaKng_o9s.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/4vlpQWdltDL5Fdg00qi_YXNr-NToBM3nuTuaKng_o9s.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/4vlpQWdltDL5Fdg00qi_YXNr-NToBM3nuTuaKng_o9s.png"
+        },
+        "clanLevel": 26,
+        "stars": 30,
+        "destructionPercentage": 100
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260114T032222.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 24,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 294
+      },
+      "opponent": {
+        "tag": "#LCV0GVPU",
+        "name": "killer war clan",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/k_RvjKVqLO1oXu5eXh1i6DFN0s0hWWXWm8L00pvq6XQ.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/k_RvjKVqLO1oXu5eXh1i6DFN0s0hWWXWm8L00pvq6XQ.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/k_RvjKVqLO1oXu5eXh1i6DFN0s0hWWXWm8L00pvq6XQ.png"
+        },
+        "clanLevel": 29,
+        "stars": 43,
+        "destructionPercentage": 98.86667
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260110T045804.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 1,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/a5u2rx86Xo5Mcsapiq0o_NPv0leRzDVDeeyUbSfGjds.png"
+        },
+        "clanLevel": 4,
+        "attacks": 103,
+        "stars": 355,
+        "destructionPercentage": 667.06665,
+        "expEarned": 0
+      },
+      "opponent": {
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/H39b_-WLZGtZVWQ0hqTkE-Tn2AaQnQWy_Iz4yBlvL0M.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/H39b_-WLZGtZVWQ0hqTkE-Tn2AaQnQWy_Iz4yBlvL0M.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/H39b_-WLZGtZVWQ0hqTkE-Tn2AaQnQWy_Iz4yBlvL0M.png"
+        },
+        "clanLevel": 0,
+        "stars": 181,
+        "destructionPercentage": 0
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20260101T005952.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/PaduTn89wlytZZuQYxWKw7HjCLGMygYamefEQWyT2Rk.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/PaduTn89wlytZZuQYxWKw7HjCLGMygYamefEQWyT2Rk.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/PaduTn89wlytZZuQYxWKw7HjCLGMygYamefEQWyT2Rk.png"
+        },
+        "clanLevel": 3,
+        "attacks": 25,
+        "stars": 43,
+        "destructionPercentage": 99.6,
+        "expEarned": 300
+      },
+      "opponent": {
+        "tag": "#Q09Q999U",
+        "name": "FlashesBaseball",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/0J7GPKCdlxa53mQIhlX1drjq0YbFu1f_is35oc67LBs.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/0J7GPKCdlxa53mQIhlX1drjq0YbFu1f_is35oc67LBs.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/0J7GPKCdlxa53mQIhlX1drjq0YbFu1f_is35oc67LBs.png"
+        },
+        "clanLevel": 26,
+        "stars": 39,
+        "destructionPercentage": 93.933334
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20251226T011404.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png"
+        },
+        "clanLevel": 2,
+        "attacks": 27,
+        "stars": 44,
+        "destructionPercentage": 99.73333,
+        "expEarned": 292
+      },
+      "opponent": {
+        "tag": "#8LV0R9GG",
+        "name": "WuTangClan",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/4_WImYr-I7o-rQ16zeHVZSynKZNgjTVpGCIr2zfiOR8.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/4_WImYr-I7o-rQ16zeHVZSynKZNgjTVpGCIr2zfiOR8.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/4_WImYr-I7o-rQ16zeHVZSynKZNgjTVpGCIr2zfiOR8.png"
+        },
+        "clanLevel": 24,
+        "stars": 29,
+        "destructionPercentage": 75.666664
+      }
+    },
+    {
+      "result": "lose",
+      "endTime": "20251224T015054.000Z",
+      "teamSize": 10,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png"
+        },
+        "clanLevel": 2,
+        "attacks": 20,
+        "stars": 28,
+        "destructionPercentage": 98.3,
+        "expEarned": 172
+      },
+      "opponent": {
+        "tag": "#PLUQ8CVV",
+        "name": "WAR IMMORTALS",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/oYk3etuarOoKyA20q2kbw40sNDS7R4S0VYrGySacHSQ.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/oYk3etuarOoKyA20q2kbw40sNDS7R4S0VYrGySacHSQ.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/oYk3etuarOoKyA20q2kbw40sNDS7R4S0VYrGySacHSQ.png"
+        },
+        "clanLevel": 23,
+        "stars": 30,
+        "destructionPercentage": 100
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20251222T015603.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png"
+        },
+        "clanLevel": 2,
+        "attacks": 30,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 275
+      },
+      "opponent": {
+        "tag": "#2J00GLP9U",
+        "name": "Dark's Family",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/4xlDXKv54XFBOMcKlwsQkqgFQ9jF232gQOqpmokln2w.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/4xlDXKv54XFBOMcKlwsQkqgFQ9jF232gQOqpmokln2w.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/4xlDXKv54XFBOMcKlwsQkqgFQ9jF232gQOqpmokln2w.png"
+        },
+        "clanLevel": 11,
+        "stars": 43,
+        "destructionPercentage": 99.53333
+      }
+    },
+    {
+      "result": "win",
+      "endTime": "20251220T011950.000Z",
+      "teamSize": 15,
+      "attacksPerMember": 2,
+      "battleModifier": "none",
+      "clan": {
+        "tag": "#2JGPJ9UC8",
+        "name": "FIRE",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/tX3MTXlamwFBTrscLglAA92zccLwIybN8HjdhgWRQTI.png"
+        },
+        "clanLevel": 2,
+        "attacks": 24,
+        "stars": 45,
+        "destructionPercentage": 100,
+        "expEarned": 292
+      },
+      "opponent": {
+        "tag": "#P0Q9GJCY",
+        "name": "Valhalla Awaits",
+        "badgeUrls": {
+          "small": "https://api-assets.clashofclans.com/badges/70/kCt4lUa-fieXUrYk9EfABvlaujV5acIgNbngFzacelw.png",
+          "large": "https://api-assets.clashofclans.com/badges/512/kCt4lUa-fieXUrYk9EfABvlaujV5acIgNbngFzacelw.png",
+          "medium": "https://api-assets.clashofclans.com/badges/200/kCt4lUa-fieXUrYk9EfABvlaujV5acIgNbngFzacelw.png"
+        },
+        "clanLevel": 28,
+        "stars": 38,
+        "destructionPercentage": 90.13333
+      }
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "after": "eyJwb3MiOjE1fQ"
+    }
+  }
+}

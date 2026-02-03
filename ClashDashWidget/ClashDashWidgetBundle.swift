@@ -15,5 +15,9 @@ struct ClashDashWidgetBundle: WidgetBundle {
         LabPetWidget()
         BuilderBaseWidget()
         HelperCooldownWidget()
+        ClosestUpgradeWidget()
+        // WarStatusWidget()  // Hidden for now
+        // WarStatusSmallWidget()  // Hidden for now
+        // ClanWarWidget()  // Hidden for now
     }
 }

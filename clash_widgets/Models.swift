@@ -3,6 +3,135 @@ import Foundation
 import SwiftUI
 #endif
 
+// MARK: - Boost Models
+
+enum BoostType: String, Codable, CaseIterable, Identifiable {
+    case builderPotion = "builder_potion"
+    case researchPotion = "research_potion"
+    case petPotion = "pet_potion"
+    case labAssistant = "lab_assistant"
+    case builderApprentice = "builder_apprentice"
+    case builderBite = "builder_bite"
+    case studySoup = "study_soup"
+    case clockTowerPotion = "clock_tower_potion"
+    case clockTower = "clock_tower"
+    
+    var id: String { rawValue }
+    
+    var requiresTargetSelection: Bool {
+        self == .builderApprentice
+    }
+    
+    var requiresClockTowerLevel: Bool {
+        self == .clockTower
+    }
+    
+    var displayName: String {
+        switch self {
+        case .builderPotion: return "Builder Potion"
+        case .researchPotion: return "Research Potion"
+        case .petPotion: return "Pet Potion"
+        case .labAssistant: return "Lab Assistant"
+        case .builderApprentice: return "Builder's Apprentice"
+        case .builderBite: return "Builder Bite"
+        case .studySoup: return "Study Soup"
+        case .clockTowerPotion: return "Clock Tower Potion"
+        case .clockTower: return "Clock Tower"
+        }
+    }
+    
+    var assetPath: String {
+        switch self {
+        case .builderPotion: return "extras/builder_potion"
+        case .researchPotion: return "extras/research_potion"
+        case .petPotion: return "extras/pet_potion"
+        case .labAssistant: return "profile/lab_assistant"
+        case .builderApprentice: return "profile/apprentice_builder"
+        case .builderBite: return "extras/Builder_Bite"
+        case .studySoup: return "extras/Study_Soup"
+        case .clockTowerPotion: return "extras/clock_tower_potion"
+        case .clockTower: return "builder_base/clock_tower"
+        }
+    }
+    
+    var isPlaceholder: Bool {
+        return false
+    }
+    
+    // Boost multipliers (as percentages: 10x = +900%, 2x = +100%)
+    // For level-based boosts, this returns 0 and the actual multiplier is calculated from profile level
+    func speedMultiplier(level: Int = 0) -> Double {
+        switch self {
+        case .builderPotion: return 9.0  // +900% = 10x
+        case .researchPotion: return 23.0  // +2300% = 24x
+        case .petPotion: return 23.0  // +2300% = 24x
+        case .builderBite: return 1.0  // +100% = 2x
+        case .studySoup: return 3.0  // +300% = 4x
+        case .labAssistant, .builderApprentice:
+            // Level-based: level 8 = 9x multiplier = 8x boost (level + 1)
+            return Double(level)  // This is the boost percentage (level 8 = +800%)
+        case .clockTowerPotion, .clockTower:
+            return 9.0  // +900% = 10x speed
+        }
+    }
+    
+    func durationSeconds(clockTowerLevel: Int = 0) -> TimeInterval {
+        switch self {
+        case .builderPotion, .researchPotion, .petPotion, .builderBite, .studySoup, .labAssistant, .builderApprentice:
+            return 3600  // 1 hour
+        case .clockTowerPotion:
+            return 1800  // 30 minutes
+        case .clockTower:
+            // 14 minutes at level 1, +2 minutes per level (level 1 = 14, level 10 = 32)
+            let minutes = max(1, clockTowerLevel)
+            return TimeInterval((14 + (minutes - 1) * 2) * 60)
+        }
+    }
+    
+    // Which upgrade categories this boost affects
+    var affectedCategories: Set<UpgradeCategory> {
+        switch self {
+        case .builderPotion, .builderBite, .builderApprentice:
+            return [.builderVillage]
+        case .researchPotion, .labAssistant:
+            return [.lab]
+        case .petPotion:
+            return [.pets]
+        case .studySoup:
+            return [.lab, .pets]
+        case .clockTowerPotion, .clockTower:
+            return [.builderBase]
+        }
+    }
+    
+    // Clock tower boosts don't stack with each other, they extend duration instead
+    var isClockTowerBoost: Bool {
+        self == .clockTower || self == .clockTowerPotion
+    }
+}
+
+struct ActiveBoost: Codable, Equatable, Identifiable {
+    var id: UUID
+    var type: String
+    var startTime: Date
+    var endTime: Date
+    var targetUpgradeId: UUID?  // For builder's apprentice - which upgrade this boost applies to
+    var helperLevel: Int?  // For level-based boosts (lab assistant, builder's apprentice)
+    
+    init(id: UUID = UUID(), type: String, startTime: Date, endTime: Date, targetUpgradeId: UUID? = nil, helperLevel: Int? = nil) {
+        self.id = id
+        self.type = type
+        self.startTime = startTime
+        self.endTime = endTime
+        self.targetUpgradeId = targetUpgradeId
+        self.helperLevel = helperLevel
+    }
+    
+    var boostType: BoostType? {
+        BoostType(rawValue: type)
+    }
+}
+
 enum AppearancePreference: String, Codable, CaseIterable, Identifiable {
     case device
     case dark
@@ -60,11 +189,25 @@ struct NotificationSettings: Codable, Equatable {
     var builderBaseNotificationsEnabled: Bool = true
     // Helper specific notifications (helpers ready to work)
     var helperNotificationsEnabled: Bool = true
+    // Clan war notifications (1 hour before prep ends and 1 hour before battle ends)
+    var clanWarNotificationsEnabled: Bool = false
     // Global notification settings (not profile-specific)
     var autoOpenClashOfClansEnabled: Bool = false
     var notificationOffsetMinutes: Int = 0
 
-    static var `default`: NotificationSettings { NotificationSettings() }
+    static var `default`: NotificationSettings { 
+        var settings = NotificationSettings()
+        // When creating default settings (e.g., new profile or enabling notifications),
+        // all notifications should be ON by default except clan war
+        settings.notificationsEnabled = true
+        settings.builderNotificationsEnabled = true
+        settings.labNotificationsEnabled = true
+        settings.petNotificationsEnabled = true
+        settings.builderBaseNotificationsEnabled = true
+        settings.helperNotificationsEnabled = true
+        settings.clanWarNotificationsEnabled = false
+        return settings
+    }
 
     func allows(category: UpgradeCategory) -> Bool {
         switch category {
@@ -282,7 +425,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     let targetLevel: Int
     let superchargeLevel: Int?
     let superchargeTargetLevel: Int?
-    let endTime: Date
+    var endTime: Date  // Mutable to allow boost adjustments
     let category: UpgradeCategory
     let startTime: Date
     let totalDuration: TimeInterval
@@ -778,6 +921,101 @@ struct TroopProfile: Codable {
     let level: Int
     let maxLevel: Int
     let village: String
+}
+
+// MARK: - Clan War Models
+struct WarDetails: Codable {
+    let state: String
+    let teamSize: Int
+    let attacksPerMember: Int?
+    let battleModifier: String?
+    let preparationStartTime: String?
+    let startTime: String?
+    let endTime: String?
+    let clan: WarClan?
+    let opponent: WarClan?
+}
+
+struct WarClan: Codable {
+    let tag: String
+    let name: String
+    let badgeUrls: BadgeUrls
+    let clanLevel: Int
+    let attacks: Int?
+    let stars: Int?
+    let destructionPercentage: Double?
+    let members: [WarMember]?
+}
+
+struct WarMember: Codable {
+    let tag: String
+    let name: String
+    let townhallLevel: Int?
+    let mapPosition: Int?
+    let attacks: [WarAttack]?
+    let opponentAttacks: Int?
+    let bestOpponentAttack: WarAttack?
+}
+
+struct WarAttack: Codable {
+    let attackerTag: String?
+    let defenderTag: String?
+    let stars: Int?
+    let destructionPercentage: Int?
+    let order: Int?
+    let duration: Int?
+}
+
+// MARK: - Clan Stats Models
+struct ClanStats: Codable {
+    let tag: String
+    let name: String
+    let type: String?
+    let description: String?
+    let location: ClanLocation?
+    let isFamilyFriendly: Bool?
+    let badgeUrls: BadgeUrls
+    let clanLevel: Int
+    let clanPoints: Int?
+    let clanBuilderBasePoints: Int?
+    let clanCapitalPoints: Int?
+    let clanCapital: ClanCapital?
+    let capitalLeague: ClanLeague?
+    let requiredTrophies: Int?
+    let warFrequency: String?
+    let warWinStreak: Int?
+    let warWins: Int?
+    let warTies: Int?
+    let warLosses: Int?
+    let warLeague: ClanLeague?
+    let members: Int?
+}
+
+struct ClanLocation: Codable {
+    let id: Int?
+    let name: String?
+    let isCountry: Bool?
+    let countryCode: String?
+}
+
+struct ClanLeague: Codable {
+    let id: Int?
+    let name: String?
+}
+
+struct ClanCapital: Codable {
+    let capitalHallLevel: Int?
+}
+
+// MARK: - Clan War League Models
+struct WarLeagueGroup: Codable {
+    let state: String?
+    let season: String?
+    let rounds: [WarLeagueRound]?
+}
+
+struct WarLeagueRound: Codable {
+    let warTags: [String]?
 }
 
 struct SpellProfile: Codable {

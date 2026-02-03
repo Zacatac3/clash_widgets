@@ -89,11 +89,19 @@ struct PersistentStore {
         }
         do {
             let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            if let state = try? decoder.decode(AppState.self, from: data) {
+
+            let defaultDecoder = JSONDecoder()
+            if let state = try? defaultDecoder.decode(AppState.self, from: data) {
                 return state
             }
-            if let legacy = try? decoder.decode(LegacyAppState.self, from: data) {
+
+            let isoDecoder = JSONDecoder()
+            isoDecoder.dateDecodingStrategy = .iso8601
+            if let state = try? isoDecoder.decode(AppState.self, from: data) {
+                return state
+            }
+
+            if let legacy = try? defaultDecoder.decode(LegacyAppState.self, from: data) {
                 let profile = PlayerAccount(
                     displayName: legacy.playerTag.isEmpty ? "Profile 1" : legacy.playerTag,
                     tag: legacy.playerTag,
@@ -101,12 +109,12 @@ struct PersistentStore {
                     lastImportDate: legacy.lastImportDate,
                     activeUpgrades: legacy.activeUpgrades ?? []
                 )
-                    return AppState(
-                        profiles: [profile],
-                        selectedProfileID: profile.id,
-                        appearancePreference: .device,
-                        notificationSettings: .default
-                    )
+                return AppState(
+                    profiles: [profile],
+                    selectedProfileID: profile.id,
+                    appearancePreference: .device,
+                    notificationSettings: .default
+                )
             }
             return nil
         } catch {

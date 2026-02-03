@@ -27,8 +27,6 @@ Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs a
 - haptics are too strong when adjusting sliders
 - Widgets, when tinted or clear, have assets messed up
 
-— Upcoming / Unreleased Updates —
-
 1.0.2 - 1/27/2026
 Hotfix planned for after launch and collecting user feedback
 
@@ -63,10 +61,10 @@ Main Fix:
 - wall costs now scale with gold pass
 - Changed Hero levels and Town Hall level to draw from import instead of API, for edge case scenarios 
 
-
+— Upcoming / Unreleased Updates —
 
 1.1 - 2/xx/26
-Major Quality of Life Update
+Major Quality of Life + feature Update
 
 *New Features and Additions*
 - Helpers now only send one notification for all helpers
@@ -75,26 +73,31 @@ Major Quality of Life Update
 - Added toggle to open Clash of Clans directly when tapping on notification
 - Notifications now specify which profile the upgrade is for
 - new setting to "Pre-Notify" a few minutes before upgrades are done
-- 
+- new Current War home screen module
+- Clan stats added in profile tab
+- Lock screen widgets for upgrades
+- added boosts menu (helpers, potions, and snacks)
+- Profile page cards now re-orderable
+- added new setting to display precise timers
 
 *Changes and Bug Fixes*
 - Import button now taller to avoid miss taps
+- widgets now display profile names
 - check mark and (...) button swapped in profile settings
 - user now prompted to modify paste settings after first import
 - Split notification settings by global vs profile specific settings
 - new import status visual confirmation
 - tapping a notification now automatically switches to the profile the notification was for
 - updated profile gradient handling
+- removed achievements section, not fully present in the API and inconsistent results
+- widgets now have profile name labels
+- fixed Town Hall level not updating with import (causing icon and wall levels to be messed up)
+- made toggle colors consistent in the settings menu
 
 
 
 *New Features*
-* Lock Screen widget + toggle
-* Shortcuts integration 
-* Potions Snacks and other boosts
-* War stats widget (?)
-* add gem rewards to achievements and remaining helper costs in gems 
-*Upgrade history
+- Shortcuts integration 
 
 Planned:
 - profile label on widgets
@@ -108,5 +111,8 @@ Planned:
 * Set up icloud sync for widgets / potential account management(?)
 * New more elegant UI for the home screen cards as well as widgets
 * Server hosting of assets and upgrade data to push info/asset updates without new app version
-* Add "Progres" section to track time/cost remaining for each town hall
+* Add "Progress" section to track time/cost remaining for each town hall
 * Widget customization / themes
+- upgrade history (?)
+- * War stats widget (?)
+ lock screen toggle (?)

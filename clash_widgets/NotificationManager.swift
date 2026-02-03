@@ -8,6 +8,7 @@ final class NotificationManager: ObservableObject {
 
     private let center = UNUserNotificationCenter.current()
     private static let identifierPrefix = "com.zacharybuschmann.clashdash.upgrade."
+    private static let warIdentifierPrefix = "com.zacharybuschmann.clashdash.war."
     
     // Store settings and profile info for notification generation
     private var currentNotificationSettings: NotificationSettings?
@@ -53,7 +54,7 @@ final class NotificationManager: ObservableObject {
         syncNotifications(for: filteredUpgrades)
     }
 
-    func syncNotifications(for upgrades: [BuildingUpgrade]) {
+    func syncNotifications(for upgrades: [BuildingUpgrade], activeBoosts: [ActiveBoost] = []) {
         guard !upgrades.isEmpty else {
             removeAllUpgradeNotifications()
             return
@@ -65,7 +66,7 @@ final class NotificationManager: ObservableObject {
                 return
             }
 
-            let desiredRequests = upgrades.map { self.makeRequest(for: $0) }
+            let desiredRequests = upgrades.map { self.makeRequest(for: $0, activeBoosts: activeBoosts) }
             self.center.getPendingNotificationRequests { existing in
                 let managed = existing.filter { $0.identifier.hasPrefix(Self.identifierPrefix) }
                 let managedIdentifiers = Set(managed.map { $0.identifier })
@@ -111,8 +112,111 @@ final class NotificationManager: ObservableObject {
             self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
         }
     }
+    
+    func removeAllWarNotifications() {
+        center.getPendingNotificationRequests { requests in
+            let identifiers = requests
+                .filter { $0.identifier.hasPrefix(Self.warIdentifierPrefix) }
+                .map { $0.identifier }
+            guard !identifiers.isEmpty else { return }
+            self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
+        }
+    }
+    
+    func syncWarNotifications(for war: WarDetails?, settings: NotificationSettings, profileID: UUID?, profileName: String?) {
+        guard settings.notificationsEnabled, settings.clanWarNotificationsEnabled else {
+            removeAllWarNotifications()
+            return
+        }
+        
+        guard let war = war, let start = parseWarDate(war.startTime), let end = parseWarDate(war.endTime) else {
+            removeAllWarNotifications()
+            return
+        }
+        
+        ensureAuthorization(promptIfNeeded: false) { granted in
+            guard granted else {
+                self.removeAllWarNotifications()
+                return
+            }
+            
+            let now = Date()
+            var requests: [UNNotificationRequest] = []
+            
+            // Notification 1 hour before prep ends (which is when battle starts)
+            let oneHourBeforeBattle = start.addingTimeInterval(-3600)
+            if oneHourBeforeBattle > now {
+                requests.append(self.makeWarNotificationRequest(
+                    identifier: "prep_ending",
+                    title: "War Preparation Ending Soon",
+                    body: "Battle day starts in 1 hour!",
+                    triggerDate: oneHourBeforeBattle,
+                    profileID: profileID,
+                    profileName: profileName
+                ))
+            }
+            
+            // Notification 1 hour before battle ends
+            let oneHourBeforeBattleEnds = end.addingTimeInterval(-3600)
+            if oneHourBeforeBattleEnds > now {
+                requests.append(self.makeWarNotificationRequest(
+                    identifier: "battle_ending",
+                    title: "War Battle Day Ending Soon",
+                    body: "Battle day ends in 1 hour!",
+                    triggerDate: oneHourBeforeBattleEnds,
+                    profileID: profileID,
+                    profileName: profileName
+                ))
+            }
+            
+            // Remove old war notifications and add new ones
+            self.removeAllWarNotifications()
+            for request in requests {
+                self.center.add(request)
+            }
+        }
+    }
+    
+    private func makeWarNotificationRequest(
+        identifier: String,
+        title: String,
+        body: String,
+        triggerDate: Date,
+        profileID: UUID?,
+        profileName: String?
+    ) -> UNNotificationRequest {
+        let content = UNMutableNotificationContent()
+        content.title = title
+        
+        var bodyText = body
+        if let profiles = allProfiles, profiles.count > 1, let name = profileName {
+            bodyText = "\(name): \(body)"
+        }
+        content.body = bodyText
+        content.sound = .default
+        content.threadIdentifier = "clanwar"
+        
+        if let profileID = profileID {
+            content.userInfo["profileID"] = profileID.uuidString
+        }
+        
+        let interval = max(triggerDate.timeIntervalSinceNow, 1)
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
+        
+        let fullIdentifier = Self.warIdentifierPrefix + identifier + "." + (profileID?.uuidString ?? "default")
+        return UNNotificationRequest(identifier: fullIdentifier, content: content, trigger: trigger)
+    }
+    
+    private func parseWarDate(_ value: String?) -> Date? {
+        guard let value else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss.SSS'Z'"
+        return formatter.date(from: value)
+    }
 
-    private func makeRequest(for upgrade: BuildingUpgrade) -> UNNotificationRequest {
+    private func makeRequest(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost] = []) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = "Upgrade Complete"
         
@@ -121,8 +225,13 @@ final class NotificationManager: ObservableObject {
         // Add profile name if multiple profiles exist - format: "Username: upgrade x completed"
         if let profiles = allProfiles, profiles.count > 1, let profileID = currentProfileID,
            let profile = profiles.first(where: { $0.id == profileID }) {
-            let profileName = profile.displayName.isEmpty ? "#\(profile.tag)" : profile.displayName
-            bodyText = "\(profileName): \(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
+            let resolvedName = [
+                profile.displayName,
+                profile.cachedProfile?.name
+            ]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first(where: { !$0.isEmpty }) ?? "Profile"
+            bodyText = "\(resolvedName): \(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
         }
         
         content.body = bodyText
@@ -134,17 +243,104 @@ final class NotificationManager: ObservableObject {
             content.userInfo["profileID"] = profileID.uuidString
         }
         
-        // Include target URL for auto-redirect if enabled
-        if let settings = currentNotificationSettings, settings.autoOpenClashOfClansEnabled {
+        // Include target URL for auto-redirect if enabled (global setting)
+        let autoOpenClash = UserDefaults.standard.bool(forKey: "globalAutoOpenClashOfClans")
+        if autoOpenClash {
             content.userInfo["targetURL"] = "clashofclans://"
         }
 
-        // Apply notification offset (pre-notify N minutes before completion)
-        let offsetSeconds = Double((currentNotificationSettings?.notificationOffsetMinutes ?? 0) * 60)
-        let interval = max(upgrade.endTime.timeIntervalSinceNow - offsetSeconds, 1)
+        // Calculate completion time accounting for active boosts
+        let completionTime = effectiveCompletionDate(for: upgrade, activeBoosts: activeBoosts)
+        
+        // Apply notification offset (pre-notify N minutes before completion) (global setting)
+        let offsetMinutes = UserDefaults.standard.integer(forKey: "globalNotificationOffsetMinutes")
+        let offsetSeconds = Double(offsetMinutes * 60)
+        let interval = max(completionTime.timeIntervalSinceNow - offsetSeconds, 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
         let identifier = Self.identifier(for: upgrade.id)
         return UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
+    }
+    
+    /// Calculate the effective completion date accounting for active and future boosts
+    /// This projects forward in time to determine WHEN the upgrade will actually complete
+    private func effectiveCompletionDate(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost]) -> Date {
+        let now = Date()
+        var remainingWork = max(0, upgrade.endTime.timeIntervalSince(now))
+        
+        // If no boosts or no work remaining, use raw endTime
+        guard !activeBoosts.isEmpty, remainingWork > 0 else {
+            return upgrade.endTime
+        }
+        
+        // Filter boosts that affect this upgrade's category
+        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
+            guard let boostType = boost.boostType,
+                  boostType.affectedCategories.contains(upgrade.category),
+                  boost.endTime > now else { return nil }
+            // For targeted boosts, only include if it targets this upgrade
+            if boostType == .builderApprentice || boostType == .labAssistant {
+                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
+            }
+            return boost
+        }.sorted { $0.endTime < $1.endTime }
+        
+        if relevantBoosts.isEmpty { return upgrade.endTime }
+        
+        // Simulate time passing and calculate when work completes
+        var currentTime = now
+        
+        // Build timeline of future boost transitions
+        var transitions: [Date] = [now]
+        for boost in relevantBoosts {
+            if boost.startTime > now {
+                transitions.append(boost.startTime)
+            }
+            transitions.append(boost.endTime)
+        }
+        transitions = Array(Set(transitions)).sorted()
+        
+        // Process each time segment
+        for idx in 0..<(transitions.count - 1) {
+            let segmentStart = transitions[idx]
+            let segmentEnd = transitions[idx + 1]
+            
+            // Calculate effective speed multiplier for this segment
+            var speedMultiplier = 1.0
+            var clockTowerApplied = false
+            
+            for boost in relevantBoosts {
+                guard let boostType = boost.boostType else { continue }
+                // Check if this boost is active during this segment
+                if boost.startTime <= segmentStart && boost.endTime > segmentStart {
+                    let level = boost.helperLevel ?? 0
+                    if boostType.isClockTowerBoost {
+                        if !clockTowerApplied {
+                            speedMultiplier += boostType.speedMultiplier(level: level)
+                            clockTowerApplied = true
+                        }
+                    } else {
+                        speedMultiplier += boostType.speedMultiplier(level: level)
+                    }
+                }
+            }
+            
+            // How much real time passes in this segment
+            let realTime = segmentEnd.timeIntervalSince(segmentStart)
+            // How much work gets done (boosted time)
+            let workDone = realTime * speedMultiplier
+            
+            if workDone >= remainingWork {
+                // Upgrade completes during this segment
+                let timeNeeded = remainingWork / speedMultiplier
+                return segmentStart.addingTimeInterval(timeNeeded)
+            }
+            
+            remainingWork -= workDone
+            currentTime = segmentEnd
+        }
+        
+        // If we still have work after all boosts expire, add unboosted time
+        return currentTime.addingTimeInterval(remainingWork)
     }
 
     private static func identifier(for upgradeID: UUID) -> String {

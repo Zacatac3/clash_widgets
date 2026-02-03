@@ -107,6 +107,14 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
+        WhatsNewSection(dateLabel: "2/3/2026 - Major Quality of Life Update", bullets: [
+            "New Home Modules: Added Current War tracker and Boosts menu (Helpers, Potions, Snacks)",
+            "Customization: You can now hide individual sections and re-order profile cards",
+            "Enhanced Notifications: Pre-notify, setting to open Clash when tapping a notification, and auto-switching to the correct profile on tap",
+            "Lock Screen Widgets: Track your upgrades directly from your lock screen",
+            "Improved Importing: Fixed Town Hall level sync issues and added visual import confirmation",
+            "Cleaned up Profile: Added Clan stats and helper gem costs; removed Achievements section, gradients adjusted for some town halls"
+        ]),
         WhatsNewSection(dateLabel: "1/27/2026 - Critical Widget Fix", bullets: ["Widgets fixed: Widgets should now work on all iOS/iPadOS versions and devices", "Added EU consent form", "fixed league icons naming error", "fixed hero levels in the profile tab not being relevant to current town hall", "wall costs now display billions properly", "wall costs now scale with gold pass"]),
         WhatsNewSection(dateLabel: "1/27/2026 - Post Release Bug Fixes and Tweaks", bullets: ["New Walls Section on the home screen","Widgets can now be set to a certain profile (press and hold on the widget, and press 'edit widget')","Streamlined Onboarding - Now contains instructions & Split into two pages, and For simplicity, swapped places of import button and profile switcher", "fixed too many ads showing up when asking app not to track", "added changelog to what's new", "Added notifications for helpers", "many other various fixes and improvements"]),
         WhatsNewSection(dateLabel: "1/25/26 - Hot Fix", bullets: ["Imporved new user experience"," fixed ads showing up after purchasing ad-free", "pop-ups no longer show up when not supposed to", "fixed various minor bugs"]),

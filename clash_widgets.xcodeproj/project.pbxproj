@@ -40,6 +40,7 @@
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
 		G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */ = {isa = PBXBuildFile; fileRef = G1A2B3C4D5E6F70012345670 /* gradient_config.json */; };
+		H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */ = {isa = PBXBuildFile; fileRef = H1A2B3C4D5E6F70012345670 /* clan_stats.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -104,10 +105,11 @@
 		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
 		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
-		G1A2B3C4D5E6F70012345670 /* gradient_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = gradient_config.json; path = gradient_config.json; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
+		G1A2B3C4D5E6F70012345670 /* gradient_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gradient_config.json; sourceTree = "<group>"; };
+		H1A2B3C4D5E6F70012345670 /* clan_stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = clan_stats.json; path = ../misc_files/clan_stats.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -178,6 +180,7 @@
 				D4F1A0032F15B00000FAE5F1 /* upgrade_info */,
 				D4F1A0012F15B00000FAE5F1 /* asset_map.json */,
 				E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */,
+				H1A2B3C4D5E6F70012345670 /* clan_stats.json */,
 				G1A2B3C4D5E6F70012345670 /* gradient_config.json */,
 				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
 			);
@@ -304,6 +307,7 @@
 				D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */,
 				D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */,
 				E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */,
+				H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */,
 				G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */,
 				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
@@ -447,7 +451,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -465,7 +469,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -485,7 +489,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -503,7 +507,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -545,7 +549,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -558,7 +562,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;
@@ -601,7 +605,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -614,7 +618,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = 1.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;

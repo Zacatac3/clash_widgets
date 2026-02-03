@@ -1,7 +1,11 @@
 import SwiftUI
+import CryptoKit
 import GoogleMobileAds
 import Combine
 import StoreKit
+#if canImport(WidgetKit)
+import WidgetKit
+#endif
 #if canImport(UIKit)
 import UIKit
 import AppTrackingTransparency
@@ -157,6 +161,7 @@ struct ContentView: View {
                     dataService.pruneCompletedUpgrades()
                     handleGoldPassResetIfNeeded()
                     presentLaunchInterstitialIfNeeded()
+                    handleWidgetImportRequest()
                     initialSetupTag = dataService.playerTag
                     selectedTab = .dashboard
                     onboardingLocked = false
@@ -168,6 +173,11 @@ struct ContentView: View {
                         if phase == .active {
                             handleGoldPassResetIfNeeded()
                             presentLaunchInterstitialIfNeeded()
+                            handleWidgetImportRequest()
+                            // Force widget refresh when app opens to sync boost timers
+                            #if canImport(WidgetKit)
+                            WidgetKit.WidgetCenter.shared.reloadAllTimelines()
+                            #endif
                         } else {
                             hasShownLaunchAd = false
                         }
@@ -257,6 +267,14 @@ struct ContentView: View {
                 attemptPresentLaunchAd(retries: retries - 1)
             }
         }
+    }
+
+    private func handleWidgetImportRequest() {
+        let defaults = UserDefaults(suiteName: DataService.appGroup)
+        let requested = defaults?.bool(forKey: "widget_import_requested") ?? false
+        guard requested else { return }
+        defaults?.set(false, forKey: "widget_import_requested")
+        _ = dataService.importClipboardFromPasteboardForWidget()
     }
 
     private func handleInitialSetupSubmission(_ submission: ProfileSetupSubmission) {
@@ -1624,12 +1642,13 @@ private struct DashboardView: View {
     @AppStorage("lastSeenBuildNumber") private var lastSeenBuildNumber = ""
     @AppStorage("hasShownWhatsNewFirstColdBoot") private var hasShownWhatsNewFirstColdBoot = false
     @AppStorage("hasShownFirstImportTip") private var hasShownFirstImportTip = false
-    @AppStorage("homeSectionOrder") private var homeSectionOrder = "builders,lab,pets,helpers,builderBase,starLab"
+    @AppStorage("homeSectionOrder") private var homeSectionOrder = "clanWar,builders,lab,pets,helpers,builderBase,starLab"
     @AppStorage("hiddenHomeSections") private var hiddenHomeSections = ""
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
     @State private var showInfoSheet = false
     @State private var infoSheetPage: InfoSheetPage = .welcome
     @State private var showHomeOrderSheet = false
+    @State private var showBoostSheet = false
     @State private var orderedSections: [HomeSection] = HomeSection.defaultOrder
     @State private var hiddenSections: Set<String> = []
     @State private var didRunStartupSheets = false
@@ -1644,12 +1663,25 @@ private struct DashboardView: View {
             .sheet(isPresented: $showHomeOrderSheet) {
                 HomeSectionOrderSheet(order: $orderedSections, hidden: $hiddenSections)
             }
+            .sheet(isPresented: $showBoostSheet) {
+                BoostView(dataService: dataService)
+            }
             .sheet(isPresented: $showFirstImportTip) {
                 FirstImportTipSheet(isPresented: $showFirstImportTip)
             }
             .onAppear {
                 orderedSections = parseHomeSectionOrder()
                 hiddenSections = parseHiddenSections()
+                
+                // Only load war status if the clan war section is not hidden
+                if !hiddenSections.contains("clanWar") {
+                    DispatchQueue.global(qos: .userInitiated).async {
+                        DispatchQueue.main.async {
+                            dataService.refreshCurrentWarStatus(force: false)
+                        }
+                    }
+                }
+                
                 // Prefer showing the onboarding 'Welcome' for first-time users.
                 // What's New should automatically appear only:
                 //  - once after the very first cold boot of the app (first run after
@@ -1805,6 +1837,50 @@ private struct DashboardView: View {
                     .foregroundColor(.red)
             }
 
+            // Active boosts indicator
+            if let profile = dataService.currentProfile, !profile.activeBoosts.isEmpty {
+                let activeBoosts = profile.activeBoosts.filter { $0.endTime > Date() }
+                if !activeBoosts.isEmpty {
+                    HStack(spacing: 12) {
+                        ForEach(activeBoosts, id: \.type) { boost in
+                            if let boostType = boost.boostType {
+                                VStack(spacing: 2) {
+                                    // Boost icon with trimmed image and background
+                                    if let uiImage = UIImage(named: boostType.assetPath),
+                                       boostType == .builderApprentice || boostType == .labAssistant {
+                                        // Trim transparent edges for apprentice/assistant icons
+                                        let trimmedImage = trimTransparentEdges(from: uiImage)
+                                        Image(uiImage: trimmedImage)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 32, height: 32)
+                                            .padding(6)
+                                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                                    } else {
+                                        // Regular icons without trimming
+                                        Image(boostType.assetPath)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 32, height: 32)
+                                            .padding(6)
+                                            .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 8))
+                                    }
+                                    
+                                    // Time remaining below icon
+                                    TimelineView(.periodic(from: .now, by: 1.0)) { _ in
+                                        Text(formatBoostTimeRemaining(boost.endTime))
+                                            .font(.system(size: 9, weight: .medium))
+                                            .foregroundColor(.secondary)
+                                            .monospacedDigit()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    .padding(.vertical, 8)
+                }
+            }
+
             // Always show import controls here (previously only shown when multiple profiles).
             VStack(spacing: 8) {
                 Button(action: pasteAndImport) {
@@ -1840,6 +1916,7 @@ private struct DashboardView: View {
     }
 
     private enum HomeSection: String, CaseIterable, Identifiable {
+        case clanWar
         case helpers
         case builders
         case lab
@@ -1852,6 +1929,7 @@ private struct DashboardView: View {
 
         var title: String {
             switch self {
+            case .clanWar: return "Clan War"
             case .helpers: return "Helpers"
             case .builders: return "Home Village Builders"
             case .lab: return "Laboratory"
@@ -1862,7 +1940,7 @@ private struct DashboardView: View {
             }
         }
 
-        static let defaultOrder: [HomeSection] = [.builders, .lab, .pets, .builderBase, .walls, .helpers, .starLab]
+        static let defaultOrder: [HomeSection] = [.clanWar, .builders, .lab, .pets, .builderBase, .walls, .helpers, .starLab]
     }
 
     private struct HelperCooldownDisplay: Identifiable {
@@ -1917,6 +1995,15 @@ private struct DashboardView: View {
             .accessibilityLabel("Reorder Home Cards")
             .buttonStyle(.plain)
             .foregroundColor(.accentColor)
+            
+            Button {
+                showBoostSheet = true
+            } label: {
+                Image(systemName: "flask")
+            }
+            .accessibilityLabel("Boosts Menu")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
         }
         
         // Spacer to separate button groups visually
@@ -1956,6 +2043,18 @@ private struct DashboardView: View {
             .buttonStyle(.plain)
             .foregroundColor(.accentColor)
         }
+        
+        // Boosts button - separate container on left
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                showBoostSheet = true
+            } label: {
+                Image(systemName: "flask")
+            }
+            .accessibilityLabel("Boosts Menu")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
+        }
 
         // Profile switcher moved to the top-right
         ToolbarItem(placement: .navigationBarTrailing) {
@@ -1966,6 +2065,10 @@ private struct DashboardView: View {
     @ViewBuilder
     private func sectionView(for section: HomeSection) -> some View {
         switch section {
+        case .clanWar:
+            if !hiddenSections.contains(section.rawValue) {
+                clanWarCard
+            }
         case .helpers:
             if !hiddenSections.contains(section.rawValue) && !helperCooldowns.isEmpty {
                 Section(section.title) {
@@ -2040,6 +2143,186 @@ private struct DashboardView: View {
                 }
             }
         }
+    }
+
+    @ViewBuilder
+    private var clanWarCard: some View {
+        if let war = dataService.currentWar {
+            Section("Clan War") {
+                VStack(alignment: .leading, spacing: 10) {
+                    if let clan = war.clan, let opponent = war.opponent {
+                        HStack(alignment: .top) {
+                            HStack(spacing: 10) {
+                                ClanBadgeView(urlString: clan.badgeUrls.small, size: 36)
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(clan.name)
+                                        .font(.subheadline)
+                                        .bold()
+                                    Text("Stars: \(clan.stars ?? 0)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                            }
+                            Spacer()
+                            HStack(spacing: 10) {
+                                VStack(alignment: .trailing, spacing: 2) {
+                                    Text(opponent.name)
+                                        .font(.subheadline)
+                                        .bold()
+                                    Text("Stars: \(opponent.stars ?? 0)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
+                                ClanBadgeView(urlString: opponent.badgeUrls.small, size: 36)
+                            }
+                        }
+                    } else {
+                        Text("Status: \(war.state.capitalized)")
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                    }
+
+                    let phase = warPhase(for: war)
+                    warProgressBar(phase: phase)
+
+                    TimelineView(.periodic(from: Date(), by: 1)) { context in
+                        HStack {
+                            if let label = warPhaseTimerLabel(for: war, referenceDate: context.date) {
+                                Text(label)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            } else {
+                                Text(phase.label)
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            if let winner = warWinnerLabel(for: war, phase: phase.kind) {
+                                Text(winner)
+                                    .font(.caption)
+                                    .foregroundColor(.primary)
+                                    .bold()
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical, 6)
+            }
+        } else if let message = dataService.warStatusMessage {
+            Section("Clan War") {
+                // Check if this is a CWL message
+                if message.lowercased().contains("clan war league") {
+                    HStack(spacing: 12) {
+                        Image("profile/cwl")
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 48, height: 48)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Clan War League")
+                                .font(.subheadline)
+                                .bold()
+                            Text(message)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Spacer()
+                    }
+                    .padding(.vertical, 6)
+                } else {
+                    Text(message)
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+            }
+        }
+    }
+
+    private func warProgressBar(phase: WarPhaseInfo) -> some View {
+        GeometryReader { geo in
+            ZStack(alignment: .leading) {
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.gray.opacity(0.2))
+                    .frame(height: 8)
+
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(Color.green)
+                    .frame(width: geo.size.width * CGFloat(phase.progress), height: 8)
+            }
+        }
+        .frame(height: 8)
+    }
+
+    private struct WarPhaseInfo {
+        enum Kind { case preparation, battle, ended, unknown }
+        let kind: Kind
+        let label: String
+        let progress: Double
+    }
+
+    private func warPhase(for war: WarDetails) -> WarPhaseInfo {
+        let now = Date()
+        let prepStart = parseWarDate(war.preparationStartTime)
+        let start = parseWarDate(war.startTime)
+        let end = parseWarDate(war.endTime)
+
+        if let prepStart, let start, now < start {
+            let total = max(start.timeIntervalSince(prepStart), 1)
+            let progress = min(max(now.timeIntervalSince(prepStart) / total, 0), 1)
+            return WarPhaseInfo(kind: .preparation, label: "Preparation Day", progress: progress)
+        }
+        if let start, let end, now >= start, now < end {
+            let total = max(end.timeIntervalSince(start), 1)
+            let progress = min(max(now.timeIntervalSince(start) / total, 0), 1)
+            return WarPhaseInfo(kind: .battle, label: "Battle Day", progress: progress)
+        }
+        if let end, now >= end {
+            return WarPhaseInfo(kind: .ended, label: "War Ended", progress: 1)
+        }
+        return WarPhaseInfo(kind: .unknown, label: "War Status", progress: 0)
+    }
+
+    private func warWinnerLabel(for war: WarDetails, phase: WarPhaseInfo.Kind) -> String? {
+        guard phase == .ended else { return nil }
+        guard let clan = war.clan, let opponent = war.opponent else { return nil }
+        let clanStars = clan.stars ?? 0
+        let oppStars = opponent.stars ?? 0
+        if clanStars != oppStars {
+            return clanStars > oppStars ? "Winner: \(clan.name)" : "Winner: \(opponent.name)"
+        }
+        let clanDestruction = clan.destructionPercentage ?? 0
+        let oppDestruction = opponent.destructionPercentage ?? 0
+        if clanDestruction != oppDestruction {
+            return clanDestruction > oppDestruction ? "Winner: \(clan.name)" : "Winner: \(opponent.name)"
+        }
+        return "War Tied"
+    }
+
+    private func parseWarDate(_ value: String?) -> Date? {
+        guard let value else { return nil }
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.dateFormat = "yyyyMMdd'T'HHmmss.SSS'Z'"
+        return formatter.date(from: value)
+    }
+
+    private func warPhaseTimerLabel(for war: WarDetails, referenceDate: Date) -> String? {
+        let start = parseWarDate(war.startTime)
+        let end = parseWarDate(war.endTime)
+
+        if let _ = parseWarDate(war.preparationStartTime), let start, referenceDate < start {
+            let remaining = max(Int(start.timeIntervalSince(referenceDate)), 0)
+            let hours = remaining / 3600
+            let minutes = (remaining % 3600) / 60
+            return String(format: "Prep ends in %dh %dm", hours, minutes)
+        }
+        if let start, let end, referenceDate >= start, referenceDate < end {
+            let remaining = max(Int(end.timeIntervalSince(referenceDate)), 0)
+            let hours = remaining / 3600
+            let minutes = (remaining % 3600) / 60
+            return String(format: "Battle ends in %dh %dm", hours, minutes)
+        }
+        return nil
     }
 
     private var helperCooldowns: [HelperCooldownDisplay] {
@@ -2241,6 +2524,77 @@ private struct DashboardView: View {
         return "Profile"
     }
 
+    private func formatBoostTimeRemaining(_ endTime: Date) -> String {
+        let remaining = endTime.timeIntervalSinceNow
+        guard remaining > 0 else { return "0s" }
+        
+        let hours = Int(remaining) / 3600
+        let minutes = (Int(remaining) % 3600) / 60
+        let seconds = Int(remaining) % 60
+        
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if minutes > 0 {
+            return "\(minutes)m \(seconds)s"
+        } else {
+            return "\(seconds)s"
+        }
+    }
+    
+    private func trimTransparentEdges(from image: UIImage) -> UIImage {
+        guard let cgImage = image.cgImage else { return image }
+        
+        let width = cgImage.width
+        let height = cgImage.height
+        
+        guard let dataProvider = cgImage.dataProvider,
+              let data = dataProvider.data as Data? else {
+            return image
+        }
+        
+        let bytesPerPixel = 4
+        let pixelData = [UInt8](data)
+        
+        // Find bounding box of non-transparent pixels
+        var minX = width
+        var maxX = -1
+        var minY = height
+        var maxY = -1
+        
+        for y in 0..<height {
+            for x in 0..<width {
+                let pixelIndex = (y * width + x) * bytesPerPixel
+                guard pixelIndex + 3 < pixelData.count else { continue }
+                
+                let alpha = pixelData[pixelIndex + 3]
+                if alpha > 5 { // Threshold to ignore nearly-transparent pixels
+                    minX = min(minX, x)
+                    maxX = max(maxX, x)
+                    minY = min(minY, y)
+                    maxY = max(maxY, y)
+                }
+            }
+        }
+        
+        // If all transparent, return original
+        guard minX <= maxX && minY <= maxY && minX < width && minY < height else {
+            return image
+        }
+        
+        let trimRect = CGRect(
+            x: CGFloat(minX),
+            y: CGFloat(minY),
+            width: CGFloat(maxX - minX + 1),
+            height: CGFloat(maxY - minY + 1)
+        )
+        
+        guard let croppedCG = cgImage.cropping(to: trimRect) else {
+            return image
+        }
+        
+        return UIImage(cgImage: croppedCG, scale: image.scale, orientation: image.imageOrientation)
+    }
+    
     private var currentTagText: String {
         dataService.playerTag.isEmpty ? "No tag saved" : "#\(dataService.playerTag)"
     }
@@ -2635,75 +2989,159 @@ private struct TownHallBadgeView: View {
     }
 }
 
+private struct ClanBadgeView: View {
+    let urlString: String?
+    let size: CGFloat
+    @State private var cachedImage: UIImage?
+    @State private var isLoading = false
+
+    var body: some View {
+        Group {
+            if let image = cachedImage {
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+            } else {
+                Image(systemName: "shield")
+                    .resizable()
+                    .scaledToFit()
+                    .foregroundColor(.secondary)
+            }
+        }
+        .frame(width: size, height: size)
+        .onAppear { loadBadgeIfNeeded() }
+        .onChangeCompat(of: urlString) { _ in loadBadgeIfNeeded() }
+    }
+
+    private func loadBadgeIfNeeded() {
+        guard !isLoading else { return }
+        guard let urlString, let url = URL(string: urlString) else {
+            cachedImage = nil
+            return
+        }
+
+        if let cached = ClanBadgeCache.shared.image(for: urlString) {
+            cachedImage = cached
+            return
+        }
+
+        isLoading = true
+        URLSession.shared.dataTask(with: url) { data, _, _ in
+            DispatchQueue.main.async {
+                defer { isLoading = false }
+                guard let data, let image = UIImage(data: data) else { return }
+                ClanBadgeCache.shared.store(image: image, data: data, for: urlString)
+                cachedImage = image
+            }
+        }.resume()
+    }
+}
+
+private final class ClanBadgeCache {
+    static let shared = ClanBadgeCache()
+    private let cache = NSCache<NSString, UIImage>()
+    private let baseURL: URL?
+
+    private init() {
+        if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets") {
+            let dir = container.appendingPathComponent("clan_badges", isDirectory: true)
+            if !FileManager.default.fileExists(atPath: dir.path) {
+                try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)
+            }
+            baseURL = dir
+        } else {
+            baseURL = nil
+        }
+    }
+
+    func image(for urlString: String) -> UIImage? {
+        if let cached = cache.object(forKey: urlString as NSString) { return cached }
+        guard let fileURL = fileURL(for: urlString),
+              let data = try? Data(contentsOf: fileURL),
+              let image = UIImage(data: data) else { return nil }
+        cache.setObject(image, forKey: urlString as NSString)
+        return image
+    }
+
+    func store(image: UIImage, data: Data, for urlString: String) {
+        cache.setObject(image, forKey: urlString as NSString)
+        guard let fileURL = fileURL(for: urlString) else { return }
+        try? data.write(to: fileURL, options: .atomic)
+    }
+
+    private func fileURL(for urlString: String) -> URL? {
+        guard let baseURL else { return nil }
+        let key = sha256(urlString)
+        return baseURL.appendingPathComponent("\(key).png")
+    }
+
+    private func sha256(_ input: String) -> String {
+        let data = Data(input.utf8)
+        let digest = SHA256.hash(data: data)
+        return digest.map { String(format: "%02x", $0) }.joined()
+    }
+}
+
 private struct ProfileDetailView: View {
     @EnvironmentObject private var dataService: DataService
-    @AppStorage("achievementFilter") private var achievementFilter: AchievementFilter = .all
     @AppStorage("profileSettingsExpanded") private var profileSettingsExpanded = true
     @AppStorage("helperGemCostsExpanded") private var helperGemCostsExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
+    @AppStorage("profileSectionOrder") private var profileSectionOrder = "profileSettings,helperGemCosts,heroShowcase,clanStats"
+    @AppStorage("hiddenProfileSections") private var hiddenProfileSections = ""
+    @State private var showProfileOrderSheet = false
+    @State private var orderedProfileSections: [ProfileSection] = ProfileSection.defaultOrder
+    @State private var hiddenSections: Set<String> = []
     #if canImport(UIImageColors)
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
     @State private var cachedHeroesMapping: [String: HeroMapping]?
+    @State private var cachedHeroesJSON: [HeroJSON]?
     @State private var gradientConfigCache: [Int: [Int]]?
     private let labAssistantInternalName = "ResearchApprentice"
     private let builderApprenticeInternalName = "BuilderApprentice"
     private let alchemistInternalName = "Alchemist"
+    
+    private enum ProfileSection: String, CaseIterable, Identifiable {
+        case profileSettings
+        case helperGemCosts
+        case heroShowcase
+        case clanStats
+        
+        var id: String { rawValue }
+        
+        var title: String {
+            switch self {
+            case .profileSettings: return "Profile Settings"
+            case .helperGemCosts: return "Helper Gem Costs"
+            case .heroShowcase: return "Heroes"
+            case .clanStats: return "Clan Stats"
+            }
+        }
+        
+        static let defaultOrder: [ProfileSection] = [.profileSettings, .helperGemCosts, .heroShowcase, .clanStats]
+    }
 
     var body: some View {
         NavigationStack {
-            ScrollView {
-                if resolvedProfile == nil {
-                    noProfilePlaceholder
-                        .padding(.top, 80)
-                        .padding(.horizontal)
-                        .frame(maxWidth: .infinity)
-                } else {
-                    VStack(spacing: 20) {
-                        profileSummaryCard
-                        if adsPreference == .banner {
-                            VStack {
-                                BannerAdPlaceholder()
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemGroupedBackground)))
-                            .shadow(color: .black.opacity(0.03), radius: 1, x: 0, y: 1)
-                        }
-                        profileSettingsCard
-                        helperGemCostsCard
-                        heroShowcase
-                        achievementsSection
-                    }
-                    .padding(.horizontal)
-                    .padding(.top, 20)
-                }
-            }
+            mainContent
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Profile")
+            .sheet(isPresented: $showProfileOrderSheet) {
+                ProfileSectionOrderSheet(order: $orderedProfileSections, hidden: $hiddenSections)
+            }
             .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    Button {
-                        dataService.refreshCurrentProfile(force: true)
-                    } label: {
-                        if dataService.isRefreshingProfile {
-                            ProgressView()
-                        } else {
-                            Image(systemName: "arrow.clockwise")
-                        }
-                    }
-                    .disabled(dataService.playerTag.isEmpty)
-                }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    ProfileSwitcherMenu()
-                }
+                toolbarContent
             }
             .onAppear {
-                loadGradientConfig()  // Load config early
-                dataService.refreshCurrentProfile(force: false)
-                loadTownHallPaletteIfNeeded()
-                clampHelperLevels()
+                handleOnAppear()
+            }
+            .onChangeCompat(of: orderedProfileSections) { newValue in
+                persistProfileSectionOrder(newValue)
+            }
+            .onChangeCompat(of: hiddenSections) { newValue in
+                persistHiddenProfileSections(newValue)
             }
             .onChangeCompat(of: townHallLevel) { _ in
                 clampBuilderCount()
@@ -2730,9 +3168,188 @@ private struct ProfileDetailView: View {
             }
         }
     }
+    
+    @ViewBuilder
+    private var mainContent: some View {
+        ScrollView {
+            if resolvedProfile == nil {
+                noProfilePlaceholder
+                    .padding(.top, 80)
+                    .padding(.horizontal)
+                    .frame(maxWidth: .infinity)
+            } else {
+                profileContentStack
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private var profileContentStack: some View {
+        VStack(spacing: 20) {
+            profileSummaryCard
+            
+            if adsPreference == .banner {
+                bannerAdCard
+            }
+            
+            ForEach(orderedProfileSections, id: \.self) { section in
+                profileSectionView(for: section)
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top, 20)
+    }
+    
+    @ViewBuilder
+    private var bannerAdCard: some View {
+        VStack {
+            BannerAdPlaceholder()
+        }
+        .frame(maxWidth: .infinity)
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemGroupedBackground)))
+        .shadow(color: .black.opacity(0.03), radius: 1, x: 0, y: 1)
+    }
+    
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                dataService.refreshCurrentProfile(force: true)
+            } label: {
+                if dataService.isRefreshingProfile {
+                    ProgressView()
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                }
+            }
+            .disabled(dataService.playerTag.isEmpty)
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
+        }
+        
+        ToolbarItem(placement: .navigationBarLeading) {
+            Button {
+                orderedProfileSections = parseProfileSectionOrder()
+                showProfileOrderSheet = true
+            } label: {
+                Image(systemName: "slider.horizontal.3")
+            }
+            .accessibilityLabel("Reorder Profile Cards")
+            .buttonStyle(.plain)
+            .foregroundColor(.accentColor)
+        }
+        
+        ToolbarItem(placement: .navigationBarTrailing) {
+            ProfileSwitcherMenu()
+        }
+    }
+    
+    private func handleOnAppear() {
+        orderedProfileSections = parseProfileSectionOrder()
+        hiddenSections = parseHiddenProfileSections()
+        loadGradientConfig(force: false)  // Load config early (cached)
+        
+        // Load profile data in background to reduce lag
+        DispatchQueue.global(qos: .userInitiated).async {
+            DispatchQueue.main.async {
+                dataService.refreshCurrentProfile(force: false)
+            }
+        }
+        
+        // Only load clan stats if the section is visible
+        if !hiddenSections.contains("clanStats") {
+            DispatchQueue.global(qos: .userInitiated).async {
+                DispatchQueue.main.async {
+                    dataService.refreshCurrentClanStats(force: false)
+                }
+            }
+        }
+        
+        loadTownHallPaletteIfNeeded()
+        clampHelperLevels()
+    }
 
     private var resolvedProfile: PlayerProfile? {
         dataService.cachedProfile
+    }
+    
+    @ViewBuilder
+    private func profileSectionView(for section: ProfileSection) -> some View {
+        if !hiddenSections.contains(section.rawValue) {
+            switch section {
+            case .profileSettings:
+                profileSettingsCard
+            case .helperGemCosts:
+                helperGemCostsCard
+            case .heroShowcase:
+                heroShowcase
+            case .clanStats:
+                clanStatsSection
+            }
+        }
+    }
+    
+    private func parseProfileSectionOrder() -> [ProfileSection] {
+        let raw = profileSectionOrder.split(separator: ",").map { String($0) }
+        let parsed = raw.compactMap { ProfileSection(rawValue: $0) }
+        if parsed.isEmpty { return ProfileSection.defaultOrder }
+        let missing = ProfileSection.defaultOrder.filter { !parsed.contains($0) }
+        return parsed + missing
+    }
+    
+    private func persistProfileSectionOrder(_ order: [ProfileSection]) {
+        profileSectionOrder = order.map { $0.rawValue }.joined(separator: ",")
+    }
+    
+    private func parseHiddenProfileSections() -> Set<String> {
+        let raw = hiddenProfileSections.split(separator: ",").map { String($0) }
+        return Set(raw)
+    }
+    
+    private func persistHiddenProfileSections(_ hidden: Set<String>) {
+        hiddenProfileSections = hidden.sorted().joined(separator: ",")
+    }
+    
+    private struct ProfileSectionOrderSheet: View {
+        @Binding var order: [ProfileSection]
+        @Binding var hidden: Set<String>
+        @Environment(\.dismiss) private var dismiss
+
+        var body: some View {
+            NavigationStack {
+                List {
+                    Section("Visible Cards") {
+                        ForEach(order, id: \.self) { section in
+                            HStack {
+                                Text(section.title)
+                                Spacer()
+                                Toggle("", isOn: Binding(
+                                    get: { !hidden.contains(section.rawValue) },
+                                    set: { isVisible in
+                                        if isVisible {
+                                            hidden.remove(section.rawValue)
+                                        } else {
+                                            hidden.insert(section.rawValue)
+                                        }
+                                    }
+                                ))
+                            }
+                        }
+                        .onMove { offsets, destination in
+                            order.move(fromOffsets: offsets, toOffset: destination)
+                        }
+                    }
+                }
+                .environment(\.editMode, .constant(.active))
+                .navigationTitle("Edit Profile Cards")
+                .toolbar {
+                    ToolbarItem(placement: .confirmationAction) {
+                        Button("Done") { dismiss() }
+                    }
+                }
+            }
+        }
     }
 
     private var profileSummaryCard: some View {
@@ -2851,9 +3468,9 @@ private struct ProfileDetailView: View {
     }
     
     private func getGradientColorIndices(for townHallLevel: Int) -> (Int, Int) {
-        // Load config from file if not cached
-        if gradientConfigCache == nil {
-            loadGradientConfig()
+        // Load config from file if not cached or if cache is empty
+        if gradientConfigCache == nil || gradientConfigCache?.isEmpty == true {
+            loadGradientConfig(force: true)
         }
         
         // Try to get configured indices for this level
@@ -2868,37 +3485,87 @@ private struct ProfileDetailView: View {
         return (2, 3)
     }
     
-    private func loadGradientConfig() {
-        guard gradientConfigCache == nil else { return }
-        
-        let possiblePaths = [
+    private func loadGradientConfig(force: Bool = false) {
+        if !force, gradientConfigCache != nil { return }
+
+        // Candidate URLs to check
+        var tried: [String] = []
+        let candidateURLs: [URL?] = [
             Bundle.main.url(forResource: "gradient_config", withExtension: "json"),
             Bundle.main.url(forResource: "gradient_config", withExtension: "json", subdirectory: "clash_widgets"),
             // Development fallback: check Documents directory
             FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("gradient_config.json")
         ]
-        
-        for path in possiblePaths {
-            if let url = path, let data = try? Data(contentsOf: url) {
-                // Decode as [String: [Int]] since JSON keys are always strings
-                if let configStr = try? JSONDecoder().decode([String: [Int]].self, from: data) {
-                    // Convert string keys to Int keys
-                    var config: [Int: [Int]] = [:]
-                    for (key, value) in configStr {
-                        if let thLevel = Int(key) {
-                            config[thLevel] = value
+
+        print("[DEBUG] Bundle resourceURL: \(Bundle.main.resourceURL?.path ?? "(nil)")")
+        if let bundleResourceURL = Bundle.main.resourceURL {
+            do {
+                let items = try FileManager.default.contentsOfDirectory(atPath: bundleResourceURL.path)
+                let jsonFiles = items.filter { $0.hasSuffix(".json") }
+                print("[DEBUG] Found JSON files in bundle root: \(jsonFiles)")
+            } catch {
+                print("[DEBUG] Error listing bundle contents: \(error)")
+            }
+
+            // Also try scanning bundle subdirectories for any matching file
+            if let enumerator = FileManager.default.enumerator(at: bundleResourceURL, includingPropertiesForKeys: nil) {
+                var found = false
+                for case let fileURL as URL in enumerator {
+                    tried.append(fileURL.path)
+                    if fileURL.lastPathComponent.lowercased() == "gradient_config.json" {
+                        print("[DEBUG] Found gradient_config.json in bundle at: \(fileURL.path)")
+                        if let data = try? Data(contentsOf: fileURL),
+                           let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                           let config = parseGradientConfig(from: json) {
+                            gradientConfigCache = config
+                            print("[DEBUG] Loaded gradient config from enumerated bundle path: \(config)")
+                            return
+                        } else {
+                            print("[DEBUG] Found file at \(fileURL.path) but failed to parse")
                         }
+                        found = true
+                        break
                     }
-                    gradientConfigCache = config
-                    print("[DEBUG] Loaded gradient config from \(url.lastPathComponent): \(config)")
-                    return
+                }
+                if !found { print("[DEBUG] gradient_config.json not found while enumerating bundle (searched \(tried.count) entries)") }
+            }
+        }
+
+        // Check candidate URLs (bundle root, bundle subdir, documents)
+        for path in candidateURLs {
+            if let url = path {
+                print("[DEBUG] Trying path: \(url.path)")
+                if let data = try? Data(contentsOf: url) {
+                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let config = parseGradientConfig(from: json) {
+                        gradientConfigCache = config
+                        print("[DEBUG] Loaded gradient config from \(url.path): \(config)")
+                        return
+                    } else {
+                        print("[DEBUG] Found file at \(url.path) but failed to parse")
+                    }
+                } else {
+                    print("[DEBUG] No file at \(url.path)")
                 }
             }
         }
-        
+
         // Fallback to empty config if file not found
         print("[DEBUG] Gradient config file not found in Bundle or Documents, using defaults")
-        gradientConfigCache = [:]
+        gradientConfigCache = nil
+    }
+
+    private func parseGradientConfig(from json: [String: Any]) -> [Int: [Int]]? {
+        var config: [Int: [Int]] = [:]
+        for (key, value) in json {
+            guard let thLevel = Int(key) else { continue }
+            if let array = value as? [Int], array.count >= 2 {
+                config[thLevel] = [array[0], array[1]]
+            } else if let array = value as? [NSNumber], array.count >= 2 {
+                config[thLevel] = [array[0].intValue, array[1].intValue]
+            }
+        }
+        return config.isEmpty ? nil : config
     }
 
     private func townHallImage(for level: Int) -> UIImage? {
@@ -3007,15 +3674,15 @@ private struct ProfileDetailView: View {
                 }
 
                 if labAssistantMaxLevel > 0 {
-                    sliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: labAssistantMaxLevel, iconName: "profile/lab_assistant")
+                    LevelSliderRow(title: "Lab Assistant", value: $dataService.labAssistantLevel, maxLevel: labAssistantMaxLevel, iconName: "profile/lab_assistant")
                 }
 
                 if builderApprenticeMaxLevel > 0 {
-                    sliderRow(title: "Builder's Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, iconName: "profile/apprentice_builder")
+                    LevelSliderRow(title: "Builder's Apprentice", value: $dataService.builderApprenticeLevel, maxLevel: builderApprenticeMaxLevel, iconName: "profile/apprentice_builder")
                 }
 
                 if alchemistMaxLevel > 0 {
-                    sliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: alchemistMaxLevel, iconName: "profile/alchemist")
+                    LevelSliderRow(title: "Alchemist", value: $dataService.alchemistLevel, maxLevel: alchemistMaxLevel, iconName: "profile/alchemist")
                 }
 
                 if townHallLevel >= 7 {
@@ -3404,6 +4071,11 @@ private struct ProfileDetailView: View {
     }
     
     private func loadHeroesJSON() -> [HeroJSON]? {
+        // Return cached data if available
+        if let cached = cachedHeroesJSON {
+            return cached
+        }
+        
         // Try multiple possible paths for the heroes.json file
         let possiblePaths = [
             Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files"),
@@ -3429,6 +4101,8 @@ private struct ProfileDetailView: View {
             let decoder = JSONDecoder()
             let heroes = try decoder.decode([HeroJSON].self, from: data)
             NSLog("✅ [HEROES_JSON] Successfully loaded \(heroes.count) heroes from \(url.lastPathComponent)")
+            // Cache the result
+            cachedHeroesJSON = heroes
             return heroes
         } catch {
             NSLog("❌ [HEROES_JSON] Error loading heroes.json: \(error.localizedDescription)")
@@ -3555,62 +4229,50 @@ private struct ProfileDetailView: View {
         return result
     }
 
-    private var achievementsSection: some View {
-        Group {
-            if let achievements = resolvedProfile?.achievements {
-                let filtered = filteredAchievements(achievements)
-                if !filtered.isEmpty {
-                    VStack(alignment: .leading, spacing: 12) {
-                        Text("Achievements")
-                            .font(.headline)
-                        Picker("Filter", selection: $achievementFilter) {
-                            ForEach(AchievementFilter.allCases) { filter in
-                                Text(filter.title).tag(filter)
-                            }
-                        }
-                        .pickerStyle(.segmented)
-                        LazyVStack(spacing: 10) {
-                            ForEach(filtered) { achievement in
-                                AchievementRow(achievement: achievement)
-                            }
-                        }
+    private var clanStatsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if let clanStats = dataService.currentClanStats {
+                HStack(alignment: .top, spacing: 12) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text(clanStats.name)
+                            .font(.system(size: 24, weight: .bold, design: .rounded))
+                        Text(clanStats.tag)
+                            .font(.caption)
+                            .foregroundColor(.secondary)
                     }
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding()
-                    .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
-                    )
+                    Spacer()
+                    ClanBadgeView(urlString: clanStats.badgeUrls.small, size: 48)
                 }
+
+                HStack {
+                    infoPill(title: "Members", value: "\(clanStats.members ?? 0)")
+                    infoPill(title: "Level", value: "\(clanStats.clanLevel)")
+                    infoPill(title: "War League", value: clanStats.warLeague?.name ?? "–")
+                }
+                HStack {
+                    infoPill(title: "War Wins", value: "\(clanStats.warWins ?? 0)")
+                    infoPill(title: "Streak", value: "\(clanStats.warWinStreak ?? 0)")
+                    infoPill(title: "Capital Hall", value: "\(clanStats.clanCapital?.capitalHallLevel ?? 0)")
+                }
+            } else if let message = dataService.clanStatusMessage {
+                Text(message)
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            } else {
+                Text("Clan stats unavailable")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding()
+        .background(RoundedRectangle(cornerRadius: 20).fill(Color(.tertiarySystemBackground)))
+        .overlay(
+            RoundedRectangle(cornerRadius: 20)
+                .stroke(Color(.separator).opacity(0.6), lineWidth: 1)
+        )
     }
 
-    private func filteredAchievements(_ achievements: [PlayerAchievement]) -> [PlayerAchievement] {
-        let sanitized = achievements.filter { !isHiddenAchievement($0) }
-        let sorted = sanitized.sorted { lhs, rhs in
-            if lhs.stars == rhs.stars {
-                let lhsRatio = Double(lhs.value) / max(Double(lhs.target), 1)
-                let rhsRatio = Double(rhs.value) / max(Double(rhs.target), 1)
-                return lhsRatio > rhsRatio
-            }
-            return lhs.stars < rhs.stars
-        }
-        return sorted.filter { achievementFilter.shouldInclude(isComplete: isAchievementComplete($0)) }
-    }
-
-    private func isHiddenAchievement(_ achievement: PlayerAchievement) -> Bool {
-        achievement.name.localizedCaseInsensitiveContains("keep your account safe")
-    }
-
-    private func isAchievementComplete(_ achievement: PlayerAchievement) -> Bool {
-        if achievement.stars >= 3 { return true }
-        if achievement.target > 0 {
-            return achievement.value >= achievement.target
-        }
-        return (achievement.completionInfo?.isEmpty == false)
-    }
 
     private var noProfilePlaceholder: some View {
         VStack(spacing: 12) {
@@ -3633,8 +4295,9 @@ private struct ProfileDetailView: View {
                 .font(.headline)
         }
         .padding(10)
-        .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.15)))
+        .background(.ultraThinMaterial, in: RoundedRectangle(cornerRadius: 12))
     }
+
 
     private var activeProfileName: String {
         dataService.profileName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? (dataService.currentProfile.map { dataService.displayName(for: $0) } ?? "Profile") : dataService.profileName
@@ -3674,49 +4337,21 @@ private struct ProfileDetailView: View {
         let builderMax = builderApprenticeMaxLevel
         let alchemistMax = alchemistMaxLevel
 
-        if labMax == 0 {
-            dataService.labAssistantLevel = 0
-        } else if dataService.labAssistantLevel > labMax {
+        if labMax > 0 && dataService.labAssistantLevel > labMax {
             dataService.labAssistantLevel = labMax
         }
 
-        if builderMax == 0 {
-            dataService.builderApprenticeLevel = 0
-        } else if dataService.builderApprenticeLevel > builderMax {
+        if builderMax > 0 && dataService.builderApprenticeLevel > builderMax {
             dataService.builderApprenticeLevel = builderMax
         }
 
-        if alchemistMax == 0 {
-            dataService.alchemistLevel = 0
-        } else if dataService.alchemistLevel > alchemistMax {
+        if alchemistMax > 0 && dataService.alchemistLevel > alchemistMax {
             dataService.alchemistLevel = alchemistMax
         }
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, iconName: String? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                if let iconName {
-                    Image(iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                }
-                Text(title)
-                Spacer()
-                Text("Lv \(value.wrappedValue)/\(maxLevel)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            Slider(
-                value: Binding(
-                    get: { Double(value.wrappedValue) },
-                    set: { value.wrappedValue = Int($0.rounded()) }
-                ),
-                in: 0...Double(maxLevel),
-                step: 1
-            )
-        }
+        LevelSliderRow(title: title, value: value, maxLevel: maxLevel, iconName: iconName)
     }
 
     private var profileGoldPassBoostLabel: String {
@@ -3789,6 +4424,52 @@ private struct ProfileDetailView: View {
             return resetThisMonth
         } else {
             return calendar.date(byAdding: .month, value: 1, to: resetThisMonth) ?? resetThisMonth
+        }
+    }
+}
+
+private struct LevelSliderRow: View {
+    let title: String
+    @Binding var value: Int
+    let maxLevel: Int
+    let iconName: String?
+    @State private var draftValue: Double = 0
+    @State private var isEditing = false
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                if let iconName {
+                    Image(iconName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
+                }
+                Text(title)
+                Spacer()
+                Text("Lv \(Int(draftValue))/\(maxLevel)")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            }
+            Slider(
+                value: $draftValue,
+                in: 0...Double(maxLevel),
+                step: 1,
+                onEditingChanged: { editing in
+                    isEditing = editing
+                    if !editing {
+                        value = Int(draftValue)
+                    }
+                }
+            )
+        }
+        .onAppear {
+            draftValue = Double(value)
+        }
+        .onChangeCompat(of: value) { newValue in
+            if !isEditing {
+                draftValue = Double(newValue)
+            }
         }
     }
 }
@@ -3901,6 +4582,9 @@ private struct SettingsView: View {
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
+    @AppStorage("globalAutoOpenClashOfClans") private var globalAutoOpenClashOfClans = false
+    @AppStorage("globalNotificationOffsetMinutes") private var globalNotificationOffsetMinutes = 0
+    @AppStorage("globalShowFullTimerPrecision") private var globalShowFullTimerPrecision = false
 
     private var canCollapseProfiles: Bool {
         dataService.profiles.count >= 2
@@ -3976,16 +4660,31 @@ private struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
 
+                Section("Timers") {
+                    Toggle("Show full timer precision", isOn: $globalShowFullTimerPrecision)
+                        .tint(.accentColor)
+                    Text("Displays full countdown to the nearest second on all timers.")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+
                 Section("Profile Notifications") {
                     Toggle("Enable Notifications", isOn: notificationBinding(\.notificationsEnabled))
                         .tint(.accentColor)
 
                     if dataService.notificationSettings.notificationsEnabled {
                         notificationCategoryToggle(title: "Builders", binding: notificationBinding(\.builderNotificationsEnabled))
+                            .tint(.accentColor)
                         notificationCategoryToggle(title: "Laboratory", binding: notificationBinding(\.labNotificationsEnabled))
+                            .tint(.accentColor)
                         notificationCategoryToggle(title: "Pet House", binding: notificationBinding(\.petNotificationsEnabled))
+                            .tint(.accentColor)
                         notificationCategoryToggle(title: "Builder Base", binding: notificationBinding(\.builderBaseNotificationsEnabled))
+                            .tint(.accentColor)
                         notificationCategoryToggle(title: "Helpers", binding: notificationBinding(\.helperNotificationsEnabled))
+                            .tint(.accentColor)
+                        notificationCategoryToggle(title: "Clan War", binding: notificationBinding(\.clanWarNotificationsEnabled))
+                            .tint(.accentColor)
                     } else {
                         Text("Allow alerts to be reminded when an upgrade finishes.")
                             .font(.caption)
@@ -3998,7 +4697,7 @@ private struct SettingsView: View {
                 }
                 
                 Section("Global Notifications") {
-                    Toggle("Open Clash of Clans", isOn: notificationBinding(\.autoOpenClashOfClansEnabled))
+                    Toggle("Open Clash of Clans", isOn: $globalAutoOpenClashOfClans)
                         .tint(.accentColor)
                     Text("Tapping a notification will redirect you to the Clash of Clans app.")
                         .font(.caption)
@@ -4008,7 +4707,7 @@ private struct SettingsView: View {
                         HStack {
                             Text("Pre-notify (minutes before)")
                             Spacer()
-                            Picker("", selection: preNotifyBinding) {
+                            Picker("", selection: $globalNotificationOffsetMinutes) {
                                 ForEach(0...30, id: \.self) { minutes in
                                     Text("\(minutes) min").tag(minutes)
                                 }
@@ -4183,6 +4882,8 @@ private struct SettingsView: View {
                         .foregroundColor(.secondary)
                 }
                 
+                // Debug section - hidden for now but kept for future use
+                /*
                 Section {
                     DisclosureGroup("Debug") {
                         NavigationLink("Town Hall Palettes") {
@@ -4190,6 +4891,7 @@ private struct SettingsView: View {
                         }
                     }
                 }
+                */
             }
             .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
             .navigationTitle("Settings")
@@ -4252,13 +4954,6 @@ private struct SettingsView: View {
         Binding(
             get: { dataService.notificationSettings[keyPath: keyPath] },
             set: { dataService.notificationSettings[keyPath: keyPath] = $0 }
-        )
-    }
-    
-    private var preNotifyBinding: Binding<Int> {
-        Binding(
-            get: { dataService.notificationSettings.notificationOffsetMinutes },
-            set: { dataService.notificationSettings.notificationOffsetMinutes = $0 }
         )
     }
 
@@ -4915,10 +5610,17 @@ private struct ProfileSetupPane: View {
                                 if notificationSettings.notificationsEnabled {
                                     VStack(alignment: .leading, spacing: 8) {
                                         Toggle("Builders", isOn: notificationBindingLocal(\.builderNotificationsEnabled))
+                                            .tint(.accentColor)
                                         Toggle("Laboratory", isOn: notificationBindingLocal(\.labNotificationsEnabled))
+                                            .tint(.accentColor)
                                         Toggle("Pet House", isOn: notificationBindingLocal(\.petNotificationsEnabled))
+                                            .tint(.accentColor)
                                         Toggle("Builder Base", isOn: notificationBindingLocal(\.builderBaseNotificationsEnabled))
+                                            .tint(.accentColor)
                                         Toggle("Helpers", isOn: notificationBindingLocal(\.helperNotificationsEnabled))
+                                            .tint(.accentColor)
+                                        Toggle("Clan War", isOn: notificationBindingLocal(\.clanWarNotificationsEnabled))
+                                            .tint(.accentColor)
                                     }
                                     .font(.subheadline)
                                     .foregroundColor(.secondary)
@@ -5058,6 +5760,19 @@ private struct ProfileSetupPane: View {
 
     private func submitProfile() {
         clampBuilderCount()
+        if let rawJSON = pendingImportRawJSON,
+           let export = dataService.decodeExport(from: rawJSON) {
+            let helperLevels = dataService.helperLevels(from: export)
+            if let level = helperLevels[HelperId.builderApprentice] {
+                builderApprenticeLevel = level
+            }
+            if let level = helperLevels[HelperId.labAssistant] {
+                labAssistantLevel = level
+            }
+            if let level = helperLevels[HelperId.alchemist] {
+                alchemistLevel = level
+            }
+        }
         clampHelperLevels()
         let submission = ProfileSetupSubmission(
             tag: (importedTag ?? normalizedTag),
@@ -5091,11 +5806,8 @@ private struct ProfileSetupPane: View {
             labAssistantLevel = 0
             alchemistLevel = 0
             goldPassBoost = 0
-            // For new profiles (onboarding / add profile), enable notifications by default
-            // so users see and can configure per-category toggles (including Helpers).
-            var defaultSettings = NotificationSettings.default
-            defaultSettings.notificationsEnabled = true
-            notificationSettings = defaultSettings
+            // For new profiles, default all notifications to OFF
+            notificationSettings = NotificationSettings.default
         }
         clampBuilderCount()
         clampHelperLevels()
@@ -5107,49 +5819,21 @@ private struct ProfileSetupPane: View {
     }
 
     private func clampHelperLevels() {
-        if labAssistantMaxLevel == 0 {
-            labAssistantLevel = 0
-        } else if labAssistantLevel > labAssistantMaxLevel {
+        if labAssistantMaxLevel > 0 && labAssistantLevel > labAssistantMaxLevel {
             labAssistantLevel = labAssistantMaxLevel
         }
 
-        if builderApprenticeMaxLevel == 0 {
-            builderApprenticeLevel = 0
-        } else if builderApprenticeLevel > builderApprenticeMaxLevel {
+        if builderApprenticeMaxLevel > 0 && builderApprenticeLevel > builderApprenticeMaxLevel {
             builderApprenticeLevel = builderApprenticeMaxLevel
         }
 
-        if alchemistMaxLevel == 0 {
-            alchemistLevel = 0
-        } else if alchemistLevel > alchemistMaxLevel {
+        if alchemistMaxLevel > 0 && alchemistLevel > alchemistMaxLevel {
             alchemistLevel = alchemistMaxLevel
         }
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                if let iconName {
-                    Image(iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                }
-                Text(title)
-                Spacer()
-                Text("Lv \(value.wrappedValue)/\(maxLevel)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            Slider(
-                value: Binding(
-                    get: { Double(value.wrappedValue) },
-                    set: { value.wrappedValue = Int($0.rounded()) }
-                ),
-                in: 0...Double(maxLevel),
-                step: 1
-            )
-        }
+        LevelSliderRow(title: title, value: value, maxLevel: maxLevel, iconName: iconName)
     }
 
     private func townHallImage(for level: Int) -> UIImage? {
@@ -5275,29 +5959,7 @@ private struct AddProfileSheet: View {
     }
 
     private func sliderRow(title: String, value: Binding<Int>, maxLevel: Int, unlockedAt: Int, iconName: String? = nil) -> some View {
-        VStack(alignment: .leading, spacing: 6) {
-            HStack {
-                if let iconName {
-                    Image(iconName)
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 36, height: 36)
-                }
-                Text(title)
-                Spacer()
-                Text("Lv \(value.wrappedValue)/\(maxLevel)")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-            }
-            Slider(
-                value: Binding(
-                    get: { Double(value.wrappedValue) },
-                    set: { value.wrappedValue = Int($0.rounded()) }
-                ),
-                in: 0...Double(maxLevel),
-                step: 1
-            )
-        }
+        LevelSliderRow(title: title, value: value, maxLevel: maxLevel, iconName: iconName)
     }
 
     private func saveProfile(_ submission: ProfileSetupSubmission) {
@@ -6416,6 +7078,598 @@ extension Int {
             return String(format: "%.0fK", Double(self) / 1_000)
         } else {
             return "\(self)"
+        }
+    }
+}
+
+// MARK: - Boost System
+
+import Combine
+
+private class BoostManager: ObservableObject {
+    @Published var activeBoosts: [ActiveBoost] = []
+    
+    private weak var dataService: DataService?
+    private var timer: Timer?
+    private var cancellables = Set<AnyCancellable>()
+    
+    init(dataService: DataService) {
+        self.dataService = dataService
+        loadActiveBoosts()
+        startTimer()
+        
+        // Listen for profile changes to reload boosts
+        dataService.$selectedProfileID
+            .sink { [weak self] _ in
+                self?.loadActiveBoosts()
+            }
+            .store(in: &cancellables)
+    }
+    
+    deinit {
+        timer?.invalidate()
+    }
+    
+    // MARK: - Public Methods
+    
+    func activateBoost(_ type: BoostType, targetUpgradeId: UUID? = nil, helperLevel: Int? = nil) {
+        guard let dataService = dataService else { return }
+        let now = Date()
+        let startTime = now
+        let clockLevel = dataService.clockTowerLevel
+        let duration = type.durationSeconds(clockTowerLevel: clockLevel)
+        let endTime = now.addingTimeInterval(duration)
+        var newBoost = ActiveBoost(type: type.rawValue, startTime: startTime, endTime: endTime)
+        newBoost.targetUpgradeId = targetUpgradeId
+        newBoost.helperLevel = helperLevel
+        
+        // Clock tower boosts don't stack, they extend duration
+        if type.isClockTowerBoost {
+            // Remove any existing clock tower boost and replace with combined duration
+            if let existingIndex = activeBoosts.firstIndex(where: { $0.boostType?.isClockTowerBoost == true }) {
+                let remaining = max(0, activeBoosts[existingIndex].endTime.timeIntervalSince(now))
+                newBoost.endTime = now.addingTimeInterval(remaining + duration)
+                activeBoosts.remove(at: existingIndex)
+            }
+            activeBoosts.append(newBoost)
+        }
+        // For boosts that target a specific builder/upgrade, stack time for the same target
+        else if type.requiresTargetSelection {
+            if let targetUpgradeId,
+               let existingIndex = activeBoosts.firstIndex(where: { $0.type == type.rawValue && $0.targetUpgradeId == targetUpgradeId }) {
+                let currentEndTime = activeBoosts[existingIndex].endTime
+                let newEndTime = max(currentEndTime, now).addingTimeInterval(duration)
+                activeBoosts[existingIndex].endTime = newEndTime
+                activeBoosts[existingIndex].helperLevel = helperLevel
+            } else {
+                activeBoosts.append(newBoost)
+            }
+        }
+        // For global boosts, extend if already active
+        else {
+            if let existingIndex = activeBoosts.firstIndex(where: { $0.type == type.rawValue }) {
+                let currentEndTime = activeBoosts[existingIndex].endTime
+                let newStartTime = activeBoosts[existingIndex].startTime
+                let newEndTime = max(currentEndTime, now).addingTimeInterval(duration)
+                activeBoosts[existingIndex].startTime = newStartTime
+                activeBoosts[existingIndex].endTime = newEndTime
+                activeBoosts[existingIndex].helperLevel = helperLevel
+            } else {
+                activeBoosts.append(newBoost)
+            }
+        }
+        
+        saveActiveBoosts()
+    }
+    
+    func cancelBoost(_ boost: ActiveBoost) {
+        activeBoosts.removeAll { $0.id == boost.id }
+        saveActiveBoosts()
+    }
+    
+    // Calculate the combined boost multiplier for a given upgrade category
+    func getBoostMultiplier(for category: UpgradeCategory) -> Double {
+        var totalMultiplier = 1.0
+        
+        for boost in activeBoosts {
+            guard let boostType = boost.boostType,
+                  boost.endTime > Date(),
+                  boostType.affectedCategories.contains(category) else {
+                continue
+            }
+            
+            // Add the percentage boost (e.g., 10x = +900%, 2x = +100%)
+            // So 10x + 2x = 1000% + 100% = 1100% = 11x total
+            let level = boost.helperLevel ?? 0
+            totalMultiplier += boostType.speedMultiplier(level: level)
+        }
+        
+        return totalMultiplier
+    }
+    
+    // MARK: - Private Methods
+    
+    private func loadActiveBoosts() {
+        guard let dataService = dataService,
+              let profile = dataService.currentProfile else {
+            activeBoosts = []
+            return
+        }
+        
+        // Filter out expired boosts
+        let now = Date()
+        activeBoosts = profile.activeBoosts.filter { $0.endTime > now }
+        
+        // Save the filtered list back if any were removed
+        if activeBoosts.count != profile.activeBoosts.count {
+            saveActiveBoosts()
+        }
+    }
+    
+    private func saveActiveBoosts() {
+        guard let dataService = dataService else { return }
+        
+        dataService.updateCurrentProfile { profile in
+            profile.activeBoosts = self.activeBoosts
+        }
+        // Reload widgets immediately when boosts change so timers update
+        dataService.persistChanges(reloadWidgets: true)
+        
+        // Also reschedule notifications with new boost times
+        dataService.scheduleUpgradeNotifications()
+    }
+    
+    private func startTimer() {
+        // Update every second to check for expired boosts and refresh UI
+        timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
+            self?.checkExpiredBoosts()
+            // Trigger UI update
+            self?.objectWillChange.send()
+        }
+    }
+    
+    private func checkExpiredBoosts() {
+        let now = Date()
+        let originalCount = activeBoosts.count
+        activeBoosts.removeAll { $0.endTime <= now }
+        
+        if activeBoosts.count != originalCount {
+            saveActiveBoosts()
+            // Widgets will be reloaded by saveActiveBoosts()
+        }
+    }
+    
+}
+
+private struct BoostView: View {
+    @EnvironmentObject private var dataService: DataService
+    @Environment(\.dismiss) private var dismiss
+    @StateObject private var boostManager: BoostManager
+    @State private var showingBuilderSelection = false
+    @State private var selectedBoostType: BoostType?
+    
+    init(dataService: DataService) {
+        _boostManager = StateObject(wrappedValue: BoostManager(dataService: dataService))
+    }
+    
+    private let columns = [
+        GridItem(.flexible(), spacing: 16),
+        GridItem(.flexible(), spacing: 16)
+    ]
+    
+    var body: some View {
+        NavigationStack {
+            ScrollView {
+                VStack(spacing: 20) {
+                    // Active boosts section
+                    if !boostManager.activeBoosts.isEmpty {
+                        activeBoostsSection
+                    }
+                    
+                    // Available boosts grid
+                    boostsGrid
+                }
+                .padding()
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Boosts")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Done") { dismiss() }
+                }
+            }
+            .sheet(isPresented: $showingBuilderSelection) {
+                if let boostType = selectedBoostType {
+                    BuilderSelectionView(boostType: boostType, boostManager: boostManager, dataService: dataService)
+                }
+            }
+        }
+    }
+    
+    private var activeBoostsSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Active Boosts")
+                .font(.headline)
+                .padding(.horizontal, 4)
+            
+            VStack(alignment: .leading, spacing: 8) {
+                ForEach(boostManager.activeBoosts) { boost in
+                    if let boostType = boost.boostType {
+                        HStack {
+                            // Use trimmed images for apprentice and assistant
+                            if let uiImage = UIImage(named: boostType.assetPath),
+                               boostType == .builderApprentice || boostType == .labAssistant {
+                                let trimmedImage = trimTransparentEdges(from: uiImage)
+                                Image(uiImage: trimmedImage)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 32, height: 32)
+                            } else {
+                                Image(boostType.assetPath)
+                                    .resizable()
+                                    .scaledToFit()
+                                    .frame(width: 32, height: 32)
+                            }
+                            
+                            VStack(alignment: .leading, spacing: 2) {
+                                HStack(spacing: 4) {
+                                    Text(boostType.displayName)
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    
+                                    if let upgradeId = boost.targetUpgradeId,
+                                       let upgrade = dataService.currentProfile?.activeUpgrades.first(where: { $0.id == upgradeId }) {
+                                        Text("(\(upgrade.name))")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(1)
+                                    }
+                                    
+                                    if let level = boost.helperLevel {
+                                        Text("Lv\(level)")
+                                            .font(.caption)
+                                            .foregroundColor(.accentColor)
+                                    }
+                                }
+                                
+                                Text("Ends in \(timeRemaining(for: boost))")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            
+                            Spacer()
+                            
+                            Button(role: .destructive) {
+                                boostManager.cancelBoost(boost)
+                            } label: {
+                                Image(systemName: "xmark.circle.fill")
+                                    .foregroundColor(.red)
+                                    .font(.title3)
+                            }
+                        }
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color(.secondarySystemGroupedBackground))
+                        )
+                    }
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 16)
+                    .fill(Color(.systemBackground))
+            )
+        }
+    }
+    
+    private var boostsGrid: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Available Boosts")
+                .font(.headline)
+                .padding(.horizontal, 4)
+            
+            LazyVGrid(columns: columns, spacing: 16) {
+                ForEach(BoostType.allCases, id: \.self) { boostType in
+                    boostCard(for: boostType)
+                }
+            }
+        }
+    }
+    
+    @ViewBuilder
+    private func boostCard(for boostType: BoostType) -> some View {
+        Button {
+            if !boostType.isPlaceholder {
+                handleBoostActivation(boostType)
+            }
+        } label: {
+            VStack(spacing: 12) {
+                // Use trimmed images for apprentice and assistant
+                if let uiImage = UIImage(named: boostType.assetPath),
+                   boostType == .builderApprentice || boostType == .labAssistant {
+                    let trimmedImage = trimTransparentEdges(from: uiImage)
+                    Image(uiImage: trimmedImage)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
+                } else {
+                    Image(boostType.assetPath)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
+                }
+                
+                Text(boostType.displayName)
+                    .font(.caption)
+                    .fontWeight(.medium)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .foregroundColor(.primary)
+                
+                if boostType.isPlaceholder {
+                    Text("Coming Soon")
+                        .font(.caption2)
+                        .foregroundColor(.secondary)
+                } else {
+                    boostDescriptionText(for: boostType)
+                }
+            }
+            .frame(maxWidth: .infinity)
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.secondarySystemGroupedBackground))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12)
+                    .stroke(Color(.separator), lineWidth: 1)
+            )
+            .opacity(boostType.isPlaceholder ? 0.6 : 1.0)
+        }
+        .buttonStyle(.plain)
+        .disabled(boostType.isPlaceholder)
+    }
+    
+    @ViewBuilder
+    private func boostDescriptionText(for boostType: BoostType) -> some View {
+        switch boostType {
+        case .labAssistant:
+            let level = dataService.labAssistantLevel
+            let multiplier = level + 1
+            Text("\(multiplier)x for 1hr (Lv\(level))")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        case .builderApprentice:
+            let level = dataService.builderApprenticeLevel
+            let multiplier = level + 1
+            Text("\(multiplier)x for 1hr (Lv\(level))")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        case .clockTower:
+            let level = max(1, dataService.clockTowerLevel)
+            let minutes = Int(boostType.durationSeconds(clockTowerLevel: level) / 60)
+            Text("10x for \(minutes)m (Lv\(level))")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        case .clockTowerPotion:
+            Text("10x for 30m")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        default:
+            let multiplier = boostType.speedMultiplier(level: 0) + 1.0
+            let duration = boostType.durationSeconds(clockTowerLevel: 0) / 60
+            if duration >= 60 {
+                Text("\(Int(multiplier))x for \(Int(duration/60))hr")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            } else {
+                Text("\(Int(multiplier))x for \(Int(duration))m")
+                    .font(.caption2)
+                    .foregroundColor(.secondary)
+            }
+        }
+    }
+    
+    private func handleBoostActivation(_ boostType: BoostType) {
+        switch boostType {
+        case .labAssistant:
+            // Auto-apply to lab upgrade(s)
+            let labUpgrades = dataService.currentProfile?.activeUpgrades.filter { $0.category == .lab } ?? []
+            if labUpgrades.count == 1 {
+                // Automatically apply to the single lab upgrade
+                boostManager.activateBoost(boostType, helperLevel: dataService.labAssistantLevel)
+            } else if labUpgrades.count >= 2 {
+                // Show selection menu (for goblin researcher case)
+                selectedBoostType = boostType
+                showingBuilderSelection = true
+            } else {
+                // If no lab upgrades, still allow activation (might start upgrade after boost)
+                boostManager.activateBoost(boostType, helperLevel: dataService.labAssistantLevel)
+            }
+        case .builderApprentice:
+            // Show builder selection
+            selectedBoostType = boostType
+            showingBuilderSelection = true
+        default:
+            // Regular boost, activate immediately
+            boostManager.activateBoost(boostType)
+        }
+    }
+    
+    private func timeRemaining(for boost: ActiveBoost) -> String {
+        let remaining = max(0, boost.endTime.timeIntervalSince(Date()))
+        let hours = Int(remaining) / 3600
+        let minutes = (Int(remaining) % 3600) / 60
+        let seconds = Int(remaining) % 60
+        
+        if hours > 0 {
+            return "\(hours)h \(minutes)m"
+        } else if minutes > 0 {
+            return "\(minutes)m \(seconds)s"
+        } else {
+            return "\(seconds)s"
+        }
+    }
+    
+    private func trimTransparentEdges(from image: UIImage) -> UIImage {
+        guard let cgImage = image.cgImage else { return image }
+        
+        let width = cgImage.width
+        let height = cgImage.height
+        
+        guard let dataProvider = cgImage.dataProvider,
+              let data = dataProvider.data as Data? else {
+            return image
+        }
+        
+        let bytesPerPixel = 4
+        let pixelData = [UInt8](data)
+        
+        // Find bounding box of non-transparent pixels
+        var minX = width
+        var maxX = -1
+        var minY = height
+        var maxY = -1
+        
+        for y in 0..<height {
+            for x in 0..<width {
+                let pixelIndex = (y * width + x) * bytesPerPixel
+                guard pixelIndex + 3 < pixelData.count else { continue }
+                
+                let alpha = pixelData[pixelIndex + 3]
+                if alpha > 5 { // Threshold to ignore nearly-transparent pixels
+                    minX = min(minX, x)
+                    maxX = max(maxX, x)
+                    minY = min(minY, y)
+                    maxY = max(maxY, y)
+                }
+            }
+        }
+        
+        // If all transparent, return original
+        guard minX <= maxX && minY <= maxY && minX < width && minY < height else {
+            return image
+        }
+        
+        let trimRect = CGRect(
+            x: CGFloat(minX),
+            y: CGFloat(minY),
+            width: CGFloat(maxX - minX + 1),
+            height: CGFloat(maxY - minY + 1)
+        )
+        
+        guard let croppedCG = cgImage.cropping(to: trimRect) else {
+            return image
+        }
+        
+        return UIImage(cgImage: croppedCG, scale: image.scale, orientation: image.imageOrientation)
+    }
+}
+
+// MARK: - Builder Selection View
+
+private struct BuilderSelectionView: View {
+    let boostType: BoostType
+    @ObservedObject var boostManager: BoostManager
+    @ObservedObject var dataService: DataService
+    @Environment(\.dismiss) private var dismiss
+    
+    var body: some View {
+        NavigationStack {
+            List {
+                if boostType == .builderApprentice {
+                    builderSelectionSection
+                } else if boostType == .labAssistant {
+                    labSelectionSection
+                }
+            }
+            .navigationTitle("Select Target")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { dismiss() }
+                }
+            }
+        }
+    }
+    
+    private var builderSelectionSection: some View {
+        Section {
+            if let upgrades = dataService.currentProfile?.activeUpgrades.filter({ $0.category == .builderVillage }),
+               !upgrades.isEmpty {
+                ForEach(Array(upgrades.enumerated()), id: \.element.id) { index, upgrade in
+                    Button {
+                        let level = dataService.builderApprenticeLevel
+                        boostManager.activateBoost(boostType, targetUpgradeId: upgrade.id, helperLevel: level)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(upgrade.name)
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                Text("Builder #\(index + 1)")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                }
+            } else {
+                Text("No active builder upgrades")
+                    .foregroundColor(.secondary)
+            }
+        } header: {
+            Text("Select Builder")
+        } footer: {
+            let level = dataService.builderApprenticeLevel
+            let multiplier = level + 1
+            Text("Builder's Apprentice (Level \(level)) provides a \(multiplier)x speed boost for 1 hour to one builder.")
+        }
+    }
+    
+    private var labSelectionSection: some View {
+        Section {
+            if let upgrades = dataService.currentProfile?.activeUpgrades.filter({ $0.category == .lab }),
+               !upgrades.isEmpty {
+                ForEach(upgrades) { upgrade in
+                    Button {
+                        let level = dataService.labAssistantLevel
+                        boostManager.activateBoost(boostType, targetUpgradeId: upgrade.id, helperLevel: level)
+                        dismiss()
+                    } label: {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(upgrade.name)
+                                    .font(.body)
+                                    .foregroundColor(.primary)
+                                Text("Lab Upgrade")
+                                    .font(.caption)
+                                    .foregroundColor(.secondary)
+                            }
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .foregroundColor(.secondary)
+                                .font(.caption)
+                        }
+                    }
+                }
+            } else {
+                Text("No active lab upgrades")
+                    .foregroundColor(.secondary)
+            }
+        } header: {
+            Text("Select Lab Upgrade")
+        } footer: {
+            let level = dataService.labAssistantLevel
+            let multiplier = level + 1
+            Text("Lab Assistant (Level \(level)) provides a \(multiplier)x speed boost for 1 hour to one lab upgrade.")
         }
     }
 }

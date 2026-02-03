@@ -10,7 +10,7 @@ enum Village {
 class DataService: ObservableObject {
     static let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
-    private static let apiDailyLimit = 100
+    private static let apiDailyLimit = 1000
     private static let apiDailyCountKey = "clashdash.api.daily.count"
     private static let apiDailyDateKey = "clashdash.api.daily.date"
 
@@ -27,7 +27,19 @@ class DataService: ObservableObject {
             guard !suppressPersistence else { return }
             applyCurrentProfile()
             persistChanges(reloadWidgets: true)
-            refreshCurrentProfileIfNeeded(force: false)
+            currentClanStats = nil
+            clanStatusMessage = nil
+            cachedProfile = currentProfile?.cachedProfile
+            
+            // Load data in background to avoid blocking UI animations
+            DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+                DispatchQueue.main.async {
+                    self?.refreshCurrentProfileIfNeeded(force: false)
+                    self?.refreshCurrentWarIfNeeded(force: true)
+                    self?.refreshCurrentClanStatsIfNeeded(force: true)
+                }
+            }
+            
         }
     }
     @Published var profileName: String = "New Profile" {
@@ -125,6 +137,13 @@ class DataService: ObservableObject {
             persistChanges(reloadWidgets: false)
         }
     }
+    @Published var clockTowerLevel: Int = 0 {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.clockTowerLevel = clockTowerLevel }
+            persistChanges(reloadWidgets: false)
+        }
+    }
     @Published var goldPassBoost: Int = 0 {
         didSet {
             guard !suppressPersistence else { return }
@@ -139,6 +158,14 @@ class DataService: ObservableObject {
             persistChanges(reloadWidgets: false)
         }
     }
+    @Published var currentWar: WarDetails?
+    @Published var warStatusMessage: String?
+
+    @Published var currentClanStats: ClanStats?
+    @Published var clanStatusMessage: String?
+
+    private var lastWarFetchDate: Date?
+    private var lastClanFetchDate: Date?
 
     private enum DurationIndexing {
         case currentLevel
@@ -192,6 +219,8 @@ class DataService: ObservableObject {
         cachedMiniLevelsByName = makeMiniLevelsByInternalName(cachedMiniLevels ?? [])
         cachedMiniLevelsNameMap = loadMiniLevelsNameMap()
         cachedHelperLevelsByName = loadHelperLevelsData()
+        loadWarFromCache()
+        loadClanStatsFromCache()
         saveToStorage()
         
         // Listen for profile switch notifications from notification taps
@@ -295,6 +324,13 @@ class DataService: ObservableObject {
         return .success(profileId: matchedProfile.id, upgradesCount: activeUpgrades.count, switched: didSwitch)
     }
 
+    func importClipboardFromPasteboardForWidget() -> ClipboardImportResult {
+        guard let input = clipboardTextFromPasteboard(), !input.isEmpty else {
+            return .invalidJSON
+        }
+        return importClipboardToMatchingProfile(input: input)
+    }
+
     func helperLevels(from rawJSON: String) -> [Int: Int] {
         guard let export = decodeExport(from: rawJSON) else { return [:] }
         return helperLevels(from: export)
@@ -328,9 +364,26 @@ class DataService: ObservableObject {
     }
 
     func getTownHallLevel(from village: Village) -> Int {
-        // Strategy: Default to JSON import, fallback to API
+        // Strategy: Prioritize API data, fallback to JSON import
         
-        // First, try to get from JSON export
+        // First, try to get from API cached profile (most up-to-date)
+        if village == .home {
+            if let cached = cachedProfile?.townHallLevel, cached > 0 {
+                return cached
+            }
+            if let apiLevel = currentProfile?.cachedProfile?.townHallLevel, apiLevel > 0 {
+                return apiLevel
+            }
+        } else {
+            if let cached = cachedProfile?.builderHallLevel, cached > 0 {
+                return cached
+            }
+            if let apiLevel = currentProfile?.cachedProfile?.builderHallLevel, apiLevel > 0 {
+                return apiLevel
+            }
+        }
+        
+        // Fallback to JSON export if API data is not available
         if let profile = currentProfile,
            let export = decodeExport(from: profile.rawJSON) {
             if village == .home {
@@ -352,18 +405,7 @@ class DataService: ObservableObject {
             }
         }
         
-        // Fallback to API cached profile
-        if village == .home {
-            if let cached = cachedProfile?.townHallLevel {
-                return cached
-            }
-            return currentProfile?.cachedProfile?.townHallLevel ?? 0
-        } else {
-            if let cached = cachedProfile?.builderHallLevel {
-                return cached
-            }
-            return currentProfile?.cachedProfile?.builderHallLevel ?? 0
-        }
+        return 0
     }
 
     func helperCooldowns(from rawJSON: String) -> [HelperCooldownEntry] {
@@ -730,10 +772,82 @@ class DataService: ObservableObject {
     }
 
     func pruneCompletedUpgrades(referenceDate: Date = Date()) {
-        let remaining = activeUpgrades.filter { $0.endTime > referenceDate }
+        // Get active boosts for the current profile to calculate true completion times
+        let activeBoosts = currentProfile?.activeBoosts.filter { $0.endTime > referenceDate } ?? []
+        
+        // Filter upgrades that are truly incomplete accounting for boosts
+        let remaining = activeUpgrades.filter { upgrade in
+            let boostedRemaining = effectiveRemainingSeconds(for: upgrade, activeBoosts: activeBoosts, referenceDate: referenceDate)
+            return boostedRemaining > 0
+        }
+        
         if remaining.count != activeUpgrades.count {
             activeUpgrades = remaining
         }
+    }
+    
+    /// Calculate effective remaining time accounting for active boosts
+    private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
+        let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
+        
+        let start = upgrade.startTime
+        let now = referenceDate
+        if now <= start { return baseRemaining }
+        
+        // Filter boosts that affect this upgrade's category
+        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
+            guard let boostType = boost.boostType,
+                  boostType.affectedCategories.contains(upgrade.category) else { return nil }
+            if boostType == .builderApprentice || boostType == .labAssistant {
+                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
+            }
+            return boost
+        }
+        if relevantBoosts.isEmpty { return baseRemaining }
+        
+        // Build timeline of boost periods
+        var timePoints: [Date] = [start, now]
+        for boost in relevantBoosts {
+            let s = max(start, boost.startTime)
+            let e = min(now, boost.endTime)
+            if s < e {
+                timePoints.append(s)
+                timePoints.append(e)
+            }
+        }
+        let sortedPoints = Array(Set(timePoints)).sorted()
+        if sortedPoints.count <= 1 { return baseRemaining }
+        
+        // Calculate extra elapsed time from boosts
+        var extraElapsed: TimeInterval = 0
+        for idx in 0..<(sortedPoints.count - 1) {
+            let segmentStart = sortedPoints[idx]
+            let segmentEnd = sortedPoints[idx + 1]
+            if segmentEnd <= segmentStart { continue }
+            
+            var totalExtra: Double = 0
+            var clockTowerApplied = false
+            for boost in relevantBoosts {
+                guard let boostType = boost.boostType else { continue }
+                let s = max(start, boost.startTime)
+                let e = min(now, boost.endTime)
+                if segmentStart < s || segmentStart >= e { continue }
+                
+                let level = boost.helperLevel ?? 0
+                if boostType.isClockTowerBoost {
+                    if !clockTowerApplied {
+                        totalExtra += boostType.speedMultiplier(level: level)
+                        clockTowerApplied = true
+                    }
+                } else {
+                    totalExtra += boostType.speedMultiplier(level: level)
+                }
+            }
+            extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
+        }
+        
+        let adjustedRemaining = baseRemaining - extraElapsed
+        return max(0, adjustedRemaining)
     }
 
     func triggerDebugNotification() {
@@ -780,6 +894,15 @@ class DataService: ObservableObject {
     func refreshCurrentProfile(force: Bool = false) {
         refreshCurrentProfileIfNeeded(force: force)
     }
+
+    func refreshCurrentWarStatus(force: Bool = false) {
+        refreshCurrentWarIfNeeded(force: force)
+    }
+
+    func refreshCurrentClanStats(force: Bool = false) {
+        refreshCurrentClanStatsIfNeeded(force: force)
+    }
+
 
     func fetchProfilePreview(tag: String, completion: @escaping (PlayerProfile?) -> Void) {
         guard canPerformApiRequest() else {
@@ -829,22 +952,38 @@ class DataService: ObservableObject {
         guard let profile = currentProfile else { return }
         guard !profile.tag.isEmpty else { return }
 
+        // Manual refresh: enforce 3-minute cooldown
+        if force {
+            if let lastFetch = profile.lastAPIFetchDate {
+                let elapsed = Date().timeIntervalSince(lastFetch)
+                let cooldown: TimeInterval = 180  // 3 minutes
+                if elapsed < cooldown {
+                    let remaining = cooldown - elapsed
+                    let message = "Please wait \(formatCooldown(remaining)) to refresh again"
+                    showRefreshCooldown(message)
+                    return
+                }
+            }
+            refreshedProfilesThisLaunch.remove(profile.id)
+            recordApiRequest()
+            performProfileRefresh(for: profile, apiKey: apiKey)
+            return
+        }
+
+        // Automatic refresh: only on first load per session OR 2+ hours since last fetch
+        let hasLoadedThisSession = refreshedProfilesThisLaunch.contains(profile.id)
+        
         if let lastFetch = profile.lastAPIFetchDate {
             let elapsed = Date().timeIntervalSince(lastFetch)
-            let cooldown: TimeInterval = 180
-            if elapsed < cooldown {
-                let remaining = cooldown - elapsed
-                let message = "Please wait \(formatCooldown(remaining)) to refresh again"
-                showRefreshCooldown(message)
+            let twoHours: TimeInterval = 7200  // 2 hours
+            
+            // Skip if already loaded this session AND less than 2 hours since last fetch
+            if hasLoadedThisSession && elapsed < twoHours {
                 return
             }
         }
 
-        if force {
-            refreshedProfilesThisLaunch.remove(profile.id)
-        }
-
-        if refreshedProfilesThisLaunch.contains(profile.id) { return }
+        // Load this profile (either first time this session or 2+ hours elapsed)
         refreshedProfilesThisLaunch.insert(profile.id)
         recordApiRequest()
         performProfileRefresh(for: profile, apiKey: apiKey)
@@ -952,6 +1091,273 @@ class DataService: ObservableObject {
         refreshErrorMessage = nil
         refreshCooldownMessage = nil
         persistChanges(reloadWidgets: false)
+        refreshCurrentWarIfNeeded(force: false)
+        refreshCurrentClanStatsIfNeeded(force: false)
+    }
+
+    private func refreshCurrentClanStatsIfNeeded(force: Bool) {
+        guard canPerformApiRequest() else { return }
+        guard let apiKey = apiKey, !apiKey.isEmpty else { return }
+        guard let clanTag = cachedProfile?.clan?.tag ?? currentProfile?.cachedProfile?.clan?.tag else { return }
+
+        if let lastFetch = lastClanFetchDate, !force {
+            let elapsed = Date().timeIntervalSince(lastFetch)
+            if elapsed < 3600 { return } // 1-hour cooldown for clan stats
+        }
+
+        fetchClanStats(for: clanTag, apiKey: apiKey)
+    }
+
+    private func fetchClanStats(for clanTag: String, apiKey: String) {
+        let normalized = normalizeTag(clanTag)
+        guard !normalized.isEmpty else { return }
+        guard let url = URL(string: "https://cocproxy.royaleapi.dev/v1/clans/%23\(normalized)") else { return }
+
+        recordApiRequest()
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                if let error = error {
+                    self.clanStatusMessage = error.localizedDescription
+                    return
+                }
+                guard let data = data else {
+                    self.clanStatusMessage = "Clan data was empty."
+                    return
+                }
+                do {
+                    let clanStats = try JSONDecoder().decode(ClanStats.self, from: data)
+                    self.currentClanStats = clanStats
+                    self.clanStatusMessage = nil
+                    self.lastClanFetchDate = Date()
+                    self.saveClanStatsToCache(data: data)
+                } catch {
+                    self.clanStatusMessage = "Failed to decode clan stats."
+                }
+            }
+        }.resume()
+    }
+
+    private func loadClanStatsFromCache() {
+        let defaults = UserDefaults(suiteName: Self.appGroup)
+        let cacheKey = cacheKeyForCurrentClan(prefix: "current_clan_stats_json")
+        if let data = defaults?.data(forKey: cacheKey),
+           let stats = try? JSONDecoder().decode(ClanStats.self, from: data) {
+            currentClanStats = stats
+        }
+    }
+
+    private func saveClanStatsToCache(data: Data) {
+        let defaults = UserDefaults(suiteName: Self.appGroup)
+        let cacheKey = cacheKeyForCurrentClan(prefix: "current_clan_stats_json")
+        defaults?.set(data, forKey: cacheKey)
+    }
+
+    private func refreshCurrentWarIfNeeded(force: Bool) {
+        guard canPerformApiRequest() else { return }
+        guard let apiKey = apiKey, !apiKey.isEmpty else { return }
+        guard let clanTag = cachedProfile?.clan?.tag ?? currentProfile?.cachedProfile?.clan?.tag else { return }
+
+        if let lastFetch = lastWarFetchDate, !force {
+            let elapsed = Date().timeIntervalSince(lastFetch)
+            if elapsed < 300 { return } // 5-minute cooldown
+        }
+
+        fetchCurrentWarStatus(for: clanTag, apiKey: apiKey)
+    }
+
+    private func fetchCurrentWarStatus(for clanTag: String, apiKey: String) {
+        let normalized = normalizeTag(clanTag)
+        guard !normalized.isEmpty else { return }
+        guard let url = URL(string: "https://cocproxy.royaleapi.dev/v1/clans/%23\(normalized)/currentwar") else { return }
+
+        recordApiRequest()
+        var request = URLRequest(url: url)
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                if let error = error {
+                    self.warStatusMessage = error.localizedDescription
+                    return
+                }
+                guard let data = data else {
+                    self.warStatusMessage = "War data was empty."
+                    return
+                }
+                do {
+                    let war = try JSONDecoder().decode(WarDetails.self, from: data)
+                    
+                    // Check if state is "notInWar" to determine if we should check CWL
+                    if war.state.lowercased() == "notinwar" {
+                        // Try to fetch CWL war data instead
+                        self.fetchClanWarLeagueWarIfAvailable(for: clanTag, apiKey: apiKey)
+                        return
+                    }
+                    
+                    self.currentWar = war
+                    self.warStatusMessage = nil
+                    self.lastWarFetchDate = Date()
+                    self.saveWarToCache(data: data)
+                    
+                    // Clear CWL flag since we found a regular war
+                    let defaults = UserDefaults(suiteName: "group.Zachary-Buschmann.clash-widgets")
+                    defaults?.set(false, forKey: "is_in_cwl")
+                    defaults?.synchronize()
+                    
+                    // Schedule war notifications
+                    self.syncWarNotifications()
+                    
+                    WidgetCenter.shared.reloadAllTimelines()
+                } catch {
+                    // Attempt to parse minimal fields for non-war states
+                    if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                       let state = json["state"] as? String {
+                        
+                        // If not in regular war, check for CWL
+                        if state.lowercased() == "notinwar" {
+                            self.fetchClanWarLeagueWarIfAvailable(for: clanTag, apiKey: apiKey)
+                            return
+                        }
+                        
+                        let placeholder = WarDetails(
+                            state: state,
+                            teamSize: json["teamSize"] as? Int ?? 0,
+                            attacksPerMember: json["attacksPerMember"] as? Int,
+                            battleModifier: json["battleModifier"] as? String,
+                            preparationStartTime: json["preparationStartTime"] as? String,
+                            startTime: json["startTime"] as? String,
+                            endTime: json["endTime"] as? String,
+                            clan: nil,
+                            opponent: nil
+                        )
+                        self.currentWar = placeholder
+                        self.warStatusMessage = nil
+                        self.lastWarFetchDate = Date()
+                        WidgetCenter.shared.reloadAllTimelines()
+                    } else {
+                        self.warStatusMessage = "Failed to decode war data."
+                    }
+                }
+            }
+        }.resume()
+    }
+
+    private func fetchClanWarLeagueWarIfAvailable(for clanTag: String, apiKey: String) {
+        let normalized = normalizeTag(clanTag)
+        guard !normalized.isEmpty else { 
+            self.warStatusMessage = "Unable to check Clan War League"
+            return 
+        }
+        
+        // Fetch the war league group to check if clan is in CWL
+        guard let groupUrl = URL(string: "https://cocproxy.royaleapi.dev/v1/clans/%23\(normalized)/currentwar/leaguegroup") else { return }
+        
+        var request = URLRequest(url: groupUrl)
+        request.addValue("Bearer \(apiKey)", forHTTPHeaderField: "Authorization")
+        
+        URLSession.shared.dataTask(with: request) { [weak self] data, response, error in
+            DispatchQueue.main.async {
+                guard let self else { return }
+                
+                // If we get any error (network, 404, etc), show not in war
+                if error != nil {
+                    self.currentWar = nil
+                    self.warStatusMessage = "Clan not in war"
+                    return
+                }
+                
+                guard let data = data else {
+                    self.currentWar = nil
+                    self.warStatusMessage = "Clan not in war"
+                    return
+                }
+                
+                // Check if response contains the "reason": "notFound" pattern
+                if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                   let reason = json["reason"] as? String,
+                   reason.lowercased() == "notfound" {
+                    // Clan is not in CWL
+                    self.currentWar = nil
+                    self.warStatusMessage = "Clan not in war"
+                    return
+                }
+                
+                // Any other response means clan IS in CWL
+                do {
+                    _ = try JSONDecoder().decode(WarLeagueGroup.self, from: data)
+                    // If we successfully decoded a group, clan is definitely in CWL
+                    self.currentWar = nil
+                    self.warStatusMessage = "Currently in Clan War League"
+                    
+                    // Save CWL status to shared defaults for this profile
+                    let defaults = UserDefaults(suiteName: "group.Zachary-Buschmann.clash-widgets")
+                    if let profile = self.currentProfile {
+                        defaults?.set(true, forKey: "is_in_cwl_\(profile.tag)")
+                    } else {
+                        defaults?.set(true, forKey: "is_in_cwl")
+                    }
+                    defaults?.synchronize()
+                    
+                    WidgetCenter.shared.reloadAllTimelines()
+                } catch {
+                    // If decoding fails but we got a response that wasn't "notFound",
+                    // still assume clan is in CWL
+                    self.currentWar = nil
+                    self.warStatusMessage = "Currently in Clan War League"
+                    
+                    let defaults = UserDefaults(suiteName: "group.Zachary-Buschmann.clash-widgets")
+                    if let profile = self.currentProfile {
+                        defaults?.set(true, forKey: "is_in_cwl_\(profile.tag)")
+                    } else {
+                        defaults?.set(true, forKey: "is_in_cwl")
+                    }
+                    defaults?.synchronize()
+                    
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
+            }
+        }.resume()
+    }
+
+
+    private func loadWarFromCache() {
+        let defaults = UserDefaults(suiteName: Self.appGroup)
+        let cacheKey = cacheKeyForCurrentClan(prefix: "current_war_json")
+        if let data = defaults?.data(forKey: cacheKey),
+           let war = try? JSONDecoder().decode(WarDetails.self, from: data) {
+            currentWar = war
+        }
+    }
+
+    private func saveWarToCache(data: Data) {
+        let defaults = UserDefaults(suiteName: Self.appGroup)
+        let cacheKey = cacheKeyForCurrentClan(prefix: "current_war_json")
+        defaults?.set(data, forKey: cacheKey)
+        
+        // Also store with profile tag as key for widget access
+        if let profile = currentProfile, !profile.tag.isEmpty {
+            defaults?.set(data, forKey: "war_json_\(profile.tag)")
+        }
+        
+        // Clear CWL flag when we save regular war data
+        if let profile = currentProfile, !profile.tag.isEmpty {
+            defaults?.set(false, forKey: "is_in_cwl_\(profile.tag)")
+        } else {
+            defaults?.set(false, forKey: "is_in_cwl")
+        }
+        
+        defaults?.synchronize()
+    }
+
+    private func cacheKeyForCurrentClan(prefix: String) -> String {
+        let clanTag = cachedProfile?.clan?.tag ?? currentProfile?.cachedProfile?.clan?.tag ?? "unknown"
+        let normalized = normalizeTag(clanTag)
+        return "\(prefix)_\(normalized)"
     }
 
     private func showRefreshCooldown(_ message: String) {
@@ -972,14 +1378,6 @@ class DataService: ObservableObject {
             return String(format: "%dm %02ds", minutes, seconds)
         }
         return String(format: "%ds", seconds)
-    }
-
-    private func persistChanges(reloadWidgets: Bool) {
-        guard !suppressPersistence else { return }
-        saveToStorage()
-        if reloadWidgets {
-            WidgetCenter.shared.reloadAllTimelines()
-        }
     }
 
     private func handleNotificationSettingsChange(from oldValue: NotificationSettings) {
@@ -1003,20 +1401,24 @@ class DataService: ObservableObject {
         }
     }
 
-    private func scheduleUpgradeNotifications() {
+    func scheduleUpgradeNotifications() {
         let now = Date()
         var combined: [BuildingUpgrade] = []
+        var combinedBoosts: [ActiveBoost] = []
+        
         for profile in profiles {
             let settings = profile.notificationSettings
             guard settings.notificationsEnabled else { continue }
             let filtered = profile.activeUpgrades.filter { settings.allows(category: $0.category) && $0.endTime > now }
             combined.append(contentsOf: filtered)
+            // Include active boosts for this profile to calculate accurate completion times
+            combinedBoosts.append(contentsOf: profile.activeBoosts.filter { $0.endTime > now })
         }
         
         // Set profile context for notification manager to include profile names
         notificationManager.setProfileContext(allProfiles: profiles, currentProfileID: selectedProfileID)
         notificationManager.setNotificationSettings(notificationSettings)
-        notificationManager.syncNotifications(for: combined)
+        notificationManager.syncNotifications(for: combined, activeBoosts: combinedBoosts)
 
         // Also schedule helper notifications where applicable
         scheduleHelperNotifications()
@@ -1054,6 +1456,32 @@ class DataService: ObservableObject {
         }
 
         notificationManager.syncHelperNotifications(for: requests)
+    }
+    
+    private func syncWarNotifications() {
+        // Sync war notifications for the current profile
+        guard let profileID = selectedProfileID,
+              let profile = profiles.first(where: { $0.id == profileID }) else {
+            return
+        }
+        
+        let settings = profile.notificationSettings
+        let profileName: String? = {
+            let resolvedName = [
+                profile.displayName,
+                profile.cachedProfile?.name
+            ]
+            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+            .first(where: { !$0.isEmpty })
+            return resolvedName
+        }()
+        
+        notificationManager.syncWarNotifications(
+            for: currentWar,
+            settings: settings,
+            profileID: profileID,
+            profileName: profileName
+        )
     }
 
     private func saveToStorage() {
@@ -1157,6 +1585,7 @@ class DataService: ObservableObject {
         builderApprenticeLevel = profile.builderApprenticeLevel
         labAssistantLevel = profile.labAssistantLevel
         alchemistLevel = profile.alchemistLevel
+        clockTowerLevel = profile.clockTowerLevel
         goldPassBoost = profile.goldPassBoost
         goldPassReminderEnabled = profile.goldPassReminderEnabled
     }
@@ -1175,12 +1604,20 @@ class DataService: ObservableObject {
         persistChanges(reloadWidgets: true)
     }
 
-    private func updateCurrentProfile(_ mutate: (inout PlayerAccount) -> Void) {
+    func updateCurrentProfile(_ mutate: (inout PlayerAccount) -> Void) {
         ensureProfiles()
         guard var profile = currentProfile,
               let index = profiles.firstIndex(where: { $0.id == profile.id }) else { return }
         mutate(&profile)
         profiles[index] = profile
+    }
+
+    func persistChanges(reloadWidgets: Bool) {
+        guard !suppressPersistence else { return }
+        saveToStorage()
+        if reloadWidgets {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
     }
 
     private func ensureProfiles() {
@@ -1400,6 +1837,9 @@ class DataService: ObservableObject {
         do {
             let export = try decoder.decode(CoCExport.self, from: data)
             let helperLevels = export.helpers ?? []
+            let clockTowerLevel = export.buildings2?.first(where: { $0.data == 1000039 })?.lvl
+                ?? export.buildings?.first(where: { $0.data == 1000039 })?.lvl
+                ?? 0
             let upgrades = collectUpgrades(from: export)
                 .sorted(by: { $0.endTime < $1.endTime })
             let inferredBuilderCount = upgrades.filter { $0.category == .builderVillage && !$0.usesGoblin }.count
@@ -1425,6 +1865,9 @@ class DataService: ObservableObject {
                     default:
                         break
                     }
+                }
+                if clockTowerLevel > 0 {
+                    profile.clockTowerLevel = clockTowerLevel
                 }
                 if let normalizedTag = normalizedTag, !normalizedTag.isEmpty {
                     profile.tag = normalizedTag
@@ -1655,7 +2098,9 @@ class DataService: ObservableObject {
         )
         let totalDuration = max(canonical ?? remainingSeconds, remainingSeconds)
         let end = referenceDate.addingTimeInterval(remainingSeconds)
-        let start = end.addingTimeInterval(-totalDuration)
+        // CRITICAL FIX: Start time should be NOW (import time), not calculated backward
+        // This prevents boosts from being retroactively applied to imported upgrades
+        let start = referenceDate
         let resolvedName = displayNameOverride ?? mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))"
         let normalizedName = normalizeBuilderBasePrefixIfNeeded(resolvedName, category: category)
 

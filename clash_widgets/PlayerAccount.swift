@@ -16,8 +16,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var builderApprenticeLevel: Int
     var labAssistantLevel: Int
     var alchemistLevel: Int
+    var clockTowerLevel: Int
     var goldPassBoost: Int
     var goldPassReminderEnabled: Bool
+    var activeBoosts: [ActiveBoost]
 
     init(
         id: UUID = UUID(),
@@ -34,8 +36,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         builderApprenticeLevel: Int = 0,
         labAssistantLevel: Int = 0,
         alchemistLevel: Int = 0,
+        clockTowerLevel: Int = 0,
         goldPassBoost: Int = 0,
-        goldPassReminderEnabled: Bool = false
+        goldPassReminderEnabled: Bool = false,
+        activeBoosts: [ActiveBoost] = []
     ) {
         self.id = id
         self.displayName = displayName
@@ -51,8 +55,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.builderApprenticeLevel = builderApprenticeLevel
         self.labAssistantLevel = labAssistantLevel
         self.alchemistLevel = alchemistLevel
+        self.clockTowerLevel = clockTowerLevel
         self.goldPassBoost = goldPassBoost
         self.goldPassReminderEnabled = goldPassReminderEnabled
+        self.activeBoosts = activeBoosts
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -70,8 +76,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         case builderApprenticeLevel
         case labAssistantLevel
         case alchemistLevel
+        case clockTowerLevel
         case goldPassBoost
         case goldPassReminderEnabled
+        case activeBoosts
     }
 
     init(from decoder: Decoder) throws {
@@ -90,8 +98,18 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.builderApprenticeLevel = try container.decodeIfPresent(Int.self, forKey: .builderApprenticeLevel) ?? 0
         self.labAssistantLevel = try container.decodeIfPresent(Int.self, forKey: .labAssistantLevel) ?? 0
         self.alchemistLevel = try container.decodeIfPresent(Int.self, forKey: .alchemistLevel) ?? 0
+        self.clockTowerLevel = try container.decodeIfPresent(Int.self, forKey: .clockTowerLevel) ?? 0
         self.goldPassBoost = try container.decodeIfPresent(Int.self, forKey: .goldPassBoost) ?? 0
         self.goldPassReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .goldPassReminderEnabled) ?? false
+        
+        // Handle ActiveBoost decoding with fallback for old data missing startTime
+        if let boosts = try? container.decodeIfPresent([ActiveBoost].self, forKey: .activeBoosts) {
+            self.activeBoosts = boosts
+        } else {
+            // If decoding fails (likely due to missing startTime), discard active boosts
+            // This prevents losing the entire profile due to schema changes
+            self.activeBoosts = []
+        }
     }
 
     func encode(to encoder: Encoder) throws {
@@ -110,8 +128,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         try container.encode(builderApprenticeLevel, forKey: .builderApprenticeLevel)
         try container.encode(labAssistantLevel, forKey: .labAssistantLevel)
         try container.encode(alchemistLevel, forKey: .alchemistLevel)
+        try container.encode(clockTowerLevel, forKey: .clockTowerLevel)
         try container.encode(goldPassBoost, forKey: .goldPassBoost)
         try container.encode(goldPassReminderEnabled, forKey: .goldPassReminderEnabled)
+        try container.encode(activeBoosts, forKey: .activeBoosts)
     }
 }
 

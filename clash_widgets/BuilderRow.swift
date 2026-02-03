@@ -71,6 +71,7 @@ final class AppAssetResolver {
 
 struct BuilderRow: View {
     @EnvironmentObject private var dataService: DataService
+    @AppStorage("globalShowFullTimerPrecision") private var globalShowFullTimerPrecision = false
     let upgrade: BuildingUpgrade
     
     var body: some View {
@@ -123,23 +124,7 @@ struct BuilderRow: View {
 
     @ViewBuilder
     private var progressBarView: some View {
-        let remainingSeconds = upgrade.endTime.timeIntervalSinceNow
-        if remainingSeconds > 0 && remainingSeconds <= 3600 {
-            TimelineView(.periodic(from: Date(), by: 1)) { context in
-                GeometryReader { geo in
-                    ZStack(alignment: .leading) {
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.gray.opacity(0.2))
-                            .frame(height: 8)
-
-                        RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.green)
-                            .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade, referenceDate: context.date)), height: 8)
-                    }
-                }
-                .frame(height: 8)
-            }
-        } else {
+        TimelineView(.periodic(from: Date(), by: 1)) { context in
             GeometryReader { geo in
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 4)
@@ -148,7 +133,7 @@ struct BuilderRow: View {
 
                     RoundedRectangle(cornerRadius: 4)
                         .fill(Color.green)
-                        .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade, referenceDate: Date())), height: 8)
+                        .frame(width: geo.size.width * CGFloat(progressFraction(for: upgrade, referenceDate: context.date)), height: 8)
                 }
             }
             .frame(height: 8)
@@ -157,15 +142,8 @@ struct BuilderRow: View {
 
     @ViewBuilder
     private var timeRemainingView: some View {
-        let remainingSeconds = effectiveRemainingSeconds(for: upgrade, referenceDate: Date())
-        if remainingSeconds > 0 && remainingSeconds <= 3600 {
-            TimelineView(.periodic(from: Date(), by: 1)) { context in
-                Text(formatRemaining(effectiveRemainingSeconds(for: upgrade, referenceDate: context.date)))
-                    .font(.subheadline)
-                    .foregroundColor(.orange)
-            }
-        } else {
-            Text(formatRemaining(remainingSeconds))
+        TimelineView(.periodic(from: Date(), by: 1)) { context in
+            Text(formatRemaining(effectiveRemainingSeconds(for: upgrade, referenceDate: context.date)))
                 .font(.subheadline)
                 .foregroundColor(.orange)
         }
@@ -180,15 +158,73 @@ struct BuilderRow: View {
 
     private func boostedTotalDuration(for upgrade: BuildingUpgrade) -> TimeInterval {
         let boost = max(0, min(100, dataService.goldPassBoost))
-        let factor = max(0.0, 1.0 - (Double(boost) / 100.0))
-        return max(upgrade.totalDuration * factor, 1)
+        let goldPassFactor = max(0.0, 1.0 - (Double(boost) / 100.0))
+        let goldPassBoosted = upgrade.totalDuration * goldPassFactor
+        
+        return max(goldPassBoosted, 1)
     }
 
     private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, referenceDate: Date) -> TimeInterval {
-        let total = boostedTotalDuration(for: upgrade)
-        let actualRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
-        return min(actualRemaining, total)
+        let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
+        guard let profile = dataService.currentProfile else { return baseRemaining }
+
+        let start = upgrade.startTime
+        let now = referenceDate
+        if now <= start { return baseRemaining }
+
+        let relevantBoosts = profile.activeBoosts.compactMap { boost -> ActiveBoost? in
+            guard let boostType = boost.boostType,
+                  boostType.affectedCategories.contains(upgrade.category) else { return nil }
+            if boostType == .builderApprentice || boostType == .labAssistant {
+                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
+            }
+            return boost
+        }
+        if relevantBoosts.isEmpty { return baseRemaining }
+
+        var timePoints: [Date] = [start, now]
+        for boost in relevantBoosts {
+            let s = max(start, boost.startTime)
+            let e = min(now, boost.endTime)
+            if s < e {
+                timePoints.append(s)
+                timePoints.append(e)
+            }
+        }
+        let sortedPoints = Array(Set(timePoints)).sorted()
+        if sortedPoints.count <= 1 { return baseRemaining }
+
+        var extraElapsed: TimeInterval = 0
+        for idx in 0..<(sortedPoints.count - 1) {
+            let segmentStart = sortedPoints[idx]
+            let segmentEnd = sortedPoints[idx + 1]
+            if segmentEnd <= segmentStart { continue }
+
+            var totalExtra: Double = 0
+            var clockTowerApplied = false
+            for boost in relevantBoosts {
+                guard let boostType = boost.boostType else { continue }
+                let s = max(start, boost.startTime)
+                let e = min(now, boost.endTime)
+                if segmentStart < s || segmentStart >= e { continue }
+
+                let level = boost.helperLevel ?? 0
+                if boostType.isClockTowerBoost {
+                    if !clockTowerApplied {
+                        totalExtra += boostType.speedMultiplier(level: level)
+                        clockTowerApplied = true
+                    }
+                } else {
+                    totalExtra += boostType.speedMultiplier(level: level)
+                }
+            }
+            extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
+        }
+
+        let adjustedRemaining = baseRemaining - extraElapsed
+        return max(0, adjustedRemaining)
     }
+
 
     private func formatRemaining(_ seconds: TimeInterval) -> String {
         let remaining = Int(max(seconds, 0))
@@ -198,16 +234,17 @@ struct BuilderRow: View {
         let hours = (remaining % 86400) / 3600
         let minutes = (remaining % 3600) / 60
         let secs = remaining % 60
+        
+        if globalShowFullTimerPrecision {
+            if days > 0 { return "\(days)d \(hours)h \(minutes)m \(secs)s" }
+            if hours > 0 { return "\(hours)h \(minutes)m \(secs)s" }
+            if minutes > 0 { return "\(minutes)m \(secs)s" }
+            return "\(secs)s"
+        }
 
-        if days > 0 {
-            return "\(days)d \(hours)h"
-        }
-        if hours > 0 {
-            return "\(hours)h \(minutes)m"
-        }
-        if minutes > 0 {
-            return "\(minutes)m \(secs)s"
-        }
+        if days > 0 { return "\(days)d \(hours)h" }
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m \(secs)s" }
         return "\(secs)s"
     }
 
