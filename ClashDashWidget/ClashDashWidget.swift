@@ -13,6 +13,64 @@ import AppIntents
 import ControlCenter
 #endif
 
+private func trimmedWidgetImage(named name: String) -> Image {
+    #if canImport(UIKit)
+    if let uiImage = UIImage(named: name) {
+        return Image(uiImage: trimWidgetTransparentEdges(uiImage))
+    }
+    #endif
+    return Image(name)
+}
+
+private func trimWidgetTransparentEdges(_ image: UIImage) -> UIImage {
+    guard let cgImage = image.cgImage else { return image }
+
+    let width = cgImage.width
+    let height = cgImage.height
+
+    guard let dataProvider = cgImage.dataProvider,
+          let data = dataProvider.data as Data? else {
+        return image
+    }
+
+    let bytesPerPixel = 4
+    let pixelData = [UInt8](data)
+
+    var minX = width
+    var maxX = -1
+    var minY = height
+    var maxY = -1
+
+    for y in 0..<height {
+        for x in 0..<width {
+            let pixelIndex = (y * width + x) * bytesPerPixel
+            guard pixelIndex + 3 < pixelData.count else { continue }
+
+            let alpha = pixelData[pixelIndex + 3]
+            if alpha > 5 {
+                minX = min(minX, x)
+                maxX = max(maxX, x)
+                minY = min(minY, y)
+                maxY = max(maxY, y)
+            }
+        }
+    }
+
+    guard minX <= maxX && minY <= maxY && minX < width && minY < height else {
+        return image
+    }
+
+    let trimRect = CGRect(
+        x: CGFloat(minX),
+        y: CGFloat(minY),
+        width: CGFloat(maxX - minX + 1),
+        height: CGFloat(maxY - minY + 1)
+    )
+
+    guard let croppedCG = cgImage.cropping(to: trimRect) else { return image }
+    return UIImage(cgImage: croppedCG, scale: image.scale, orientation: image.imageOrientation)
+}
+
 // MARK: - Widget Configuration Intent
 // MARK: - Profile Selection Options (compile-time static for AppEnum)
 enum ProfileSelection: String, AppEnum, CaseDisplayRepresentable {
@@ -152,6 +210,7 @@ struct SimpleEntry: TimelineEntry {
     let date: Date
     let upgrades: [BuildingUpgrade]
     let builderCount: Int
+    let totalBuilderUpgradesCount: Int
     let goldPassBoost: Int
     let builderHallLevel: Int
     let debugText: String
@@ -159,10 +218,11 @@ struct SimpleEntry: TimelineEntry {
     let townHallLevel: Int
     let activeBoosts: [ActiveBoost]  // Track active boosts for accurate timer calculations
 
-    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, goldPassBoost: Int = 0, builderHallLevel: Int = 0, debugText: String, profileName: String = "", townHallLevel: Int = 0, activeBoosts: [ActiveBoost] = []) {
+    init(date: Date, upgrades: [BuildingUpgrade], builderCount: Int = 5, totalBuilderUpgradesCount: Int = 0, goldPassBoost: Int = 0, builderHallLevel: Int = 0, debugText: String, profileName: String = "", townHallLevel: Int = 0, activeBoosts: [ActiveBoost] = []) {
         self.date = date
         self.upgrades = upgrades
         self.builderCount = builderCount
+        self.totalBuilderUpgradesCount = totalBuilderUpgradesCount
         self.goldPassBoost = goldPassBoost
         self.builderHallLevel = builderHallLevel
         self.debugText = debugText
@@ -179,21 +239,21 @@ struct Provider: AppIntentTimelineProvider {
     let appGroup = "group.Zachary-Buschmann.clash-widgets"
 
     func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, goldPassBoost: 0, debugText: "Placeholder")
+        SimpleEntry(date: Date(), upgrades: [], builderCount: 5, totalBuilderUpgradesCount: 0, goldPassBoost: 0, debugText: "Placeholder")
     }
 
     func snapshot(for configuration: WidgetProfileIntent, in context: Context) async -> SimpleEntry {
-        let (upgrades, builderCount, goldPassBoost, activeBoosts) = loadUpgrades(for: configuration)
+        let (upgrades, builderCount, goldPassBoost, activeBoosts, totalBuilderUpgradesCount) = loadUpgrades(for: configuration)
         let text = loadDebugText(for: configuration)
         let (profileName, townHallLevel) = loadProfileInfo(for: configuration)
-        return SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, goldPassBoost: goldPassBoost, debugText: text, profileName: profileName, townHallLevel: townHallLevel, activeBoosts: activeBoosts)
+        return SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, totalBuilderUpgradesCount: totalBuilderUpgradesCount, goldPassBoost: goldPassBoost, debugText: text, profileName: profileName, townHallLevel: townHallLevel, activeBoosts: activeBoosts)
     }
 
     func timeline(for configuration: WidgetProfileIntent, in context: Context) async -> Timeline<SimpleEntry> {
-        let (upgrades, builderCount, goldPassBoost, activeBoosts) = loadUpgrades(for: configuration)
+        let (upgrades, builderCount, goldPassBoost, activeBoosts, totalBuilderUpgradesCount) = loadUpgrades(for: configuration)
         let text = loadDebugText(for: configuration)
         let (profileName, townHallLevel) = loadProfileInfo(for: configuration)
-        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, goldPassBoost: goldPassBoost, debugText: text, profileName: profileName, townHallLevel: townHallLevel, activeBoosts: activeBoosts)
+        let entry = SimpleEntry(date: Date(), upgrades: upgrades, builderCount: builderCount, totalBuilderUpgradesCount: totalBuilderUpgradesCount, goldPassBoost: goldPassBoost, debugText: text, profileName: profileName, townHallLevel: townHallLevel, activeBoosts: activeBoosts)
 
         // Dynamic refresh policy based on active boosts and urgency
         let nextUpdate: Date
@@ -237,7 +297,7 @@ struct Provider: AppIntentTimelineProvider {
         return Timeline(entries: [entry], policy: .after(nextUpdate))
     }
     
-    private func loadUpgrades(for configuration: WidgetProfileIntent) -> ([BuildingUpgrade], Int, Int, [ActiveBoost]) {
+    private func loadUpgrades(for configuration: WidgetProfileIntent) -> ([BuildingUpgrade], Int, Int, [ActiveBoost], Int) {
         if let state = PersistentStore.loadState() {
             // Determine which profile to use
             let profileToUse: PlayerAccount?
@@ -275,18 +335,20 @@ struct Provider: AppIntentTimelineProvider {
             let goblinActive = activeUpgrades.contains { $0.category == .builderVillage && $0.usesGoblin }
             let count = baseCount + (goblinActive ? 1 : 0)
             let boost = max(profileToUse?.goldPassBoost ?? 0, 0)
-            return (prioritized(upgrades: activeUpgrades, builderCount: count), count, boost, activeBoosts)
+            let totalBuilderUpgradesCount = activeUpgrades.filter { $0.category == .builderVillage }.count
+            return (prioritized(upgrades: activeUpgrades, builderCount: count), count, boost, activeBoosts, totalBuilderUpgradesCount)
         }
 
         let appGroup = "group.Zachary-Buschmann.clash-widgets"
         let sharedDefaults = UserDefaults(suiteName: appGroup)
         guard let data = sharedDefaults?.data(forKey: "saved_upgrades"),
                     let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) else {
-                return ([], 5, 0, [])
+                return ([], 5, 0, [], 0)
         }
         let goblinActive = decoded.contains { $0.category == .builderVillage && $0.usesGoblin }
         let count = 5 + (goblinActive ? 1 : 0)
-        return (prioritized(upgrades: decoded, builderCount: count), count, 0, [])
+        let totalBuilderUpgradesCount = decoded.filter { $0.category == .builderVillage }.count
+        return (prioritized(upgrades: decoded, builderCount: count), count, 0, [], totalBuilderUpgradesCount)
     }
     
     private func loadDebugText(for configuration: WidgetProfileIntent) -> String {
@@ -411,7 +473,7 @@ struct ClashDashWidgetEntryView : View {
             // Status line (always visible) - with extra padding on bottom to avoid widget edge
             HStack {
                 Spacer()
-                if entry.upgrades.count >= entry.builderCount {
+                if entry.totalBuilderUpgradesCount >= entry.builderCount {
                     let statusText = "All Builders Busy"
                     if !entry.profileName.isEmpty {
                         Text(statusText + " • " + entry.profileName)
@@ -427,7 +489,7 @@ struct ClashDashWidgetEntryView : View {
                             .lineLimit(1)
                     }
                 } else {
-                    let free = max(entry.builderCount - entry.upgrades.count, 0)
+                    let free = max(entry.builderCount - entry.totalBuilderUpgradesCount, 0)
                     let noun = free == 1 ? "builder" : "builders"
                     let statusText = "\(free) \(noun) free"
                     if !entry.profileName.isEmpty {
@@ -475,7 +537,7 @@ struct ClashDashWidgetEntryView : View {
 
                 // Icon on left, Level + Time on right (same row)
                 HStack(spacing: 6) {
-                    Image(iconName(for: upgrade))
+                    trimmedWidgetImage(named: iconName(for: upgrade))
                         .interpolation(.none)
                         .resizable()
                         .scaledToFit()
@@ -529,7 +591,7 @@ struct ClashDashWidgetEntryView : View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
-        case .starLab: folder = "lab"
+        case .starLab: folder = "builder_base"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -713,7 +775,7 @@ struct ClosestUpgradeWidgetEntryView: View {
     var body: some View {
         if let upgrade = entry.upgrade {
             HStack(spacing: 8) {
-                Image(iconName(for: upgrade))
+                trimmedWidgetImage(named: iconName(for: upgrade))
                     .resizable()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
@@ -749,7 +811,7 @@ struct ClosestUpgradeWidgetEntryView: View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
-        case .starLab: folder = "lab"
+        case .starLab: folder = "builder_base"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -2220,7 +2282,7 @@ struct LabPetWidgetEntryView: View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
-        case .starLab: folder = "lab"
+        case .starLab: folder = "builder_base"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }
@@ -2519,7 +2581,7 @@ struct BuilderBaseWidgetEntryView: View {
         switch upgrade.category {
         case .builderVillage: folder = "buildings_home"
         case .lab: folder = "lab"
-        case .starLab: folder = "lab"
+        case .starLab: folder = "builder_base"
         case .pets: folder = "pets"
         case .builderBase: folder = "builder_base"
         }

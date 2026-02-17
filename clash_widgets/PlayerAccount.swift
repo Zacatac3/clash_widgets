@@ -19,7 +19,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var clockTowerLevel: Int
     var goldPassBoost: Int
     var goldPassReminderEnabled: Bool
+    var hiddenEquipmentNames: Set<String>
     var activeBoosts: [ActiveBoost]
+    var instantBoostUndoActions: [InstantBoostUndoAction]
+    var helperCooldownOverrides: [Int: Date]
 
     init(
         id: UUID = UUID(),
@@ -39,7 +42,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         clockTowerLevel: Int = 0,
         goldPassBoost: Int = 0,
         goldPassReminderEnabled: Bool = false,
-        activeBoosts: [ActiveBoost] = []
+        hiddenEquipmentNames: Set<String> = [],
+        activeBoosts: [ActiveBoost] = [],
+        instantBoostUndoActions: [InstantBoostUndoAction] = [],
+        helperCooldownOverrides: [Int: Date] = [:]
     ) {
         self.id = id
         self.displayName = displayName
@@ -58,7 +64,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.clockTowerLevel = clockTowerLevel
         self.goldPassBoost = goldPassBoost
         self.goldPassReminderEnabled = goldPassReminderEnabled
+        self.hiddenEquipmentNames = hiddenEquipmentNames
         self.activeBoosts = activeBoosts
+        self.instantBoostUndoActions = instantBoostUndoActions
+        self.helperCooldownOverrides = helperCooldownOverrides
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -79,7 +88,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         case clockTowerLevel
         case goldPassBoost
         case goldPassReminderEnabled
+        case hiddenEquipmentNames
         case activeBoosts
+        case instantBoostUndoActions
+        case helperCooldownOverrides
     }
 
     init(from decoder: Decoder) throws {
@@ -101,6 +113,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.clockTowerLevel = try container.decodeIfPresent(Int.self, forKey: .clockTowerLevel) ?? 0
         self.goldPassBoost = try container.decodeIfPresent(Int.self, forKey: .goldPassBoost) ?? 0
         self.goldPassReminderEnabled = try container.decodeIfPresent(Bool.self, forKey: .goldPassReminderEnabled) ?? false
+        self.hiddenEquipmentNames = try container.decodeIfPresent(Set<String>.self, forKey: .hiddenEquipmentNames) ?? []
         
         // Handle ActiveBoost decoding with fallback for old data missing startTime
         if let boosts = try? container.decodeIfPresent([ActiveBoost].self, forKey: .activeBoosts) {
@@ -110,6 +123,8 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
             // This prevents losing the entire profile due to schema changes
             self.activeBoosts = []
         }
+        self.instantBoostUndoActions = try container.decodeIfPresent([InstantBoostUndoAction].self, forKey: .instantBoostUndoActions) ?? []
+        self.helperCooldownOverrides = try container.decodeIfPresent([Int: Date].self, forKey: .helperCooldownOverrides) ?? [:]
     }
 
     func encode(to encoder: Encoder) throws {
@@ -131,7 +146,10 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         try container.encode(clockTowerLevel, forKey: .clockTowerLevel)
         try container.encode(goldPassBoost, forKey: .goldPassBoost)
         try container.encode(goldPassReminderEnabled, forKey: .goldPassReminderEnabled)
+        try container.encode(hiddenEquipmentNames, forKey: .hiddenEquipmentNames)
         try container.encode(activeBoosts, forKey: .activeBoosts)
+        try container.encode(instantBoostUndoActions, forKey: .instantBoostUndoActions)
+        try container.encode(helperCooldownOverrides, forKey: .helperCooldownOverrides)
     }
 }
 

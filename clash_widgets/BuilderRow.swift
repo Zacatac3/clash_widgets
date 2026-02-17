@@ -78,10 +78,7 @@ struct BuilderRow: View {
         HStack(spacing: 12) {
             // Icon
             VStack {
-                Image(iconName(for: upgrade))
-                    .interpolation(.none)
-                    .resizable()
-                    .scaledToFit()
+                upgradeIconView
                     .frame(width: 36, height: 36)
                 Text(upgrade.levelDisplayText)
                     .font(.caption2)
@@ -121,6 +118,90 @@ struct BuilderRow: View {
         }
         .padding(.vertical, 4)
     }
+
+    @ViewBuilder
+    private var upgradeIconView: some View {
+        #if canImport(UIKit)
+        let resolvedName = iconName(for: upgrade)
+        if let uiImage = UIImage(named: resolvedName) {
+            Image(uiImage: trimTransparentEdges(from: uiImage))
+                .interpolation(.none)
+                .resizable()
+                .scaledToFit()
+        } else {
+            Image(resolvedName)
+                .interpolation(.none)
+                .resizable()
+                .scaledToFit()
+        }
+        #else
+        Image(iconName(for: upgrade))
+            .interpolation(.none)
+            .resizable()
+            .scaledToFit()
+        #endif
+    }
+
+    #if canImport(UIKit)
+    private func trimTransparentEdges(from image: UIImage) -> UIImage {
+        guard let cgImage = image.cgImage,
+              let dataProvider = cgImage.dataProvider,
+              let pixelData = dataProvider.data else {
+            return image
+        }
+
+        let data = CFDataGetBytePtr(pixelData)
+        let width = cgImage.width
+        let height = cgImage.height
+        let bytesPerPixel = cgImage.bitsPerPixel / 8
+        let bytesPerRow = cgImage.bytesPerRow
+
+        var minX = width
+        var minY = height
+        var maxX = 0
+        var maxY = 0
+        var foundContent = false
+
+        for y in 0..<height {
+            for x in 0..<width {
+                let pixelIndex = y * bytesPerRow + x * bytesPerPixel
+                let alpha: UInt8
+                switch cgImage.alphaInfo {
+                case .premultipliedFirst, .first, .noneSkipFirst:
+                    alpha = data?[pixelIndex] ?? 0
+                case .premultipliedLast, .last, .noneSkipLast:
+                    alpha = data?[pixelIndex + bytesPerPixel - 1] ?? 0
+                case .none, .alphaOnly:
+                    alpha = 255
+                @unknown default:
+                    alpha = 255
+                }
+
+                if alpha > 0 {
+                    foundContent = true
+                    minX = min(minX, x)
+                    minY = min(minY, y)
+                    maxX = max(maxX, x)
+                    maxY = max(maxY, y)
+                }
+            }
+        }
+
+        guard foundContent,
+              minX <= maxX,
+              minY <= maxY,
+              let croppedCGImage = cgImage.cropping(to: CGRect(
+                x: minX,
+                y: minY,
+                width: maxX - minX + 1,
+                height: maxY - minY + 1
+              )) else {
+            return image
+        }
+
+        return UIImage(cgImage: croppedCGImage, scale: image.scale, orientation: image.imageOrientation)
+    }
+    #endif
 
     @ViewBuilder
     private var progressBarView: some View {

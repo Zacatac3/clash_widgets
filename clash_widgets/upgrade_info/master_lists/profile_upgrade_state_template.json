@@ -1,0 +1,57 @@
+{
+  "schemaVersion": "1.0.0",
+  "profileId": "UUID-HERE",
+  "profileTag": "#PLAYER_TAG",
+  "lastUpdatedISO8601": "2026-02-17T00:00:00Z",
+  "sources": {
+    "homeMasterFile": "upgrade_info/master_lists/home_village_master_upgrades.json",
+    "builderMasterFile": "upgrade_info/master_lists/builder_base_master_upgrades.json"
+  },
+  "activeUpgrades": [
+    {
+      "village": "home",
+      "key": "id:1000067",
+      "id": 1000067,
+      "name": "Scattershot",
+      "currentLevel": 2,
+      "targetLevel": 3,
+      "startedAtISO8601": "2026-02-17T00:00:00Z",
+      "endTimeISO8601": "2026-02-18T12:00:00Z",
+      "remainingSeconds": 129600,
+      "usesGoblinBuilder": false
+    }
+  ],
+  "progress": {
+    "home": {
+      "currentLevels": {
+        "id:1000001": 15,
+        "id:1000067": 2,
+        "mini:Scattershot Mini Levels": 1
+      },
+      "remaining": {
+        "upgradeCount": 0,
+        "totalTimeSeconds": 0,
+        "totalCost": {
+          "Gold": 0,
+          "Elixir": 0,
+          "DarkElixir": 0
+        }
+      }
+    },
+    "builder": {
+      "currentLevels": {
+        "id:1000034": 10,
+        "id:1000086": 1,
+        "id:4000031": 18
+      },
+      "remaining": {
+        "upgradeCount": 0,
+        "totalTimeSeconds": 0,
+        "totalCost": {
+          "Gold2": 0,
+          "Elixir2": 0
+        }
+      }
+    }
+  }
+}

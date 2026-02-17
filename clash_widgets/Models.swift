@@ -132,6 +132,40 @@ struct ActiveBoost: Codable, Equatable, Identifiable {
     }
 }
 
+struct InstantBoostEndTimeSnapshot: Codable {
+    let upgradeID: UUID
+    let previousEndTime: Date
+}
+
+struct InstantBoostUndoAction: Codable, Identifiable {
+    var id: UUID
+    var type: String
+    var appliedAt: Date
+    var expiresAt: Date
+    var endTimeSnapshots: [InstantBoostEndTimeSnapshot]
+    var removedUpgrades: [BuildingUpgrade]
+
+    init(
+        id: UUID = UUID(),
+        type: String,
+        appliedAt: Date,
+        expiresAt: Date,
+        endTimeSnapshots: [InstantBoostEndTimeSnapshot],
+        removedUpgrades: [BuildingUpgrade]
+    ) {
+        self.id = id
+        self.type = type
+        self.appliedAt = appliedAt
+        self.expiresAt = expiresAt
+        self.endTimeSnapshots = endTimeSnapshots
+        self.removedUpgrades = removedUpgrades
+    }
+
+    var boostType: BoostType? {
+        BoostType(rawValue: type)
+    }
+}
+
 enum AppearancePreference: String, Codable, CaseIterable, Identifiable {
     case device
     case dark

@@ -1,0 +1,22 @@
+— Upcoming / Unreleased Updates —
+
+*New Features*
+- Shortcuts integration 
+- Lock screen toggle
+
+Planned:
+- fix wonky haptics
+- Proirity notifications
+- iPad UI
+
+1.2 (and beyond) - 
+
+*New Features*
+* Set up icloud sync for widgets / potential account management(?)
+* New more elegant UI for the home screen cards as well as widgets
+* Server hosting of assets and upgrade data to push info/asset updates without new app version
+* Add "Progress" section to track time/cost remaining for each town hall
+* Widget customization / themes
+- upgrade history (?)
+- * War stats widget (?)
+ lock screen toggle (?)

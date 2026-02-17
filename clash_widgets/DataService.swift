@@ -9,15 +9,16 @@ enum Village {
 
 class DataService: ObservableObject {
     static let appGroup = "group.Zachary-Buschmann.clash-widgets"
+    private static let helperCooldownDurationSeconds: TimeInterval = 23 * 60 * 60
 
     private static let apiDailyLimit = 1000
     private static let apiDailyCountKey = "clashdash.api.daily.count"
     private static let apiDailyDateKey = "clashdash.api.daily.date"
 
     private let apiKey: String?
-    private let persistenceQueue = DispatchQueue(label: "com.zacharybuschmann.clashdash.persistence", qos: .utility)
+    let persistenceQueue = DispatchQueue(label: "com.zacharybuschmann.clashdash.persistence", qos: .utility)
     private let notificationManager = NotificationManager.shared
-    private var suppressPersistence = false
+    var suppressPersistence = false
     private var refreshedProfilesThisLaunch: Set<UUID> = []
     private var activeRefreshTask: URLSessionDataTask?
 
@@ -158,6 +159,13 @@ class DataService: ObservableObject {
             persistChanges(reloadWidgets: false)
         }
     }
+    @Published var hiddenEquipmentNames: Set<String> = [] {
+        didSet {
+            guard !suppressPersistence else { return }
+            updateCurrentProfile { $0.hiddenEquipmentNames = hiddenEquipmentNames }
+            persistChanges(reloadWidgets: false)
+        }
+    }
     @Published var currentWar: WarDetails?
     @Published var warStatusMessage: String?
 
@@ -291,8 +299,24 @@ class DataService: ObservableObject {
     }
 
     func currentHelperCooldowns() -> [HelperCooldownEntry] {
-        guard let raw = currentProfile?.rawJSON, !raw.isEmpty else { return [] }
-        return helperCooldowns(from: raw)
+        guard let profile = currentProfile else { return [] }
+        return helperCooldowns(for: profile)
+    }
+
+    func startHelperCooldownsForCurrentProfile(referenceDate: Date = Date()) {
+        guard let profile = currentProfile else { return }
+        let helpers = helperCooldowns(for: profile, referenceDate: referenceDate)
+        guard !helpers.isEmpty else { return }
+
+        let nextExpiry = referenceDate.addingTimeInterval(Self.helperCooldownDurationSeconds)
+        var overrides: [Int: Date] = profile.helperCooldownOverrides
+        for helper in helpers {
+            overrides[helper.id] = nextExpiry
+        }
+
+        updateCurrentProfile { $0.helperCooldownOverrides = overrides }
+        persistChanges(reloadWidgets: true)
+        scheduleHelperNotifications()
     }
 
     func decodeExport(from rawJSON: String) -> CoCExport? {
@@ -409,8 +433,7 @@ class DataService: ObservableObject {
     }
 
     func helperCooldowns(from rawJSON: String) -> [HelperCooldownEntry] {
-        guard let data = rawJSON.data(using: .utf8) else { return [] }
-        guard let export = try? JSONDecoder().decode(CoCExport.self, from: data) else { return [] }
+        guard let export = decodeExport(from: rawJSON) else { return [] }
         let helpers = export.helpers ?? []
 
         // If the export includes a timestamp, compute absolute expiry dates so remaining time
@@ -428,6 +451,34 @@ class DataService: ObservableObject {
             let remaining = max(0, Int(expiresAt.timeIntervalSinceNow))
             return HelperCooldownEntry(id: helper.data, level: helper.lvl, cooldownSeconds: remaining, expiresAt: expiresAt)
         }
+    }
+
+    func helperCooldowns(for profile: PlayerAccount, referenceDate: Date = Date()) -> [HelperCooldownEntry] {
+        guard !profile.rawJSON.isEmpty else { return [] }
+        var entries = helperCooldowns(from: profile.rawJSON)
+        guard !entries.isEmpty else { return [] }
+
+        let overrides = profile.helperCooldownOverrides
+        if overrides.isEmpty { return entries }
+
+        var didChange = false
+        entries = entries.map { entry in
+            guard let overrideDate = overrides[entry.id], overrideDate > referenceDate else { return entry }
+            let remaining = max(0, Int(overrideDate.timeIntervalSince(referenceDate)))
+            return HelperCooldownEntry(id: entry.id, level: entry.level, cooldownSeconds: remaining, expiresAt: overrideDate)
+        }
+
+        let filteredOverrides = overrides.filter { $0.value > referenceDate }
+        if filteredOverrides.count != overrides.count {
+            didChange = true
+        }
+
+        if didChange {
+            updateCurrentProfile { $0.helperCooldownOverrides = filteredOverrides }
+            persistChanges(reloadWidgets: false)
+        }
+
+        return entries
     }
 
     private func helperDisplayName(for id: Int) -> String {
@@ -642,13 +693,6 @@ class DataService: ObservableObject {
         return nil
     }
 
-    func selectProfile(_ id: UUID) {
-        guard profiles.contains(where: { $0.id == id }) else { return }
-        if selectedProfileID != id {
-            selectedProfileID = id
-        }
-    }
-
     @discardableResult
     func addProfile(
         tag: String,
@@ -727,18 +771,6 @@ class DataService: ObservableObject {
         persistChanges(reloadWidgets: true)
     }
 
-    func displayName(for profile: PlayerAccount) -> String {
-        if let cachedName = profile.cachedProfile?.name.trimmingCharacters(in: .whitespacesAndNewlines),
-           !cachedName.isEmpty {
-            return cachedName
-        }
-        let trimmed = profile.displayName.trimmingCharacters(in: .whitespacesAndNewlines)
-        if !trimmed.isEmpty {
-            return trimmed
-        }
-        return profile.tag.isEmpty ? "Profile" : profile.tag
-    }
-
     func hasProfile(withTag tag: String, excluding id: UUID? = nil) -> Bool {
         let normalized = normalizeTag(tag)
         guard !normalized.isEmpty else { return false }
@@ -746,12 +778,6 @@ class DataService: ObservableObject {
             if let id, profile.id == id { return false }
             return normalizeTag(profile.tag) == normalized
         }
-    }
-
-    func clearData() {
-        activeUpgrades = []
-        rawJSON = ""
-        lastImportDate = nil
     }
 
     func resetGoldPassBoostForAllProfiles() {
@@ -867,6 +893,16 @@ class DataService: ObservableObject {
         notificationManager.removeAllUpgradeNotifications()
         refreshedProfilesThisLaunch.removeAll()
 
+        let defaults = UserDefaults.standard
+        let keysToClear: [String] = [
+            "homeSectionOrder",
+            "hiddenHomeSections",
+            "ipadRestoreClassicDashboardLayout",
+            "profileSectionOrder",
+            "hiddenProfileSections"
+        ]
+        keysToClear.forEach { defaults.removeObject(forKey: $0) }
+
         suppressPersistence = true
         let freshProfile = PlayerAccount()
         profiles = [freshProfile]
@@ -877,6 +913,7 @@ class DataService: ObservableObject {
         builderApprenticeLevel = freshProfile.builderApprenticeLevel
         labAssistantLevel = freshProfile.labAssistantLevel
         alchemistLevel = freshProfile.alchemistLevel
+        hiddenEquipmentNames = freshProfile.hiddenEquipmentNames
         profileName = freshProfile.displayName
         playerTag = ""
         rawJSON = ""
@@ -889,6 +926,59 @@ class DataService: ObservableObject {
         applyCurrentProfile()
         PersistentStore.clearState()
         saveToStorage()
+    }
+
+    func isEquipmentHidden(named name: String) -> Bool {
+        hiddenEquipmentNames.contains(normalizedEquipmentName(name))
+    }
+
+    func setEquipmentHidden(named name: String, hidden: Bool) {
+        let key = normalizedEquipmentName(name)
+        guard !key.isEmpty else { return }
+
+        var updated = hiddenEquipmentNames
+        if hidden {
+            updated.insert(key)
+        } else {
+            updated.remove(key)
+        }
+
+        guard updated != hiddenEquipmentNames else { return }
+        hiddenEquipmentNames = updated
+    }
+
+    func resetHiddenEquipment() {
+        guard !hiddenEquipmentNames.isEmpty else { return }
+        hiddenEquipmentNames = []
+    }
+
+    func resetLayoutPreferences() {
+        let defaults = UserDefaults.standard
+        let keysToClear: [String] = [
+            "homeSectionOrder",
+            "hiddenHomeSections",
+            "ipadRestoreClassicDashboardLayout",
+            "profileSectionOrder",
+            "hiddenProfileSections",
+            "profilesSectionExpanded",
+            "profileSettingsExpanded",
+            "helperGemCostsExpanded"
+        ]
+        keysToClear.forEach { defaults.removeObject(forKey: $0) }
+
+        profiles = profiles.map { profile in
+            var updated = profile
+            updated.hiddenEquipmentNames = []
+            return updated
+        }
+
+        hiddenEquipmentNames = []
+        applyCurrentProfile()
+        persistChanges(reloadWidgets: true)
+    }
+
+    private func normalizedEquipmentName(_ name: String) -> String {
+        name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
     }
 
     func refreshCurrentProfile(force: Bool = false) {
@@ -1186,7 +1276,8 @@ class DataService: ObservableObject {
                     return
                 }
                 guard let data = data else {
-                    self.warStatusMessage = "War data was empty."
+                    self.currentWar = nil
+                    self.warStatusMessage = "No clan war data available. Your clan's war log is likely set to Private"
                     return
                 }
                 do {
@@ -1239,8 +1330,14 @@ class DataService: ObservableObject {
                         self.warStatusMessage = nil
                         self.lastWarFetchDate = Date()
                         WidgetCenter.shared.reloadAllTimelines()
+                    } else if let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                              let reason = json["reason"] as? String,
+                              reason.lowercased() == "accessdenied" {
+                        self.currentWar = nil
+                        self.warStatusMessage = "No clan war data available. Your clan's war log is likely set to Private"
                     } else {
-                        self.warStatusMessage = "Failed to decode war data."
+                        self.currentWar = nil
+                        self.warStatusMessage = "No clan war data available. Your clan's war log is likely set to Private"
                     }
                 }
             }
@@ -1428,13 +1525,15 @@ class DataService: ObservableObject {
         let now = Date()
         var requests: [NotificationManager.HelperNotificationRequest] = []
 
+        notificationManager.setProfileContext(allProfiles: profiles, currentProfileID: selectedProfileID)
+
         for profile in profiles {
             let settings = profile.notificationSettings
             guard settings.notificationsEnabled && settings.helperNotificationsEnabled else { continue }
             let raw = profile.rawJSON
             guard !raw.isEmpty else { continue }
 
-            let helpers = helperCooldowns(from: raw)
+            let helpers = helperCooldowns(for: profile, referenceDate: now)
             let readyHelpers = helpers.filter { helper in
                 if let expires = helper.expiresAt, expires > now {
                     return true
@@ -1452,7 +1551,20 @@ class DataService: ObservableObject {
             let identifier = "com.zacharybuschmann.clashdash.helper.\(profile.id.uuidString).consolidated"
             let title = "Helpers ready to work"
             let body = readyHelpers.count == 1 ? "\(helperNames) is ready to work." : "\(helperNames) are ready to work."
-            requests.append(NotificationManager.HelperNotificationRequest(identifier: identifier, title: title, body: body, date: earliestExpiry))
+            let profileName: String? = {
+                let resolved = [profile.displayName, profile.cachedProfile?.name]
+                    .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
+                    .first(where: { !$0.isEmpty })
+                return resolved
+            }()
+            requests.append(NotificationManager.HelperNotificationRequest(
+                identifier: identifier,
+                title: title,
+                body: body,
+                date: earliestExpiry,
+                profileID: profile.id,
+                profileName: profileName
+            ))
         }
 
         notificationManager.syncHelperNotifications(for: requests)
@@ -1464,6 +1576,8 @@ class DataService: ObservableObject {
               let profile = profiles.first(where: { $0.id == profileID }) else {
             return
         }
+
+        notificationManager.setProfileContext(allProfiles: profiles, currentProfileID: selectedProfileID)
         
         let settings = profile.notificationSettings
         let profileName: String? = {
@@ -1482,112 +1596,6 @@ class DataService: ObservableObject {
             profileID: profileID,
             profileName: profileName
         )
-    }
-
-    private func saveToStorage() {
-        ensureProfiles()
-        let snapshot = PersistentStore.AppState(
-            profiles: profiles,
-            selectedProfileID: selectedProfileID,
-            appearancePreference: appearancePreference,
-            notificationSettings: nil
-        )
-
-        persistenceQueue.async {
-            do {
-                try PersistentStore.saveState(snapshot)
-            } catch {
-                #if DEBUG
-                print("Failed to persist state file: \(error)")
-                #endif
-            }
-        }
-
-        let sharedDefaults = UserDefaults(suiteName: DataService.appGroup)
-        guard let current = snapshot.currentProfile else { return }
-        sharedDefaults?.set(current.displayName, forKey: "widget_simple_text")
-        sharedDefaults?.set(current.tag, forKey: "saved_player_tag")
-        sharedDefaults?.set(current.rawJSON, forKey: "saved_raw_json")
-        sharedDefaults?.set(current.lastImportDate, forKey: "last_import_date")
-
-        if let encoded = try? JSONEncoder().encode(current.activeUpgrades) {
-            sharedDefaults?.set(encoded, forKey: "saved_upgrades")
-            sharedDefaults?.synchronize()
-            UserDefaults.standard.set(encoded, forKey: "saved_upgrades")
-        }
-    }
-
-    private func loadFromStorage() {
-        suppressPersistence = true
-        defer {
-            suppressPersistence = false
-            applyCurrentProfile()
-        }
-
-        if let state = PersistentStore.loadState() {
-            profiles = state.profiles
-            selectedProfileID = state.selectedProfileID
-            appearancePreference = state.appearancePreference
-            if let legacySettings = state.notificationSettings,
-               profiles.allSatisfy({ $0.notificationSettings == .default }) {
-                profiles = profiles.map { profile in
-                    var updated = profile
-                    updated.notificationSettings = legacySettings
-                    return updated
-                }
-            }
-        } else {
-            let sharedDefaults = UserDefaults(suiteName: DataService.appGroup)
-            let storedName = sharedDefaults?.string(forKey: "widget_simple_text") ?? ""
-            let tag = sharedDefaults?.string(forKey: "saved_player_tag") ?? ""
-            let raw = sharedDefaults?.string(forKey: "saved_raw_json") ?? ""
-            let lastDate = sharedDefaults?.object(forKey: "last_import_date") as? Date
-            var upgrades: [BuildingUpgrade] = []
-            if let data = sharedDefaults?.data(forKey: "saved_upgrades") ?? UserDefaults.standard.data(forKey: "saved_upgrades"),
-               let decoded = try? JSONDecoder().decode([BuildingUpgrade].self, from: data) {
-                upgrades = decoded
-            }
-            let profile = PlayerAccount(
-                displayName: storedName.isEmpty ? (tag.isEmpty ? "Profile 1" : tag) : storedName,
-                tag: tag,
-                rawJSON: raw,
-                lastImportDate: lastDate,
-                activeUpgrades: upgrades
-            )
-            profiles = [profile]
-            selectedProfileID = profile.id
-        }
-
-        ensureProfiles()
-        if selectedProfileID == nil {
-            selectedProfileID = profiles.first?.id
-        }
-    }
-
-    private func applyCurrentProfile() {
-        suppressPersistence = true
-        defer {
-            suppressPersistence = false
-            scheduleUpgradeNotifications()
-        }
-
-        ensureProfiles()
-        guard let profile = currentProfile else { return }
-
-        profileName = profile.displayName
-        playerTag = profile.tag
-        rawJSON = profile.rawJSON
-        lastImportDate = profile.lastImportDate
-        activeUpgrades = profile.activeUpgrades
-        cachedProfile = profile.cachedProfile
-        notificationSettings = profile.notificationSettings
-        builderCount = profile.builderCount
-        builderApprenticeLevel = profile.builderApprenticeLevel
-        labAssistantLevel = profile.labAssistantLevel
-        alchemistLevel = profile.alchemistLevel
-        clockTowerLevel = profile.clockTowerLevel
-        goldPassBoost = profile.goldPassBoost
-        goldPassReminderEnabled = profile.goldPassReminderEnabled
     }
 
     func updateGoldPassBoost(for profileId: UUID, boost: Int) {
@@ -1610,33 +1618,6 @@ class DataService: ObservableObject {
               let index = profiles.firstIndex(where: { $0.id == profile.id }) else { return }
         mutate(&profile)
         profiles[index] = profile
-    }
-
-    func persistChanges(reloadWidgets: Bool) {
-        guard !suppressPersistence else { return }
-        saveToStorage()
-        if reloadWidgets {
-            WidgetCenter.shared.reloadAllTimelines()
-        }
-    }
-
-    private func ensureProfiles() {
-        guard profiles.isEmpty else { return }
-        let profile = PlayerAccount()
-        profiles = [profile]
-        selectedProfileID = profile.id
-    }
-
-    private func defaultProfileName() -> String {
-        let base = "Profile"
-        var suffix = profiles.count + 1
-        let existing = Set(profiles.map { $0.displayName })
-        var candidate = "\(base) \(suffix)"
-        while existing.contains(candidate) {
-            suffix += 1
-            candidate = "\(base) \(suffix)"
-        }
-        return candidate
     }
 
     private func normalizeTag(_ rawValue: String) -> String {
@@ -1851,6 +1832,7 @@ class DataService: ObservableObject {
                 profile.rawJSON = input
                 profile.lastImportDate = importTimestamp
                 profile.activeUpgrades = upgrades
+                profile.helperCooldownOverrides = [:]
                 if inferredBuilderCount > profile.builderCount {
                     profile.builderCount = inferredBuilderCount
                 }

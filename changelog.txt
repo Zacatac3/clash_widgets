@@ -61,12 +61,12 @@ Main Fix:
 - wall costs now scale with gold pass
 - Changed Hero levels and Town Hall level to draw from import instead of API, for edge case scenarios 
 
-— Upcoming / Unreleased Updates —
 
-1.1 - 2/xx/26
+1.1 - 2/08/26
 Major Quality of Life + feature Update
 
 *New Features and Additions*
+- Lock screen widgets for upgrades
 - Helpers now only send one notification for all helpers
 - added helper gem cost section to profile
 - when editing the home page, you can now hide individual sections
@@ -75,10 +75,11 @@ Major Quality of Life + feature Update
 - new setting to "Pre-Notify" a few minutes before upgrades are done
 - new Current War home screen module
 - Clan stats added in profile tab
-- Lock screen widgets for upgrades
 - added boosts menu (helpers, potions, and snacks)
 - Profile page cards now re-orderable
 - added new setting to display precise timers
+- Added support for the stick horse equipment
+- helpers can now be refreshed without re-importing player data
 
 *Changes and Bug Fixes*
 - Import button now taller to avoid miss taps
@@ -93,26 +94,29 @@ Major Quality of Life + feature Update
 - widgets now have profile name labels
 - fixed Town Hall level not updating with import (causing icon and wall levels to be messed up)
 - made toggle colors consistent in the settings menu
+- fixed cumulative wall cost not factoring in intermediate levels
+- Added "Done" button to feedback form, preventing users from getting stuck on the page
+- Ensure goblin builder no longer shows "1 builder remaining" when all builders are being used
 
+1.1.1 - 2/xx/26
+Under the Hood Improvements
 
+*New Features and Additons*
+- Images can now be displayed directly in the Changelog
+- Overall, the app should now run much smoother, code has been rebuilt from ground up, to continue scaling the app up. Previous code was getting bloated due to not expecting the app to reach this size
+- Individual equipment can now be hidden from the equipment tab 
+- iPad layout now supports two columns to better use screen real estate, optional toggle for "Legacy Layout"
+- Boosts can now be customized, allowing them to be applied immediately or for a custom duration
+- Simplified settings menu, with grouping of settings into sub menus
 
-*New Features*
-- Shortcuts integration 
-
-Planned:
-- profile label on widgets
-- fix wonky haptics
-- Proirity notifications
-- iPad UI
-
-1.2 (and beyond) - 
-
-*New Features*
-* Set up icloud sync for widgets / potential account management(?)
-* New more elegant UI for the home screen cards as well as widgets
-* Server hosting of assets and upgrade data to push info/asset updates without new app version
-* Add "Progress" section to track time/cost remaining for each town hall
-* Widget customization / themes
-- upgrade history (?)
-- * War stats widget (?)
- lock screen toggle (?)
+*Changes and Fixes*
+- Profile page should no longer briefly freeze the app, and it's loading has been optimized
+- War Card now tells you when your clan's war log is set to private
+- pop up indicating empty clipboard when importing
+- some assets were previosuly showing up very small, this should be resolved
+- star lab assets should now properly display on the builder base widget
+- notifications should now always use Player profile name instead or Profile tag
+- Helpers, pet potions now only show up in boosts menu once they are unlocked
+- Factory reset now resets show/hide status and resets order of cards
+- added option to review app from within settings
+- added new option to reset layouts

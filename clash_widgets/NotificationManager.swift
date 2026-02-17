@@ -189,7 +189,9 @@ final class NotificationManager: ObservableObject {
         content.title = title
         
         var bodyText = body
-        if let profiles = allProfiles, profiles.count > 1, let name = profileName {
+        if let profiles = allProfiles,
+           profiles.count > 1,
+           let name = sanitizedNotificationProfileName(profileName, profileTag: profileTag(for: profileID)) {
             bodyText = "\(name): \(body)"
         }
         content.body = bodyText
@@ -225,12 +227,7 @@ final class NotificationManager: ObservableObject {
         // Add profile name if multiple profiles exist - format: "Username: upgrade x completed"
         if let profiles = allProfiles, profiles.count > 1, let profileID = currentProfileID,
            let profile = profiles.first(where: { $0.id == profileID }) {
-            let resolvedName = [
-                profile.displayName,
-                profile.cachedProfile?.name
-            ]
-            .compactMap { $0?.trimmingCharacters(in: .whitespacesAndNewlines) }
-            .first(where: { !$0.isEmpty }) ?? "Profile"
+            let resolvedName = resolvedNotificationProfileName(for: profile)
             bodyText = "\(resolvedName): \(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
         }
         
@@ -371,6 +368,8 @@ final class NotificationManager: ObservableObject {
         let title: String
         let body: String
         let date: Date
+        let profileID: UUID?
+        let profileName: String?
     }
 
     func syncHelperNotifications(for requests: [HelperNotificationRequest]) {
@@ -408,9 +407,19 @@ final class NotificationManager: ObservableObject {
     private func makeRequest(for helper: HelperNotificationRequest) -> UNNotificationRequest {
         let content = UNMutableNotificationContent()
         content.title = helper.title
-        content.body = helper.body
+        var bodyText = helper.body
+        if let profiles = allProfiles,
+           profiles.count > 1,
+           let name = sanitizedNotificationProfileName(helper.profileName, profileTag: profileTag(for: helper.profileID)) {
+            bodyText = "\(name): \(bodyText)"
+        }
+        content.body = bodyText
         content.sound = .default
         content.threadIdentifier = "helpers"
+
+        if let profileID = helper.profileID {
+            content.userInfo["profileID"] = profileID.uuidString
+        }
 
         let interval = max(helper.date.timeIntervalSinceNow, 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
@@ -425,6 +434,42 @@ final class NotificationManager: ObservableObject {
             guard !identifiers.isEmpty else { return }
             self.center.removePendingNotificationRequests(withIdentifiers: identifiers)
         }
+    }
+
+    private func resolvedNotificationProfileName(for profile: PlayerAccount) -> String {
+        [profile.displayName, profile.cachedProfile?.name]
+            .compactMap { sanitizedNotificationProfileName($0, profileTag: profile.tag) }
+            .first ?? "Profile"
+    }
+
+    private func profileTag(for profileID: UUID?) -> String? {
+        guard let profileID,
+              let profile = allProfiles?.first(where: { $0.id == profileID }) else {
+            return nil
+        }
+        return profile.tag
+    }
+
+    private func sanitizedNotificationProfileName(_ name: String?, profileTag: String?) -> String? {
+        guard let name else { return nil }
+        let trimmed = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return nil }
+
+        let normalizedName = normalizedTagValue(trimmed)
+        let normalizedTag = normalizedTagValue(profileTag)
+        if !normalizedTag.isEmpty && normalizedName == normalizedTag {
+            return nil
+        }
+
+        return trimmed
+    }
+
+    private func normalizedTagValue(_ raw: String?) -> String {
+        guard let raw else { return "" }
+        let allowed = CharacterSet(charactersIn: "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+        let uppercase = raw.uppercased()
+        let filtered = uppercase.unicodeScalars.filter { allowed.contains($0) }
+        return String(String.UnicodeScalarView(filtered))
     }
 }
 

@@ -33,6 +33,8 @@
     { "name": "Haste Vial", "hero": "Royal Champion", "rarity": "common" },
     { "name": "Rocket Spear", "hero": "Royal Champion", "rarity": "epic" },
     { "name": "Royal Gem", "hero": "Royal Champion", "rarity": "common" },
-    { "name": "Seeking Shield", "hero": "Royal Champion", "rarity": "common" }
+    { "name": "Seeking Shield", "hero": "Royal Champion", "rarity": "common" },
+    { "name": "Stick Horse", "hero": "Barbarian King", "rarity": "epic" }
+
   ]
 }
