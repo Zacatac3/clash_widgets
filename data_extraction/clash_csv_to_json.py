@@ -9,10 +9,10 @@ WORKSPACE_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 DATA_EXTRACTION_DIR = os.path.join(WORKSPACE_ROOT, "data_extraction")
 EXTRACTED_DIR = os.path.join(DATA_EXTRACTION_DIR, "extraxted_data")
 PARSED_DIR = os.path.join(
-    WORKSPACE_ROOT, "clash_widgets", "upgrade_info", "parsed_json_files"
+    WORKSPACE_ROOT, "clash_widgets", "json", "parsed_json_files"
 )
 MAPS_DIR = os.path.join(
-    WORKSPACE_ROOT, "clash_widgets", "upgrade_info", "json_maps"
+    WORKSPACE_ROOT, "clash_widgets", "json", "json_maps"
 )
 
 DEFAULT_INPUT_CSV = os.path.join(EXTRACTED_DIR, "buildings.csv")
@@ -82,7 +82,8 @@ def build_buildings_json(rows: List[Dict[str, str]]) -> List[Dict[str, Any]]:
         name = row.get("Name", "").strip()
         if name:
             non_blank_index += 1
-            building_id = 1_000_000 + non_blank_index
+            raw_global_id = row.get("GlobalID", "").strip()
+            building_id = safe_int(raw_global_id) if raw_global_id else 1_000_000 + non_blank_index
             current = {
                 "id": building_id,
                 "internalName": name,
@@ -116,6 +117,7 @@ def build_grouped_json(
     time_field_hours: Optional[str] = None,
     time_field_minutes: Optional[str] = None,
     include_tid: bool = True,
+    global_id_field: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
     current: Optional[Dict[str, Any]] = None
@@ -134,7 +136,14 @@ def build_grouped_json(
             }
             if include_tid:
                 current["tid"] = row.get("TID", "").strip()
-            if base_id is not None:
+            # Prefer GlobalID column when present; fall back to index-based ID.
+            if global_id_field:
+                raw_global_id = row.get(global_id_field, "").strip()
+                if raw_global_id:
+                    current["id"] = safe_int(raw_global_id)
+                elif base_id is not None:
+                    current["id"] = base_id + non_blank_index
+            elif base_id is not None:
                 current["id"] = base_id + non_blank_index
             items.append(current)
 
@@ -203,31 +212,101 @@ def load_json_map(map_path: str) -> Dict[str, Dict[str, Any]]:
 
 def update_id_map(
     map_path: str, items: List[Dict[str, Any]]
-) -> Dict[str, Dict[str, Any]]:
+) -> tuple[List[str], List[str], List[str]]:
+    """Sync the JSON map with the current CSV items.
+
+    Matching strategy:
+      - Items WITH an 'id': matched by ID across runs.
+          * Same ID, same internalName  → unchanged.
+          * Same ID, different internalName → internalName (and key) updated,
+            displayName preserved. Reported as 'modified'.
+          * ID not seen before           → added.
+          * Existing ID absent from CSV  → removed.
+      - Items WITHOUT an 'id': legacy key-based matching (internalName as key).
+
+    Output is sorted numerically by id, then alphabetically for id-less entries.
+    Returns (added_names, removed_names, modified_descriptions).
+    """
     map_data = load_json_map(map_path)
+
+    # --- Split existing entries into id-keyed and name-keyed buckets ---
+    existing_by_id: Dict[int, tuple] = {}   # id -> (key, entry)
+    existing_no_id: Dict[str, Any] = {}     # internalName -> entry
+    for key, entry in map_data.items():
+        if isinstance(entry, dict) and "id" in entry:
+            existing_by_id[entry["id"]] = (key, entry)
+        else:
+            existing_no_id[key] = entry
+
+    # --- Split incoming items the same way ---
+    current_by_id: Dict[int, Dict[str, Any]] = {}
+    current_no_id: List[Dict[str, Any]] = []
     for item in items:
         internal_name = item.get("internalName", "").strip()
         if not internal_name:
             continue
-        if internal_name not in map_data:
-            map_data[internal_name] = {
-                "displayName": internal_name,
-                "internalName": internal_name,
-            }
-            if "id" in item:
-                map_data[internal_name]["id"] = item.get("id")
+        if "id" in item:
+            current_by_id[item["id"]] = item
         else:
-            entry = map_data[internal_name]
-            if isinstance(entry, dict):
-                entry.setdefault("displayName", internal_name)
-                entry.setdefault("internalName", internal_name)
-                if "id" in item:
-                    entry.setdefault("id", item.get("id"))
+            current_no_id.append(item)
+
+    added: List[str] = []
+    removed: List[str] = []
+    modified: List[str] = []
+    new_map: Dict[str, Any] = {}
+
+    # --- Process ID-based items ---
+    for item_id, item in current_by_id.items():
+        new_internal = item.get("internalName", "").strip()
+        if item_id in existing_by_id:
+            old_key, old_entry = existing_by_id[item_id]
+            old_internal = old_entry.get("internalName", old_key)
+            new_entry = dict(old_entry)
+            new_entry["internalName"] = new_internal  # always sync internalName
+            new_entry["id"] = item_id
+            new_entry.setdefault("displayName", new_internal)
+            if old_internal != new_internal:
+                modified.append(
+                    f"{old_internal} \u2192 {new_internal}  (id: {item_id})"
+                )
+        else:
+            added.append(new_internal)
+            new_entry = {
+                "displayName": new_internal,
+                "internalName": new_internal,
+                "id": item_id,
+            }
+        new_map[new_internal] = new_entry
+
+    # IDs that existed before but are absent from the current CSV → removed
+    for item_id, (old_key, old_entry) in existing_by_id.items():
+        if item_id not in current_by_id:
+            removed.append(old_entry.get("internalName", old_key))
+
+    # --- Process no-ID items (key-based, same as before) ---
+    current_no_id_names = {i.get("internalName", "").strip() for i in current_no_id}
+    for item in current_no_id:
+        internal_name = item.get("internalName", "").strip()
+        if internal_name in existing_no_id:
+            entry = dict(existing_no_id[internal_name])
+            entry.setdefault("displayName", internal_name)
+            entry.setdefault("internalName", internal_name)
+        else:
+            added.append(internal_name)
+            entry = {"displayName": internal_name, "internalName": internal_name}
+        new_map[internal_name] = entry
+
+    for key, entry in existing_no_id.items():
+        if key not in current_no_id_names:
+            removed.append(entry.get("internalName", key) if isinstance(entry, dict) else key)
+
+    # Output order matches CSV insertion order (new_map was built in that order).
     os.makedirs(os.path.dirname(map_path), exist_ok=True)
     with open(map_path, "w", encoding="utf-8") as map_file:
-        json.dump(map_data, map_file, indent=2, ensure_ascii=False)
+        json.dump(new_map, map_file, indent=2, ensure_ascii=False)
         map_file.write("\n")
-    return map_data
+
+    return added, removed, modified
 
 
 def write_buildings_json(output_path: str, buildings: List[Dict[str, Any]]) -> None:
@@ -269,17 +348,48 @@ def build_townhall_levels(rows: List[Dict[str, str]], headers: List[str]) -> Lis
     return levels
 
 
+def _print_diff_report(diffs: List[tuple]) -> None:
+    """Print a summary of additions, removals, and internal-name modifications."""
+    total_added   = sum(len(a) for _, (a, _, _) in diffs)
+    total_removed = sum(len(r) for _, (_, r, _) in diffs)
+    total_modified = sum(len(m) for _, (_, _, m) in diffs)
+    print("\n" + "=" * 56)
+    print(f"JSON MAP DIFF REPORT  "
+          f"+{total_added} added / "
+          f"-{total_removed} removed / "
+          f"~{total_modified} modified")
+    print("=" * 56)
+    any_changes = False
+    for label, (added, removed, modified) in diffs:
+        if added or removed or modified:
+            any_changes = True
+            suffix = f"+{len(added)} / -{len(removed)} / ~{len(modified)}"
+            print(f"\n  {label}  ({suffix})")
+            for name in added:
+                print(f"    + {name}")
+            for name in removed:
+                print(f"    - {name}")
+            for desc in modified:
+                print(f"    ~ {desc}")
+    if not any_changes:
+        print("  (no changes — all maps already up to date)")
+    print("=" * 56 + "\n")
+
+
 def main() -> None:
+    map_diffs: List[tuple] = []
+
     buildings_rows = read_csv_rows(DEFAULT_INPUT_CSV)
     buildings = build_buildings_json(buildings_rows)
     write_buildings_json(DEFAULT_OUTPUT_JSON, buildings)
-    update_id_map(DEFAULT_MAP_JSON, buildings)
+    map_diffs.append(("buildings_json_map", update_id_map(DEFAULT_MAP_JSON, buildings)))
 
     characters_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "characters.csv"))
     characters = build_grouped_json(
         characters_rows,
         id_prefix=4,
         level_field="VisualLevel",
+        global_id_field="GlobalID",
         level_fields=[
             "TID",
             "BarrackLevel",
@@ -293,9 +403,9 @@ def main() -> None:
         time_field_minutes="UpgradeTimeM",
     )
     write_buildings_json(os.path.join(PARSED_DIR, "characters.json"), characters)
-    update_id_map(
+    map_diffs.append(("characters_json_map", update_id_map(
         os.path.join(MAPS_DIR, "characters_json_map.json"), characters
-    )
+    )))
 
     pets_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "pets.csv"))
     pets = build_grouped_json(
@@ -313,13 +423,14 @@ def main() -> None:
         time_field_minutes="UpgradeTimeM",
     )
     write_buildings_json(os.path.join(PARSED_DIR, "pets.json"), pets)
-    update_id_map(os.path.join(MAPS_DIR, "pets_json_map.json"), pets)
+    map_diffs.append(("pets_json_map", update_id_map(os.path.join(MAPS_DIR, "pets_json_map.json"), pets)))
 
     spells_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "spells.csv"))
     spells = build_grouped_json(
         spells_rows,
         id_prefix=26,
         level_field="Level",
+        global_id_field="GlobalID",
         level_fields=[
             "TID",
             "LaboratoryLevel",
@@ -330,7 +441,7 @@ def main() -> None:
         time_field_hours="UpgradeTimeH",
     )
     write_buildings_json(os.path.join(PARSED_DIR, "spells.json"), spells)
-    update_id_map(os.path.join(MAPS_DIR, "spells_json_map.json"), spells)
+    map_diffs.append(("spells_json_map", update_id_map(os.path.join(MAPS_DIR, "spells_json_map.json"), spells)))
 
     heroes_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "heroes.csv"))
     heroes = build_grouped_json(
@@ -348,13 +459,14 @@ def main() -> None:
         time_field_hours="UpgradeTimeH",
     )
     write_buildings_json(os.path.join(PARSED_DIR, "heroes.json"), heroes)
-    update_id_map(os.path.join(MAPS_DIR, "heroes_json_map.json"), heroes)
+    map_diffs.append(("heroes_json_map", update_id_map(os.path.join(MAPS_DIR, "heroes_json_map.json"), heroes)))
 
     traps_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "traps.csv"))
     traps = build_grouped_json(
         traps_rows,
         id_prefix=12,
         level_field="Level",
+        global_id_field="GlobalID",
         level_fields=[
             "TID",
             "ExportName",
@@ -378,7 +490,7 @@ def main() -> None:
                 }
             )
     write_buildings_json(os.path.join(PARSED_DIR, "traps.json"), traps)
-    update_id_map(os.path.join(MAPS_DIR, "traps_json_map.json"), traps)
+    map_diffs.append(("traps_json_map", update_id_map(os.path.join(MAPS_DIR, "traps_json_map.json"), traps)))
 
     mini_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "mini_levels.csv"))
     mini_levels = build_grouped_json(
@@ -407,7 +519,7 @@ def main() -> None:
                 }
             )
     write_buildings_json(os.path.join(PARSED_DIR, "mini_levels.json"), mini_levels)
-    update_id_map(os.path.join(MAPS_DIR, "mini_levels_json_map.json"), mini_levels)
+    map_diffs.append(("mini_levels_json_map", update_id_map(os.path.join(MAPS_DIR, "mini_levels_json_map.json"), mini_levels)))
 
     seasonal_rows = read_csv_rows(
         os.path.join(EXTRACTED_DIR, "seasonal_defense_modules.csv")
@@ -439,10 +551,10 @@ def main() -> None:
     write_buildings_json(
         os.path.join(PARSED_DIR, "seasonal_defense_modules.json"), seasonal
     )
-    update_id_map(
+    map_diffs.append(("seasonal_defense_modules_json_map", update_id_map(
         os.path.join(MAPS_DIR, "seasonal_defense_modules_json_map.json"),
         seasonal,
-    )
+    )))
 
     archetype_rows = read_csv_rows(
         os.path.join(EXTRACTED_DIR, "seasonal_defense_archetypes.csv")
@@ -451,10 +563,10 @@ def main() -> None:
     write_buildings_json(
         os.path.join(PARSED_DIR, "seasonal_defense_archetypes.json"), archetypes
     )
-    update_id_map(
+    map_diffs.append(("seasonal_defense_archetypes_json_map", update_id_map(
         os.path.join(MAPS_DIR, "seasonal_defense_archetypes_json_map.json"),
         archetypes,
-    )
+    )))
 
     villager_rows = read_csv_rows(
         os.path.join(EXTRACTED_DIR, "villager_apprentices.csv")
@@ -475,10 +587,10 @@ def main() -> None:
     write_buildings_json(
         os.path.join(PARSED_DIR, "villager_apprentices.json"), villagers
     )
-    update_id_map(
+    map_diffs.append(("villager_apprentices_json_map", update_id_map(
         os.path.join(MAPS_DIR, "villager_apprentices_json_map.json"),
         villagers,
-    )
+    )))
 
     guardians_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "guardians.csv"))
     guardians = build_grouped_json(
@@ -489,7 +601,7 @@ def main() -> None:
         include_tid=True,
     )
     write_buildings_json(os.path.join(PARSED_DIR, "guardians.json"), guardians)
-    update_id_map(os.path.join(MAPS_DIR, "guardians_json_map.json"), guardians)
+    map_diffs.append(("guardians_json_map", update_id_map(os.path.join(MAPS_DIR, "guardians_json_map.json"), guardians)))
 
     weapons_rows = read_csv_rows(os.path.join(EXTRACTED_DIR, "weapons.csv"))
     weapons = build_grouped_json(
@@ -516,7 +628,7 @@ def main() -> None:
                 }
             )
     write_buildings_json(os.path.join(PARSED_DIR, "weapons.json"), weapons)
-    update_id_map(os.path.join(MAPS_DIR, "weapons_json_map.json"), weapons)
+    map_diffs.append(("weapons_json_map", update_id_map(os.path.join(MAPS_DIR, "weapons_json_map.json"), weapons)))
 
     townhall_rows, townhall_headers = read_csv_rows_with_headers(
         os.path.join(EXTRACTED_DIR, "townhall_levels.csv")
@@ -525,6 +637,8 @@ def main() -> None:
     write_buildings_json(
         os.path.join(PARSED_DIR, "townhall_levels.json"), townhall_levels
     )
+
+    _print_diff_report(map_diffs)
 
 
 if __name__ == "__main__":

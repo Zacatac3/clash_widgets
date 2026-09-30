@@ -1,0 +1,25 @@
+{
+  "max_town_hall_level": 18,
+  "wall_counts_by_th": {
+    "2": { "max_wall_level": 2, "total_walls": 25 },
+    "3": { "max_wall_level": 3, "total_walls": 50 },
+    "4": { "max_wall_level": 4, "total_walls": 75 },
+    "5": { "max_wall_level": 5, "total_walls": 100 },
+    "6": { "max_wall_level": 6, "total_walls": 125 },
+    "7": { "max_wall_level": 7, "total_walls": 175 },
+    "8": { "max_wall_level": 8, "total_walls": 225 },
+    "9": { "max_wall_level": 10, "total_walls": 250 },
+    "10": { "max_wall_level": 11, "total_walls": 275 },
+    "11": { "max_wall_level": 12, "total_walls": 300 },
+    "12": { "max_wall_level": 13, "total_walls": 300 },
+    "13": { "max_wall_level": 14, "total_walls": 300 },
+    "14": { "max_wall_level": 15, "total_walls": 325 },
+    "15": { "max_wall_level": 16, "total_walls": 325 },
+    "16": { "max_wall_level": 17, "total_walls": 325 },
+    "17": { "max_wall_level": 18, "total_walls": 325 },
+    "18": { "max_wall_level": 19, "total_walls": 325 }
+  },
+  "highest_wall_level_unlock_caps": {
+    "19": 325
+  }
+}

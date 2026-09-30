@@ -1,0 +1,886 @@
+{
+  "schemaVersion": 3,
+  "catalogSource": "master_lists/home_village_master_upgrades.json",
+  "sections": [
+    {
+      "id": "troops",
+      "title": "Troops",
+      "export": "units",
+      "levels": "characters",
+      "groups": [
+        {
+          "id": "troops",
+          "title": "Troops",
+          "items": [
+            {
+              "id": 4000000,
+              "name": "Barbarian",
+              "image": "barbarian"
+            },
+            {
+              "id": 4000001,
+              "name": "Archer",
+              "image": "archer"
+            },
+            {
+              "id": 4000002,
+              "name": "Goblin",
+              "image": "goblin"
+            },
+            {
+              "id": 4000003,
+              "name": "Giant",
+              "image": "giant"
+            },
+            {
+              "id": 4000004,
+              "name": "Wall Breaker",
+              "image": "wall_breaker"
+            },
+            {
+              "id": 4000005,
+              "name": "Balloon",
+              "image": "balloon"
+            },
+            {
+              "id": 4000006,
+              "name": "Wizard",
+              "image": "wizard"
+            },
+            {
+              "id": 4000007,
+              "name": "Healer",
+              "image": "healer"
+            },
+            {
+              "id": 4000008,
+              "name": "Dragon",
+              "image": "dragon"
+            },
+            {
+              "id": 4000009,
+              "name": "P.E.K.K.A",
+              "image": "p_e_k_k_a"
+            },
+            {
+              "id": 4000023,
+              "name": "Baby Dragon",
+              "image": "baby_dragon"
+            },
+            {
+              "id": 4000024,
+              "name": "Miner",
+              "image": "miner"
+            },
+            {
+              "id": 4000053,
+              "name": "Yeti",
+              "image": "yeti"
+            },
+            {
+              "id": 4000059,
+              "name": "Electro Dragon",
+              "image": "electro_dragon"
+            },
+            {
+              "id": 4000065,
+              "name": "Dragon Rider",
+              "image": "dragon_rider"
+            },
+            {
+              "id": 4000095,
+              "name": "Electro Titan",
+              "image": "electro_titan"
+            },
+            {
+              "id": 4000110,
+              "name": "Root Rider",
+              "image": "root_rider"
+            },
+            {
+              "id": 4000177,
+              "name": "Meteor Golem",
+              "image": "meteor_golem"
+            },
+            {
+              "id": 4000132,
+              "name": "Thrower",
+              "image": "thrower"
+            }
+          ],
+          "assetFolder": "lab"
+        }
+      ]
+    },
+    {
+      "id": "dark_troops",
+      "title": "Dark Troops",
+      "export": "units",
+      "levels": "characters",
+      "groups": [
+        {
+          "id": "dark_troops",
+          "title": "Dark Troops",
+          "items": [
+            {
+              "id": 4000010,
+              "name": "Minion",
+              "image": "minion"
+            },
+            {
+              "id": 4000011,
+              "name": "Hog Rider",
+              "image": "hog_rider"
+            },
+            {
+              "id": 4000012,
+              "name": "Valkyrie",
+              "image": "valkyrie"
+            },
+            {
+              "id": 4000013,
+              "name": "Golem",
+              "image": "golem"
+            },
+            {
+              "id": 4000015,
+              "name": "Witch",
+              "image": "witch"
+            },
+            {
+              "id": 4000017,
+              "name": "Lava Hound",
+              "image": "lava_hound"
+            },
+            {
+              "id": 4000022,
+              "name": "Bowler",
+              "image": "bowler"
+            },
+            {
+              "id": 4000058,
+              "name": "Ice Golem",
+              "image": "ice_golem"
+            },
+            {
+              "id": 4000082,
+              "name": "Headhunter",
+              "image": "headhunter"
+            },
+            {
+              "id": 4000097,
+              "name": "Apprentice Warden",
+              "image": "apprentice_warden"
+            },
+            {
+              "id": 4000123,
+              "name": "Druid",
+              "image": "druid"
+            },
+            {
+              "id": 4000150,
+              "name": "Furnace",
+              "image": "furnace"
+            },
+            {
+              "id": 4000109,
+              "name": "Ruin Witch",
+              "image": "ruin_witch"
+            }
+          ],
+          "assetFolder": "lab"
+        }
+      ]
+    },
+    {
+      "id": "siege_machines",
+      "title": "Siege Machines",
+      "export": "siege_machines",
+      "levels": "characters",
+      "groups": [
+        {
+          "id": "siege_machines",
+          "title": "Siege Machines",
+          "items": [
+            {
+              "id": 4000051,
+              "name": "Wall Wrecker",
+              "image": "wall_wrecker"
+            },
+            {
+              "id": 4000052,
+              "name": "Battle Blimp",
+              "image": "battle_blimp"
+            },
+            {
+              "id": 4000062,
+              "name": "Stone Slammer",
+              "image": "stone_slammer"
+            },
+            {
+              "id": 4000075,
+              "name": "Siege Barracks",
+              "image": "siege_barracks"
+            },
+            {
+              "id": 4000087,
+              "name": "Log Launcher",
+              "image": "log_launcher"
+            },
+            {
+              "id": 4000091,
+              "name": "Flame Flinger",
+              "image": "flame_flinger"
+            },
+            {
+              "id": 4000092,
+              "name": "Battle Drill",
+              "image": "battle_drill"
+            },
+            {
+              "id": 4000135,
+              "name": "Troop Launcher",
+              "image": "troop_launcher"
+            },
+            {
+              "id": 4000188,
+              "name": "Sky Wagon",
+              "image": "sky_wagon"
+            }
+          ],
+          "assetFolder": "lab"
+        }
+      ]
+    },
+    {
+      "id": "spells",
+      "title": "Spells",
+      "export": "spells",
+      "levels": "spells",
+      "groups": [
+        {
+          "id": "spells",
+          "title": "Spells",
+          "items": [
+            {
+              "id": 26000000,
+              "name": "Lightning Spell",
+              "image": "lightning_spell"
+            },
+            {
+              "id": 26000001,
+              "name": "Healing Spell",
+              "image": "healing_spell"
+            },
+            {
+              "id": 26000002,
+              "name": "Rage Spell",
+              "image": "rage_spell"
+            },
+            {
+              "id": 26000003,
+              "name": "Jump Spell",
+              "image": "jump_spell"
+            },
+            {
+              "id": 26000005,
+              "name": "Freeze Spell",
+              "image": "freeze_spell"
+            },
+            {
+              "id": 26000009,
+              "name": "Poison Spell",
+              "image": "poison_spell"
+            },
+            {
+              "id": 26000010,
+              "name": "Earthquake Spell",
+              "image": "earthquake_spell"
+            },
+            {
+              "id": 26000011,
+              "name": "Haste Spell",
+              "image": "haste_spell"
+            },
+            {
+              "id": 26000016,
+              "name": "Clone Spell",
+              "image": "clone_spell"
+            },
+            {
+              "id": 26000017,
+              "name": "Skeleton Spell",
+              "image": "skeleton_spell"
+            },
+            {
+              "id": 26000028,
+              "name": "Bat Spell",
+              "image": "bat_spell"
+            },
+            {
+              "id": 26000035,
+              "name": "Invisibility Spell",
+              "image": "invisibility_spell"
+            },
+            {
+              "id": 26000053,
+              "name": "Recall Spell",
+              "image": "recall_spell"
+            },
+            {
+              "id": 26000070,
+              "name": "Overgrowth Spell",
+              "image": "overgrowth_spell"
+            },
+            {
+              "id": 26000098,
+              "name": "Revive Spell",
+              "image": "revive_spell"
+            },
+            {
+              "id": 26000109,
+              "name": "Ice Block Spell",
+              "image": "ice_block_spell"
+            },
+            {
+              "id": 26000120,
+              "name": "Totem Spell",
+              "image": "totem_spell"
+            },
+            {
+              "id": 26000123,
+              "name": "Angry Spell",
+              "image": "angry_spell"
+            }
+          ],
+          "assetFolder": "lab"
+        }
+      ]
+    },
+    {
+      "id": "heroes",
+      "title": "Heroes",
+      "export": "heroes",
+      "levels": "heroes",
+      "groups": [
+        {
+          "id": "heroes",
+          "title": "Heroes",
+          "items": [
+            {
+              "id": 28000000,
+              "name": "Barbarian King",
+              "image": "Barbarian_King"
+            },
+            {
+              "id": 28000001,
+              "name": "Archer Queen",
+              "image": "Archer_Queen"
+            },
+            {
+              "id": 28000002,
+              "name": "Grand Warden",
+              "image": "Grand_Warden"
+            },
+            {
+              "id": 28000004,
+              "name": "Royal Champion",
+              "image": "Royal_Champion"
+            },
+            {
+              "id": 28000006,
+              "name": "Minion Prince",
+              "image": "minion_prince"
+            },
+            {
+              "id": 28000007,
+              "name": "Dragon Duke",
+              "image": "dragon_duke"
+            }
+          ],
+          "assetFolder": "heroes"
+        }
+      ]
+    },
+    {
+      "id": "pets",
+      "title": "Pets",
+      "export": "pets",
+      "levels": "pets",
+      "groups": [
+        {
+          "id": "pets",
+          "title": "Pets",
+          "items": [
+            {
+              "id": 73000000,
+              "name": "L.A.S.S.I",
+              "image": "l_a_s_s_i"
+            },
+            {
+              "id": 73000001,
+              "name": "Mighty Yak",
+              "image": "mighty_yak"
+            },
+            {
+              "id": 73000002,
+              "name": "Electro Owl",
+              "image": "electro_owl"
+            },
+            {
+              "id": 73000003,
+              "name": "Unicorn",
+              "image": "unicorn"
+            },
+            {
+              "id": 73000004,
+              "name": "Phoenix",
+              "image": "phoenix"
+            },
+            {
+              "id": 73000007,
+              "name": "Poison Lizard",
+              "image": "poison_lizard"
+            },
+            {
+              "id": 73000008,
+              "name": "Diggy",
+              "image": "diggy"
+            },
+            {
+              "id": 73000009,
+              "name": "Frosty",
+              "image": "frosty"
+            },
+            {
+              "id": 73000010,
+              "name": "Spirit Fox",
+              "image": "spirit_fox"
+            },
+            {
+              "id": 73000011,
+              "name": "Angry Jelly",
+              "image": "angry_jelly"
+            },
+            {
+              "id": 73000016,
+              "name": "Sneezy",
+              "image": "sneezy"
+            },
+            {
+              "id": 73000017,
+              "name": "Greedy Raven",
+              "image": "greedy_raven"
+            }
+          ],
+          "assetFolder": "pets"
+        }
+      ]
+    },
+    {
+      "id": "guardians",
+      "title": "Guardians",
+      "export": "guardians",
+      "levels": "guardians",
+      "groups": [
+        {
+          "id": "guardians",
+          "title": "Guardians",
+          "items": [
+            {
+              "id": 107000000,
+              "name": "Longshot",
+              "image": "longshot"
+            },
+            {
+              "id": 107000001,
+              "name": "Smasher",
+              "image": "smasher"
+            },
+            {
+              "id": 107000008,
+              "name": "Logger",
+              "image": "logger"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        }
+      ]
+    },
+    {
+      "id": "buildings",
+      "title": "Buildings",
+      "export": "buildings",
+      "levels": "buildings",
+      "groups": [
+        {
+          "id": "defense",
+          "title": "Defenses",
+          "items": [
+            {
+              "id": 1000008,
+              "name": "Cannon",
+              "image": "cannon"
+            },
+            {
+              "id": 1000009,
+              "name": "Archer Tower",
+              "image": "archer_tower"
+            },
+            {
+              "id": 1000011,
+              "name": "Wizard Tower",
+              "image": "wizard_tower"
+            },
+            {
+              "id": 1000012,
+              "name": "Air Defense",
+              "image": "air_defense"
+            },
+            {
+              "id": 1000013,
+              "name": "Mortar",
+              "image": "mortar"
+            },
+            {
+              "id": 1000019,
+              "name": "Hidden Tesla",
+              "image": "hidden_tesla"
+            },
+            {
+              "id": 1000021,
+              "name": "X-Bow",
+              "image": "x_bow"
+            },
+            {
+              "id": 1000027,
+              "name": "Inferno Tower",
+              "image": "inferno_tower"
+            },
+            {
+              "id": 1000028,
+              "name": "Air Sweeper",
+              "image": "air_sweeper"
+            },
+            {
+              "id": 1000031,
+              "name": "Eagle Artillery",
+              "image": "eagle_artillery"
+            },
+            {
+              "id": 1000032,
+              "name": "Bomb Tower",
+              "image": "bomb_tower"
+            },
+            {
+              "id": 1000067,
+              "name": "Scattershot",
+              "image": "scattershot"
+            },
+            {
+              "id": 1000072,
+              "name": "Spell Tower",
+              "image": "spell_tower"
+            },
+            {
+              "id": 1000077,
+              "name": "Monolith",
+              "image": "monolith"
+            },
+            {
+              "id": 1000102,
+              "name": "Super Wizard Tower",
+              "image": "super_wizard_tower"
+            },
+            {
+              "id": 1000079,
+              "name": "Multi-Gear Tower",
+              "image": "multi_gear_tower"
+            },
+            {
+              "id": 1000084,
+              "name": "Multi-Archer Tower",
+              "image": "multi_archer_tower"
+            },
+            {
+              "id": 1000085,
+              "name": "Ricochet Cannon",
+              "image": "ricochet_cannon"
+            },
+            {
+              "id": 1000086,
+              "name": "Revenge Tower",
+              "image": "revenge_tower"
+            },
+            {
+              "id": 1000089,
+              "name": "Firespitter",
+              "image": "firespitter"
+            },
+            {
+              "id": 1000015,
+              "name": "Builder's Hut",
+              "image": "builder_s_hut"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        },
+        {
+          "id": "resource",
+          "title": "Resources",
+          "items": [
+            {
+              "id": 1000002,
+              "name": "Elixir Collector",
+              "image": "elixir_collector"
+            },
+            {
+              "id": 1000003,
+              "name": "Elixir Storage",
+              "image": "elixir_storage"
+            },
+            {
+              "id": 1000004,
+              "name": "Gold Mine",
+              "image": "gold_mine"
+            },
+            {
+              "id": 1000005,
+              "name": "Gold Storage",
+              "image": "gold_storage"
+            },
+            {
+              "id": 1000023,
+              "name": "Dark Elixir Drill",
+              "image": "dark_elixir_drill"
+            },
+            {
+              "id": 1000024,
+              "name": "Dark Elixir Storage",
+              "image": "dark_elixir_storage"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        },
+        {
+          "id": "army",
+          "title": "Army",
+          "items": [
+            {
+              "id": 1000014,
+              "name": "Clan Castle",
+              "image": "clan_castle"
+            },
+            {
+              "id": 1000068,
+              "name": "Pet House",
+              "image": "pet_house"
+            },
+            {
+              "id": 1000000,
+              "name": "Army Camp",
+              "image": "army_camp"
+            },
+            {
+              "id": 1000006,
+              "name": "Barracks",
+              "image": "barracks"
+            },
+            {
+              "id": 1000026,
+              "name": "Dark Barracks",
+              "image": "dark_barracks"
+            },
+            {
+              "id": 1000007,
+              "name": "Laboratory",
+              "image": "laboratory"
+            },
+            {
+              "id": 1000020,
+              "name": "Spell Factory",
+              "image": "spell_factory"
+            },
+            {
+              "id": 1000029,
+              "name": "Dark Spell Factory",
+              "image": "dark_spell_factory"
+            },
+            {
+              "id": 1000059,
+              "name": "Workshop",
+              "image": "workshop"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        },
+        {
+          "id": "utility",
+          "title": "Utility",
+          "items": [
+            {
+              "id": 1000070,
+              "name": "Blacksmith",
+              "image": "blacksmith"
+            },
+            {
+              "id": 1000093,
+              "name": "Helper Hut",
+              "image": "helper_hut"
+            },
+            {
+              "id": 1000064,
+              "name": "B.O.B's Hut",
+              "image": "b_o_b_s_hut"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        },
+        {
+          "id": "hero",
+          "title": "Hero Buildings",
+          "items": [
+            {
+              "id": 1000071,
+              "name": "Hero Hall",
+              "image": "hero_hall"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        },
+        {
+          "id": "core",
+          "title": "Village",
+          "items": [
+            {
+              "id": 1000001,
+              "name": "Town Hall",
+              "image": "town_hall"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        }
+      ]
+    },
+    {
+      "id": "traps",
+      "title": "Traps",
+      "export": "traps",
+      "levels": "traps",
+      "groups": [
+        {
+          "id": "traps",
+          "title": "Traps",
+          "items": [
+            {
+              "id": 12000000,
+              "name": "Bomb",
+              "image": "bomb"
+            },
+            {
+              "id": 12000001,
+              "name": "Spring Trap",
+              "image": "spring_trap"
+            },
+            {
+              "id": 12000002,
+              "name": "Giant Bomb",
+              "image": "giant_bomb"
+            },
+            {
+              "id": 12000005,
+              "name": "Air Bomb",
+              "image": "air_bomb"
+            },
+            {
+              "id": 12000006,
+              "name": "Seeking Air Mine",
+              "image": "seeking_air_mine"
+            },
+            {
+              "id": 12000008,
+              "name": "Skeleton Trap",
+              "image": "skeleton_trap"
+            },
+            {
+              "id": 12000016,
+              "name": "Tornado Trap",
+              "image": "tornado_trap"
+            },
+            {
+              "id": 12000020,
+              "name": "Giga Bomb",
+              "image": "giga_bomb"
+            }
+          ],
+          "assetFolder": "buildings_home"
+        }
+      ]
+    },
+    {
+      "id": "walls",
+      "title": "Walls",
+      "export": "buildings",
+      "levels": "buildings",
+      "groups": [
+        {
+          "id": "walls",
+          "title": "Walls",
+          "items": [
+            {
+              "id": 1000010,
+              "name": "Wall",
+              "imagePattern": "wall_{level}"
+            }
+          ],
+          "assetFolder": "resources"
+        }
+      ]
+    },
+    {
+      "id": "crafted_defenses",
+      "title": "Crafted Defenses",
+      "export": "crafted_defenses",
+      "levels": "seasonal_defense_modules",
+      "groups": [
+        {
+          "id": "crafted_defenses",
+          "title": "Crafted Defenses",
+          "assetFolder": "crafted_defenses",
+          "items": [
+            {
+              "id": 103000011,
+              "name": "Hot Candle",
+              "image": "hot_candle",
+              "moduleIds": [
+                102000033,
+                102000034,
+                102000035
+              ]
+            },
+            {
+              "id": 103000012,
+              "name": "Hero Hunter",
+              "image": "hero_hunter",
+              "moduleIds": [
+                102000036,
+                102000037,
+                102000038
+              ]
+            },
+            {
+              "id": 103000013,
+              "name": "Cake A Pult",
+              "image": "cake_a_pult",
+              "moduleIds": [
+                102000039,
+                102000040,
+                102000041
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

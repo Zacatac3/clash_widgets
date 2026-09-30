@@ -207,6 +207,17 @@ class DataService: ObservableObject {
     private var cachedMiniLevelsByName: [String: ParsedMiniLevel] = [:]
     private var cachedMiniLevelsNameMap: [String: String] = [:]
     private var cachedHelperLevelsByName: [String: [HelperLevel]] = [:]
+    private var cachedWeaponUpgradeLevelsByInternalName: [String: [Int: WeaponUpgradeLevelData]] = [:]
+
+    private struct WeaponUpgradeLevelData {
+        let buildTimeSeconds: Int
+        let buildCost: Int
+        let buildResource: String
+    }
+
+    private static let highestWallLevelUnlockedCountsByWallLevel: [Int: Int] = [
+        19: 325
+    ]
 
     var currentProfile: PlayerAccount? {
         if let id = selectedProfileID,
@@ -268,6 +279,27 @@ class DataService: ObservableObject {
         var results: [RemainingBuildingUpgrade] = []
         for building in buildingList {
             guard let currentLevel = building.lvl else { continue }
+
+            if building.data == 1000001,
+               let weaponLevel = building.weapon,
+               let weaponUpgrade = nextTownHallWeaponUpgrade(
+                townHallLevel: currentLevel,
+                weaponLevel: weaponLevel
+               ) {
+                results.append(
+                    RemainingBuildingUpgrade(
+                        id: building.data,
+                        name: "Town Hall Weapon",
+                        currentLevel: weaponLevel,
+                        targetLevel: weaponLevel + 1,
+                        buildTimeSeconds: weaponUpgrade.buildTimeSeconds,
+                        buildResource: weaponUpgrade.buildResource,
+                        buildCost: weaponUpgrade.buildCost
+                    )
+                )
+                continue
+            }
+
             guard let parsed = byId[building.data] else { continue }
             let available = parsed.levels.filter { level in
                 guard let requiredTH = level.townHallLevel else { return true }
@@ -1634,13 +1666,13 @@ class DataService: ObservableObject {
             return
         }
 
-        if let path = Bundle.main.path(forResource: "raw", ofType: "json", inDirectory: "upgrade_info"),
+        if let path = Bundle.main.path(forResource: "raw", ofType: "json", inDirectory: "json"),
            let data = try? Data(contentsOf: URL(fileURLWithPath: path)) {
             parseUpgradeDurationsJSON(data: data)
             return
         }
 
-        if let folderURL = Bundle.main.url(forResource: "upgrade_info", withExtension: nil) {
+        if let folderURL = Bundle.main.url(forResource: "json", withExtension: nil) {
             let fileURL = folderURL.appendingPathComponent("raw.json")
             if let data = try? Data(contentsOf: fileURL) {
                 parseUpgradeDurationsJSON(data: data)
@@ -1649,7 +1681,7 @@ class DataService: ObservableObject {
         }
 
         if let containerURL = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup) {
-            let fileURL = containerURL.appendingPathComponent("upgrade_info/raw.json")
+            let fileURL = containerURL.appendingPathComponent("json/raw.json")
             if let data = try? Data(contentsOf: fileURL) {
                 parseUpgradeDurationsJSON(data: data)
             }
@@ -1664,12 +1696,12 @@ class DataService: ObservableObject {
         if let url = bundle.url(forResource: folderName, withExtension: nil) {
             urls.append(url)
         }
-        if let upgradeInfo = bundle.url(forResource: "upgrade_info", withExtension: nil) {
-            urls.append(upgradeInfo.appendingPathComponent(folderName))
+        if let jsonFolder = bundle.url(forResource: "json", withExtension: nil) {
+            urls.append(jsonFolder.appendingPathComponent(folderName))
         }
         if let container = container {
             urls.append(container.appendingPathComponent(folderName))
-            urls.append(container.appendingPathComponent("upgrade_info/\(folderName)"))
+            urls.append(container.appendingPathComponent("json/\(folderName)"))
         }
         return urls
     }
@@ -1947,7 +1979,7 @@ class DataService: ObservableObject {
             (building.types ?? []).flatMap { type in
                 (type.modules ?? []).flatMap { module -> [BuildingUpgrade] in
                     guard let level = module.lvl, let timer = module.timer, timer > 0 else { return [] }
-                    let displayNameOverride = seasonalDefenseModuleNameOverrides[module.data]
+                    let displayNameOverride = mapping[type.data] ?? seasonalDefenseModuleNameOverrides[module.data]
                     return [
                         buildUpgrade(
                             dataId: type.data,  // Use the BUILDING ID (103xxxxxx) for asset/name lookup
@@ -1970,6 +2002,28 @@ class DataService: ObservableObject {
     private func convert(_ items: [Building], category: UpgradeCategory, fallbackPrefix: String, referenceDate: Date) -> [BuildingUpgrade] {
         items.flatMap { item -> [BuildingUpgrade] in
             guard let level = item.lvl, let timer = item.timer, timer > 0 else { return [] }
+
+            if item.data == 1000001,
+               let weaponLevel = item.weapon,
+               let weaponUpgradeData = nextTownHallWeaponUpgrade(
+                townHallLevel: level,
+                weaponLevel: weaponLevel
+               ) {
+                return [
+                    buildUpgrade(
+                        dataId: item.data,
+                        currentLevel: weaponLevel,
+                        remainingSeconds: TimeInterval(timer),
+                        category: category,
+                        fallbackPrefix: "Town Hall Weapon",
+                        referenceDate: referenceDate,
+                        usesGoblin: item.extra ?? false,
+                        displayNameOverride: "Town Hall Weapon",
+                        totalDurationOverride: TimeInterval(weaponUpgradeData.buildTimeSeconds)
+                    )
+                ]
+            }
+
             let superchargeLevel = item.supercharge
             let superchargeTargetLevel = superchargeLevel.map { $0 + 1 }
             return [
@@ -2069,10 +2123,11 @@ class DataService: ObservableObject {
         usesGoblin: Bool = false,
         displayNameOverride: String? = nil,
         isSeasonalDefense: Bool = false,
-        durationDataId: Int? = nil
+        durationDataId: Int? = nil,
+        totalDurationOverride: TimeInterval? = nil
     ) -> BuildingUpgrade {
         let durationId = durationDataId ?? dataId
-        let canonical = durationFor(
+        let canonical = totalDurationOverride ?? durationFor(
             dataId: durationId,
             fromLevel: currentLevel,
             buildingName: mapping[durationId] ?? "",
@@ -2171,6 +2226,70 @@ class DataService: ObservableObject {
         return nil
     }
 
+    func highestWallLevelUnlockedCount(for wallLevel: Int, totalWallCount: Int) -> Int {
+        let fallback = max(totalWallCount, 0)
+        guard let configured = Self.highestWallLevelUnlockedCountsByWallLevel[wallLevel] else {
+            return fallback
+        }
+        return min(max(configured, 0), fallback)
+    }
+
+    private func nextTownHallWeaponUpgrade(townHallLevel: Int, weaponLevel: Int) -> WeaponUpgradeLevelData? {
+        guard townHallLevel > 0, weaponLevel > 0 else { return nil }
+        let internalName = "townhall\(townHallLevel)"
+        let byLevel = loadWeaponUpgradeLevelsByInternalName()[internalName] ?? [:]
+        guard let maxWeaponLevel = byLevel.keys.max(), weaponLevel < maxWeaponLevel else { return nil }
+        return byLevel[weaponLevel + 1]
+    }
+
+    private func loadWeaponUpgradeLevelsByInternalName() -> [String: [Int: WeaponUpgradeLevelData]] {
+        if !cachedWeaponUpgradeLevelsByInternalName.isEmpty {
+            return cachedWeaponUpgradeLevelsByInternalName
+        }
+
+        let folders = Self.candidateFolderURLs(named: "parsed_json_files")
+        for folder in folders {
+            let fileURL = folder.appendingPathComponent("weapons.json")
+            guard let data = try? Data(contentsOf: fileURL) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+
+            var output: [String: [Int: WeaponUpgradeLevelData]] = [:]
+            for entry in raw {
+                guard let internalNameRaw = entry["internalName"] as? String, !internalNameRaw.isEmpty else { continue }
+                guard let levels = entry["levels"] as? [[String: Any]] else { continue }
+
+                let internalName = internalNameRaw.lowercased()
+                var levelMap: [Int: WeaponUpgradeLevelData] = [:]
+
+                for levelEntry in levels {
+                    guard let level = parseInt(levelEntry["level"]) else { continue }
+                    let buildTimeSeconds = parseInt(levelEntry["buildTimeSeconds"]) ?? 0
+                    let buildCost = parseInt(levelEntry["BuildCost"]) ?? parseInt(levelEntry["buildCost"]) ?? 0
+                    let buildResource = (levelEntry["BuildResource"] as? String)
+                        ?? (levelEntry["buildResource"] as? String)
+                        ?? ""
+
+                    levelMap[level] = WeaponUpgradeLevelData(
+                        buildTimeSeconds: buildTimeSeconds,
+                        buildCost: buildCost,
+                        buildResource: buildResource.isEmpty ? "Gold" : buildResource
+                    )
+                }
+
+                if !levelMap.isEmpty {
+                    output[internalName] = levelMap
+                }
+            }
+
+            if !output.isEmpty {
+                cachedWeaponUpgradeLevelsByInternalName = output
+                return output
+            }
+        }
+
+        return [:]
+    }
+
     private func durationForSupercharge(buildingName: String, targetLevel: Int) -> TimeInterval? {
         guard !buildingName.isEmpty else { return nil }
         let normalized = buildingName.lowercased()
@@ -2219,15 +2338,20 @@ class DataService: ObservableObject {
         let bundle = Bundle.main
         let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
         let candidates: [URL?] = [
-            bundle.url(forResource: "mapping", withExtension: "json", subdirectory: "upgrade_info"),
-            bundle.url(forResource: "upgrade_info", withExtension: nil)?.appendingPathComponent("mapping.json"),
+            bundle.url(forResource: "mapping", withExtension: "json", subdirectory: "json"),
+            bundle.url(forResource: "json", withExtension: nil)?.appendingPathComponent("mapping.json"),
             bundle.url(forResource: "mapping", withExtension: "json"),
-            container?.appendingPathComponent("upgrade_info/mapping.json")
+            container?.appendingPathComponent("json/mapping.json")
         ]
 
+        var seasonalIDsFromMapping: Set<Int> = []
         for candidate in candidates {
             guard let url = candidate, let data = try? Data(contentsOf: url), let parsed = parse(data: data) else { continue }
             output.merge(parsed) { current, _ in current }
+            for (id, name) in parsed where (103_000_000..<104_000_000).contains(id) && !seasonalIDsFromMapping.contains(id) {
+                output[id] = name
+                seasonalIDsFromMapping.insert(id)
+            }
         }
 
         return output
@@ -2383,4 +2507,3 @@ class DataService: ObservableObject {
     }
 
 }
-

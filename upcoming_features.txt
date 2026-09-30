@@ -20,3 +20,8 @@ Planned:
 - upgrade history (?)
 - * War stats widget (?)
  lock screen toggle (?)
+ - Lock screen widgets can now show overall closest upgrade in home or builder base
+ - user metrics / analytics (firebase analytics)
+
+ Minor features:
+ - change profile from within notification settings to change profile specific notif settings

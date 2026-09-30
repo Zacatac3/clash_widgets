@@ -1,5 +1,6 @@
 import SwiftUI
 import Combine
+import WidgetKit
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -126,7 +127,7 @@ private class BoostManager: ObservableObject {
         )
         instantUndoActions.append(undoAction)
         trimExpiredUndoActions(referenceDate: now)
-        saveBoostState(reloadWidgets: false, scheduleNotifications: false)
+        saveBoostState(reloadWidgets: true, scheduleNotifications: false)
     }
 
     func undoInstantBoost(_ action: InstantBoostUndoAction) {
@@ -164,7 +165,7 @@ private class BoostManager: ObservableObject {
         }
 
         instantUndoActions.removeAll { $0.id == action.id }
-        saveBoostState(reloadWidgets: false, scheduleNotifications: false)
+        saveBoostState(reloadWidgets: true, scheduleNotifications: false)
     }
 
     func undoTimeRemainingText(for action: InstantBoostUndoAction, referenceDate: Date = Date()) -> String {
@@ -299,10 +300,7 @@ struct BoostView: View {
         _boostManager = StateObject(wrappedValue: BoostManager(dataService: dataService))
     }
     
-    private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
+    private let columns = [GridItem(.adaptive(minimum: 160), spacing: 16)]
     
     var body: some View {
         NavigationStack {
@@ -314,6 +312,7 @@ struct BoostView: View {
                     
                     boostsGrid
                 }
+                .transaction { $0.animation = nil }
                 .padding()
             }
             .background(Color(.systemGroupedBackground))
@@ -327,6 +326,7 @@ struct BoostView: View {
             .sheet(isPresented: $showingBuilderSelection) {
                 if let activationRequest = selectedBoostRequest {
                     BuilderSelectionView(activationRequest: activationRequest, boostManager: boostManager, dataService: dataService)
+                        .adaptivePanelPresentation()
                 }
             }
             .sheet(isPresented: $showingCustomDurationSheet) {
@@ -341,6 +341,7 @@ struct BoostView: View {
                             )
                         }
                     )
+                    .adaptivePanelPresentation()
                 }
             }
         }

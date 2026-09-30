@@ -1,5 +1,10 @@
 {
     "chat.tools.terminal.autoApprove": {
         "xcodebuild": true
-    }
+    },
+	"sweetpad.build.xcodeWorkspacePath": "clash_widgets.xcodeproj/project.xcworkspace",
+	"sweetpad.build.destination": {
+		"id": "iossimulator-2C7454DE-420C-465F-9F67-AD3725FEE83C",
+		"type": "iOSSimulator"
+	}
 }

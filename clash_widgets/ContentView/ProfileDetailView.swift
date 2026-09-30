@@ -56,6 +56,7 @@ struct ProfileDetailView: View {
             .navigationTitle("Profile")
             .sheet(isPresented: $showProfileOrderSheet) {
                 ProfileSectionOrderSheet(order: $orderedProfileSections, hidden: $hiddenSections)
+                    .adaptivePanelPresentation()
             }
             .toolbar {
                 toolbarContent
@@ -238,7 +239,7 @@ struct ProfileDetailView: View {
     private func persistHiddenProfileSections(_ hidden: Set<String>) {
         hiddenProfileSections = hidden.sorted().joined(separator: ",")
     }
-    
+
     private struct ProfileSectionOrderSheet: View {
         @Binding var order: [ProfileSection]
         @Binding var hidden: Set<String>
@@ -434,8 +435,8 @@ struct ProfileDetailView: View {
         if !force, gradientConfigCache != nil { return }
 
         let candidateURLs: [URL?] = [
+            Bundle.main.url(forResource: "gradient_config", withExtension: "json", subdirectory: "json"),
             Bundle.main.url(forResource: "gradient_config", withExtension: "json"),
-            Bundle.main.url(forResource: "gradient_config", withExtension: "json", subdirectory: "clash_widgets"),
             FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("gradient_config.json")
         ]
 
@@ -765,7 +766,7 @@ struct ProfileDetailView: View {
     private func loadHelperGemCosts() -> [HelperGemCostInfo] {
         guard townHallLevel >= 9 else { return [] }
         
-        guard let jsonPath = Bundle.main.path(forResource: "villager_apprentices", ofType: "json", inDirectory: "upgrade_info/parsed_json_files"),
+        guard let jsonPath = Bundle.main.path(forResource: "villager_apprentices", ofType: "json", inDirectory: "json/parsed_json_files"),
               let jsonData = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)),
               let helpers = try? JSONDecoder().decode([HelperData].self, from: jsonData) else {
             return []
@@ -841,13 +842,14 @@ struct ProfileDetailView: View {
         guard !filteredHeroes.isEmpty else {
             return AnyView(EmptyView())
         }
-        let orderedNames = [
-            "Barbarian King",
-            "Archer Queen",
-            "Grand Warden",
-            "Royal Champion",
-            "Minion Prince"
-        ]
+        // Derive sort order from heroes_config.json (sorted by unlockTownHall);
+        // falls back to a hardcoded list if the config hasn't loaded yet.
+        let configOrderedNames: [String] = HeroConfigStore.shared.configs
+            .sorted { $0.unlockTownHall < $1.unlockTownHall }
+            .map { $0.displayName }
+        let orderedNames = configOrderedNames.isEmpty
+            ? ["Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion", "Minion Prince", "Dragon Duke"]
+            : configOrderedNames
         let sortedHeroes = filteredHeroes.sorted { lhs, rhs in
             let leftIndex = orderedNames.firstIndex(of: lhs.name) ?? orderedNames.count
             let rightIndex = orderedNames.firstIndex(of: rhs.name) ?? orderedNames.count
@@ -902,20 +904,20 @@ struct ProfileDetailView: View {
     private func heroAssetName(_ heroName: String) -> String? {
         let trimmed = heroName.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        let lowercased = trimmed.lowercased()
-        switch lowercased {
-        case "barbarian king":
-            return "heroes/Barbarian_King"
-        case "archer queen":
-            return "heroes/Archer_Queen"
-        case "grand warden":
-            return "heroes/Grand_Warden"
-        case "royal champion":
-            return "heroes/Royal_Champion"
-        case "minion prince":
-            return "heroes/minion_prince"
-        default:
-            return nil
+        // Primary: look up the asset name from heroes_config.json (data-driven).
+        if let entry = HeroConfigStore.shared.configs.first(where: { $0.displayName.lowercased() == trimmed.lowercased() }),
+           let assetName = entry.assetName {
+            return assetName
+        }
+        // Fallback: hardcoded map for safety if the config file hasn't loaded.
+        switch trimmed.lowercased() {
+        case "barbarian king":  return "heroes/Barbarian_King"
+        case "archer queen":    return "heroes/Archer_Queen"
+        case "grand warden":    return "heroes/Grand_Warden"
+        case "royal champion":  return "heroes/Royal_Champion"
+        case "minion prince":   return "heroes/minion_prince"
+        case "dragon duke":     return "heroes/dragon_duke"
+        default:                return nil
         }
     }
 
@@ -976,8 +978,8 @@ struct ProfileDetailView: View {
         
         // Try multiple possible paths for the heroes.json file
         let possiblePaths = [
-            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files"),
-            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "upgrade_info"),
+            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "json/parsed_json_files"),
+            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "json"),
             Bundle.main.url(forResource: "heroes", withExtension: "json")
         ]
         
@@ -1016,8 +1018,8 @@ struct ProfileDetailView: View {
         
         // Load the heroes_json_map.json file for display name to internal name mapping
         let possiblePaths = [
-            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "upgrade_info/json_maps"),
-            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "upgrade_info"),
+            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "json/json_maps"),
+            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "json"),
             Bundle.main.url(forResource: "heroes_json_map", withExtension: "json")
         ]
         
@@ -1101,6 +1103,26 @@ struct ProfileDetailView: View {
             if !processedNames.contains(apiHero.name.lowercased()) {
                 result.append(apiHero)
                 processedNames.insert(apiHero.name.lowercased())
+            }
+        }
+
+        // Third pass: inject placeholder entries (level 0) for heroes the player
+        // qualifies for by TH but hasn't started yet. This ensures e.g. Dragon Duke
+        // always appears for TH15+ players even before they pick it up.
+        if townHallLevel > 0 {
+            for heroConfig in HeroConfigStore.shared.configs.sorted(by: { $0.unlockTownHall < $1.unlockTownHall }) {
+                guard heroConfig.unlockTownHall <= townHallLevel else { continue }
+                let alreadyPresent = processedNames.contains(heroConfig.displayName.lowercased())
+                    || processedNames.contains(heroConfig.internalName.lowercased())
+                guard !alreadyPresent else { continue }
+                result.append(HeroProfile(
+                    name: heroConfig.displayName,
+                    level: 0,
+                    maxLevel: 100,
+                    village: "home",
+                    equipment: nil
+                ))
+                processedNames.insert(heroConfig.displayName.lowercased())
             }
         }
         

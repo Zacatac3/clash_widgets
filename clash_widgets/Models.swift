@@ -373,6 +373,19 @@ struct HeroMapping: Codable {
     let displayName: String
 }
 
+/// Remote-configurable hero metadata. Lives in json/heroes_config.json.
+/// Adding a new entry here is sufficient to surface a new hero in the heroes tab —
+/// no app code changes required, as long as assets follow the same naming convention.
+struct HeroConfig: Codable {
+    let id: Int
+    let displayName: String
+    let internalName: String
+    let unlockTownHall: Int
+    /// Asset catalog path, e.g. "heroes/Barbarian_King". Required because asset
+    /// naming is not fully consistent (some titles use TitleCase, others lowercase).
+    let assetName: String?
+}
+
 enum AchievementFilter: String, CaseIterable, Identifiable {
     case all
     case incomplete
@@ -650,6 +663,7 @@ struct ExportGuardian: Codable {
 struct Building: Codable {
     let data: Int // dataId from mapping.json
     let lvl: Int?
+    let weapon: Int?
     let timer: Int? // Presence of timer = active upgrade
     let cnt: Int?
     let supercharge: Int?

@@ -2,7 +2,7 @@ import Foundation
 import WidgetKit
 
 extension DataService {
-    func saveToStorage() {
+    func saveToStorage(reloadWidgets: Bool = false) {
         ensureProfiles()
         let snapshot = PersistentStore.AppState(
             profiles: profiles,
@@ -18,6 +18,12 @@ extension DataService {
                 #if DEBUG
                 print("Failed to persist state file: \(error)")
                 #endif
+            }
+
+            if reloadWidgets {
+                DispatchQueue.main.async {
+                    WidgetCenter.shared.reloadAllTimelines()
+                }
             }
         }
 
@@ -111,10 +117,7 @@ extension DataService {
 
     func persistChanges(reloadWidgets: Bool) {
         guard !suppressPersistence else { return }
-        saveToStorage()
-        if reloadWidgets {
-            WidgetCenter.shared.reloadAllTimelines()
-        }
+        saveToStorage(reloadWidgets: reloadWidgets)
     }
 
     func ensureProfiles() {

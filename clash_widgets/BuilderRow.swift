@@ -2,66 +2,70 @@ import SwiftUI
 import UIKit
 import Foundation
 
-// In-file AssetResolver for app target (keeps resolver available to app code regardless of project file membership)
-final class AppAssetResolver {
+private final class AppAssetResolver {
     static let shared = AppAssetResolver()
-    private var idMap: [Int: String] = [:]
+    private let namesByID: [Int: String]
+    private let slugsByName: [String: String]
 
     private init() {
-        loadMaps()
+        namesByID = Self.loadNames()
+        slugsByName = Self.loadSlugs()
     }
 
-    private func loadMaps() {
-        let names = ["buildings_json_map", "seasonal_defense_modules_json_map", "seasonal_defense_archetypes_json_map", "spells_json_map", "pets_json_map", "heroes_json_map", "weapons_json_map"]
-        for name in names {
-            if let url = Bundle.main.url(forResource: name, withExtension: "json", subdirectory: "upgrade_info/json_maps"),
-               let data = try? Data(contentsOf: url),
-               let root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
-                for (_, v) in root {
-                    if let entry = v as? [String: Any], let id = entry["id"] as? Int, let internalName = entry["internalName"] as? String {
-                        idMap[id] = internalName
-                    }
+    func displayName(for upgrade: BuildingUpgrade) -> String {
+        guard let id = upgrade.dataId,
+              (upgrade.isSeasonalDefense == true || (103_000_000..<104_000_000).contains(id)),
+              let name = namesByID[id] else { return upgrade.name }
+        return name
+    }
+
+    func assetSlug(for upgrade: BuildingUpgrade) -> String {
+        let name = displayName(for: upgrade)
+        return slugsByName[Self.sanitize(name)] ?? Self.sanitize(name)
+    }
+
+    private static func loadNames() -> [Int: String] {
+        let urls: [URL?] = DataService.candidateFolderURLs(named: "json").map {
+            $0.appendingPathComponent("mapping.json")
+        } + [
+            Bundle.main.url(forResource: "mapping", withExtension: "json", subdirectory: "json"),
+            Bundle.main.url(forResource: "mapping", withExtension: "json")
+        ]
+        for url in urls {
+            guard let url,
+                  let data = try? Data(contentsOf: url),
+                  let raw = try? JSONDecoder().decode([String: String].self, from: data) else { continue }
+            return Dictionary(uniqueKeysWithValues: raw.compactMap { key, value in
+                Int(key).map { ($0, value) }
+            })
+        }
+        return [:]
+    }
+
+    private static func loadSlugs() -> [String: String] {
+        let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
+        let urls: [URL?] = [
+            Bundle.main.url(forResource: "asset_map", withExtension: "json", subdirectory: "json"),
+            Bundle.main.url(forResource: "asset_map", withExtension: "json"),
+            container?.appendingPathComponent("asset_map.json")
+        ]
+        var slugs: [String: String] = [:]
+        for url in urls {
+            guard let url,
+                  let data = try? Data(contentsOf: url),
+                  let raw = try? JSONDecoder().decode([String: String].self, from: data) else { continue }
+            for (name, slug) in raw {
+                let key = Self.sanitize(name)
+                if slugs[key] == nil {
+                    slugs[key] = slug
                 }
             }
         }
-        // Load asset_map.json overrides if present in app group
-        if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets"),
-           let overridesData = try? Data(contentsOf: container.appendingPathComponent("asset_map.json")),
-           let dict = try? JSONDecoder().decode([String: String].self, from: overridesData) {
-            // populate overrides for quick lookup by sanitized key
-            for (k, v) in dict { idMap[Int.max - k.hashValue] = v }
-        }
-    }
-
-    func assetSlug(for name: String) -> String? {
-        // 1) Prefer runtime app-group overrides (used for temporary overrides during debugging)
-        if let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: "group.Zachary-Buschmann.clash-widgets"),
-           let overridesData = try? Data(contentsOf: container.appendingPathComponent("asset_map.json")),
-           let dict = try? JSONDecoder().decode([String: String].self, from: overridesData) {
-            let key = Self.sanitize(name)
-            if let v = dict[name] ?? dict[key] { return v }
-        }
-
-        // 2) Fallback to the bundled asset_map.json (stable mapping shipped with the app)
-        if let bundleURL = Bundle.main.url(forResource: "asset_map", withExtension: "json"),
-           let data = try? Data(contentsOf: bundleURL),
-           let dict = try? JSONDecoder().decode([String: String].self, from: data) {
-            let key = Self.sanitize(name)
-            return dict[name] ?? dict[key]
-        }
-
-        return nil
-    }
-
-    func assetName(for upgrade: BuildingUpgrade) -> String {
-        if let dataId = upgrade.dataId, let internalName = idMap[dataId] {
-            return Self.sanitize(internalName)
-        }
-        return Self.sanitize(upgrade.name)
+        return slugs
     }
 
     private static func sanitize(_ s: String) -> String {
-        return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
+        s.components(separatedBy: CharacterSet.alphanumerics.inverted)
             .joined(separator: "_")
             .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
             .lowercased()
@@ -90,7 +94,7 @@ struct BuilderRow: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 6) {
-                    Text(upgrade.name)
+                    Text(AppAssetResolver.shared.displayName(for: upgrade))
                         .font(.headline)
                         .lineLimit(1)
                     if upgrade.showsSuperchargeIcon {
@@ -355,21 +359,20 @@ struct BuilderRow: View {
         case .builderBase: folder = "builder_base"
         }
 
-        // Sanitize display name: convert to lowercase and replace non-alphanumerics with underscores
-        let sanitizedName = Self.sanitize(upgrade.name)
+        let assetSlug = AppAssetResolver.shared.assetSlug(for: upgrade)
         
         var variations: [String] = []
         
         // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
         if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(sanitizedName)")
+            variations.append("crafted_defenses/\(assetSlug)")
         }
         
         // Try category-specific folder
-        variations.append("\(folder)/\(sanitizedName)")
+        variations.append("\(folder)/\(assetSlug)")
         
         // Try direct sanitized name
-        variations.append(sanitizedName)
+        variations.append(assetSlug)
 
         for variant in variations {
             if UIImage(named: variant) != nil {
@@ -377,29 +380,30 @@ struct BuilderRow: View {
             }
         }
         
-        return "\(folder)/\(sanitizedName)" // Default fallback
-    }
-    
-    private static func sanitize(_ s: String) -> String {
-        return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .joined(separator: "_")
-            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-            .lowercased()
+        return "\(folder)/\(assetSlug)" // Default fallback
     }
 }
 
 struct IdleBuilderRow: View {
     let builderIndex: Int
+    let titlePrefix: String
+    let iconName: String
+
+    init(builderIndex: Int, titlePrefix: String = "Builder", iconName: String = "profile/home_builder") {
+        self.builderIndex = builderIndex
+        self.titlePrefix = titlePrefix
+        self.iconName = iconName
+    }
 
     var body: some View {
         HStack(spacing: 12) {
-            Image("profile/home_builder")
+            Image(iconName)
                 .resizable()
                 .scaledToFit()
                 .frame(width: 36, height: 36)
 
             VStack(alignment: .leading, spacing: 6) {
-                Text("Builder \(builderIndex)")
+                Text("\(titlePrefix) \(builderIndex)")
                     .font(.headline)
                 Text("Idle")
                     .font(.subheadline)
@@ -409,54 +413,3 @@ struct IdleBuilderRow: View {
         .padding(.vertical, 4)
     }
 }
-
-
-private final class AssetNameResolver {
-    static let shared = AssetNameResolver()
-
-    private let overrides: [String: String]
-
-    private init() {
-        overrides = AssetNameResolver.loadOverrides()
-    }
-
-    func assetSlug(for displayName: String) -> String? {
-        let key = AssetNameResolver.sanitize(displayName)
-        return overrides[key]
-    }
-
-    private static func loadOverrides() -> [String: String] {
-        func read(from url: URL) -> [String: String]? {
-            guard let data = try? Data(contentsOf: url) else { return nil }
-            guard let json = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: String] else { return nil }
-            var sanitized: [String: String] = [:]
-            for (rawKey, value) in json {
-                sanitized[sanitize(rawKey)] = value
-            }
-            return sanitized
-        }
-
-        let bundle = Bundle.main
-        let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
-        let candidates: [URL?] = [
-            bundle.url(forResource: "asset_map", withExtension: "json"),
-            container?.appendingPathComponent("asset_map.json")
-        ]
-
-        for candidate in candidates {
-            if let url = candidate, let overrides = read(from: url) {
-                return overrides
-            }
-        }
-
-        return [:]
-    }
-
-    private static func sanitize(_ value: String) -> String {
-        value.lowercased()
-            .components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .filter { !$0.isEmpty }
-            .joined(separator: "_")
-    }
-}
-

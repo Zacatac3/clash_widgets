@@ -1,0 +1,977 @@
+{
+  "Barbarian": {
+    "displayName": "Barbarian",
+    "internalName": "Barbarian",
+    "id": 4000000
+  },
+  "Archer": {
+    "displayName": "Archer",
+    "internalName": "Archer",
+    "id": 4000001
+  },
+  "Giant": {
+    "displayName": "Giant",
+    "internalName": "Giant",
+    "id": 4000003
+  },
+  "Goblin": {
+    "displayName": "Goblin",
+    "internalName": "Goblin",
+    "id": 4000002
+  },
+  "Wall Breaker": {
+    "displayName": "Wall Breaker",
+    "internalName": "Wall Breaker",
+    "id": 4000004
+  },
+  "Balloon": {
+    "displayName": "Balloon",
+    "internalName": "Balloon",
+    "id": 4000005
+  },
+  "Wizard": {
+    "displayName": "Wizard",
+    "internalName": "Wizard",
+    "id": 4000006
+  },
+  "Healer": {
+    "displayName": "Healer",
+    "internalName": "Healer",
+    "id": 4000007
+  },
+  "Dragon": {
+    "displayName": "Dragon",
+    "internalName": "Dragon",
+    "id": 4000008
+  },
+  "PEKKA": {
+    "displayName": "P.E.K.K.A",
+    "internalName": "PEKKA",
+    "id": 4000009
+  },
+  "Baby Dragon": {
+    "displayName": "Baby Dragon",
+    "internalName": "Baby Dragon",
+    "id": 4000023
+  },
+  "Miner": {
+    "displayName": "Miner",
+    "internalName": "Miner",
+    "id": 4000024
+  },
+  "Electro Dragon": {
+    "displayName": "Electro Dragon",
+    "internalName": "Electro Dragon",
+    "id": 4000059
+  },
+  "Yeti": {
+    "displayName": "Yeti",
+    "internalName": "Yeti",
+    "id": 4000053
+  },
+  "Yetimite": {
+    "displayName": "Yetimite",
+    "internalName": "Yetimite",
+    "id": 4000054
+  },
+  "Dragon Rider": {
+    "displayName": "Dragon Rider",
+    "internalName": "Dragon Rider",
+    "id": 4000065
+  },
+  "Electro Titan": {
+    "displayName": "Electro Titan",
+    "internalName": "Electro Titan",
+    "id": 4000095
+  },
+  "Root Rider": {
+    "displayName": "Root Rider",
+    "internalName": "Root Rider",
+    "id": 4000110
+  },
+  "Thrower": {
+    "displayName": "Thrower",
+    "internalName": "Thrower",
+    "id": 4000132
+  },
+  "Meteor Golem": {
+    "displayName": "Meteor Golem",
+    "internalName": "Meteor Golem",
+    "id": 4000177
+  },
+  "Meteormite": {
+    "displayName": "Meteormite",
+    "internalName": "Meteormite",
+    "id": 4000178
+  },
+  "Defensive Meteor Golem": {
+    "displayName": "MeteorGolem_DEF",
+    "internalName": "Defensive Meteor Golem",
+    "id": 4000179
+  },
+  "Defensive Meteormite": {
+    "displayName": "Meteormite_DEF",
+    "internalName": "Defensive Meteormite",
+    "id": 4000180
+  },
+  "Minion": {
+    "displayName": "Minion",
+    "internalName": "Minion",
+    "id": 4000010
+  },
+  "Hog Rider": {
+    "displayName": "Hog Rider",
+    "internalName": "Hog Rider",
+    "id": 4000011
+  },
+  "Valkyrie": {
+    "displayName": "Valkyrie",
+    "internalName": "Valkyrie",
+    "id": 4000012
+  },
+  "Golem": {
+    "displayName": "Golem",
+    "internalName": "Golem",
+    "id": 4000013
+  },
+  "Golemite": {
+    "displayName": "Golemite",
+    "internalName": "Golemite",
+    "id": 4000014
+  },
+  "Witch": {
+    "displayName": "Witch",
+    "internalName": "Witch",
+    "id": 4000015
+  },
+  "Skeleton": {
+    "displayName": "Skeleton",
+    "internalName": "Skeleton",
+    "id": 4000016
+  },
+  "Lava Hound": {
+    "displayName": "Lava Hound",
+    "internalName": "Lava Hound",
+    "id": 4000017
+  },
+  "Lava Pup": {
+    "displayName": "AirDefenceSeekerFragment",
+    "internalName": "Lava Pup",
+    "id": 4000018
+  },
+  "Defensive Lava Hound": {
+    "displayName": "AirDefenceSeeker_DEF",
+    "internalName": "Defensive Lava Hound",
+    "id": 4000077
+  },
+  "Bowler": {
+    "displayName": "Bowler",
+    "internalName": "Bowler",
+    "id": 4000022
+  },
+  "Ice Golem": {
+    "displayName": "Ice Golem",
+    "internalName": "Ice Golem",
+    "id": 4000058
+  },
+  "Defensive Ice Golem": {
+    "displayName": "Ice Golem_DEF",
+    "internalName": "Defensive Ice Golem",
+    "id": 4000069
+  },
+  "Headhunter": {
+    "displayName": "Headhunter",
+    "internalName": "Headhunter",
+    "id": 4000082
+  },
+  "Apprentice Warden": {
+    "displayName": "Apprentice Warden",
+    "internalName": "Apprentice Warden",
+    "id": 4000097
+  },
+  "Druid": {
+    "displayName": "Druid",
+    "internalName": "Druid",
+    "id": 4000123
+  },
+  "Bear": {
+    "displayName": "Druid_Tank",
+    "internalName": "Bear",
+    "id": 4000124
+  },
+  "Furnace": {
+    "displayName": "Furnace",
+    "internalName": "Furnace",
+    "id": 4000150
+  },
+  "Firemite Spawn": {
+    "displayName": "Firemite Spawn",
+    "internalName": "Firemite Spawn",
+    "id": 4000149
+  },
+  "Furnace_DEF": {
+    "displayName": "Furnace_DEF",
+    "internalName": "Furnace_DEF",
+    "id": 4000151
+  },
+  "Firemite Spawn_DEF": {
+    "displayName": "Firemite Spawn_DEF",
+    "internalName": "Firemite Spawn_DEF",
+    "id": 4000152
+  },
+  "Super Barbarian": {
+    "displayName": "EliteBarbarian",
+    "internalName": "Super Barbarian",
+    "id": 4000026
+  },
+  "Super Archer": {
+    "displayName": "EliteArcher",
+    "internalName": "Super Archer",
+    "id": 4000027
+  },
+  "Super Giant": {
+    "displayName": "EliteGiant",
+    "internalName": "Super Giant",
+    "id": 4000029
+  },
+  "Sneaky Goblin": {
+    "displayName": "EliteGoblin",
+    "internalName": "Sneaky Goblin",
+    "id": 4000055
+  },
+  "Super Wall Breaker": {
+    "displayName": "EliteWallBreaker",
+    "internalName": "Super Wall Breaker",
+    "id": 4000028
+  },
+  "Rocket Balloon": {
+    "displayName": "HastyBalloon",
+    "internalName": "Rocket Balloon",
+    "id": 4000057
+  },
+  "Super Wizard": {
+    "displayName": "Super Wizard",
+    "internalName": "Super Wizard",
+    "id": 4000083
+  },
+  "Super Dragon": {
+    "displayName": "Super Dragon",
+    "internalName": "Super Dragon",
+    "id": 4000081
+  },
+  "Inferno Dragon": {
+    "displayName": "InfernoDragon",
+    "internalName": "Inferno Dragon",
+    "id": 4000063
+  },
+  "Super Miner": {
+    "displayName": "Super Miner",
+    "internalName": "Super Miner",
+    "id": 4000056
+  },
+  "Super Yeti": {
+    "displayName": "SuperYeti",
+    "internalName": "Super Yeti",
+    "id": 4000147
+  },
+  "Electromite": {
+    "displayName": "ElectroMite",
+    "internalName": "Electromite",
+    "id": 4000148
+  },
+  "Super Minion": {
+    "displayName": "Super Minion",
+    "internalName": "Super Minion",
+    "id": 4000084
+  },
+  "Defensive Super Minion": {
+    "displayName": "Super Minion_DEF",
+    "internalName": "Defensive Super Minion",
+    "id": 4000086
+  },
+  "Super Hog Rider": {
+    "displayName": "Super Hog Rider",
+    "internalName": "Super Hog Rider",
+    "id": 4000098
+  },
+  "Super Hog": {
+    "displayName": "Riderless Hog",
+    "internalName": "Super Hog",
+    "id": 4000099
+  },
+  "Super Rider": {
+    "displayName": "Hogless Rider",
+    "internalName": "Super Rider",
+    "id": 4000100
+  },
+  "Super Valkyrie": {
+    "displayName": "EliteValkyrie",
+    "internalName": "Super Valkyrie",
+    "id": 4000064
+  },
+  "Super Witch": {
+    "displayName": "Headhunter",
+    "internalName": "Super Witch",
+    "id": 4000066
+  },
+  "Big Boy": {
+    "displayName": "Head Witch Skeleton",
+    "internalName": "Big Boy",
+    "id": 4000078
+  },
+  "Ice Hound": {
+    "displayName": "Ice Hound",
+    "internalName": "Ice Hound",
+    "id": 4000076
+  },
+  "Ice Hound Pup": {
+    "displayName": "Ice Hound Pup",
+    "internalName": "Ice Hound Pup",
+    "id": 4000085
+  },
+  "Defensive Ice Hound": {
+    "displayName": "Ice Hound_DEF",
+    "internalName": "Defensive Ice Hound",
+    "id": 4000079
+  },
+  "Super Bowler": {
+    "displayName": "Super Bowler",
+    "internalName": "Super Bowler",
+    "id": 4000080
+  },
+  "Wall Wrecker": {
+    "displayName": "Wall Wrecker",
+    "internalName": "Wall Wrecker",
+    "id": 4000051
+  },
+  "Battle Blimp": {
+    "displayName": "Battle Blimp",
+    "internalName": "Battle Blimp",
+    "id": 4000052
+  },
+  "Stone Slammer": {
+    "displayName": "Stone Slammer",
+    "internalName": "Stone Slammer",
+    "id": 4000062
+  },
+  "Siege Barracks": {
+    "displayName": "Siege Barracks",
+    "internalName": "Siege Barracks",
+    "id": 4000075
+  },
+  "Log Launcher": {
+    "displayName": "Log Launcher",
+    "internalName": "Log Launcher",
+    "id": 4000087
+  },
+  "Flame Flinger": {
+    "displayName": "Flame Flinger",
+    "internalName": "Flame Flinger",
+    "id": 4000091
+  },
+  "Battle Drill": {
+    "displayName": "Battle Drill",
+    "internalName": "Battle Drill",
+    "id": 4000092
+  },
+  "Troop Launcher": {
+    "displayName": "Troop Launcher",
+    "internalName": "Troop Launcher",
+    "id": 4000135
+  },
+  "Longshot": {
+    "displayName": "Longshot",
+    "internalName": "Longshot",
+    "id": 4000169
+  },
+  "Smasher": {
+    "displayName": "Smasher",
+    "internalName": "Smasher",
+    "id": 4000170
+  },
+  "Ice Wizard": {
+    "displayName": "Ice Wizard_xmas",
+    "internalName": "Ice Wizard",
+    "id": 4000030
+  },
+  "Battle Ram": {
+    "displayName": "BattleRam",
+    "internalName": "Battle Ram",
+    "id": 4000045
+  },
+  "Battle Ram Barbarian": {
+    "displayName": "Barbarian_RAM",
+    "internalName": "Battle Ram Barbarian",
+    "id": 4000046
+  },
+  "Royal Ghost": {
+    "displayName": "Royal_Ghost",
+    "internalName": "Royal Ghost",
+    "id": 4000047
+  },
+  "Pumpkin Barbarian Armored": {
+    "displayName": "Pumpkin Barbarian Armored",
+    "internalName": "Pumpkin Barbarian Armored",
+    "id": 4000048
+  },
+  "Pumpkin Barbarian Bare": {
+    "displayName": "Pumpkin Barbarian Bare",
+    "internalName": "Pumpkin Barbarian Bare",
+    "id": 4000049
+  },
+  "Giant Skeleton": {
+    "displayName": "Giant Skeleton",
+    "internalName": "Giant Skeleton",
+    "id": 4000050
+  },
+  "Skeleton Barrel": {
+    "displayName": "Skeleton Barrel",
+    "internalName": "Skeleton Barrel",
+    "id": 4000061
+  },
+  "MECHA": {
+    "displayName": "ElPrimo",
+    "internalName": "MECHA",
+    "id": 4000067
+  },
+  "Party Wizard": {
+    "displayName": "Party_Wizard",
+    "internalName": "Party Wizard",
+    "id": 4000072
+  },
+  "Ram Rider": {
+    "displayName": "Ram Rider",
+    "internalName": "Ram Rider",
+    "id": 4000094
+  },
+  "Barcher": {
+    "displayName": "Barcher",
+    "internalName": "Barcher",
+    "id": 4000101
+  },
+  "Witch Golem": {
+    "displayName": "Grave Golem",
+    "internalName": "Witch Golem",
+    "id": 4000102
+  },
+  "Witch Golem Skeleton": {
+    "displayName": "Witch Golem Skeleton",
+    "internalName": "Witch Golem Skeleton",
+    "id": 4000116
+  },
+  "Witch Golem Big Boy": {
+    "displayName": "Witch Golem Big Boy",
+    "internalName": "Witch Golem Big Boy",
+    "id": 4000117
+  },
+  "Hog Wizard": {
+    "displayName": "Hog Wizard",
+    "internalName": "Hog Wizard",
+    "id": 4000103
+  },
+  "Lavaloon": {
+    "displayName": "Lavaloon",
+    "internalName": "Lavaloon",
+    "id": 4000104
+  },
+  "Lavaloon Pup": {
+    "displayName": "Lavaloon Pup",
+    "internalName": "Lavaloon Pup",
+    "id": 4000108
+  },
+  "COOKIE": {
+    "displayName": "COOKIE",
+    "internalName": "COOKIE",
+    "id": 4000118
+  },
+  "Firecracker": {
+    "displayName": "Firecracker",
+    "internalName": "Firecracker",
+    "id": 4000119
+  },
+  "Azure Dragon": {
+    "displayName": "Water Dragon",
+    "internalName": "Azure Dragon",
+    "id": 4000120
+  },
+  "Barbarian Kicker": {
+    "displayName": "Free Kicker",
+    "internalName": "Barbarian Kicker",
+    "id": 4000121
+  },
+  "Giant Thrower": {
+    "displayName": "Side Thrower",
+    "internalName": "Giant Thrower",
+    "id": 4000122
+  },
+  "Broom Witch": {
+    "displayName": "Courier",
+    "internalName": "Broom Witch",
+    "id": 4000125
+  },
+  "Witch Spirit": {
+    "displayName": "CourierSpawn",
+    "internalName": "Witch Spirit",
+    "id": 4000126
+  },
+  "Ice Minion": {
+    "displayName": "Ice Minion",
+    "internalName": "Ice Minion",
+    "id": 4000130
+  },
+  "Tax Collector": {
+    "displayName": "Tax Collector",
+    "internalName": "Tax Collector",
+    "id": 4000136
+  },
+  "Snake Barrel": {
+    "displayName": "Snake Barrel",
+    "internalName": "Snake Barrel",
+    "id": 4000142
+  },
+  "Snake": {
+    "displayName": "Snake",
+    "internalName": "Snake",
+    "id": 4000143
+  },
+  "Giant Giant": {
+    "displayName": "April25_GTG",
+    "internalName": "Giant Giant",
+    "id": 4000156
+  },
+  "KANE": {
+    "displayName": "April25_TBRM",
+    "internalName": "KANE",
+    "id": 4000157
+  },
+  "Reborn KANE": {
+    "displayName": "April25_TBRM_2",
+    "internalName": "Reborn KANE",
+    "id": 4000162
+  },
+  "Disarmer": {
+    "displayName": "April25_BLTM",
+    "internalName": "Disarmer",
+    "id": 4000158
+  },
+  "Defensive Disarmer": {
+    "displayName": "April25_BLTM_DEF",
+    "internalName": "Defensive Disarmer",
+    "id": 4000165
+  },
+  "YEETer": {
+    "displayName": "April25_RRBL",
+    "internalName": "YEETer",
+    "id": 4000159
+  },
+  "Tribal Tag Team": {
+    "displayName": "April25_RRBL_Alt",
+    "internalName": "Tribal Tag Team",
+    "id": 4000163
+  },
+  "Defensive YEETer": {
+    "displayName": "April25_RRBL_DEF",
+    "internalName": "Defensive YEETer",
+    "id": 4000164
+  },
+  "Defensive Tribal Tag Team": {
+    "displayName": "April25_RRBL_Alt_DEF",
+    "internalName": "Defensive Tribal Tag Team",
+    "id": 4000166
+  },
+  "Event Meteor Golem": {
+    "displayName": "MeteoriteGolem",
+    "internalName": "Event Meteor Golem",
+    "id": 4000167
+  },
+  "Event Meteormite": {
+    "displayName": "MeteoriteGolemSmall",
+    "internalName": "Event Meteormite",
+    "id": 4000168
+  },
+  "Tutorial Goblin": {
+    "displayName": "TutorialGoblin",
+    "internalName": "Tutorial Goblin",
+    "id": 4000039
+  },
+  "Tutorial Barbarian": {
+    "displayName": "TutorialBarbarian",
+    "internalName": "Tutorial Barbarian",
+    "id": 4000089
+  },
+  "Golden Dragon": {
+    "displayName": "GoblinDragon",
+    "internalName": "Golden Dragon",
+    "id": 4000060
+  },
+  "MOMMA": {
+    "displayName": "Giant PEKKA",
+    "internalName": "MOMMA",
+    "id": 4000090
+  },
+  "Mega COOKIE": {
+    "displayName": "Mega COOKIE",
+    "internalName": "Mega COOKIE",
+    "id": 4000145
+  },
+  "Defending Builder": {
+    "displayName": "Defending Builder",
+    "internalName": "Defending Builder",
+    "id": 4000088
+  },
+  "Icemite": {
+    "displayName": "Icemite",
+    "internalName": "Icemite",
+    "id": 4000096
+  },
+  "Booger": {
+    "displayName": "AirSpawnerPetSpawn",
+    "internalName": "Booger",
+    "id": 4000141
+  },
+  "Spell Shielded Skeleton": {
+    "displayName": "ShieldedSkeleton",
+    "internalName": "Spell Shielded Skeleton",
+    "id": 4000073
+  },
+  "Spell Unshielded Skeleton": {
+    "displayName": "UnshieldedSkeleton",
+    "internalName": "Spell Unshielded Skeleton",
+    "id": 4000074
+  },
+  "Spell Bat": {
+    "displayName": "SpellBat",
+    "internalName": "Spell Bat",
+    "id": 4000068
+  },
+  "BouncingFrostmite": {
+    "displayName": "BouncingFrostmite",
+    "internalName": "BouncingFrostmite",
+    "id": 4000113
+  },
+  "Totem": {
+    "displayName": "Totem",
+    "internalName": "Totem",
+    "id": 4000175
+  },
+  "Trap Skeleton": {
+    "displayName": "TrapSkeletonGround",
+    "internalName": "Trap Skeleton",
+    "id": 4000019
+  },
+  "Trap Air Skeleton": {
+    "displayName": "TrapSkeletonAir",
+    "internalName": "Trap Air Skeleton",
+    "id": 4000021
+  },
+  "Trap Minion": {
+    "displayName": "GargoyleTrap",
+    "internalName": "Trap Minion",
+    "id": 4000020
+  },
+  "BK Equipment Snake": {
+    "displayName": "BarbKingEquipSnake",
+    "internalName": "BK Equipment Snake",
+    "id": 4000144
+  },
+  "MP Equipment Henchman": {
+    "displayName": "MinionBodyGuard",
+    "internalName": "MP Equipment Henchman",
+    "id": 4000146
+  },
+  "GW Equipment Lavaloon": {
+    "displayName": "GW equipment Lavaloon",
+    "internalName": "GW Equipment Lavaloon",
+    "id": 4000128
+  },
+  "GW Equipment Lavaloon Pup": {
+    "displayName": "GW equipment Lavaloon Pup",
+    "internalName": "GW Equipment Lavaloon Pup",
+    "id": 4000129
+  },
+  "Prototype3": {
+    "displayName": "Prototype3",
+    "internalName": "Prototype3",
+    "id": 4000093
+  },
+  "Ruin Witch": {
+    "displayName": "Ruin Witch",
+    "internalName": "Ruin Witch",
+    "id": 4000109
+  },
+  "Prototype4": {
+    "displayName": "Invisi Siege",
+    "internalName": "Prototype4",
+    "id": 4000111
+  },
+  "Prototype5": {
+    "displayName": "Flying Invisi Siege",
+    "internalName": "Prototype5",
+    "id": 4000112
+  },
+  "Prototype6": {
+    "displayName": "FrostmiteSpawner",
+    "internalName": "Prototype6",
+    "id": 4000114
+  },
+  "Prototype7": {
+    "displayName": "Troop Catapult Prototype",
+    "internalName": "Prototype7",
+    "id": 4000115
+  },
+  "Ruin Knight": {
+    "displayName": "DebrisGolem",
+    "internalName": "Ruin Knight",
+    "id": 4000127
+  },
+  "Prototype8": {
+    "displayName": "Commander",
+    "internalName": "Prototype8",
+    "id": 4000131
+  },
+  "Prototype9": {
+    "displayName": "TorchThrowerB",
+    "internalName": "Prototype9",
+    "id": 4000133
+  },
+  "Prototype10": {
+    "displayName": "Destroyer",
+    "internalName": "Prototype10",
+    "id": 4000134
+  },
+  "Prototype11": {
+    "displayName": "TankyAngel",
+    "internalName": "Prototype11",
+    "id": 4000137
+  },
+  "Prototype12": {
+    "displayName": "DestroyerFlying",
+    "internalName": "Prototype12",
+    "id": 4000138
+  },
+  "Prototype13": {
+    "displayName": "Troop Catapult Prototype New",
+    "internalName": "Prototype13",
+    "id": 4000139
+  },
+  "Prototype14": {
+    "displayName": "BouncingBomb",
+    "internalName": "Prototype14",
+    "id": 4000140
+  },
+  "Prototype15": {
+    "displayName": "Super Dragon Rider",
+    "internalName": "Prototype15",
+    "id": 4000153
+  },
+  "Prototype16": {
+    "displayName": "Ridereless Dragon",
+    "internalName": "Prototype16",
+    "id": 4000154
+  },
+  "Prototype17": {
+    "displayName": "Dragonless Rider",
+    "internalName": "Prototype17",
+    "id": 4000155
+  },
+  "Unused2": {
+    "displayName": "Unused2",
+    "internalName": "Unused2",
+    "id": 4000160
+  },
+  "Unused3": {
+    "displayName": "Unused3",
+    "internalName": "Unused3",
+    "id": 4000161
+  },
+  "Guardian Eagle": {
+    "displayName": "Guardian Eagle",
+    "internalName": "Guardian Eagle",
+    "id": 4000171
+  },
+  "Guardian Giga Inferno": {
+    "displayName": "Guardian Giga Inferno",
+    "internalName": "Guardian Giga Inferno",
+    "id": 4000172
+  },
+  "Guardian Assassins": {
+    "displayName": "Guardian Assassins",
+    "internalName": "Guardian Assassins",
+    "id": 4000173
+  },
+  "Guardian Reviver": {
+    "displayName": "Guardian Reviver",
+    "internalName": "Guardian Reviver",
+    "id": 4000174
+  },
+  "Unused4": {
+    "displayName": "TestGolem",
+    "internalName": "Unused4",
+    "id": 4000176
+  },
+  "DEPRECATED": {
+    "displayName": "Miner_DEF",
+    "internalName": "DEPRECATED",
+    "id": 4000025
+  },
+  "BB Raged Barbarian": {
+    "displayName": "bb_Raged Barbarian",
+    "internalName": "BB Raged Barbarian",
+    "id": 4000031
+  },
+  "BB Sneaky Archer": {
+    "displayName": "bb_Sneaky Archer",
+    "internalName": "BB Sneaky Archer",
+    "id": 4000032
+  },
+  "BB Boxer Giant": {
+    "displayName": "bb_Boxer Giant",
+    "internalName": "BB Boxer Giant",
+    "id": 4000034
+  },
+  "BB Beta Minion": {
+    "displayName": "bb_Beta Minion",
+    "internalName": "BB Beta Minion",
+    "id": 4000033
+  },
+  "BB Bomber": {
+    "displayName": "bb_Bomber",
+    "internalName": "BB Bomber",
+    "id": 4000035
+  },
+  "BB Baby Dragon": {
+    "displayName": "bb_Baby Dragon",
+    "internalName": "BB Baby Dragon",
+    "id": 4000041
+  },
+  "BB Cannon Cart": {
+    "displayName": "bb_Cannon Cart",
+    "internalName": "BB Cannon Cart",
+    "id": 4000037
+  },
+  "BB Night Witch": {
+    "displayName": "bb_Night Witch",
+    "internalName": "BB Night Witch",
+    "id": 4000042
+  },
+  "BB Bat": {
+    "displayName": "Bat",
+    "internalName": "BB Bat",
+    "id": 4000043
+  },
+  "BB Enraged Bat": {
+    "displayName": "Bat Enraged",
+    "internalName": "BB Enraged Bat",
+    "id": 4000105
+  },
+  "BB Drop Ship": {
+    "displayName": "bb_Drop Ship",
+    "internalName": "BB Drop Ship",
+    "id": 4000038
+  },
+  "BB Drop Ship Skeleton": {
+    "displayName": "Balloon Skeleton",
+    "internalName": "BB Drop Ship Skeleton",
+    "id": 4000040
+  },
+  "BB Power PEKKA": {
+    "displayName": "bb_Power P.E.K.K.A",
+    "internalName": "BB Power PEKKA",
+    "id": 4000036
+  },
+  "BB Hog Glider": {
+    "displayName": "bb_Hog Glider",
+    "internalName": "BB Hog Glider",
+    "id": 4000070
+  },
+  "BB Hog Rider": {
+    "displayName": "Hog Rider",
+    "internalName": "BB Hog Rider",
+    "id": 4000071
+  },
+  "BB Electrofire Wizard": {
+    "displayName": "bb_Electrofire Wizard",
+    "internalName": "BB Electrofire Wizard",
+    "id": 4000106
+  },
+  "BB Zappy": {
+    "displayName": "Zappies",
+    "internalName": "BB Zappy",
+    "id": 4000107
+  },
+  "BB MovingCannonSecondary": {
+    "displayName": "MovingCannonSecondary",
+    "internalName": "BB MovingCannonSecondary",
+    "id": 4000044
+  },
+  "Guardian Sniffer": {
+    "displayName": "Guardian Sniffer",
+    "internalName": "Guardian Sniffer",
+    "id": 4000181
+  },
+  "Guardian Builder": {
+    "displayName": "Guardian Builder",
+    "internalName": "Guardian Builder",
+    "id": 4000182
+  },
+  "Guardian Logger": {
+    "displayName": "Guardian Logger",
+    "internalName": "Guardian Logger",
+    "id": 4000183
+  },
+  "Guardian Returner": {
+    "displayName": "Guardian Returner",
+    "internalName": "Guardian Returner",
+    "id": 4000184
+  },
+  "Elephant": {
+    "displayName": "Unused6",
+    "internalName": "Elephant",
+    "id": 4000186
+  },
+  "Rider": {
+    "displayName": "Unused7",
+    "internalName": "Rider",
+    "id": 4000187
+  },
+  "Air Troop Launcher": {
+    "displayName": "Sky Wagon",
+    "internalName": "Air Troop Launcher",
+    "id": 4000188
+  },
+  "UnusedSiegePrototype": {
+    "displayName": "UnusedSiegePrototype",
+    "internalName": "UnusedSiegePrototype",
+    "id": 4000189
+  },
+  "Elephant Rider": {
+    "displayName": "Unused5",
+    "internalName": "Elephant Rider",
+    "id": 4000185
+  },
+  "Undead Wrestler Big Boy": {
+    "displayName": "Unused9",
+    "internalName": "Undead Wrestler Big Boy",
+    "id": 4000191
+  },
+  "Ruin Witch_DEF": {
+    "displayName": "Ruin Witch_DEF",
+    "internalName": "Ruin Witch_DEF",
+    "id": 4000192
+  },
+  "UndeadWrestler": {
+    "displayName": "Unused8",
+    "internalName": "UndeadWrestler",
+    "id": 4000190
+  },
+  "Tiny Totem": {
+    "displayName": "Tiny Totem",
+    "internalName": "Tiny Totem",
+    "id": 4000193
+  },
+  "Totem Thrower": {
+    "displayName": "Totem Thrower",
+    "internalName": "Totem Thrower",
+    "id": 4000194
+  }
+}

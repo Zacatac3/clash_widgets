@@ -1,0 +1,42 @@
+{
+  "Barbarian King": {
+    "displayName": "Barbarian King",
+    "internalName": "Barbarian King",
+    "id": 28000000
+  },
+  "Archer Queen": {
+    "displayName": "Archer Queen",
+    "internalName": "Archer Queen",
+    "id": 28000001
+  },
+  "Grand Warden": {
+    "displayName": "Grand Warden",
+    "internalName": "Grand Warden",
+    "id": 28000002
+  },
+  "BB Battle Machine": {
+    "displayName": "bb_Battle Machine",
+    "internalName": "BB Battle Machine",
+    "id": 28000003
+  },
+  "Royal Champion": {
+    "displayName": "Royal Champion",
+    "internalName": "Royal Champion",
+    "id": 28000004
+  },
+  "BB Battle Copter": {
+    "displayName": "bb_Battle Copter",
+    "internalName": "BB Battle Copter",
+    "id": 28000005
+  },
+  "Minion Prince": {
+    "displayName": "Minion Prince",
+    "internalName": "Minion Prince",
+    "id": 28000006
+  },
+  "Dragon Duke": {
+    "displayName": "Dragon Duke",
+    "internalName": "Dragon Duke",
+    "id": 28000007
+  }
+}

@@ -29,12 +29,6 @@
 		A9C1D2E3F4A5000000000005 /* DataService+Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000006 /* DataService+Persistence.swift */; };
 		A9C1D2E3F4A5000000000007 /* ContentView+DebugMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000008 /* ContentView+DebugMenu.swift */; };
 		A9C1D2E3F4A5000000000009 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A500000000000A /* SettingsView.swift */; };
-		D9E8F7A6B5C4D3E200000021 /* NotificationSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000011 /* NotificationSettingsPage.swift */; };
-		D9E8F7A6B5C4D3E200000022 /* AppBehaviorSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000012 /* AppBehaviorSettingsPage.swift */; };
-		D9E8F7A6B5C4D3E200000023 /* SupportSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000013 /* SupportSettingsPage.swift */; };
-		D9E8F7A6B5C4D3E200000024 /* AdvancedSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000014 /* AdvancedSettingsPage.swift */; };
-		D9E8F7A6B5C4D3E200000025 /* DebugSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000015 /* DebugSettingsPage.swift */; };
-		D9E8F7A6B5C4D3E200000026 /* SettingsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000016 /* SettingsWebView.swift */; };
 		A9C1D2E3F4A5000000000010 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000011 /* DashboardView.swift */; };
 		A9C1D2E3F4A5000000000012 /* BoostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000013 /* BoostView.swift */; };
 		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
@@ -42,6 +36,7 @@
 		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
 		B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
 		B7D4E6F22A3B4C5D6E7F8901 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */; };
+		F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */; };
 		C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3122F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
@@ -50,14 +45,17 @@
 		C9A1B2C3D4E5F60000000002 /* AdsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1B2C3D4E5F60000000012 /* AdsView.swift */; };
 		C9A1B2C3D4E5F60000000003 /* OnboardingSetupView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1B2C3D4E5F60000000013 /* OnboardingSetupView.swift */; };
 		C9A1B2C3D4E5F60000000004 /* EquipmentTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A1B2C3D4E5F60000000014 /* EquipmentTabView.swift */; };
-		D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0012F15B00000FAE5F1 /* asset_map.json */; };
-		D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0032F15B00000FAE5F1 /* upgrade_info */; };
+		D4F1A0042F15B00000FAE5F1 /* json in Resources */ = {isa = PBXBuildFile; fileRef = D4F1A0032F15B00000FAE5F1 /* json */; };
+		D9E8F7A6B5C4D3E200000021 /* NotificationSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000011 /* NotificationSettingsPage.swift */; };
+		D9E8F7A6B5C4D3E200000022 /* AppBehaviorSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000012 /* AppBehaviorSettingsPage.swift */; };
+		D9E8F7A6B5C4D3E200000023 /* SupportSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000013 /* SupportSettingsPage.swift */; };
+		D9E8F7A6B5C4D3E200000024 /* AdvancedSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000014 /* AdvancedSettingsPage.swift */; };
+		D9E8F7A6B5C4D3E200000025 /* DebugSettingsPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000015 /* DebugSettingsPage.swift */; };
+		D9E8F7A6B5C4D3E200000026 /* SettingsWebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D9E8F7A6B5C4D3E200000016 /* SettingsWebView.swift */; };
 		E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */; };
-		E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */ = {isa = PBXBuildFile; fileRef = E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */; };
 		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
-		G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */ = {isa = PBXBuildFile; fileRef = G1A2B3C4D5E6F70012345670 /* gradient_config.json */; };
 		H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */ = {isa = PBXBuildFile; fileRef = H1A2B3C4D5E6F70012345670 /* clan_stats.json */; };
 /* End PBXBuildFile section */
 
@@ -118,12 +116,6 @@
 		A9C1D2E3F4A5000000000006 /* DataService+Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Persistence.swift"; sourceTree = "<group>"; };
 		A9C1D2E3F4A5000000000008 /* ContentView+DebugMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ContentView+DebugMenu.swift"; sourceTree = "<group>"; };
 		A9C1D2E3F4A500000000000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000011 /* NotificationSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsPage.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000012 /* AppBehaviorSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBehaviorSettingsPage.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000013 /* SupportSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportSettingsPage.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000014 /* AdvancedSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsPage.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000015 /* DebugSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsPage.swift; sourceTree = "<group>"; };
-		D9E8F7A6B5C4D3E200000016 /* SettingsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebView.swift; sourceTree = "<group>"; };
 		A9C1D2E3F4A5000000000011 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		A9C1D2E3F4A5000000000013 /* BoostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoostView.swift; sourceTree = "<group>"; };
 		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
@@ -131,20 +123,24 @@
 		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
+		F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
 		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
 		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000011 /* HelpAndWhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndWhatsNewView.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000012 /* AdsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdsView.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000013 /* OnboardingSetupView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingSetupView.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000014 /* EquipmentTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EquipmentTabView.swift; sourceTree = "<group>"; };
-		D4F1A0012F15B00000FAE5F1 /* asset_map.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = asset_map.json; path = ../json_files/asset_map.json; sourceTree = "<group>"; };
-		D4F1A0032F15B00000FAE5F1 /* upgrade_info */ = {isa = PBXFileReference; lastKnownFileType = folder; path = upgrade_info; sourceTree = "<group>"; };
+		D4F1A0032F15B00000FAE5F1 /* json */ = {isa = PBXFileReference; lastKnownFileType = folder; path = json; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000011 /* NotificationSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsPage.swift; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000012 /* AppBehaviorSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppBehaviorSettingsPage.swift; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000013 /* SupportSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupportSettingsPage.swift; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000014 /* AdvancedSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedSettingsPage.swift; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000015 /* DebugSettingsPage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugSettingsPage.swift; sourceTree = "<group>"; };
+		D9E8F7A6B5C4D3E200000016 /* SettingsWebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsWebView.swift; sourceTree = "<group>"; };
 		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
-		E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = equipment_data.json; path = ../json_files/equipment_data.json; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
-		G1A2B3C4D5E6F70012345670 /* gradient_config.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = gradient_config.json; sourceTree = "<group>"; };
 		H1A2B3C4D5E6F70012345670 /* clan_stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = clan_stats.json; path = ../misc_files/clan_stats.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -215,11 +211,8 @@
 				A1B2C3062F0F3B4E00FAE5F1 /* SecurityHelper.swift */,
 				A1B2C3072F0F3B4E00FAE5F1 /* clash_widgetsApp.swift */,
 				A1B2C3082F0F3B4E00FAE5F1 /* clash_widgets.entitlements */,
-				D4F1A0032F15B00000FAE5F1 /* upgrade_info */,
-				D4F1A0012F15B00000FAE5F1 /* asset_map.json */,
-				E5A6B01F2F9A2B0000FAE5F1 /* equipment_data.json */,
+				D4F1A0032F15B00000FAE5F1 /* json */,
 				H1A2B3C4D5E6F70012345670 /* clan_stats.json */,
-				G1A2B3C4D5E6F70012345670 /* gradient_config.json */,
 				A1B2C3092F0F3B4E00FAE5F1 /* Assets.xcassets */,
 			);
 			path = clash_widgets;
@@ -258,6 +251,7 @@
 				A9C1D2E3F4A5000000000003 /* ContentView+Compat.swift */,
 				A9C1D2E3F4A5000000000008 /* ContentView+DebugMenu.swift */,
 				B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */,
+				F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */,
 				D9E8F7A6B5C4D3E200000001 /* Settings */,
 				A9C1D2E3F4A500000000000A /* SettingsView.swift */,
 			);
@@ -334,7 +328,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 2620;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 2700;
 				TargetAttributes = {
 					8879E7C32F0F3B4E00FAE5F1 = {
 						CreatedOnToolsVersion = 26.2;
@@ -374,11 +368,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D4F1A0042F15B00000FAE5F1 /* upgrade_info in Resources */,
-				D4F1A0022F15B00000FAE5F1 /* asset_map.json in Resources */,
-				E5A6B0202F9A2B0000FAE5F1 /* equipment_data.json in Resources */,
+				D4F1A0042F15B00000FAE5F1 /* json in Resources */,
 				H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */,
-				G1A2B3C4D5E6F70012345671 /* gradient_config.json in Resources */,
 				A1B2C4092F0F3B4E00FAE5F1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,6 +401,7 @@
 				A9C1D2E3F4A5000000000001 /* ContentView+Compat.swift in Sources */,
 				A9C1D2E3F4A5000000000007 /* ContentView+DebugMenu.swift in Sources */,
 				B7D4E6F22A3B4C5D6E7F8901 /* ProfileDetailView.swift in Sources */,
+				F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */,
 				A9C1D2E3F4A5000000000009 /* SettingsView.swift in Sources */,
 				D9E8F7A6B5C4D3E200000021 /* NotificationSettingsPage.swift in Sources */,
 				D9E8F7A6B5C4D3E200000022 /* AppBehaviorSettingsPage.swift in Sources */,
@@ -539,7 +531,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -550,14 +542,15 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -577,7 +570,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -588,14 +581,15 @@
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = UIInterfaceOrientationPortrait;
 				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -637,7 +631,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -650,7 +644,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;
@@ -693,7 +687,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 13;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -706,7 +700,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.1.1;
+				MARKETING_VERSION = 1.2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;

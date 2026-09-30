@@ -1,0 +1,44 @@
+[
+  {
+    "id": 28000000,
+    "displayName": "Barbarian King",
+    "internalName": "Barbarian King",
+    "unlockTownHall": 7,
+    "assetName": "heroes/Barbarian_King"
+  },
+  {
+    "id": 28000001,
+    "displayName": "Archer Queen",
+    "internalName": "Archer Queen",
+    "unlockTownHall": 9,
+    "assetName": "heroes/Archer_Queen"
+  },
+  {
+    "id": 28000006,
+    "displayName": "Minion Prince",
+    "internalName": "Minion Hero",
+    "unlockTownHall": 14,
+    "assetName": "heroes/minion_prince"
+  },
+  {
+    "id": 28000002,
+    "displayName": "Grand Warden",
+    "internalName": "Grand Warden",
+    "unlockTownHall": 11,
+    "assetName": "heroes/Grand_Warden"
+  },
+  {
+    "id": 28000004,
+    "displayName": "Royal Champion",
+    "internalName": "Warrior Princess",
+    "unlockTownHall": 13,
+    "assetName": "heroes/Royal_Champion"
+  },
+  {
+    "id": 28000007,
+    "displayName": "Dragon Duke",
+    "internalName": "Dragon Duke",
+    "unlockTownHall": 15,
+    "assetName": "heroes/dragon_duke"
+  }
+]

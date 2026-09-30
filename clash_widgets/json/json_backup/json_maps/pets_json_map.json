@@ -1,0 +1,92 @@
+{
+  "LASSI": {
+    "displayName": "L.A.S.S.I",
+    "internalName": "LASSI",
+    "id": 73000000
+  },
+  "Mighty Yak": {
+    "displayName": "Mighty Yak",
+    "internalName": "Mighty Yak",
+    "id": 73000001
+  },
+  "Electro Owl": {
+    "displayName": "Electro Owl",
+    "internalName": "Electro Owl",
+    "id": 73000002
+  },
+  "Unicorn": {
+    "displayName": "Unicorn",
+    "internalName": "Unicorn",
+    "id": 73000003
+  },
+  "Phoenix": {
+    "displayName": "Phoenix",
+    "internalName": "Phoenix",
+    "id": 73000004
+  },
+  "Phoenix Egg": {
+    "displayName": "PhoenixEgg",
+    "internalName": "Phoenix Egg",
+    "id": 73000005
+  },
+  "Stork": {
+    "displayName": "Stork",
+    "internalName": "Stork",
+    "id": 73000006
+  },
+  "Poison Lizard": {
+    "displayName": "Poison Lizard",
+    "internalName": "Poison Lizard",
+    "id": 73000007
+  },
+  "Diggy": {
+    "displayName": "Diggy",
+    "internalName": "Diggy",
+    "id": 73000008
+  },
+  "Frosty": {
+    "displayName": "Frosty",
+    "internalName": "Frosty",
+    "id": 73000009
+  },
+  "Spirit Fox": {
+    "displayName": "Spirit Fox",
+    "internalName": "Spirit Fox",
+    "id": 73000010
+  },
+  "Angry Jelly": {
+    "displayName": "Angry Jelly",
+    "internalName": "Angry Jelly",
+    "id": 73000011
+  },
+  "JumpAuraPet": {
+    "displayName": "JumpAuraPet",
+    "internalName": "JumpAuraPet",
+    "id": 73000012
+  },
+  "SpeedupPet": {
+    "displayName": "SpeedupPet",
+    "internalName": "SpeedupPet",
+    "id": 73000013
+  },
+  "Turtle": {
+    "displayName": "Turtle",
+    "internalName": "Turtle",
+    "id": 73000014
+  },
+  "AirSplitPetSpawnRemoved": {
+    "displayName": "AirSplitPetSpawnRemoved",
+    "internalName": "AirSplitPetSpawnRemoved",
+    "id": 73000015
+  },
+  "Sneezy": {
+    "displayName": "Sneezy",
+    "internalName": "Sneezy",
+    "id": 73000016
+  },
+  "Crow": {
+    "displayName": "Crow",
+    "internalName": "Crow",
+    "id": 73000017
+  }
+}

@@ -1,0 +1,107 @@
+{
+  "Bomb": {
+    "displayName": "Bomb",
+    "internalName": "Bomb",
+    "id": 12000000
+  },
+  "Spring Trap": {
+    "displayName": "Spring Trap",
+    "internalName": "Spring Trap",
+    "id": 12000001
+  },
+  "Air Bomb": {
+    "displayName": "Air Bomb",
+    "internalName": "Air Bomb",
+    "id": 12000005
+  },
+  "Giant Bomb": {
+    "displayName": "Giant Bomb",
+    "internalName": "Giant Bomb",
+    "id": 12000002
+  },
+  "Seeking Air Mine": {
+    "displayName": "Seeking Air Mine",
+    "internalName": "Seeking Air Mine",
+    "id": 12000006
+  },
+  "Skeleton Trap": {
+    "displayName": "Skeleton Trap",
+    "internalName": "Skeleton Trap",
+    "id": 12000008
+  },
+  "Tornado Trap": {
+    "displayName": "Tornado Trap",
+    "internalName": "Tornado Trap",
+    "id": 12000016
+  },
+  "Giga Bomb": {
+    "displayName": "Giga Bomb",
+    "internalName": "Giga Bomb",
+    "id": 12000020
+  },
+  "Halloweenbomb": {
+    "displayName": "Halloweenbomb",
+    "internalName": "Halloweenbomb",
+    "id": 12000003
+  },
+  "Slowbomb": {
+    "displayName": "Slowbomb",
+    "internalName": "Slowbomb",
+    "id": 12000004
+  },
+  "SantaTrap": {
+    "displayName": "SantaTrap",
+    "internalName": "SantaTrap",
+    "id": 12000007
+  },
+  "FreezeBomb": {
+    "displayName": "FreezeBomb",
+    "internalName": "FreezeBomb",
+    "id": 12000009
+  },
+  "AirTrap2": {
+    "displayName": "AirTrap2",
+    "internalName": "AirTrap2",
+    "id": 12000012
+  },
+  "ShrinkTrap": {
+    "displayName": "ShrinkTrap",
+    "internalName": "ShrinkTrap",
+    "id": 12000015
+  },
+  "ShrinkTrap_SinglePlayer": {
+    "displayName": "ShrinkTrap_SinglePlayer",
+    "internalName": "ShrinkTrap_SinglePlayer",
+    "id": 12000017
+  },
+  "FreezeTrap_SinglePlayer": {
+    "displayName": "FreezeTrap_SinglePlayer",
+    "internalName": "FreezeTrap_SinglePlayer",
+    "id": 12000018
+  },
+  "Ghost Trap": {
+    "displayName": "GhostTrap",
+    "internalName": "Ghost Trap",
+    "id": 12000019
+  },
+  "BB Push Trap": {
+    "displayName": "bb_Push Trap",
+    "internalName": "BB Push Trap",
+    "id": 12000011
+  },
+  "BB Mine": {
+    "displayName": "bb_Mine",
+    "internalName": "BB Mine",
+    "id": 12000013
+  },
+  "BB Spring Trap": {
+    "displayName": "bb_Spring Trap",
+    "internalName": "BB Spring Trap",
+    "id": 12000010
+  },
+  "BB Mega Mine": {
+    "displayName": "bb_Mega Mine",
+    "internalName": "BB Mega Mine",
+    "id": 12000014
+  }
+}

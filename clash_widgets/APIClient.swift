@@ -22,19 +22,19 @@ class APIClient: ObservableObject {
         self.errorMessage = nil
         
         URLSession.shared.dataTask(with: request) { data, response, error in
-            OperationQueue.main.addOperation {
+            DispatchQueue.main.async {
                 self.isLoading = false
-                
+
                 if let error = error {
                     self.errorMessage = error.localizedDescription
                     return
                 }
-                
+
                 guard let data = data else {
                     self.errorMessage = "No data received"
                     return
                 }
-                
+
                 do {
                     let profile = try JSONDecoder().decode(PlayerProfile.self, from: data)
                     self.playerProfile = profile

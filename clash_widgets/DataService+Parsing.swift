@@ -107,12 +107,38 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
-        WhatsNewSection(dateLabel: "2/xx/2026 - Under the Hood Improvements", bullets: [
+        WhatsNewSection(dateLabel: "10/2026 - 1.3 - Progress Update", bullets: [
+            "New Progress (Beta) tab: See the current levels of your Home Village units, buildings, traps, and walls.",
+			"Improved layouts for iPhone Duo.",
+            "See what is maxed for your Town Hall in blue and what is fully maxed in gold.",
+            "Customize Progress cards, jump between categories, and show Supercharges and Crafted Defenses.",
+            "Fixed boost animation jitter and updated how many Town Hall 18 walls can be upgraded to the maximum level.",
+            "Corrected the names of Mother Witch and Angry Spell."
+        ]),
+        WhatsNewSection(dateLabel: "9/28/2026 - 1.2.2 - New In-Game Content", bullets: [
+            "Added new game assets, and Crafted defenses.",
+            "Added new hero equipment and units.",
+            "Added new upgrade levels.",
+            "Updated upgrade costs and times to reflect the latest reductions."
+        ]),
+        WhatsNewSection(dateLabel: "4/27/2026 - 1.2.1 Update Content & Minor Fixes", bullets: [
+            "Added support for the new Elecro Fangs, Sky Wagon, and Logger",
+            "Update cost and time reductions added",
+            "Added missing asset for rocket backpack for dragon Duke",
+            "Greedy Raven now correctly named, no longer shows up as \"crow\"",
+            "Builder base section now displays idle builders instead of nothing",
+            "Fixed the walls section showing \"All walls Maxed\" erroneously",
+            "Updated max wall count for TH18",
+            "Cleaned up various text blocks around the app"
+        ]),
+        WhatsNewSection(dateLabel: "2/24/2026 - Under the Hood Improvements & New Game Update", bullets: [
             "Performance Overhaul: Core systems were rebuilt to keep the app smooth and scalable as it grows.",
             "Boosts Are Now Customizable: Press and hold boosts to apply instantly or set a custom duration.",
-            "Better equipment management: You can now hide individual equipment from the list, and thier costs will no longer be included in totals",
-            "Quality-of-Life Fixes: Optimized profile page loading, improved war status handling, higher-res assets, widget icon fixes, and notification profile name consistency.",
-            "Progression-Aware UX: Helper and pet boost options now appear only when unlocked, and factory reset now restores Home/Profile card visibility and ordering defaults."
+            "Better equipment management: You can now hide individual equipment from the list, and their costs will no longer be included in totals.",
+            "Lock screen widgets for closest overall upgrades in home village and builder base.",
+            "New game update content: Dragon Duke (and equipment), new building/troop levels, and Greedy Raven.",
+            "iPad two-column layout, simplified settings menu, and many bug fixes.",
+            "other various fixes and improvements found in the changelog"
         ]),
         WhatsNewSection(dateLabel: "2/8/2026 - Major Quality of Life Update", bullets: [
             "Lock Screen Widgets: Track your upgrades directly from your lock screen",

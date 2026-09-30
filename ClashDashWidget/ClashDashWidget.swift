@@ -22,6 +22,17 @@ private func trimmedWidgetImage(named name: String) -> Image {
     return Image(name)
 }
 
+private extension Image {
+    @ViewBuilder
+    func clashWidgetTintAwareRendering() -> some View {
+        if #available(iOS 18.0, macOS 15.0, watchOS 11.0, visionOS 26.0, *) {
+            self.widgetAccentedRenderingMode(.accentedDesaturated)
+        } else {
+            self
+        }
+    }
+}
+
 private func trimWidgetTransparentEdges(_ image: UIImage) -> UIImage {
     guard let cgImage = image.cgImage else { return image }
 
@@ -72,67 +83,73 @@ private func trimWidgetTransparentEdges(_ image: UIImage) -> UIImage {
 }
 
 // MARK: - Widget Configuration Intent
-// MARK: - Profile Selection Options (compile-time static for AppEnum)
-enum ProfileSelection: String, AppEnum, CaseDisplayRepresentable {
-    case automatic = "automatic"
-    case profile1 = "profile1"
-    case profile2 = "profile2"
-    case profile3 = "profile3"
-    case profile4 = "profile4"
-    case profile5 = "profile5"
-    case profile6 = "profile6"
-    case profile7 = "profile7"
-    case profile8 = "profile8"
-    case profile9 = "profile9"
-    case profile10 = "profile10"
-    
-    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Profile"
-    
-    // Compile-time static display representations (no runtime computation allowed)
-    static var caseDisplayRepresentations: [ProfileSelection: DisplayRepresentation] = [
-        .automatic: DisplayRepresentation(title: LocalizedStringResource("Last Opened Profile")),
-        .profile1: DisplayRepresentation(title: LocalizedStringResource("Profile 1")),
-        .profile2: DisplayRepresentation(title: LocalizedStringResource("Profile 2")),
-        .profile3: DisplayRepresentation(title: LocalizedStringResource("Profile 3")),
-        .profile4: DisplayRepresentation(title: LocalizedStringResource("Profile 4")),
-        .profile5: DisplayRepresentation(title: LocalizedStringResource("Profile 5")),
-        .profile6: DisplayRepresentation(title: LocalizedStringResource("Profile 6")),
-        .profile7: DisplayRepresentation(title: LocalizedStringResource("Profile 7")),
-        .profile8: DisplayRepresentation(title: LocalizedStringResource("Profile 8")),
-        .profile9: DisplayRepresentation(title: LocalizedStringResource("Profile 9")),
-        .profile10: DisplayRepresentation(title: LocalizedStringResource("(unused)"))
-    ]
-    
-    static var allCasesFiltered: [ProfileSelection] {
-        var cases: [ProfileSelection] = [.automatic]
-        let allCases: [ProfileSelection] = [.profile1, .profile2, .profile3, .profile4, .profile5, .profile6, .profile7, .profile8, .profile9, .profile10]
-        
-        // Only add cases for profiles that exist
+// MARK: - Profile Selection via AppEntity (supports dynamic display names)
+struct ProfileEntity: AppEntity {
+    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Profile")
+    static var defaultQuery = ProfileEntityQuery()
+
+    var id: String   // UUID string, or "automatic"
+    var displayName: String
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(title: "\(displayName)")
+    }
+
+    var isAutomatic: Bool { id == "automatic" }
+
+    func profileID() -> UUID? {
+        if isAutomatic { return nil }
+        return UUID(uuidString: id)
+    }
+
+    /// Resolve a saved UserDefaults string to a profile UUID.
+    /// Handles both new UUID format and legacy "profileN" format.
+    static func resolveProfileID(from savedSelection: String) -> UUID? {
+        if savedSelection == "automatic" { return nil }
+        // New format: raw UUID string
+        if let uuid = UUID(uuidString: savedSelection) { return uuid }
+        // Legacy "profileN" format
+        let legacyCases = ["profile1", "profile2", "profile3", "profile4", "profile5",
+                           "profile6", "profile7", "profile8", "profile9", "profile10"]
+        if let index = legacyCases.firstIndex(of: savedSelection),
+           let state = PersistentStore.loadState(),
+           index < state.profiles.count {
+            return state.profiles[index].id
+        }
+        return nil
+    }
+}
+
+struct ProfileEntityQuery: EntityQuery {
+    func entities(for identifiers: [ProfileEntity.ID]) async throws -> [ProfileEntity] {
+        let all = allEntities()
+        return all.filter { identifiers.contains($0.id) }
+    }
+
+    func suggestedEntities() async throws -> [ProfileEntity] {
+        return allEntities()
+    }
+
+    func defaultResult() async -> ProfileEntity? {
+        return ProfileEntity(id: "automatic", displayName: "Last Opened Profile")
+    }
+
+    private func allEntities() -> [ProfileEntity] {
+        var entities = [ProfileEntity(id: "automatic", displayName: "Last Opened Profile")]
         if let state = PersistentStore.loadState() {
-            for (index, _) in state.profiles.enumerated() {
-                guard index < allCases.count else { break }
-                cases.append(allCases[index])
+            for profile in state.profiles {
+                let name: String
+                if !profile.displayName.isEmpty {
+                    name = profile.displayName
+                } else if !profile.tag.isEmpty {
+                    name = "#\(profile.tag)"
+                } else {
+                    name = "Profile"
+                }
+                entities.append(ProfileEntity(id: profile.id.uuidString, displayName: name))
             }
         }
-        
-        return cases
-    }
-    
-    func profileID() -> UUID? {
-        if self == .automatic {
-            return nil // Automatic uses current profile
-        }
-        
-        // Get the index of this case (0 = automatic, 1 = profile1, etc.)
-        let allCases: [ProfileSelection] = [.automatic, .profile1, .profile2, .profile3, .profile4, .profile5, .profile6, .profile7, .profile8, .profile9, .profile10]
-        guard let index = allCases.firstIndex(of: self), index > 0 else { return nil }
-        
-        // Get the (index - 1)th profile from persistent store
-        if let state = PersistentStore.loadState(), index - 1 < state.profiles.count {
-            return state.profiles[index - 1].id
-        }
-        
-        return nil
+        return entities
     }
 }
 
@@ -141,14 +158,14 @@ struct WidgetProfileIntent: WidgetConfigurationIntent {
     static let description: IntentDescription = "Choose which profile this widget displays"
     
     @Parameter(title: "Profile", description: "Select a profile or leave empty for automatic")
-    var selectedProfile: ProfileSelection?
+    var selectedProfile: ProfileEntity?
     
     func perform() async throws -> some IntentResult {
         let appGroup = "group.Zachary-Buschmann.clash-widgets"
         if let defaults = UserDefaults(suiteName: appGroup) {
-            if let profile = selectedProfile, profile != .automatic {
-                // Save the selected profile index
-                defaults.set(profile.rawValue, forKey: "widget_profile_selection")
+            if let profile = selectedProfile, !profile.isAutomatic {
+                // Save the selected profile UUID
+                defaults.set(profile.id, forKey: "widget_profile_selection")
             } else {
                 // Clear profile selection (use automatic)
                 defaults.removeObject(forKey: "widget_profile_selection")
@@ -166,6 +183,8 @@ enum UpgradeTypeSelection: String, AppEnum, CaseDisplayRepresentable {
     case pets = "pets"
     case builderBase = "builderBase"
     case starLab = "starLab"
+    case homeOverall = "homeOverall"
+    case builderBaseOverall = "builderBaseOverall"
 
     static var typeDisplayRepresentation: TypeDisplayRepresentation = "Upgrade Type"
     static var caseDisplayRepresentations: [UpgradeTypeSelection: DisplayRepresentation] = [
@@ -173,7 +192,9 @@ enum UpgradeTypeSelection: String, AppEnum, CaseDisplayRepresentable {
         .lab: DisplayRepresentation(title: LocalizedStringResource("Lab")),
         .pets: DisplayRepresentation(title: LocalizedStringResource("Pet House")),
         .builderBase: DisplayRepresentation(title: LocalizedStringResource("Builder Base Builders")),
-        .starLab: DisplayRepresentation(title: LocalizedStringResource("Star Lab"))
+        .starLab: DisplayRepresentation(title: LocalizedStringResource("Star Lab")),
+        .homeOverall: DisplayRepresentation(title: LocalizedStringResource("Home Overall (Builder/Lab/Pets)")),
+        .builderBaseOverall: DisplayRepresentation(title: LocalizedStringResource("Builder Base Overall (Builder/Star Lab)"))
     ]
 }
 
@@ -185,7 +206,7 @@ struct ClosestUpgradeIntent: WidgetConfigurationIntent {
     var upgradeType: UpgradeTypeSelection?
 
     @Parameter(title: "Profile", description: "Select a profile or leave empty for automatic")
-    var selectedProfile: ProfileSelection?
+    var selectedProfile: ProfileEntity?
 }
 
 // MARK: - Import Clipboard Intent (Lock Screen Action)
@@ -305,20 +326,16 @@ struct Provider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    // Reconstruct the ProfileSelection from saved rawValue
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -359,20 +376,16 @@ struct Provider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    // Reconstruct the ProfileSelection from saved rawValue
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -404,20 +417,16 @@ struct Provider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    // Reconstruct the ProfileSelection from saved rawValue
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -540,6 +549,7 @@ struct ClashDashWidgetEntryView : View {
                     trimmedWidgetImage(named: iconName(for: upgrade))
                         .interpolation(.none)
                         .resizable()
+                        .clashWidgetTintAwareRendering()
                         .scaledToFit()
                         .frame(width: 28, height: 28)
                     
@@ -643,7 +653,7 @@ struct ClashDashWidget: Widget {
             }
         }
         .configurationDisplayName("Clash Builders")
-        .description("Track Building Upgrades with the widget. Check Settings > Profiles to see which profile number corresponds to your accounts.")
+        .description("Track Building Upgrades with the widget.")
         .supportedFamilies([.systemMedium])
     }
 }
@@ -688,16 +698,14 @@ struct ClosestUpgradeProvider: AppIntentTimelineProvider {
         let profileToUse: PlayerAccount?
         var selectedProfileID: UUID? = nil
         if let selectedProfile = configuration.selectedProfile,
-           selectedProfile != .automatic,
+           !selectedProfile.isAutomatic,
            let profileID = selectedProfile.profileID() {
             selectedProfileID = profileID
         } else {
             let appGroup = "group.Zachary-Buschmann.clash-widgets"
             if let defaults = UserDefaults(suiteName: appGroup),
                let savedSelection = defaults.string(forKey: "widget_profile_selection"),
-               let savedProfile = ProfileSelection(rawValue: savedSelection),
-               savedProfile != .automatic,
-               let profileID = savedProfile.profileID() {
+               let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
                 selectedProfileID = profileID
             }
         }
@@ -720,16 +728,14 @@ struct ClosestUpgradeProvider: AppIntentTimelineProvider {
         let profileToUse: PlayerAccount?
         var selectedProfileID: UUID? = nil
         if let selectedProfile = configuration.selectedProfile,
-           selectedProfile != .automatic,
+           !selectedProfile.isAutomatic,
            let profileID = selectedProfile.profileID() {
             selectedProfileID = profileID
         } else {
             let appGroup = "group.Zachary-Buschmann.clash-widgets"
             if let defaults = UserDefaults(suiteName: appGroup),
                let savedSelection = defaults.string(forKey: "widget_profile_selection"),
-               let savedProfile = ProfileSelection(rawValue: savedSelection),
-               savedProfile != .automatic,
-               let profileID = savedProfile.profileID() {
+               let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
                 selectedProfileID = profileID
             }
         }
@@ -755,6 +761,10 @@ struct ClosestUpgradeProvider: AppIntentTimelineProvider {
             return upgrade.category == .builderBase
         case .starLab:
             return upgrade.category == .starLab
+        case .homeOverall:
+            return upgrade.category == .builderVillage || upgrade.category == .lab || upgrade.category == .pets
+        case .builderBaseOverall:
+            return upgrade.category == .builderBase || upgrade.category == .starLab
         }
     }
 
@@ -765,6 +775,8 @@ struct ClosestUpgradeProvider: AppIntentTimelineProvider {
         case .pets: return "Pet House"
         case .builderBase: return "Builder Base"
         case .starLab: return "Star Lab"
+        case .homeOverall: return "Home Overall"
+        case .builderBaseOverall: return "Builder Base Overall"
         }
     }
 }
@@ -777,6 +789,7 @@ struct ClosestUpgradeWidgetEntryView: View {
             HStack(spacing: 8) {
                 trimmedWidgetImage(named: iconName(for: upgrade))
                     .resizable()
+                    .clashWidgetTintAwareRendering()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
 
@@ -892,7 +905,7 @@ struct WarStatusProvider: AppIntentTimelineProvider {
         
         // Get the profile ID to load war data for
         let profileID: UUID? = {
-            if let selected = configuration.selectedProfile, selected != .automatic {
+            if let selected = configuration.selectedProfile, !selected.isAutomatic {
                 return selected.profileID()
             }
             return nil
@@ -1379,19 +1392,16 @@ struct LabPetProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -1433,20 +1443,16 @@ struct LabPetProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    // Reconstruct the ProfileSelection from saved rawValue
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -1544,19 +1550,16 @@ struct HelperCooldownProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -1630,18 +1633,15 @@ struct HelperCooldownProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -1672,6 +1672,7 @@ struct HelperCooldownWidgetEntryView: View {
                 Spacer()
                 Image("buildings_home/helper_hut")
                     .resizable()
+                    .clashWidgetTintAwareRendering()
                     .scaledToFit()
                     .frame(width: 64, height: 64)
                 Spacer()
@@ -1778,7 +1779,7 @@ struct HelperCooldownWidget: Widget {
             }
         }
         .configurationDisplayName("Helper Cooldowns")
-        .description("Track helper cooldown timers. Check Settings > Profiles to see which profile number corresponds to your accounts.")
+        .description("Track helper cooldown timers,hoose profile or set to last opened profile.")
         .supportedFamilies([.systemSmall])
     }
 }
@@ -1822,17 +1823,14 @@ struct ClanWarWidgetProvider: AppIntentTimelineProvider {
         
         // First check if a profile is selected in the configuration
         if let selectedProfile = configuration.selectedProfile,
-           selectedProfile != .automatic,
+           !selectedProfile.isAutomatic,
            let profileID = selectedProfile.profileID() {
             profileToUse = state.profiles.first(where: { $0.id == profileID })
         } else {
             // If no profile selected, try to read from UserDefaults (saved preference)
-            if let savedSelection = defaults?.string(forKey: "widget_profile_selection") {
-                if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                   savedProfile != .automatic,
-                   let profileID = savedProfile.profileID() {
-                    profileToUse = state.profiles.first(where: { $0.id == profileID })
-                }
+            if let savedSelection = defaults?.string(forKey: "widget_profile_selection"),
+               let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                profileToUse = state.profiles.first(where: { $0.id == profileID })
             }
         }
         
@@ -1874,18 +1872,15 @@ struct ClanWarWidgetProvider: AppIntentTimelineProvider {
         
         // First check if a profile is selected in the configuration
         if let selectedProfile = configuration.selectedProfile,
-           selectedProfile != .automatic,
+           !selectedProfile.isAutomatic,
            let profileID = selectedProfile.profileID() {
             profileToUse = state.profiles.first(where: { $0.id == profileID })
         } else {
             // If no profile selected, try to read from UserDefaults (saved preference)
             let defaults = UserDefaults(suiteName: "group.Zachary-Buschmann.clash-widgets")
-            if let savedSelection = defaults?.string(forKey: "widget_profile_selection") {
-                if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                   savedProfile != .automatic,
-                   let profileID = savedProfile.profileID() {
-                    profileToUse = state.profiles.first(where: { $0.id == profileID })
-                }
+            if let savedSelection = defaults?.string(forKey: "widget_profile_selection"),
+               let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                profileToUse = state.profiles.first(where: { $0.id == profileID })
             }
         }
         
@@ -2228,9 +2223,10 @@ struct LabPetWidgetEntryView: View {
             if index < entry.upgrades.count {
                 let upgrade = entry.upgrades[index]
                 HStack(spacing: 6) {
-                    Image(iconName(for: upgrade))
+                    trimmedWidgetImage(named: iconName(for: upgrade))
                         .interpolation(.none)
                         .resizable()
+                        .clashWidgetTintAwareRendering()
                         .scaledToFit()
                         .frame(width: 22, height: 22)
                     VStack(alignment: .leading, spacing: 0) {
@@ -2332,7 +2328,7 @@ struct LabPetWidget: Widget {
             }
         }
         .configurationDisplayName("Lab & Pets")
-        .description("Track your laboratory and pet house upgrades. Check Settings > Profiles to see which profile number corresponds to your accounts.")
+        .description("Track your laboratory and pet house upgrades, choose profile or set to last opened profile.")
         .supportedFamilies([.systemSmall])
     }
 }
@@ -2402,19 +2398,16 @@ struct BuilderBaseProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -2451,19 +2444,16 @@ struct BuilderBaseProvider: AppIntentTimelineProvider {
             // First check if a profile is selected in the configuration
             var selectedProfileID: UUID? = nil
             if let selectedProfile = configuration.selectedProfile,
-               selectedProfile != .automatic,
+               !selectedProfile.isAutomatic,
                let profileID = selectedProfile.profileID() {
                 selectedProfileID = profileID
             } else {
                 // If no profile selected, try to read from UserDefaults (saved preference)
                 let appGroup = "group.Zachary-Buschmann.clash-widgets"
                 if let defaults = UserDefaults(suiteName: appGroup),
-                   let savedSelection = defaults.string(forKey: "widget_profile_selection") {
-                    if let savedProfile = ProfileSelection(rawValue: savedSelection),
-                       savedProfile != .automatic,
-                       let profileID = savedProfile.profileID() {
-                        selectedProfileID = profileID
-                    }
+                   let savedSelection = defaults.string(forKey: "widget_profile_selection"),
+                   let profileID = ProfileEntity.resolveProfileID(from: savedSelection) {
+                    selectedProfileID = profileID
                 }
             }
             
@@ -2526,9 +2516,10 @@ struct BuilderBaseWidgetEntryView: View {
             if index < entry.upgrades.count {
                 let upgrade = entry.upgrades[index]
                 HStack(spacing: 6) {
-                    Image(iconName(for: upgrade))
+                    trimmedWidgetImage(named: iconName(for: upgrade))
                         .interpolation(.none)
                         .resizable()
+                        .clashWidgetTintAwareRendering()
                         .scaledToFit()
                         .frame(width: 18, height: 18)
                     VStack(alignment: .leading, spacing: 0) {
@@ -2631,7 +2622,7 @@ struct BuilderBaseWidget: Widget {
             }
         }
         .configurationDisplayName("Builder Base")
-        .description("Track your Builder Base builders and Star Laboratory upgrades. Check Settings > Profiles to see which profile number corresponds to your accounts.")
+        .description("Track your Builder Base builders and Star Laboratory upgrades, choose profile or set to last opened profile.")
         .supportedFamilies([.systemSmall])
     }
 }

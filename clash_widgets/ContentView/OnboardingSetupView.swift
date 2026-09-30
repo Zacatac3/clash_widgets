@@ -722,6 +722,7 @@ struct AddProfileSheet: View {
             goldPassReminderEnabled: submission.goldPassBoost > 0,
             notificationSettings: submission.notificationSettings
         )
+        ProgressDisplaySettings.markNewProfile(newProfileId)
 
         dataService.notificationSettings = submission.notificationSettings
 

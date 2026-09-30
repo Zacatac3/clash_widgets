@@ -44,6 +44,7 @@ struct EquipmentView: View {
                         dataService.resetHiddenEquipment()
                     }
                 )
+                .adaptivePanelPresentation()
             }
         }
     }
@@ -167,11 +168,13 @@ struct EquipmentView: View {
     }
 
     private var heroOptions: [String] {
-        let heroes = equipmentEntries
-            .map { $0.hero }
-            .filter { !$0.isEmpty }
-        let unique = Array(Set(heroes)).sorted()
-        return [Self.allHeroesLabel] + unique
+        let heroes = equipmentEntries.map { $0.hero }.filter { !$0.isEmpty }
+        let unique = Set(heroes)
+        // Order by heroes_config.json unlock order, then alphabetical for unknowns
+        let configOrder = HeroConfigStore.shared.configs.map { $0.displayName }
+        let ordered = configOrder.filter { unique.contains($0) }
+        let remaining = unique.subtracting(Set(configOrder)).sorted()
+        return [Self.allHeroesLabel] + ordered + remaining
     }
 
     private var filteredEntries: [EquipmentEntry] {
@@ -220,8 +223,12 @@ struct EquipmentView: View {
     }
 
     private var groupedHeroes: [String] {
-        let heroes = groupedEntries.keys.filter { !$0.isEmpty }.sorted()
-        return heroes
+        let available = Set(groupedEntries.keys.filter { !$0.isEmpty })
+        // Order by heroes_config.json unlock order, then alphabetical for unknowns
+        let configOrder = HeroConfigStore.shared.configs.map { $0.displayName }
+        let ordered = configOrder.filter { available.contains($0) }
+        let remaining = available.subtracting(Set(configOrder)).sorted()
+        return ordered + remaining
     }
 
     private var totalOreCost: OreTotals {
@@ -283,8 +290,12 @@ struct EquipmentView: View {
     }
 
     private func heroUnlockTownHall(_ heroName: String) -> Int {
-        let normalized = heroName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
-        switch normalized {
+        // Prefer config-driven values so new heroes work without code changes
+        if let configValue = HeroConfigStore.shared.equipmentUnlockTownHall(for: heroName) {
+            return configValue
+        }
+        // Hardcoded fallback
+        switch heroName.trimmingCharacters(in: .whitespacesAndNewlines).lowercased() {
         case "barbarian king":
             return 8
         case "archer queen":
@@ -295,6 +306,8 @@ struct EquipmentView: View {
             return 11
         case "royal champion":
             return 13
+        case "dragon duke":
+            return 15
         default:
             return 8
         }
@@ -331,7 +344,8 @@ private struct EquipmentRow: View {
     let totals: OreTotals
 
     private var showStarry: Bool {
-        entry.rarity == .epic
+        // Show starry column only if this entry actually has a non-zero starry cost
+        totals.starry > 0
     }
 
     private var levelCosts: [(level: Int, cost: OreTotals)] {
@@ -423,6 +437,13 @@ private struct HeroSectionHeader: View {
     }
 
     private var heroAssetName: String {
+        // Prefer config-driven asset names so heroes_config.json is the single source of truth
+        if let config = HeroConfigStore.shared.configs.first(where: {
+            $0.displayName.lowercased() == heroName.lowercased()
+        }), let assetName = config.assetName {
+            return assetName
+        }
+        // Hardcoded fallback
         switch heroName {
         case "Barbarian King":
             return "heroes/Barbarian_King"
@@ -493,8 +514,10 @@ private struct OreTotals: Equatable {
     func adjusted(for rarity: EquipmentRarity) -> OreTotals {
         switch rarity {
         case .common:
+            // Common equipment costs only Shiny and Glowy ore — no Starry
             return OreTotals(shiny: shiny, glowy: glowy, starry: 0)
         case .epic:
+            // Epic equipment costs Shiny, Glowy, and Starry ore
             return self
         }
     }
@@ -543,13 +566,24 @@ private struct OreCostTable {
     static let shared = load()
 
     static func load() -> OreCostTable {
-        if let url = Bundle.main.url(forResource: "ore_costs", withExtension: "csv", subdirectory: "json_files")
+        // Try all candidate json folder locations (handles folder references and app group)
+        for folder in DataService.candidateFolderURLs(named: "json") {
+            let url = folder.appendingPathComponent("ore_costs.csv")
+            if let data = try? Data(contentsOf: url),
+               let text = String(data: data, encoding: .utf8) {
+                let result = parse(csv: text)
+                if result.maxLevel > 0 { return result }  // only accept if it actually parsed ore data
+            }
+        }
+        // Legacy direct bundle lookups
+        if let url = Bundle.main.url(forResource: "ore_costs", withExtension: "csv", subdirectory: "json")
             ?? Bundle.main.url(forResource: "ore_costs", withExtension: "csv"),
            let data = try? Data(contentsOf: url),
            let text = String(data: data, encoding: .utf8) {
-            return parse(csv: text)
+            let result = parse(csv: text)
+            if result.maxLevel > 0 { return result }
         }
-
+        // Fall back to embedded data (covers levels 1-27, sufficient for all current equipment)
         return parse(csv: defaultCSV)
     }
 
@@ -652,13 +686,56 @@ private struct EquipmentDataFile: Decodable {
     let equipment: [EquipmentMetadata]
 }
 
+struct HeroConfigStore {
+    let configs: [HeroConfig]
+
+    static let shared = HeroConfigStore.load()
+
+    static func load() -> HeroConfigStore {
+        // Try all candidate json folder locations
+        for folder in DataService.candidateFolderURLs(named: "json") {
+            let url = folder.appendingPathComponent("heroes_config.json")
+            if let data = try? Data(contentsOf: url),
+               let configs = try? JSONDecoder().decode([HeroConfig].self, from: data) {
+                return HeroConfigStore(configs: configs)
+            }
+        }
+        // Legacy direct bundle lookups
+        if let url = Bundle.main.url(forResource: "heroes_config", withExtension: "json", subdirectory: "json")
+            ?? Bundle.main.url(forResource: "heroes_config", withExtension: "json"),
+           let data = try? Data(contentsOf: url),
+           let configs = try? JSONDecoder().decode([HeroConfig].self, from: data) {
+            return HeroConfigStore(configs: configs)
+        }
+        return HeroConfigStore(configs: [])
+    }
+
+    /// Returns the minimum TH level at which this hero's equipment should be shown.
+    /// Uses max(unlockTownHall, 8) since the equipment system starts at TH8.
+    func equipmentUnlockTownHall(for heroName: String) -> Int? {
+        guard let config = configs.first(where: {
+            $0.displayName.lowercased() == heroName.lowercased()
+        }) else { return nil }
+        return max(config.unlockTownHall, 8)
+    }
+}
+
 private struct EquipmentDataStore {
     let entries: [EquipmentMetadata]
 
     static let shared = EquipmentDataStore.load()
 
     static func load() -> EquipmentDataStore {
-        if let url = Bundle.main.url(forResource: "equipment_data", withExtension: "json", subdirectory: "json_files")
+        // Try all candidate json folder locations (handles folder references and app group)
+        for folder in DataService.candidateFolderURLs(named: "json") {
+            let url = folder.appendingPathComponent("equipment_data.json")
+            if let data = try? Data(contentsOf: url),
+               let decoded = try? JSONDecoder().decode(EquipmentDataFile.self, from: data) {
+                return EquipmentDataStore(entries: decoded.equipment)
+            }
+        }
+        // Legacy direct bundle lookups
+        if let url = Bundle.main.url(forResource: "equipment_data", withExtension: "json", subdirectory: "json")
             ?? Bundle.main.url(forResource: "equipment_data", withExtension: "json"),
            let data = try? Data(contentsOf: url),
            let decoded = try? JSONDecoder().decode(EquipmentDataFile.self, from: data) {

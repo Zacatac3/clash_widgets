@@ -3,6 +3,10 @@ import SwiftUI
 import UIKit
 #endif
 
+private func inlineImageMaxWidth(for pageWidth: CGFloat, sizeClass: UserInterfaceSizeClass?) -> CGFloat {
+    (sizeClass == .regular || pageWidth >= 400) ? pageWidth * 0.6 : .infinity
+}
+
 struct InfoSheetView: View {
     @Environment(\.dismiss) private var dismiss
     @Binding var selectedPage: InfoSheetPage
@@ -27,7 +31,7 @@ struct InfoSheetView: View {
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
-            .navigationTitle("Help & What’s New")
+            .navigationTitle("Welcome & What’s New")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
@@ -41,11 +45,13 @@ struct InfoSheetView: View {
 private struct WhatsNewContent: View {
     let sections: [WhatsNewSection]
 
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var showMissingChangelogAlert = false
     @AppStorage("fullChangelogURL") private var fullChangelogURL: String = "https://zacatac3.github.io/changelog"
 
     var body: some View {
-        ScrollView {
+        GeometryReader { geometry in
+          ScrollView {
             VStack(spacing: 16) {
                 HStack(alignment: .firstTextBaseline) {
                     Text("What’s New")
@@ -78,8 +84,7 @@ private struct WhatsNewContent: View {
                                     }
 
                                     if let inlineImageName = whatsNewInlineImageName(for: bullet, in: section) {
-                                        whatsNewInlineImage(name: inlineImageName)
-                                            .padding(.leading, 18)
+                                        whatsNewInlineImage(name: inlineImageName, maxWidth: inlineImageMaxWidth(for: geometry.size.width, sizeClass: horizontalSizeClass))
                                             .padding(.top, 2)
                                     }
                                 }
@@ -95,6 +100,7 @@ private struct WhatsNewContent: View {
                 }
             }
             .padding()
+          }
         }
         .alert("Changelog URL not configured", isPresented: $showMissingChangelogAlert) {
             Button("OK", role: .cancel) { }
@@ -104,13 +110,20 @@ private struct WhatsNewContent: View {
     }
 
     private func whatsNewInlineImageName(for bullet: String, in section: WhatsNewSection) -> String? {
-        if section.dateLabel.contains("2/16/2026") {
+        if section.dateLabel.contains("1.3"),
+           bullet.lowercased().contains("progress (beta)") {
+            return "progress"
+        }
+        if section.dateLabel.contains("2/24/2026") {
             let normalized = bullet.lowercased()
             if normalized.contains("boost") && normalized.contains("custom") {
                 return "custom_boosts"
             }
             if normalized.contains("hide") && normalized.contains("equipment") {
                 return "equipment"
+            }
+            if normalized.contains("dragon duke") {
+                return "duke"
             }
         }
 
@@ -129,13 +142,15 @@ private struct WhatsNewContent: View {
     }
 
     @ViewBuilder
-    private func whatsNewInlineImage(name: String) -> some View {
+    private func whatsNewInlineImage(name: String, maxWidth: CGFloat) -> some View {
         #if canImport(UIKit)
         if let uiImage = resolveWhatsNewImage(name: name) {
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFit()
+                .frame(maxWidth: maxWidth)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: .infinity, alignment: .center)
         }
         #endif
     }
@@ -184,6 +199,7 @@ private struct WhatsNewView: View {
 
 private struct ChangelogView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var changelogEntries: [ChangelogEntry] = []
 
     private enum ChangelogEntry: Identifiable {
@@ -211,7 +227,8 @@ private struct ChangelogView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollView {
+            GeometryReader { geometry in
+              ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     ForEach(Array(changelogEntries.enumerated()), id: \.offset) { _, entry in
                         switch entry {
@@ -234,13 +251,13 @@ private struct ChangelogView: View {
                                 .font(.body)
                                 .foregroundColor(.secondary)
                         case .image(let imageName):
-                            changelogInlineImage(name: imageName)
-                                .padding(.leading, 18)
+                            changelogInlineImage(name: imageName, maxWidth: inlineImageMaxWidth(for: geometry.size.width, sizeClass: horizontalSizeClass))
                         }
                     }
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding()
+              }
             }
             .navigationTitle("Changelog")
             .toolbar {
@@ -331,6 +348,9 @@ private struct ChangelogView: View {
         if normalized.contains("current war") {
             return "war_section"
         }
+        if normalized.contains("customiz") && normalized.contains("boost") {
+            return "custom_boosts"
+        }
         if normalized.contains("boost") {
             return "boosts"
         }
@@ -360,18 +380,20 @@ private struct ChangelogView: View {
             .replacingOccurrences(of: ".jpeg", with: "")
             .replacingOccurrences(of: ".webp", with: "")
 
-        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts"]
+        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts", "custom_boosts", "equipment", "duke", "progress"]
         return knownImageNames.contains(name) ? name : nil
     }
 
     @ViewBuilder
-    private func changelogInlineImage(name: String) -> some View {
+    private func changelogInlineImage(name: String, maxWidth: CGFloat) -> some View {
         #if canImport(UIKit)
         if let uiImage = resolveChangelogImage(name: name) {
             Image(uiImage: uiImage)
                 .resizable()
                 .scaledToFit()
+                .frame(maxWidth: maxWidth)
                 .clipShape(RoundedRectangle(cornerRadius: 10))
+                .frame(maxWidth: .infinity, alignment: .center)
         } else {
             HStack(spacing: 8) {
                 Image(systemName: "photo")
@@ -455,12 +477,33 @@ struct HelpSheetContent: View {
                     sectionHeader(title: "Getting Started", icon: "arrow.down.doc.fill")
 
                     stepRow(number: "1", text: "Press the Open Game settings button or Open Clash of Clans and go to Settings.")
-                    stepRow(number: "2", text: "In More Settings**, scroll to the bottom, and tap Export JSON Data.")
-                    stepRow(number: "3", text: "Return here and tap **Paste and Import Data**.")
+                    stepRow(number: "2", text: "In More Settings, scroll to the bottom, and tap Export JSON Data.")
+                    stepRow(number: "3", text: "Return here and tap Paste and Import Data.")
                 }
                 .padding()
-                .background(Color(.secondarySystemBackground))
-                .cornerRadius(12)
+                .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+
+                VStack(alignment: .leading, spacing: 12) {
+                    sectionHeader(title: "Fixing 'Allow Paste' Popups", icon: "doc.on.clipboard")
+                    Text("To stop the manual paste prompt, enable 'Allow' in System Settings.")
+                        .font(.footnote)
+                        .foregroundColor(.secondary)
+
+                    Button(action: {
+                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                            UIApplication.shared.open(url)
+                        }
+                    }) {
+                        Label("Open App Settings", systemImage: "gearshape.fill")
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 10)
+                            .background(Color.accentColor, in: RoundedRectangle(cornerRadius: 16))
+                            .foregroundColor(.white)
+                    }
+                }
+                .padding()
+                .background(RoundedRectangle(cornerRadius: 16).fill(Color(.secondarySystemBackground)))
+                .overlay(RoundedRectangle(cornerRadius: 16).stroke(Color.accentColor.opacity(0.3), lineWidth: 1))
 
                 helpCard(title: "Managing Profiles", icon: "person.2.fill", bullets: [
                     "Switch players by tapping the Switch Profile button in the top-right.",
@@ -474,30 +517,8 @@ struct HelpSheetContent: View {
                     "Import again once an upgrade finishes to keep timers accurate."
                 ])
 
-                VStack(alignment: .leading, spacing: 12) {
-                    sectionHeader(title: "Fixing 'Allow Paste' Popups", icon: " clergyman")
-                    Text("To stop the manual paste prompt, enable 'Allow' in System Settings.")
-                        .font(.footnote)
-                        .foregroundColor(.secondary)
-
-                    Button(action: {
-                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                            UIApplication.shared.open(url)
-                        }
-                    }) {
-                        Label("Open App Settings", systemImage: "gearshape.fill")
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 10)
-                            .background(Color.blue)
-                            .foregroundColor(.white)
-                            .cornerRadius(8)
-                    }
-                }
-                .padding()
-                .overlay(RoundedRectangle(cornerRadius: 12).stroke(Color.blue.opacity(0.3), lineWidth: 1))
-
                 VStack(alignment: .center, spacing: 8) {
-                    Text("⚠️ Disclaimer")
+                    Text("Disclaimer")
                         .font(.headline)
                     Text("Clashboard is still in active development. If something breaks, please use the Feedback Form in Settings.")
                         .font(.caption)

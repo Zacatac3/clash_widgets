@@ -1,0 +1,527 @@
+{
+  "Town Hall": {
+    "internalName": "Town Hall",
+    "id": 1000001,
+    "displayName": "Town Hall"
+  },
+  "Clan Castle": {
+    "internalName": "Clan Castle",
+    "id": 1000014,
+    "displayName": "Clan Castle"
+  },
+  "Gold Storage": {
+    "internalName": "Gold Storage",
+    "id": 1000005,
+    "displayName": "Gold Storage"
+  },
+  "Elixir Storage": {
+    "internalName": "Elixir Storage",
+    "id": 1000003,
+    "displayName": "Elixir Storage"
+  },
+  "Dark Elixir Storage": {
+    "internalName": "Dark Elixir Storage",
+    "id": 1000024,
+    "displayName": "Dark Elixir Storage"
+  },
+  "Gold Mine": {
+    "internalName": "Gold Mine",
+    "id": 1000004,
+    "displayName": "Gold Mine"
+  },
+  "Elixir Collector": {
+    "internalName": "Elixir Collector",
+    "id": 1000002,
+    "displayName": "Elixir Collector"
+  },
+  "Dark Elixir Drill": {
+    "internalName": "Dark Elixir Drill",
+    "id": 1000023,
+    "displayName": "Dark Elixir Drill"
+  },
+  "Army Camp": {
+    "internalName": "Army Camp",
+    "id": 1000000,
+    "displayName": "Army Camp"
+  },
+  "Laboratory": {
+    "internalName": "Laboratory",
+    "id": 1000007,
+    "displayName": "Laboratory"
+  },
+  "Barracks": {
+    "internalName": "Barracks",
+    "id": 1000006,
+    "displayName": "Barracks"
+  },
+  "Dark Barracks": {
+    "internalName": "Dark Barracks",
+    "id": 1000026,
+    "displayName": "Dark Barracks"
+  },
+  "Spell Factory": {
+    "internalName": "Spell Factory",
+    "id": 1000020,
+    "displayName": "Spell Factory"
+  },
+  "Dark Spell Factory": {
+    "internalName": "Dark Spell Factory",
+    "id": 1000029,
+    "displayName": "Dark Spell Factory"
+  },
+  "Siege Workshop": {
+    "internalName": "Siege Workshop",
+    "id": 1000059,
+    "displayName": "Workshop"
+  },
+  "Hero Hall": {
+    "internalName": "Hero Hall",
+    "id": 1000071,
+    "displayName": "Hero Hall"
+  },
+  "Pet House": {
+    "internalName": "Pet House",
+    "id": 1000068,
+    "displayName": "Pet House"
+  },
+  "Blacksmith": {
+    "internalName": "Blacksmith",
+    "id": 1000070,
+    "displayName": "Blacksmith"
+  },
+  "Builders Hut": {
+    "internalName": "Builders Hut",
+    "id": 1000015,
+    "displayName": "Builder's Hut"
+  },
+  "BOBs Hut": {
+    "internalName": "BOBs Hut",
+    "id": 1000064,
+    "displayName": "B.O.B's Hut"
+  },
+  "Helper Hut": {
+    "internalName": "Helper Hut",
+    "id": 1000093,
+    "displayName": "Helper Hut"
+  },
+  "Wall": {
+    "internalName": "Wall",
+    "id": 1000010,
+    "displayName": "Wall"
+  },
+  "Cannon": {
+    "internalName": "Cannon",
+    "id": 1000008,
+    "displayName": "Cannon"
+  },
+  "Archer Tower": {
+    "internalName": "Archer Tower",
+    "id": 1000009,
+    "displayName": "Archer Tower"
+  },
+  "Mortar": {
+    "internalName": "Mortar",
+    "id": 1000013,
+    "displayName": "Mortar"
+  },
+  "Air Defense": {
+    "internalName": "Air Defense",
+    "id": 1000012,
+    "displayName": "Air Defense"
+  },
+  "Wizard Tower": {
+    "internalName": "Wizard Tower",
+    "id": 1000011,
+    "displayName": "Wizard Tower"
+  },
+  "Hidden Tesla": {
+    "internalName": "Hidden Tesla",
+    "id": 1000019,
+    "displayName": "Hidden Tesla"
+  },
+  "Air Sweeper": {
+    "internalName": "Air Sweeper",
+    "id": 1000028,
+    "displayName": "Air Sweeper"
+  },
+  "Bomb Tower": {
+    "internalName": "Bomb Tower",
+    "id": 1000032,
+    "displayName": "Bomb Tower"
+  },
+  "X-Bow": {
+    "internalName": "X-Bow",
+    "id": 1000021,
+    "displayName": "X-Bow"
+  },
+  "Inferno Tower": {
+    "internalName": "Inferno Tower",
+    "id": 1000027,
+    "displayName": "Inferno Tower"
+  },
+  "Eagle Artillery": {
+    "internalName": "Eagle Artillery",
+    "id": 1000031,
+    "displayName": "Eagle Artillery"
+  },
+  "Scattershot": {
+    "internalName": "Scattershot",
+    "id": 1000067,
+    "displayName": "Scattershot"
+  },
+  "Spell Tower": {
+    "internalName": "Spell Tower",
+    "id": 1000072,
+    "displayName": "Spell Tower"
+  },
+  "Monolith": {
+    "internalName": "Monolith",
+    "id": 1000077,
+    "displayName": "Monolith"
+  },
+  "Multi Archer Tower": {
+    "internalName": "Multi Archer Tower",
+    "id": 1000084,
+    "displayName": "Multi-Archer Tower"
+  },
+  "Ricochet Cannon": {
+    "internalName": "Ricochet Cannon",
+    "id": 1000085,
+    "displayName": "Ricochet Cannon"
+  },
+  "Multi Gear Tower": {
+    "internalName": "Multi Gear Tower",
+    "id": 1000079,
+    "displayName": "Multi Gear Tower"
+  },
+  "Firespitter": {
+    "internalName": "Firespitter",
+    "id": 1000089,
+    "displayName": "Firespitter"
+  },
+  "Revenge Tower": {
+    "internalName": "Revenge Tower",
+    "id": 1000086,
+    "displayName": "Revenge Tower"
+  },
+  "Super Wizard Tower": {
+    "internalName": "Super Wizard Tower",
+    "id": 1000102,
+    "displayName": "Super Wizard Tower"
+  },
+  "Crafting Station": {
+    "internalName": "Crafting Station",
+    "id": 1000097,
+    "displayName": "Crafting Station"
+  },
+  "Barbarian King Altar": {
+    "internalName": "Barbarian King Altar",
+    "id": 1000022,
+    "displayName": "Hero Altar Barbarian King"
+  },
+  "Archer Queen Altar": {
+    "internalName": "Archer Queen Altar",
+    "id": 1000025,
+    "displayName": "Hero Altar Archer Queen"
+  },
+  "Grand Warden Altar": {
+    "internalName": "Grand Warden Altar",
+    "id": 1000030,
+    "displayName": "Hero Altar Grand Warden"
+  },
+  "Royal Champion Altar": {
+    "internalName": "Royal Champion Altar",
+    "id": 1000066,
+    "displayName": "Hero Altar Royal Champion"
+  },
+  "Communications mast": {
+    "internalName": "Communications mast",
+    "id": 1000016,
+    "displayName": "Communications mast"
+  },
+  "Goblin Hall": {
+    "internalName": "Goblin Hall",
+    "id": 1000017,
+    "displayName": "Goblin main building"
+  },
+  "Goblin Hut": {
+    "internalName": "Goblin Hut",
+    "id": 1000018,
+    "displayName": "Goblin hut"
+  },
+  "Tutorial Cannon": {
+    "internalName": "Tutorial Cannon",
+    "id": 1000060,
+    "displayName": "CannonNPC"
+  },
+  "Goblin Castle": {
+    "internalName": "Goblin Castle",
+    "id": 1000061,
+    "displayName": "Goblin Castle"
+  },
+  "Foreboding Cave": {
+    "internalName": "Foreboding Cave",
+    "id": 1000062,
+    "displayName": "Dragon Cave"
+  },
+  "Goblin Boss TH": {
+    "internalName": "Goblin Boss TH",
+    "id": 1000069,
+    "displayName": "Goblin boss TH"
+  },
+  "TroopCage": {
+    "internalName": "TroopCage",
+    "id": 1000073,
+    "displayName": "TroopCage"
+  },
+  "DragonLair": {
+    "internalName": "DragonLair",
+    "id": 1000074,
+    "displayName": "DragonLair"
+  },
+  "SpellCage": {
+    "internalName": "SpellCage",
+    "id": 1000075,
+    "displayName": "SpellCage"
+  },
+  "PEKKAs Playhouse": {
+    "internalName": "PEKKAs Playhouse",
+    "id": 1000076,
+    "displayName": "PEKKA's Playhouse"
+  },
+  "Sour Elixir Cauldron": {
+    "internalName": "Sour Elixir Cauldron",
+    "id": 1000083,
+    "displayName": "ClashoweenBuilding"
+  },
+  "PetCage": {
+    "internalName": "PetCage",
+    "id": 1000090,
+    "displayName": "PetCage"
+  },
+  "DefenseTroopCage": {
+    "internalName": "DefenseTroopCage",
+    "id": 1000091,
+    "displayName": "DefenseTroopCage"
+  },
+  "DirectHeroChallengeMainBuilding": {
+    "internalName": "DirectHeroChallengeMainBuilding",
+    "id": 1000092,
+    "displayName": "DirectHeroChallengeMainBuilding"
+  },
+  "GenericSpellCage": {
+    "internalName": "GenericSpellCage",
+    "id": 1000098,
+    "displayName": "GenericSpellCage"
+  },
+  "GenericTroopCage": {
+    "internalName": "GenericTroopCage",
+    "id": 1000099,
+    "displayName": "GenericTroopCage"
+  },
+  "DefenseGenericTroopCage": {
+    "internalName": "DefenseGenericTroopCage",
+    "id": 1000100,
+    "displayName": "DefenseGenericTroopCage"
+  },
+  "DirectHeroChallengeGenericMainBuilding": {
+    "internalName": "DirectHeroChallengeGenericMainBuilding",
+    "id": 1000101,
+    "displayName": "DirectHeroChallengeGenericMainBuilding"
+  },
+  "Town Hall 18 Teaser": {
+    "internalName": "Town Hall 18 Teaser",
+    "id": 1000103,
+    "displayName": "Town Hall 18 Teaser"
+  },
+  "Town Hall 17 Upgrading": {
+    "internalName": "Town Hall 17 Upgrading",
+    "id": 1000104,
+    "displayName": "Town Hall 17 Upgrading"
+  },
+  "Unused2": {
+    "internalName": "Unused2",
+    "id": 1000087,
+    "displayName": "Unused2"
+  },
+  "Unused3": {
+    "internalName": "Unused3",
+    "id": 1000088,
+    "displayName": "Unused3"
+  },
+  "Unused4": {
+    "internalName": "Unused4",
+    "id": 1000094,
+    "displayName": "Unused4"
+  },
+  "Unused5": {
+    "internalName": "Unused5",
+    "id": 1000095,
+    "displayName": "Unused5"
+  },
+  "Unused6": {
+    "internalName": "Unused6",
+    "id": 1000096,
+    "displayName": "Unused6"
+  },
+  "BB Builder Hall": {
+    "internalName": "BB Builder Hall",
+    "id": 1000034,
+    "displayName": "bb_Builder Hall"
+  },
+  "BB Gold Storage": {
+    "internalName": "BB Gold Storage",
+    "id": 1000038,
+    "displayName": "bb_Gold Storage"
+  },
+  "BB Elixir Storage": {
+    "internalName": "BB Elixir Storage",
+    "id": 1000036,
+    "displayName": "bb_Elixir Storage"
+  },
+  "BB Gold Mine": {
+    "internalName": "BB Gold Mine",
+    "id": 1000037,
+    "displayName": "bb_Gold Mine"
+  },
+  "BB Elixir Collector": {
+    "internalName": "BB Elixir Collector",
+    "id": 1000035,
+    "displayName": "bb_Elixir Collector"
+  },
+  "BB Army Camp": {
+    "internalName": "BB Army Camp",
+    "id": 1000042,
+    "displayName": "bb_Army Camp"
+  },
+  "BB Reinforcement Camp": {
+    "internalName": "BB Reinforcement Camp",
+    "id": 1000049,
+    "displayName": "bb_Reinforcement Camp"
+  },
+  "BB Star Laboratory": {
+    "internalName": "BB Star Laboratory",
+    "id": 1000046,
+    "displayName": "bb_Star Laboratory"
+  },
+  "BB Barracks": {
+    "internalName": "BB Barracks",
+    "id": 1000040,
+    "displayName": "bb_Builder BBarracks"
+  },
+  "BB OTTOs Outpost": {
+    "internalName": "BB OTTOs Outpost",
+    "id": 1000078,
+    "displayName": "bb_O.T.T.O's Outpost"
+  },
+  "BB Healing Hut": {
+    "internalName": "BB Healing Hut",
+    "id": 1000082,
+    "displayName": "bb_Healing Hut"
+  },
+  "BB BOB Control": {
+    "internalName": "BB BOB Control",
+    "id": 1000065,
+    "displayName": "bb_B.O.B Control"
+  },
+  "BB Gem Mine": {
+    "internalName": "BB Gem Mine",
+    "id": 1000058,
+    "displayName": "bb_Gem Mine"
+  },
+  "BB Clock Tower": {
+    "internalName": "BB Clock Tower",
+    "id": 1000039,
+    "displayName": "bb_Clock Tower"
+  },
+  "BB Battle Machine Altar": {
+    "internalName": "BB Battle Machine Altar",
+    "id": 1000053,
+    "displayName": "Hero Altar Warmachine"
+  },
+  "BB Battle Copter Altar": {
+    "internalName": "BB Battle Copter Altar",
+    "id": 1000080,
+    "displayName": "Battle Copter Altar"
+  },
+  "BB Wall": {
+    "internalName": "BB Wall",
+    "id": 1000033,
+    "displayName": "Wall"
+  },
+  "BB Cannon": {
+    "internalName": "BB Cannon",
+    "id": 1000044,
+    "displayName": "bb_Cannon"
+  },
+  "BB Archer Tower": {
+    "internalName": "BB Archer Tower",
+    "id": 1000048,
+    "displayName": "bb_Archer Tower"
+  },
+  "BB Double Cannon": {
+    "internalName": "BB Double Cannon",
+    "id": 1000041,
+    "displayName": "bb_Double Cannon"
+  },
+  "BB Firecrackers": {
+    "internalName": "BB Firecrackers",
+    "id": 1000050,
+    "displayName": "bb_Firecrackers"
+  },
+  "BB Crusher": {
+    "internalName": "BB Crusher",
+    "id": 1000055,
+    "displayName": "bb_Crusher"
+  },
+  "BB Hidden Tesla": {
+    "internalName": "BB Hidden Tesla",
+    "id": 1000043,
+    "displayName": "bb_Hidden Tesla"
+  },
+  "BB Guard Post": {
+    "internalName": "BB Guard Post",
+    "id": 1000051,
+    "displayName": "bb_Guard Post"
+  },
+  "BB Air Bombs": {
+    "internalName": "BB Air Bombs",
+    "id": 1000054,
+    "displayName": "bb_Air Bombs"
+  },
+  "BB Multi Mortar": {
+    "internalName": "BB Multi Mortar",
+    "id": 1000045,
+    "displayName": "bb_Multi Mortar"
+  },
+  "BB Roaster": {
+    "internalName": "BB Roaster",
+    "id": 1000056,
+    "displayName": "bb_Roaster"
+  },
+  "BB Giant Cannon": {
+    "internalName": "BB Giant Cannon",
+    "id": 1000057,
+    "displayName": "bb_Giant Cannon"
+  },
+  "BB Mega Tesla": {
+    "internalName": "BB Mega Tesla",
+    "id": 1000052,
+    "displayName": "bb_Mega Tesla"
+  },
+  "BB Lava Launcher": {
+    "internalName": "BB Lava Launcher",
+    "id": 1000063,
+    "displayName": "bb_Lava Launcher"
+  },
+  "BB X-Bow": {
+    "internalName": "BB X-Bow",
+    "id": 1000081,
+    "displayName": "bb_X-Bow"
+  },
+  "BB Builders Hut": {
+    "internalName": "BB Builders Hut",
+    "id": 1000047,
+    "displayName": "bb_Master Builder's Hut"
+  }
+}

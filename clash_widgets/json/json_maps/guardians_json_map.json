@@ -1,0 +1,52 @@
+{
+  "InfernoArtillery": {
+    "displayName": "Longshot",
+    "internalName": "InfernoArtillery",
+    "id": 107000000
+  },
+  "MeleeAreaaaa": {
+    "displayName": "Smasher",
+    "internalName": "MeleeAreaaaa",
+    "id": 107000001
+  },
+  "Eagle": {
+    "displayName": "Eagle",
+    "internalName": "Eagle",
+    "id": 107000002
+  },
+  "GigaInferno": {
+    "displayName": "GigaInferno",
+    "internalName": "GigaInferno",
+    "id": 107000003
+  },
+  "Assassins": {
+    "displayName": "Assassins",
+    "internalName": "Assassins",
+    "id": 107000004
+  },
+  "Reviver": {
+    "displayName": "Reviver",
+    "internalName": "Reviver",
+    "id": 107000005
+  },
+  "Sniffer": {
+    "displayName": "Sniffer",
+    "internalName": "Sniffer",
+    "id": 107000006
+  },
+  "Builder": {
+    "displayName": "Builder",
+    "internalName": "Builder",
+    "id": 107000007
+  },
+  "Logger": {
+    "displayName": "Logger",
+    "internalName": "Logger",
+    "id": 107000008
+  },
+  "Returner": {
+    "displayName": "Returner",
+    "internalName": "Returner",
+    "id": 107000009
+  }
+}

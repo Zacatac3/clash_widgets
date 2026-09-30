@@ -34,6 +34,7 @@ struct DashboardView: View {
             }
             .sheet(isPresented: $showInfoSheet) {
                 InfoSheetView(selectedPage: $infoSheetPage, sections: defaultWhatsNewSections())
+                    .adaptivePanelPresentation()
             }
             .sheet(isPresented: $showHomeOrderSheet) {
                 HomeSectionOrderSheet(
@@ -42,12 +43,15 @@ struct DashboardView: View {
                     showRestoreClassicToggle: isPadDevice,
                     restoreClassicLayout: $iPadRestoreClassicDashboardLayout
                 )
+                .adaptivePanelPresentation()
             }
             .sheet(isPresented: $showBoostSheet) {
                 BoostView(dataService: dataService)
+                    .adaptivePanelPresentation()
             }
             .sheet(isPresented: $showFirstImportTip) {
                 FirstImportTipSheet(isPresented: $showFirstImportTip)
+                    .adaptivePanelPresentation()
             }
             .onAppear {
                 applyIPadDashboardHardResetIfNeeded()
@@ -300,7 +304,7 @@ struct DashboardView: View {
         case .walls:
             return 4
         case .builderBase:
-            return max(2, builderBaseUpgrades.count + 1)
+            return max(2, builderBaseUpgrades.count + idleBuilderBaseBuilders)
         case .starLab:
             return max(2, starLabUpgrades.count + 1)
         }
@@ -368,10 +372,19 @@ struct DashboardView: View {
             case .walls:
                 wallProgressSummary
             case .builderBase:
-                if !builderBaseUpgrades.isEmpty {
+                if busyBuilderBaseBuilders > 0 || idleBuilderBaseBuilders > 0 {
                     VStack(spacing: 8) {
                         ForEach(builderBaseUpgrades) { upgrade in
                             BuilderRow(upgrade: upgrade)
+                        }
+                        if idleBuilderBaseBuilders > 0 {
+                            ForEach(0..<idleBuilderBaseBuilders, id: \.self) { index in
+                                IdleBuilderRow(
+                                    builderIndex: busyBuilderBaseBuilders + index + 1,
+                                    titlePrefix: "Builder Base Builder",
+                                    iconName: "resources/master_builder"
+                                )
+                            }
                         }
                     }
                 } else {
@@ -694,9 +707,18 @@ struct DashboardView: View {
         case .builderBase:
             if !hiddenSections.contains(section.rawValue) && displayedTownHallLevel >= 6 {
                 Section(section.title) {
-                    if !builderBaseUpgrades.isEmpty {
+                    if busyBuilderBaseBuilders > 0 || idleBuilderBaseBuilders > 0 {
                         ForEach(builderBaseUpgrades) { upgrade in
                             BuilderRow(upgrade: upgrade)
+                        }
+                        if idleBuilderBaseBuilders > 0 {
+                            ForEach(0..<idleBuilderBaseBuilders, id: \.self) { index in
+                                IdleBuilderRow(
+                                    builderIndex: busyBuilderBaseBuilders + index + 1,
+                                    titlePrefix: "Builder Base Builder",
+                                    iconName: "resources/master_builder"
+                                )
+                            }
                         }
                     } else {
                         IdleStatusRow(title: "Builder Base", status: "Idle")
@@ -1062,6 +1084,19 @@ struct DashboardView: View {
         max(totalBuilders - busyBuilders, 0)
     }
 
+    private var totalBuilderBaseBuilders: Int {
+        if displayedBuilderHallLevel <= 0 { return 0 }
+        return displayedBuilderHallLevel >= 6 ? 2 : 1
+    }
+
+    private var busyBuilderBaseBuilders: Int {
+        builderBaseUpgrades.count
+    }
+
+    private var idleBuilderBaseBuilders: Int {
+        max(totalBuilderBaseBuilders - busyBuilderBaseBuilders, 0)
+    }
+
     private func parseHomeSectionOrder() -> [HomeSection] {
         let raw = homeSectionOrder.split(separator: ",").map { String($0) }
         let parsed = raw.compactMap { HomeSection(rawValue: $0) }
@@ -1278,9 +1313,9 @@ struct DashboardView: View {
         var wallsByLevel: [Int: Int] = [:]
         if let buildings = export.buildings {
             for building in buildings {
-                if building.data == 1000010, let level = building.lvl, let count = building.cnt {
-                    wallsByLevel[level] = count
-                }
+                guard building.data == 1000010, let level = building.lvl else { continue }
+                let count = max(building.cnt ?? 1, 1)
+                wallsByLevel[level, default: 0] += count
             }
         }
         
@@ -1291,23 +1326,22 @@ struct DashboardView: View {
         
         for level in 1...maxWallLevel {
             let currentCount = wallsByLevel[level] ?? 0
-            let nextLevelThRequirement = buildingCosts[level + 1]?.thRequirement ?? 999
-            let canUpgradeAtCurrentTH = nextLevelThRequirement <= th
-            let cost = canUpgradeAtCurrentTH ? (buildingCosts[level + 1]?.cost ?? 0) : 0
+            let nextLevel = level + 1
+            let nextLevelThRequirement = buildingCosts[nextLevel]?.thRequirement ?? Int.max
+            let canUpgradeAtCurrentTH = level < maxWallLevel && nextLevelThRequirement <= th
+            let cost = canUpgradeAtCurrentTH ? (buildingCosts[nextLevel]?.cost ?? 0) : 0
             let upgradesRemaining = canUpgradeAtCurrentTH ? currentCount : 0
             let totalCostForLevel = cost * upgradesRemaining
-            
-            if currentCount > 0 || level <= (wallsByLevel.keys.max() ?? 1) {
-                let wallProgress = WallLevelProgress(
-                    level: level,
-                    currentCount: currentCount,
-                    maxCountForTH: maxWallCount,
-                    upgradesRemaining: upgradesRemaining,
-                    costPerLevel: cost,
-                    totalCostForLevel: totalCostForLevel
-                )
-                progress.append(wallProgress)
-            }
+
+            let wallProgress = WallLevelProgress(
+                level: level,
+                currentCount: currentCount,
+                maxCountForTH: maxWallCount,
+                upgradesRemaining: upgradesRemaining,
+                costPerLevel: cost,
+                totalCostForLevel: totalCostForLevel
+            )
+            progress.append(wallProgress)
         }
         
         return progress
@@ -1321,6 +1355,11 @@ struct DashboardView: View {
             if let maxAllowed = allowedLevels.max() {
                 return maxAllowed
             }
+        }
+
+        if let wallCounts = loadWallCountsFromGameConstants(),
+           let entry = wallCounts[th] {
+            return entry.maxWallLevel
         }
 
         switch th {
@@ -1341,27 +1380,80 @@ struct DashboardView: View {
         }
     }
 
+    private func parsedJSONURL(forResource name: String) -> URL? {
+        let bundle = Bundle.main
+        let subdirectories: [String?] = [
+            "json/parsed_json_files",
+            "parsed_json_files",
+            "upgrade_info/parsed_json_files",
+            "json"
+        ]
+
+        for subdirectory in subdirectories {
+            if let url = bundle.url(forResource: name, withExtension: "json", subdirectory: subdirectory) {
+                return url
+            }
+        }
+        return bundle.url(forResource: name, withExtension: "json")
+    }
+
     private func loadTownHallLimits() -> [Int: [String: Any]]? {
-        guard let url = Bundle.main.url(forResource: "townhall_levels", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files") else {
+        if let url = parsedJSONURL(forResource: "townhall_levels"),
+           let data = try? Data(contentsOf: url),
+           let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
+           !json.isEmpty {
+            var result: [Int: [String: Any]] = [:]
+            for entry in json {
+                if let thLevel = entry["townHallLevel"] as? Int,
+                   let counts = entry["counts"] as? [String: Any] {
+                    result[thLevel] = counts
+                }
+            }
+            if !result.isEmpty {
+                return result
+            }
+        }
+
+        guard let wallCounts = loadWallCountsFromGameConstants() else {
+            return nil
+        }
+        var result: [Int: [String: Any]] = [:]
+        for (thLevel, entry) in wallCounts {
+            result[thLevel] = ["Wall": entry.totalWalls]
+        }
+        return result.isEmpty ? nil : result
+    }
+
+    private func loadWallCountsFromGameConstants() -> [Int: (maxWallLevel: Int, totalWalls: Int)]? {
+        guard let url = parsedJSONURL(forResource: "game_constants") else {
             return nil
         }
         guard let data = try? Data(contentsOf: url),
-              let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else {
+              let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else {
             return nil
         }
-        
-        var result: [Int: [String: Any]] = [:]
-        for entry in json {
-            if let thLevel = entry["townHallLevel"] as? Int,
-               let counts = entry["counts"] as? [String: Any] {
-                result[thLevel] = counts
-            }
+        guard let wallCounts = json["wall_counts_by_th"] as? [String: Any] else {
+            return nil
         }
-        return result
+
+        var result: [Int: (maxWallLevel: Int, totalWalls: Int)] = [:]
+        for (key, value) in wallCounts {
+            guard let thLevel = Int(key),
+                  let entry = value as? [String: Any] else { continue }
+            let maxWallLevel = (entry["max_wall_level"] as? Int)
+                ?? (entry["max_wall_level"] as? NSNumber)?.intValue
+                ?? 0
+            let totalWalls = (entry["total_walls"] as? Int)
+                ?? (entry["total_walls"] as? NSNumber)?.intValue
+                ?? 0
+            guard maxWallLevel > 0, totalWalls > 0 else { continue }
+            result[thLevel] = (maxWallLevel: maxWallLevel, totalWalls: totalWalls)
+        }
+        return result.isEmpty ? nil : result
     }
 
     private func loadBuildingCosts() -> [Int: (cost: Int, thRequirement: Int)]? {
-        guard let url = Bundle.main.url(forResource: "buildings", withExtension: "json", subdirectory: "upgrade_info/parsed_json_files") else {
+        guard let url = parsedJSONURL(forResource: "buildings") else {
             return nil
         }
         guard let data = try? Data(contentsOf: url),
@@ -1388,11 +1480,19 @@ struct DashboardView: View {
     private var wallProgressSummary: some View {
         let th = displayedTownHallLevel
         let maxWallLevel = wallMaxLevelForTH(th)
-        let wallData = wallProgressData
+        let allWallData = wallProgressData
+        let wallData = allWallData
             .filter { $0.level < maxWallLevel }
             .sorted { $0.level < $1.level }
         let wallDataByLevel = Dictionary(uniqueKeysWithValues: wallData.map { ($0.level, $0) })
         let totalWalls = wallData.reduce(0) { $0 + $1.currentCount }
+        let maxWallCountForTH = allWallData.first?.maxCountForTH ?? totalWalls
+        let currentAtMaxWallLevel = allWallData.first(where: { $0.level == maxWallLevel })?.currentCount ?? 0
+        let highestLevelUnlockedWallCap = dataService.highestWallLevelUnlockedCount(
+            for: maxWallLevel,
+            totalWallCount: maxWallCountForTH
+        )
+        let topTierRemaining = max(highestLevelUnlockedWallCap - currentAtMaxWallLevel, 0)
 
         var cumulativeCount = 0
         var cumulativeRows: [(level: Int, currentCount: Int, remaining: Int, costPerWall: Int, totalCost: Int)] = []
@@ -1407,14 +1507,35 @@ struct DashboardView: View {
                 let currentCount = wallDataByLevel[level]?.currentCount ?? 0
                 let costPerWall = wallDataByLevel[level]?.costPerLevel ?? 0
                 cumulativeCount += currentCount
-                let levelTotalCost = cumulativeCount * costPerWall
+
+                let remainingForLevel: Int
+                if level == maxWallLevel - 1 {
+                    remainingForLevel = max(highestLevelUnlockedWallCap - currentAtMaxWallLevel, 0)
+                } else {
+                    remainingForLevel = cumulativeCount
+                }
+
+                let levelTotalCost = remainingForLevel * costPerWall
                 cumulativeRows.append((
                     level: level,
                     currentCount: currentCount,
-                    remaining: cumulativeCount,
+                    remaining: remainingForLevel,
                     costPerWall: costPerWall,
                     totalCost: levelTotalCost
                 ))
+            }
+
+            if topTierRemaining > 0 && !cumulativeRows.contains(where: { $0.level == maxWallLevel - 1 }) {
+                let topTierCurrentCount = allWallData.first(where: { $0.level == maxWallLevel - 1 })?.currentCount ?? 0
+                let topTierCostPerWall = wallDataByLevel[maxWallLevel - 1]?.costPerLevel ?? 0
+                cumulativeRows.append((
+                    level: maxWallLevel - 1,
+                    currentCount: topTierCurrentCount,
+                    remaining: topTierRemaining,
+                    costPerWall: topTierCostPerWall,
+                    totalCost: topTierRemaining * topTierCostPerWall
+                ))
+                cumulativeRows.sort { $0.level < $1.level }
             }
         }
 
@@ -1440,9 +1561,15 @@ struct DashboardView: View {
                                 VStack(alignment: .leading, spacing: 2) {
                                     Text("Wall Level \(wallLevel.level)")
                                         .font(.headline)
-                                    Text("\(wallLevel.currentCount) walls • \(wallLevel.remaining) remaining")
-                                        .font(.caption)
-                                        .foregroundColor(.secondary)
+                                    if wallLevel.level == maxWallLevel - 1 {
+                                        Text("\(currentAtMaxWallLevel)/\(highestLevelUnlockedWallCap) max • \(wallLevel.remaining) remaining")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    } else {
+                                        Text("\(wallLevel.currentCount) walls • \(wallLevel.remaining) remaining")
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                    }
                                 }
                             }
                             

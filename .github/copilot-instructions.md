@@ -13,7 +13,9 @@
 - API key is obfuscated via XOR in `ContentView` and passed into `DataService` during init; avoid moving this unless you also update the decoding logic. See [clash_widgets/ContentView/ContentView.swift](../clash_widgets/ContentView/ContentView.swift).
 
 ## Data & assets
-- Upgrade data and mappings are loaded from JSON under upgrade_info. Mapping of game IDs to display names is in [clash_widgets/upgrade_info/mapping.json](../clash_widgets/upgrade_info/mapping.json); parsed data is consumed in `DataService` extension files. See [clash_widgets/DataService+Parsing.swift](../clash_widgets/DataService+Parsing.swift) and [clash_widgets/DataService+Progress.swift](../clash_widgets/DataService+Progress.swift).
+- All game data JSON files are centralized under [clash_widgets/json/](../clash_widgets/json/). Subfolders: `parsed_json_files/` (upgrade costs/times), `json_maps/` (ID-to-name mappings), `master_lists/` (upgrade templates). Loose files at root: `mapping.json`, `asset_map.json`, `equipment_data.json`, `gradient_config.json`, `ore_costs.csv`, `game_constants.json`. The folder is added as an Xcode folder reference so all contents are bundled automatically.
+- JSON loading uses `DataService.candidateFolderURLs(named:)` which searches Bundle.main, then `json/<subfolder>` inside the bundle, then the app-group container. See [clash_widgets/DataService.swift](../clash_widgets/DataService.swift).
+- `game_constants.json` holds wall counts per TH level and other values that change with game updates. See [clash_widgets/json/game_constants.json](../clash_widgets/json/game_constants.json).
 - Images are organized in asset catalogs under [clash_widgets/Assets.xcassets](../clash_widgets/Assets.xcassets) and [ClashDashWidget/Assets.xcassets](../ClashDashWidget/Assets.xcassets). When adding new assets, keep naming consistent with mapping JSON.
 
 ## External integrations
@@ -27,6 +29,7 @@
 ## File organization principles
 - Prefer smaller, focused files over large multi-purpose files.
 - When a file starts getting large or hard to navigate, split it into subfiles by feature/domain (for example, separate view sections, parsing logic, and helpers).
+- DO NOT LET FILE LENGTH BALLOON, if a file is getting into the "Danger Zone" of 1000-1500+ lines, please do not hesitate to split it up, this will be better for your long term. If you are on the fence, please ask the user if they want the file to be split. 
 - When implementing a standalone feature (for example, a new tab, major screen, or self-contained component), create a new file instead of appending to an existing large file.
 - Keep shared models/services in dedicated files and keep UI files focused on presentation/composition.
 - Treat avoiding very large files (for example, multi-thousand-line single files) as a guiding maintenance principle for this repo.

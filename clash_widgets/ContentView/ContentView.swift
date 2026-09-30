@@ -114,6 +114,7 @@ struct ContentView: View {
                     }
                     .sheet(isPresented: $showOnboardingHelp) {
                         HelpSheetView()
+                            .adaptivePanelPresentation()
                     }
                     .environmentObject(dataService)
                     .navigationTitle("Get Started")
@@ -141,6 +142,10 @@ struct ContentView: View {
                     ProfileDetailView()
                         .tabItem { Label("Profile", systemImage: "person.crop.circle") }
                         .tag(MainTab.profile)
+
+                    ProgressTabView()
+                        .tabItem { Label("Progress", systemImage: "chart.bar.fill") }
+                        .tag(MainTab.progress)
 
                     EquipmentView()
                         .tabItem { Label("Equipment", systemImage: "shield.lefthalf.filled") }

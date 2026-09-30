@@ -23,7 +23,7 @@ Clashboard is an iOS app with a WidgetKit extension that tracks Clash of Clans u
 
 
 ### Assets & Mapping
-Asset images for buildings, heroes, pets, and lab items live under [clash_widgets/Assets.xcassets](clash_widgets/Assets.xcassets). Upgrade data relies on a mapping of game IDs to names in [clash_widgets/upgrade_info/mapping.json](clash_widgets/upgrade_info/mapping.json) with raw data in [clash_widgets/upgrade_info/raw.json](clash_widgets/upgrade_info/raw.json).
+Asset images for buildings, heroes, pets, and lab items live under [clash_widgets/Assets.xcassets](clash_widgets/Assets.xcassets). Upgrade data, names, and asset overrides live under [clash_widgets/json](clash_widgets/json). See the [game data and asset update guide](clash_widgets/json/UPDATE_GUIDE.md) for the exact files to change after a game update.
 
 ### Local Data Storage
 The app stores profiles, upgrades, and preferences to an app group container so the widget can read shared data. The widget falls back to `UserDefaults` data if needed.

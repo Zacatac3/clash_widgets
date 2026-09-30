@@ -98,25 +98,74 @@ Major Quality of Life + feature Update
 - Added "Done" button to feedback form, preventing users from getting stuck on the page
 - Ensure goblin builder no longer shows "1 builder remaining" when all builders are being used
 
-1.1.1 - 2/xx/26
-Under the Hood Improvements
+1.2 - 2/23/26
+Under the Hood Improvements & New Game Update Contents
 
-*New Features and Additons*
+*New Features & Additions*
 - Images can now be displayed directly in the Changelog
 - Overall, the app should now run much smoother, code has been rebuilt from ground up, to continue scaling the app up. Previous code was getting bloated due to not expecting the app to reach this size
-- Individual equipment can now be hidden from the equipment tab 
+- Individual equipment can now be hidden from the equipment tab
+image:equipment
 - iPad layout now supports two columns to better use screen real estate, optional toggle for "Legacy Layout"
 - Boosts can now be customized, allowing them to be applied immediately or for a custom duration
+image:custom_boosts
 - Simplified settings menu, with grouping of settings into sub menus
+- Added options to lock screen widgets for closest overall upgrades in home village and builder base
+- Added support for new game update content, including Dragon Duke (and equipment) and new building/troop levels
 
 *Changes and Fixes*
 - Profile page should no longer briefly freeze the app, and it's loading has been optimized
+- Profile selectors when customizing widgets now display actual profile names
 - War Card now tells you when your clan's war log is set to private
-- pop up indicating empty clipboard when importing
-- some assets were previosuly showing up very small, this should be resolved
-- star lab assets should now properly display on the builder base widget
-- notifications should now always use Player profile name instead or Profile tag
+- Pop up indicating empty clipboard when importing
+- Some assets were previously showing up very small, this should be resolved
+- Star lab assets should now properly display on the builder base widget
+- Notifications should now always use Player profile name instead of Profile tag
+- Images now work properly on clear and tinted widgets
 - Helpers, pet potions now only show up in boosts menu once they are unlocked
 - Factory reset now resets show/hide status and resets order of cards
-- added option to review app from within settings
-- added new option to reset layouts
+- Added option to review app from within settings
+- Added new option to reset layouts
+- Town Hall 18 now shows the correct number of walls that can be upgraded to max
+- Inferno artillery support added, previously acted like town hall upgrade
+- App website visual update
+
+1.2.1 - 4/27/26
+Added new update content & minor fixes
+
+*Changes and Fixes*
+- Added support for the new Elecro Fangs, Sky Wagon, and Logger
+- Update cost and time reductions added
+- Added missing asset for rocket backpack for dragon Duke
+- Greedy Raven now correctly named, no longer shows up as "crow"
+- builder base section now displays idle builders instead of nothing
+- Fixed the walls section showing "All walls Maxed" erroneously
+- updated max wall count for TH18
+- cleaned up various text blocks around the app
+
+1.2.2 - 9/28/26
+New Game Content
+
+*New Content and Balance Changes*
+- Added new game assets, including seasonal defense icons
+- Added new hero equipment and units
+- Added new upgrade levels
+- Updated upgrade costs and times to reflect the latest reductions
+
+1.3 - 10/xx/26
+
+*New Features and Additions*
+- New Page added, Progress
+image:progress
+- see current levels of everything in your home village
+- Customizable UI
+- Supports Supercharges and Crafted Defenses
+- See what is maxed for your town hall at a glance with the blue border
+- Official iPhone Duo Support
+
+*Changes and Fixes*
+- fixed display name for Mother Witch and Angry Spell
+- Updated max upgradeable walls for TH18 to reflect in-game
+- Fixed jittering when applying a boost
+- adapted layout of "Welcome" page to be more modern
+- Fixed image width on landscape orientation in the changelog

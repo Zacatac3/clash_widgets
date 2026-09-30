@@ -1,0 +1,213 @@
+{
+  "schemaVersion": "1.0.0",
+  "village": "home",
+  "description": "Curated seed list of valid Home Village upgrades for max-time calculations.",
+  "generatedFrom": [
+    "upgrade_info/mapping.json",
+    "upgrade_info/json_maps/mini_levels_json_map.json",
+    "upgrade_info/json_maps/seasonal_defense_modules_json_map.json"
+  ],
+  "exclusions": {
+    "excludeEquipment": true,
+    "excludedIdPrefixes": [
+      "900"
+    ]
+  },
+  "sections": {
+    "buildings": {
+      "core": {
+        "1000001": "Town Hall"
+      },
+      "army": {
+        "1000014": "Clan Castle",
+        "1000068": "Pet House",
+        "1000000": "Army Camp",
+        "1000006": "Barracks",
+        "1000026": "Dark Barracks",
+        "1000007": "Laboratory",
+        "1000020": "Spell Factory",
+        "1000029": "Dark Spell Factory",
+        "1000059": "Workshop"
+      },
+      "utility": {
+        "1000070": "Blacksmith",
+        "1000093": "Helper Hut",
+        "1000064": "B.O.B's Hut"
+
+      },
+      "hero": {
+        "1000071": "Hero Hall"
+      },
+      "resource": {
+        "1000002": "Elixir Collector",
+        "1000003": "Elixir Storage",
+        "1000004": "Gold Mine",
+        "1000005": "Gold Storage",
+        "1000023": "Dark Elixir Drill",
+        "1000024": "Dark Elixir Storage"
+      },
+      "defense": {
+        "1000008": "Cannon",
+        "1000009": "Archer Tower",
+        "1000011": "Wizard Tower",
+        "1000012": "Air Defense",
+        "1000013": "Mortar",
+        "1000019": "Hidden Tesla",
+        "1000021": "X-Bow",
+        "1000027": "Inferno Tower",
+        "1000028": "Air Sweeper",
+        "1000031": "Eagle Artillery",
+        "1000032": "Bomb Tower",
+        "1000067": "Scattershot",
+        "1000072": "Spell Tower",
+        "1000077": "Monolith",
+        "1000102": "Super Wizard Tower",
+        "1000079": "Multi-Gear Tower",
+        "1000084": "Multi-Archer Tower",
+        "1000085": "Ricochet Cannon",
+        "1000086": "Revenge Tower",
+        "1000089": "Firespitter",
+        "1000015": "Builder's Hut"
+      },
+      "traps": {
+        "12000000": "Bomb",
+        "12000001": "Spring Trap",
+        "12000002": "Giant Bomb",
+        "12000005": "Air Bomb",
+        "12000006": "Seeking Air Mine",
+        "12000008": "Skeleton Trap",
+        "12000016": "Tornado Trap",
+        "12000020": "Giga Bomb"
+      },
+      "heroes": {
+        "28000000": "Barbarian King",
+        "28000001": "Archer Queen",
+        "28000002": "Grand Warden",
+        "28000004": "Royal Champion",
+        "28000006": "Minion Prince",
+        "28000007": "Dragon Duke"
+      },
+      "guardians": {
+        "107000000": "Longshot",
+        "107000001": "Smasher",
+        "107000008": "Logger"
+      },
+      "seasonal_defense": {
+        "103000011": "Hot Candle",
+        "103000013": "Cake A Pult",
+        "103000012": "Hero Hunter"
+      },
+      "supercharges": {
+        "elixir_collector": "Elixir Collector Supercharge",
+        "gold_mine": "Gold Mine Supercharge",
+        "dark_elixir_drill": "Dark Elixir Drill Supercharge",
+        "hidden_tesla": "Hidden Tesla Supercharge",
+        "inferno_tower": "Inferno Tower Supercharge",
+        "scattershot": "Scattershot Supercharge",
+        "builder_hut": "Builder's Hut Supercharge",
+        "x_bow": "X-Bow Supercharge",
+        "mortar": "Mortar Supercharge",
+        "air_defense": "Air Defense Supercharge",
+        "bomb_tower": "Bomb Tower Supercharge",
+        "wizard_tower": "Wizard Tower Supercharge",
+        "monolith": "Monolith Supercharge",
+        "super_wizard_tower": "Super Wizard Tower Supercharge",
+        "revenge_tower": "Revenge Tower Supercharge",
+        "firespitter": "Firespitter Supercharge",
+        "multi_archer_tower": "Multi-Archer Tower Supercharge",
+        "ricochet_cannon": "Ricochet Cannon Supercharge",
+        "multi_gear_tower": "Multi-Gear Tower Supercharge"
+      }
+    },
+    "lab": {
+      "elixir_troops": {
+        "4000000": "Barbarian",
+        "4000001": "Archer",
+        "4000002": "Goblin",
+        "4000003": "Giant",
+        "4000004": "Wall Breaker",
+        "4000005": "Balloon",
+        "4000006": "Wizard",
+        "4000007": "Healer",
+        "4000008": "Dragon",
+        "4000009": "P.E.K.K.A",
+        "4000023": "Baby Dragon",
+        "4000024": "Miner",
+        "4000053": "Yeti",
+        "4000059": "Electro Dragon",
+        "4000065": "Dragon Rider",
+        "4000095": "Electro Titan",
+        "4000110": "Root Rider",
+        "4000177": "Meteor Golem",
+        "4000132": "Thrower"
+      },
+      "dark_troops": {
+        "4000010": "Minion",
+        "4000011": "Hog Rider",
+        "4000012": "Valkyrie",
+        "4000013": "Golem",
+        "4000015": "Witch",
+        "4000017": "Lava Hound",
+        "4000022": "Bowler",
+        "4000058": "Ice Golem",
+        "4000082": "Headhunter",
+        "4000097": "Apprentice Warden",
+        "4000123": "Druid",
+        "4000150": "Furnace",
+		"4000109": "Ruin Witch"
+      },
+      "spells": {
+        "26000000": "Lightning Spell",
+        "26000001": "Healing Spell",
+        "26000002": "Rage Spell",
+        "26000003": "Jump Spell",
+        "26000005": "Freeze Spell",
+        "26000009": "Poison Spell",
+        "26000010": "Earthquake Spell",
+        "26000011": "Haste Spell",
+        "26000016": "Clone Spell",
+        "26000017": "Skeleton Spell",
+        "26000028": "Bat Spell",
+        "26000035": "Invisibility Spell",
+        "26000053": "Recall Spell",
+        "26000070": "Overgrowth Spell",
+        "26000098": "Revive Spell",
+        "26000109": "Ice Block Spell",
+        "26000120": "Totem Spell",
+		"26000123": "Angry Spell"
+      },
+      "siege_machines": {
+        "4000051": "Wall Wrecker",
+        "4000052": "Battle Blimp",
+        "4000062": "Stone Slammer",
+        "4000075": "Siege Barracks",
+        "4000087": "Log Launcher",
+        "4000091": "Flame Flinger",
+        "4000092": "Battle Drill",
+        "4000135": "Troop Launcher",
+        "4000188": "Sky Wagon"
+      }
+    },
+    "pets": {
+      "pet": {
+        "73000000": "L.A.S.S.I",
+        "73000001": "Mighty Yak",
+        "73000002": "Electro Owl",
+        "73000003": "Unicorn",
+        "73000004": "Phoenix",
+        "73000007": "Poison Lizard",
+        "73000008": "Diggy",
+        "73000009": "Frosty",
+        "73000010": "Spirit Fox",
+        "73000011": "Angry Jelly",
+        "73000016": "Sneezy",
+        "73000017": "Greedy Raven"
+      }
+    },
+    "walls": {
+      "home": {
+        "1000010": "Wall"
+      }
+    }
+  }
+}

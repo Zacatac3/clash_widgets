@@ -130,7 +130,7 @@ struct AssetsCatalogView: View {
             var displayToId: [String: Int] = [:]
             var slugToEntry: [String: (display: String, id: Int?)] = [:]
 
-            if let url = Bundle.main.url(forResource: "upgrade_info/mapping", withExtension: "json") {
+            if let url = Bundle.main.url(forResource: "json/mapping", withExtension: "json") {
                 if let data = try? Data(contentsOf: url), let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     for (k, v) in dict {
                         if let id = Int(k), let disp = v as? String {
@@ -140,7 +140,7 @@ struct AssetsCatalogView: View {
                 }
             }
 
-            if let mapsURL = Bundle.main.url(forResource: "upgrade_info/json_maps", withExtension: nil) {
+            if let mapsURL = Bundle.main.url(forResource: "json/json_maps", withExtension: nil) {
                 let fm = FileManager.default
                 if let enumerator = fm.enumerator(at: mapsURL, includingPropertiesForKeys: nil) {
                     for case let fileURL as URL in enumerator {
@@ -163,7 +163,8 @@ struct AssetsCatalogView: View {
             }
 
             var assetOverrides: [String: String] = [:]
-            if let url = Bundle.main.url(forResource: "asset_map", withExtension: "json") {
+            if let url = Bundle.main.url(forResource: "asset_map", withExtension: "json", subdirectory: "json")
+                ?? Bundle.main.url(forResource: "asset_map", withExtension: "json") {
                 if let data = try? Data(contentsOf: url), let dict = try? JSONDecoder().decode([String: String].self, from: data) {
                     assetOverrides = dict
                     for (display, slug) in dict {
@@ -270,7 +271,7 @@ struct AssetsCatalogView: View {
 
             var byMappingRecords: [AssetRecord] = []
 
-            if let url = Bundle.main.url(forResource: "upgrade_info/mapping", withExtension: "json") {
+            if let url = Bundle.main.url(forResource: "json/mapping", withExtension: "json") {
                 if let data = try? Data(contentsOf: url), let dict = try? JSONSerialization.jsonObject(with: data) as? [String: Any] {
                     let sortedKeys = dict.keys.compactMap { Int($0) }.sorted()
 
@@ -541,38 +542,109 @@ struct AssetRecord: Identifiable, Hashable {
 }
 
 struct MasterListDebugView: View {
+    @EnvironmentObject private var dataService: DataService
+
     private enum Tab: String, CaseIterable, Identifiable {
         case home = "Home"
         case builder = "Builder"
         var id: String { rawValue }
     }
 
-    private struct MasterListFile: Decodable {
-        let village: String
-        let sections: [String: [String: [MasterListEntry]]]
+    private enum ScopeMode: String, CaseIterable, Identifiable {
+        case all = "All"
+        case remaining = "Remaining"
+        var id: String { rawValue }
     }
 
-    private struct MasterListEntry: Decodable, Hashable {
+    private struct MasterListFile: Decodable {
+        let village: String
+        let sections: [String: [String: MasterListSubcategoryEntries]]
+    }
+
+    private struct MasterListSubcategoryEntries: Decodable {
+        let entries: [MasterListEntry]
+
+        init(from decoder: Decoder) throws {
+            if let map = try? [String: String](from: decoder) {
+                self.entries = map.map { key, value in
+                    MasterListEntry(key: key, id: Int(key), name: value)
+                }
+                return
+            }
+
+            if let legacy = try? [LegacyEntry](from: decoder) {
+                self.entries = legacy.map {
+                    MasterListEntry(key: $0.key, id: $0.id ?? Int($0.key), name: $0.name)
+                }
+                return
+            }
+
+            self.entries = []
+        }
+
+        private struct LegacyEntry: Decodable {
+            let key: String
+            let id: Int?
+            let name: String
+        }
+    }
+
+    private struct MasterListEntry: Hashable {
         let key: String
         let id: Int?
         let name: String
-        let upgradeKind: String
-        let buildingType: String?
-        let sourceInternalName: String?
+    }
+
+    private struct LevelDetail: Identifiable {
+        let id: String
+        let levelLabel: String
+        let costText: String
+        let resourceIcon: String?
+        let timeText: String
     }
 
     private struct GroupedEntries: Identifiable {
         var id: String { "\(domain)::\(subcategory)" }
         let domain: String
         let subcategory: String
-        let entries: [MasterListEntry]
+        let entries: [FlattenedEntry]
+    }
+
+    private struct FlattenedEntry: Identifiable, Hashable {
+        var id: String { "\(domain)::\(subcategory)::\(entry.key)" }
+        let domain: String
+        let subcategory: String
+        let entry: MasterListEntry
+    }
+
+    private struct LevelRange {
+        let min: Int
+        let max: Int
+    }
+
+    private struct SeasonalModuleInfo {
+        let id: Int
+        let displayName: String
+        let archetypeId: Int
     }
 
     @State private var selectedTab: Tab = .home
+    @State private var scopeMode: ScopeMode = .all
     @State private var homeList: MasterListFile?
     @State private var builderList: MasterListFile?
     @State private var loadError: String?
     @State private var assetLookupByFolder: [String: [String: String]] = [:]
+    @State private var assetOverrides: [String: String] = [:]
+    @State private var expandedKeys: Set<String> = []
+    @State private var loadingDetailKeys: Set<String> = []
+    @State private var levelDetailsByKey: [String: [LevelDetail]] = [:]
+    @State private var superchargeInternalByDisplayName: [String: String] = [:]
+    @State private var guardianCharacterIDByGuardianID: [Int: Int] = [:]
+    @State private var seasonalModuleArchetypeByID: [Int: String] = [:]
+    @State private var seasonalModulesByArchetypeID: [Int: [SeasonalModuleInfo]] = [:]
+    @State private var currentHomeLevelsByID: [Int: LevelRange] = [:]
+    @State private var currentBuilderLevelsByID: [Int: LevelRange] = [:]
+    @State private var cachedRemainingVisibility: [String: Bool] = [:]
 
     var body: some View {
         NavigationStack {
@@ -580,6 +652,14 @@ struct MasterListDebugView: View {
                 Picker("Village", selection: $selectedTab) {
                     ForEach(Tab.allCases) { tab in
                         Text(tab.rawValue).tag(tab)
+                    }
+                }
+                .pickerStyle(.segmented)
+                .padding(.horizontal)
+
+                Picker("Scope", selection: $scopeMode) {
+                    ForEach(ScopeMode.allCases) { mode in
+                        Text(mode.rawValue).tag(mode)
                     }
                 }
                 .pickerStyle(.segmented)
@@ -609,56 +689,398 @@ struct MasterListDebugView: View {
                 if homeList == nil || builderList == nil {
                     loadMasterLists()
                 }
+                if guardianCharacterIDByGuardianID.isEmpty {
+                    loadGuardianCharacterBridgeMap()
+                }
+                if seasonalModuleArchetypeByID.isEmpty {
+                    loadSeasonalDefenseAssetMap()
+                }
+                if assetOverrides.isEmpty {
+                    loadAssetOverrides()
+                }
                 if assetLookupByFolder.isEmpty {
                     buildAssetIndex()
                 }
+                loadProfileSnapshot()
+            }
+            .onChange(of: dataService.selectedProfileID) { _, _ in
+                loadProfileSnapshot()
+                cachedRemainingVisibility.removeAll()
+            }
+            .onChange(of: selectedTab) { _, _ in
+                cachedRemainingVisibility.removeAll()
+            }
+            .onChange(of: scopeMode) { _, _ in
+                cachedRemainingVisibility.removeAll()
             }
         }
     }
 
     @ViewBuilder
-    private func row(for entry: MasterListEntry) -> some View {
-        HStack(spacing: 12) {
-            Group {
-                #if canImport(UIKit)
-                if let uiImage = imageForEntry(entry, village: selectedTab) {
-                    Image(uiImage: uiImage)
-                        .resizable()
-                        .scaledToFit()
-                } else {
+    private func row(for flattened: FlattenedEntry) -> some View {
+        let entry = flattened.entry
+        let uniqueKey = flattened.id
+
+        DisclosureGroup(
+            isExpanded: Binding(
+                get: { expandedKeys.contains(uniqueKey) },
+                set: { newValue in
+                    if newValue {
+                        expandedKeys.insert(uniqueKey)
+                        loadLevelDetailsIfNeeded(for: flattened)
+                    } else {
+                        expandedKeys.remove(uniqueKey)
+                    }
+                }
+            )
+        ) {
+            if loadingDetailKeys.contains(uniqueKey) {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("Loading level details…")
+                        .font(.caption)
+                        .foregroundColor(.secondary)
+                }
+                .padding(.vertical, 4)
+            } else if let rows = levelDetailsByKey[uniqueKey], !rows.isEmpty {
+                VStack(alignment: .leading, spacing: 6) {
+                    ForEach(rows) { row in
+                        HStack(spacing: 8) {
+                            Text(row.levelLabel)
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                                .frame(width: 64, alignment: .leading)
+                            Text(row.costText)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                            if let resourceIcon = row.resourceIcon {
+                                resourceIconView(named: resourceIcon)
+                            }
+                            Text("•")
+                                .foregroundColor(.secondary)
+                            Text(row.timeText)
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                    }
+                }
+                .padding(.vertical, 4)
+            } else {
+                Text("No per-level data found.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .padding(.vertical, 4)
+            }
+        } label: {
+            HStack(spacing: 12) {
+                Group {
+                    #if canImport(UIKit)
+                    if let uiImage = imageForEntry(entry, village: selectedTab) {
+                        Image(uiImage: uiImage)
+                            .resizable()
+                            .scaledToFit()
+                    } else {
+                        Image(systemName: "photo")
+                            .resizable()
+                            .scaledToFit()
+                            .foregroundColor(.secondary)
+                    }
+                    #else
                     Image(systemName: "photo")
                         .resizable()
                         .scaledToFit()
                         .foregroundColor(.secondary)
+                    #endif
                 }
-                #else
-                Image(systemName: "photo")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(.secondary)
-                #endif
-            }
-            .frame(width: 36, height: 36)
+                .frame(width: 36, height: 36)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(entry.name)
-                    .font(.subheadline)
-                HStack(spacing: 8) {
-                    Text(entry.key)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                    if let id = entry.id {
-                        Text("#\(id)")
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(entry.name)
+                        .font(.subheadline)
+                    HStack(spacing: 8) {
+                        Text(entry.key)
+                            .font(.caption2)
+                            .foregroundColor(.secondary)
+                        if let id = entry.id {
+                            Text("#\(id)")
+                                .font(.caption2)
+                                .foregroundColor(.secondary)
+                        }
+                        Text(pretty(flattened.subcategory))
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
-                    Text(entry.upgradeKind)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
                 }
             }
         }
         .padding(.vertical, 2)
+    }
+
+    private func loadLevelDetailsIfNeeded(for flattened: FlattenedEntry) {
+        let uniqueKey = flattened.id
+        if levelDetailsByKey[uniqueKey] != nil { return }
+        if loadingDetailKeys.contains(uniqueKey) { return }
+
+        loadingDetailKeys.insert(uniqueKey)
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            let details = findLevelDetails(for: flattened)
+            DispatchQueue.main.async {
+                levelDetailsByKey[uniqueKey] = details
+                loadingDetailKeys.remove(uniqueKey)
+            }
+        }
+    }
+
+    private func findLevelDetails(for flattened: FlattenedEntry) -> [LevelDetail] {
+        if flattened.subcategory == "seasonal_defense",
+           let archetypeID = flattened.entry.id,
+           let modules = seasonalModulesByArchetypeID[archetypeID],
+           !modules.isEmpty {
+            return seasonalArchetypeLevelDetails(for: modules)
+        }
+
+        guard let matched = findParsedMatch(for: flattened) else { return [] }
+        return parseLevelDetails(from: matched.object, sourceFileName: matched.fileName)
+    }
+
+    private func seasonalArchetypeLevelDetails(for modules: [SeasonalModuleInfo]) -> [LevelDetail] {
+        let ordered = modules.sorted { lhs, rhs in
+            seasonalModuleSortRank(lhs.displayName) < seasonalModuleSortRank(rhs.displayName)
+        }
+
+        var output: [LevelDetail] = []
+        for module in ordered {
+            let moduleEntry = MasterListEntry(key: String(module.id), id: module.id, name: module.displayName)
+            let moduleFlattened = FlattenedEntry(domain: "buildings", subcategory: "seasonal_defense_module", entry: moduleEntry)
+
+            guard let matched = findParsedMatch(for: moduleFlattened) else { continue }
+            let moduleRows = parseLevelDetails(from: matched.object, sourceFileName: matched.fileName)
+                .map { row in
+                    LevelDetail(
+                        id: "\(module.id)-\(row.id)",
+                        levelLabel: "\(seasonalModuleShortLabel(module.displayName)) \(row.levelLabel)",
+                        costText: row.costText,
+                        resourceIcon: row.resourceIcon,
+                        timeText: row.timeText
+                    )
+                }
+            output.append(contentsOf: moduleRows)
+        }
+
+        return output
+    }
+
+    private func seasonalModuleSortRank(_ name: String) -> Int {
+        let lowered = name.lowercased()
+        if lowered.contains("hp") { return 0 }
+        if lowered.contains("dps") || lowered.contains("attack") { return 1 }
+        if lowered.contains("special") || lowered.contains("effect") { return 2 }
+        return 3
+    }
+
+    private func seasonalModuleShortLabel(_ name: String) -> String {
+        let lowered = name.lowercased()
+        if lowered.contains("hp") { return "HP" }
+        if lowered.contains("dps") || lowered.contains("attack") { return "DPS" }
+        if lowered.contains("special") || lowered.contains("effect") { return "Special" }
+        return "Module"
+    }
+
+    private func findParsedMatch(for flattened: FlattenedEntry) -> (object: [String: Any], fileName: String)? {
+        let entry = flattened.entry
+        let folders = DataService.candidateFolderURLs(named: "parsed_json_files")
+        let candidateFiles = [
+            "buildings.json",
+            "characters.json",
+            "heroes.json",
+            "pets.json",
+            "spells.json",
+            "traps.json",
+            "mini_levels.json",
+            "seasonal_defense_modules.json",
+            "guardians.json",
+            "weapons.json"
+        ]
+
+        for folder in folders {
+            for fileName in candidateFiles {
+                let fileURL = folder.appendingPathComponent(fileName)
+                guard let data = try? Data(contentsOf: fileURL) else { continue }
+                guard let root = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+
+                for object in root where matches(entry: entry, parsedObject: object, flattened: flattened) {
+                    return (object, fileName)
+                }
+            }
+        }
+
+        return nil
+    }
+
+    private func matches(entry: MasterListEntry, parsedObject: [String: Any], flattened: FlattenedEntry) -> Bool {
+        if let entryId = entry.id {
+            if let parsedId = parsedObject["id"] as? Int, parsedId == entryId {
+                return true
+            }
+            if let parsedId = parsedObject["id"] as? String, Int(parsedId) == entryId {
+                return true
+            }
+            if let parsedId = parsedObject["id"] as? Double, Int(parsedId) == entryId {
+                return true
+            }
+
+            if flattened.subcategory == "guardians",
+               let characterID = guardianCharacterIDByGuardianID[entryId] {
+                if let parsedId = parsedObject["id"] as? Int, parsedId == characterID {
+                    return true
+                }
+                if let parsedId = parsedObject["id"] as? String, Int(parsedId) == characterID {
+                    return true
+                }
+                if let parsedId = parsedObject["id"] as? Double, Int(parsedId) == characterID {
+                    return true
+                }
+            }
+        }
+
+        let parsedInternal = normalizeLookupName(parsedObject["internalName"] as? String)
+        let parsedName = normalizeLookupName(parsedObject["name"] as? String)
+
+        if flattened.subcategory == "supercharges" {
+            let lookupName = normalizeLookupName(entry.name)
+            if let internalName = superchargeInternalByDisplayName[lookupName],
+               parsedInternal == normalizeLookupName(internalName) {
+                return true
+            }
+        }
+
+        let normalizedEntryName = normalizeLookupName(entry.name)
+        if !normalizedEntryName.isEmpty {
+            if parsedInternal == normalizedEntryName || parsedName == normalizedEntryName {
+                return true
+            }
+        }
+
+        let normalizedKey = normalizeLookupName(entry.key)
+        if !normalizedKey.isEmpty {
+            if parsedInternal == normalizedKey || parsedName == normalizedKey {
+                return true
+            }
+        }
+
+        let compactEntryName = normalizeLookupName(entry.name.replacingOccurrences(of: " Supercharge", with: ""))
+        if !compactEntryName.isEmpty,
+           (parsedInternal == compactEntryName || parsedName == compactEntryName) {
+            return true
+        }
+
+        if flattened.subcategory == "supercharges",
+           !compactEntryName.isEmpty,
+           parsedInternal.contains(compactEntryName) {
+            return true
+        }
+
+        return false
+    }
+
+    private func parseLevelDetails(from parsedObject: [String: Any], sourceFileName: String) -> [LevelDetail] {
+        guard let levels = parsedObject["levels"] as? [[String: Any]], !levels.isEmpty else { return [] }
+
+        var output: [LevelDetail] = []
+        let currentLevelDurationFiles: Set<String> = ["characters.json", "heroes.json", "pets.json", "spells.json"]
+        let isCurrentLevelIndexed = currentLevelDurationFiles.contains(sourceFileName)
+
+        var lastResourceRaw: String?
+        for (idx, levelObj) in levels.enumerated() {
+            let level = intValue(levelObj["level"]) ?? (idx + 1)
+            let costValue = intValue(levelObj["buildCost"]) ?? intValue(levelObj["BuildCost"]) ?? intValue(levelObj["UpgradeCost"]) ?? 0
+            let resourceValue: String? = {
+                let candidates = [
+                    stringValue(levelObj["buildResource"]),
+                    stringValue(levelObj["BuildResource"]),
+                    stringValue(levelObj["UpgradeResource"])
+                ]
+                for candidate in candidates {
+                    if let candidate, !candidate.isEmpty {
+                        return candidate
+                    }
+                }
+                return nil
+            }()
+
+            if let resourceValue = resourceValue, !resourceValue.isEmpty {
+                lastResourceRaw = resourceValue
+            }
+
+            let effectiveResourceRaw = resourceValue?.isEmpty == false ? resourceValue : lastResourceRaw
+            let nextLevel = isCurrentLevelIndexed ? (level + 1) : level
+            let levelLabel = isCurrentLevelIndexed ? "To Lv \(nextLevel)" : "Lv \(nextLevel)"
+
+            let seconds = intValue(levelObj["buildTimeSeconds"]) ?? intValue(levelObj["upgradeTimeSeconds"]) ?? buildSecondsFromRaw(levelObj)
+
+            if costValue <= 0 && seconds <= 0 {
+                continue
+            }
+
+            output.append(
+                LevelDetail(
+                    id: "\(level)-\(idx)",
+                    levelLabel: levelLabel,
+                    costText: formatCost(costValue),
+                    resourceIcon: iconName(forResource: effectiveResourceRaw),
+                    timeText: formatDuration(seconds)
+                )
+            )
+        }
+
+        return output
+    }
+
+    private func buildSecondsFromRaw(_ levelObj: [String: Any]) -> Int {
+        let d = intValue(levelObj["BuildTimeD"]) ?? 0
+        let h = intValue(levelObj["BuildTimeH"]) ?? intValue(levelObj["UpgradeTimeH"]) ?? 0
+        let m = intValue(levelObj["BuildTimeM"]) ?? intValue(levelObj["UpgradeTimeM"]) ?? 0
+        let s = intValue(levelObj["BuildTimeS"]) ?? 0
+        return (d * 86400) + (h * 3600) + (m * 60) + s
+    }
+
+    private func intValue(_ value: Any?) -> Int? {
+        if let i = value as? Int { return i }
+        if let d = value as? Double { return Int(d) }
+        if let s = value as? String, let i = Int(s.trimmingCharacters(in: .whitespacesAndNewlines)) { return i }
+        return nil
+    }
+
+    private func stringValue(_ value: Any?) -> String? {
+        if let s = value as? String { return s.trimmingCharacters(in: .whitespacesAndNewlines) }
+        return nil
+    }
+
+    private func formatDuration(_ seconds: Int) -> String {
+        if seconds <= 0 { return "0s" }
+        let days = seconds / 86400
+        let hours = (seconds % 86400) / 3600
+        let minutes = (seconds % 3600) / 60
+        if days > 0 { return "\(days)d \(hours)h" }
+        if hours > 0 { return "\(hours)h \(minutes)m" }
+        if minutes > 0 { return "\(minutes)m" }
+        return "\(seconds)s"
+    }
+
+    private func formatCost(_ value: Int) -> String {
+        let absValue = abs(value)
+        let sign = value < 0 ? "-" : ""
+        switch absValue {
+        case 1_000_000_000...:
+            return "\(sign)" + String(format: "%.2fB", Double(absValue) / 1_000_000_000)
+        case 1_000_000...:
+            return "\(sign)" + String(format: "%.2fM", Double(absValue) / 1_000_000)
+        case 1_000...:
+            return "\(sign)" + String(format: "%.1fK", Double(absValue) / 1_000)
+        default:
+            return "\(value)"
+        }
     }
 
     private func groupsForSelectedTab() -> [GroupedEntries] {
@@ -667,8 +1089,14 @@ struct MasterListDebugView: View {
 
         var output: [GroupedEntries] = []
         for (domain, subgroups) in list.sections {
-            for (subcategory, entries) in subgroups {
-                output.append(GroupedEntries(domain: domain, subcategory: subcategory, entries: entries.sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending })))
+            for (subcategory, wrappedEntries) in subgroups {
+                let flattened = wrappedEntries.entries
+                    .sorted(by: { $0.name.localizedCaseInsensitiveCompare($1.name) == .orderedAscending })
+                    .map { entry in
+                        FlattenedEntry(domain: domain, subcategory: subcategory, entry: entry)
+                    }
+                    .filter { shouldShowEntry($0) }
+                output.append(GroupedEntries(domain: domain, subcategory: subcategory, entries: flattened))
             }
         }
 
@@ -707,9 +1135,356 @@ struct MasterListDebugView: View {
             homeList = home
             builderList = builder
             loadError = nil
+            loadMiniLevelMap()
+            loadProfileSnapshot()
         } else {
-            loadError = "Could not locate one or both files in upgrade_info/master_lists."
+            loadError = "Could not locate one or both files in json/master_lists."
         }
+    }
+
+    private func shouldShowEntry(_ flattened: FlattenedEntry) -> Bool {
+        guard scopeMode == .remaining else { return true }
+
+        if let cached = cachedRemainingVisibility[flattened.id] {
+            return cached
+        }
+
+        let visible = computeIsRemaining(for: flattened)
+        cachedRemainingVisibility[flattened.id] = visible
+        return visible
+    }
+
+    private func computeIsRemaining(for flattened: FlattenedEntry) -> Bool {
+        let entry = flattened.entry
+        guard let entryID = entry.id else {
+            return true
+        }
+
+        if flattened.subcategory == "seasonal_defense",
+           let modules = seasonalModulesByArchetypeID[entryID],
+           !modules.isEmpty {
+            for module in modules {
+                let current = currentHomeLevelsByID[module.id]?.max ?? 0
+                if let maxLevel = maxAvailableLevelForModuleId(module.id), current < maxLevel {
+                    return true
+                }
+            }
+            return false
+        }
+
+        let currentLevel = currentLevelForEntry(flattened, entryID: entryID)
+        guard let currentLevel else {
+            return true
+        }
+
+        guard let maxLevel = maxAvailableLevelForEntry(flattened) else {
+            return true
+        }
+
+        return currentLevel < maxLevel
+    }
+
+    private func currentLevelForEntry(_ flattened: FlattenedEntry, entryID: Int) -> Int? {
+        let levels = (selectedTab == .home ? currentHomeLevelsByID : currentBuilderLevelsByID)
+
+        let resolvedID: Int
+        if flattened.subcategory == "guardians",
+           let characterID = guardianCharacterIDByGuardianID[entryID] {
+            resolvedID = characterID
+        } else {
+            resolvedID = entryID
+        }
+
+        guard let range = levels[resolvedID] else { return nil }
+
+        let useMinLevel = flattened.domain == "buildings"
+            && flattened.subcategory != "heroes"
+            && flattened.subcategory != "guardians"
+            && flattened.subcategory != "supercharges"
+
+        return useMinLevel ? range.min : range.max
+    }
+
+    private func maxAvailableLevelForEntry(_ flattened: FlattenedEntry) -> Int? {
+        if flattened.subcategory == "seasonal_defense",
+           let entryID = flattened.entry.id,
+           let modules = seasonalModulesByArchetypeID[entryID],
+           !modules.isEmpty {
+            return modules.compactMap { maxAvailableLevelForModuleId($0.id) }.max()
+        }
+
+        guard let matched = findParsedMatch(for: flattened) else { return nil }
+        guard let levels = matched.object["levels"] as? [[String: Any]], !levels.isEmpty else { return nil }
+
+        let townHall = selectedTab == .home
+            ? max(1, dataService.getTownHallLevel(from: .home))
+            : max(1, dataService.getTownHallLevel(from: .builder))
+
+        let filtered = levels.filter { levelObj in
+            if let requiredTH = intValue(levelObj["TownHallLevel"]) ?? intValue(levelObj["townHallLevel"]) {
+                return requiredTH <= townHall
+            }
+            return true
+        }
+
+        let candidateLevels = (filtered.isEmpty ? levels : filtered).compactMap { levelObj in
+            intValue(levelObj["level"])
+        }
+        return candidateLevels.max()
+    }
+
+    private func maxAvailableLevelForModuleId(_ moduleId: Int) -> Int? {
+        let moduleEntry = MasterListEntry(key: String(moduleId), id: moduleId, name: String(moduleId))
+        let moduleFlattened = FlattenedEntry(domain: "buildings", subcategory: "seasonal_defense_module", entry: moduleEntry)
+        guard let matched = findParsedMatch(for: moduleFlattened),
+              let levels = matched.object["levels"] as? [[String: Any]],
+              !levels.isEmpty else { return nil }
+
+        let townHall = max(1, dataService.getTownHallLevel(from: .home))
+        let filtered = levels.filter { levelObj in
+            if let requiredTH = intValue(levelObj["TownHallLevel"]) ?? intValue(levelObj["townHallLevel"]) {
+                return requiredTH <= townHall
+            }
+            return true
+        }
+        return (filtered.isEmpty ? levels : filtered).compactMap { intValue($0["level"]) }.max()
+    }
+
+    private func loadProfileSnapshot() {
+        guard let raw = dataService.currentProfile?.rawJSON,
+              !raw.isEmpty,
+              let data = raw.data(using: .utf8),
+              let export = try? JSONDecoder().decode(CoCExport.self, from: data) else {
+            currentHomeLevelsByID = [:]
+            currentBuilderLevelsByID = [:]
+            return
+        }
+
+        currentHomeLevelsByID = mergedLevels([
+            levelsFromBuildings(export.buildings),
+            levelsFromBuildings(export.traps?.map { Building(data: $0.data, lvl: $0.lvl, weapon: nil, timer: $0.timer, cnt: $0.cnt, supercharge: nil, extra: $0.extra, types: nil) }),
+            levelsFromUnits(export.units),
+            levelsFromUnits(export.siegeMachines?.map { ExportUnit(data: $0.data, lvl: $0.lvl, timer: $0.timer, extra: $0.extra) }),
+            levelsFromHeroes(export.heroes),
+            levelsFromPets(export.pets),
+            levelsFromSpells(export.spells),
+            levelsFromGuardians(export.guardians)
+        ])
+
+        currentBuilderLevelsByID = mergedLevels([
+            levelsFromBuildings(export.buildings2),
+            levelsFromBuildings(export.traps2?.map { Building(data: $0.data, lvl: $0.lvl, weapon: nil, timer: $0.timer, cnt: $0.cnt, supercharge: nil, extra: $0.extra, types: nil) }),
+            levelsFromUnits(export.units2),
+            levelsFromHeroes(export.heroes2)
+        ])
+    }
+
+    private func mergedLevels(_ maps: [[Int: LevelRange]]) -> [Int: LevelRange] {
+        var output: [Int: LevelRange] = [:]
+        for map in maps {
+            for (id, range) in map {
+                if let existing = output[id] {
+                    output[id] = LevelRange(min: min(existing.min, range.min), max: max(existing.max, range.max))
+                } else {
+                    output[id] = range
+                }
+            }
+        }
+        return output
+    }
+
+    private func levelsFromBuildings(_ list: [Building]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var grouped: [Int: [Int]] = [:]
+        for item in list {
+            guard let lvl = item.lvl else { continue }
+            grouped[item.data, default: []].append(lvl)
+
+            if let types = item.types {
+                for type in types {
+                    if let modules = type.modules {
+                        for module in modules {
+                            if let moduleLevel = module.lvl {
+                                grouped[module.data, default: []].append(moduleLevel)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        var output: [Int: LevelRange] = [:]
+        for (id, levels) in grouped {
+            guard let minLevel = levels.min(), let maxLevel = levels.max() else { continue }
+            output[id] = LevelRange(min: minLevel, max: maxLevel)
+        }
+        return output
+    }
+
+    private func levelsFromUnits(_ list: [ExportUnit]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var output: [Int: LevelRange] = [:]
+        for item in list {
+            output[item.data] = mergeRange(existing: output[item.data], level: item.lvl)
+        }
+        return output
+    }
+
+    private func levelsFromHeroes(_ list: [ExportHero]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var output: [Int: LevelRange] = [:]
+        for item in list {
+            output[item.data] = mergeRange(existing: output[item.data], level: item.lvl)
+        }
+        return output
+    }
+
+    private func levelsFromPets(_ list: [ExportPet]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var output: [Int: LevelRange] = [:]
+        for item in list {
+            output[item.data] = mergeRange(existing: output[item.data], level: item.lvl)
+        }
+        return output
+    }
+
+    private func levelsFromSpells(_ list: [ExportSpell]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var output: [Int: LevelRange] = [:]
+        for item in list {
+            output[item.data] = mergeRange(existing: output[item.data], level: item.lvl)
+        }
+        return output
+    }
+
+    private func levelsFromGuardians(_ list: [ExportGuardian]?) -> [Int: LevelRange] {
+        guard let list else { return [:] }
+        var output: [Int: LevelRange] = [:]
+        for item in list {
+            guard let lvl = item.lvl else { continue }
+            output[item.data] = mergeRange(existing: output[item.data], level: lvl)
+            if let characterID = guardianCharacterIDByGuardianID[item.data] {
+                output[characterID] = mergeRange(existing: output[characterID], level: lvl)
+            }
+        }
+        return output
+    }
+
+    private func mergeRange(existing: LevelRange?, level: Int) -> LevelRange {
+        guard let existing else {
+            return LevelRange(min: level, max: level)
+        }
+        return LevelRange(min: min(existing.min, level), max: max(existing.max, level))
+    }
+
+    private func loadMiniLevelMap() {
+        guard superchargeInternalByDisplayName.isEmpty else { return }
+        let folders = DataService.candidateFolderURLs(named: "json_maps")
+
+        for folder in folders {
+            let url = folder.appendingPathComponent("mini_levels_json_map.json")
+            guard let data = try? Data(contentsOf: url) else { continue }
+            guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: [String: Any]] else { continue }
+
+            var lookup: [String: String] = [:]
+            for value in raw.values {
+                guard let display = value["displayName"] as? String,
+                      let internalName = value["internalName"] as? String else { continue }
+                lookup[normalizeLookupName(display)] = internalName
+            }
+            superchargeInternalByDisplayName = lookup
+            return
+        }
+    }
+
+    private func loadGuardianCharacterBridgeMap() {
+        guard guardianCharacterIDByGuardianID.isEmpty else { return }
+        let folders = DataService.candidateFolderURLs(named: "json_maps")
+
+        var guardianDisplayByID: [Int: String] = [:]
+        var characterIDByDisplay: [String: Int] = [:]
+
+        for folder in folders {
+            let guardiansURL = folder.appendingPathComponent("guardians_json_map.json")
+            if let data = try? Data(contentsOf: guardiansURL),
+               let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: [String: Any]] {
+                for value in raw.values {
+                    guard let guardianID = intValue(value["id"]),
+                          let display = value["displayName"] as? String else { continue }
+                    guardianDisplayByID[guardianID] = normalizeLookupName(display)
+                }
+            }
+
+            let charactersURL = folder.appendingPathComponent("characters_json_map.json")
+            if let data = try? Data(contentsOf: charactersURL),
+               let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: [String: Any]] {
+                for value in raw.values {
+                    guard let characterID = intValue(value["id"]),
+                          let display = value["displayName"] as? String else { continue }
+                    characterIDByDisplay[normalizeLookupName(display)] = characterID
+                }
+            }
+        }
+
+        var bridge: [Int: Int] = [:]
+        for (guardianID, display) in guardianDisplayByID {
+            if let characterID = characterIDByDisplay[display] {
+                bridge[guardianID] = characterID
+            }
+        }
+
+        guardianCharacterIDByGuardianID = bridge
+    }
+
+    private func loadSeasonalDefenseAssetMap() {
+        guard seasonalModuleArchetypeByID.isEmpty else { return }
+
+        let folders = DataService.candidateFolderURLs(named: "json_maps")
+
+        var archetypeDisplayByInternal: [String: String] = [:]
+        var archetypeIDByInternal: [String: Int] = [:]
+        var moduleArchetypeByID: [Int: String] = [:]
+        var modulesByArchetypeID: [Int: [SeasonalModuleInfo]] = [:]
+
+        for folder in folders {
+            let archetypesURL = folder.appendingPathComponent("seasonal_defense_archetypes_json_map.json")
+            if let data = try? Data(contentsOf: archetypesURL),
+               let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: [String: Any]] {
+                for value in raw.values {
+                    guard let internalName = value["internalName"] as? String,
+                          let displayName = value["displayName"] as? String,
+                          let archetypeID = intValue(value["id"]) else { continue }
+                    archetypeDisplayByInternal[internalName] = displayName
+                    archetypeIDByInternal[internalName] = archetypeID
+                }
+            }
+
+            let modulesURL = folder.appendingPathComponent("seasonal_defense_modules_json_map.json")
+            if let data = try? Data(contentsOf: modulesURL),
+               let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [String: [String: Any]] {
+                for value in raw.values {
+                    guard let id = intValue(value["id"]),
+                          let internalName = value["internalName"] as? String else { continue }
+
+                    let archetypeInternal = internalName
+                        .replacingOccurrences(of: "HPModule", with: "")
+                        .replacingOccurrences(of: "AttackModule", with: "")
+                        .replacingOccurrences(of: "EffectModule", with: "")
+
+                    if let display = archetypeDisplayByInternal[archetypeInternal] {
+                        moduleArchetypeByID[id] = display
+                    }
+
+                    if let archetypeID = archetypeIDByInternal[archetypeInternal],
+                       let moduleDisplay = value["displayName"] as? String {
+                        let info = SeasonalModuleInfo(id: id, displayName: moduleDisplay, archetypeId: archetypeID)
+                        modulesByArchetypeID[archetypeID, default: []].append(info)
+                    }
+                }
+            }
+        }
+
+        seasonalModuleArchetypeByID = moduleArchetypeByID
+        seasonalModulesByArchetypeID = modulesByArchetypeID
     }
 
     private func buildAssetIndex() {
@@ -733,6 +1508,22 @@ struct MasterListDebugView: View {
         assetLookupByFolder = lookup
     }
 
+    private func loadAssetOverrides() {
+        if let url = Bundle.main.url(forResource: "asset_map", withExtension: "json", subdirectory: "json")
+            ?? Bundle.main.url(forResource: "asset_map", withExtension: "json"),
+           let data = try? Data(contentsOf: url),
+           let decoded = try? JSONDecoder().decode([String: String].self, from: data) {
+            assetOverrides = decoded
+            return
+        }
+
+        let localURL = URL(fileURLWithPath: "./json/asset_map.json")
+        if let data = try? Data(contentsOf: localURL),
+           let decoded = try? JSONDecoder().decode([String: String].self, from: data) {
+            assetOverrides = decoded
+        }
+    }
+
     private func sanitize(_ value: String) -> String {
         value
             .components(separatedBy: CharacterSet.alphanumerics.inverted)
@@ -741,25 +1532,62 @@ struct MasterListDebugView: View {
             .lowercased()
     }
 
-    private func candidateSlugs(for entry: MasterListEntry) -> [String] {
+    private func candidateAssetNames(for entry: MasterListEntry) -> [String] {
         var values: [String] = []
-        values.append(sanitize(entry.name))
-        if let sourceInternalName = entry.sourceInternalName, !sourceInternalName.isEmpty {
-            values.append(sanitize(sourceInternalName))
-            values.append(sanitize(sourceInternalName.replacingOccurrences(of: " Mini Levels", with: "")))
+
+        func appendVariants(for raw: String) {
+            let trimmed = raw.trimmingCharacters(in: .whitespacesAndNewlines)
+            guard !trimmed.isEmpty else { return }
+
+            var baseForms: [String] = [trimmed]
+            baseForms.append(trimmed.replacingOccurrences(of: " Altar", with: ""))
+            baseForms.append(trimmed.replacingOccurrences(of: " Mini Levels", with: ""))
+            baseForms.append(trimmed.replacingOccurrences(of: " Supercharge", with: ""))
+            if let paren = trimmed.firstIndex(of: "(") {
+                baseForms.append(String(trimmed[..<paren]).trimmingCharacters(in: .whitespacesAndNewlines))
+            }
+
+            for base in baseForms where !base.isEmpty {
+                values.append(base)
+                values.append(base.lowercased())
+                values.append(base.replacingOccurrences(of: " ", with: "_"))
+                values.append(base.replacingOccurrences(of: " ", with: "_").lowercased())
+                values.append(base.replacingOccurrences(of: " ", with: ""))
+                values.append(sanitize(base))
+            }
         }
-        if let id = entry.id {
-            values.append("id_\(id)")
+
+        appendVariants(for: entry.name)
+        appendVariants(for: entry.key)
+
+        if let id = entry.id,
+           let seasonalArchetype = seasonalModuleArchetypeByID[id] {
+            appendVariants(for: seasonalArchetype)
         }
+
+        if let override = assetOverrides[entry.name] {
+            appendVariants(for: override)
+        }
+        if let override = assetOverrides[entry.key] {
+            appendVariants(for: override)
+        }
+
         return Array(Set(values)).filter { !$0.isEmpty }
     }
 
     #if canImport(UIKit)
     private func imageForEntry(_ entry: MasterListEntry, village: Tab) -> UIImage? {
-        let slugs = candidateSlugs(for: entry)
+        let candidates = candidateAssetNames(for: entry)
 
         if village == .builder {
-            for slug in slugs {
+            for candidate in candidates {
+                if let image = UIImage(named: "builder_base/\(candidate)") ?? UIImage(named: candidate) {
+                    return image
+                }
+            }
+
+            for candidate in candidates {
+                let slug = sanitize(candidate)
                 if let assetName = assetLookupByFolder["builder_base"]?[slug],
                    let image = UIImage(named: "builder_base/\(assetName)") ?? UIImage(named: assetName) {
                     return image
@@ -768,22 +1596,90 @@ struct MasterListDebugView: View {
             return nil
         }
 
-        for (folder, folderLookup) in assetLookupByFolder where folder != "builder_base" {
-            for slug in slugs {
-                if let assetName = folderLookup[slug],
-                   let image = UIImage(named: "\(folder)/\(assetName)") ?? UIImage(named: assetName) {
+        let preferredHomeFolders = [
+            "buildings_home", "lab", "pets", "heroes", "crafted_defenses", "extras", "town_hall"
+        ]
+
+        for folder in preferredHomeFolders {
+            for candidate in candidates {
+                if let image = UIImage(named: "\(folder)/\(candidate)") {
+                    return image
+                }
+                let slug = sanitize(candidate)
+                if let assetName = assetLookupByFolder[folder]?[slug],
+                   let image = UIImage(named: "\(folder)/\(assetName)") {
                     return image
                 }
             }
         }
 
-        for slug in slugs {
-            if let image = UIImage(named: slug) {
+        for (folder, folderLookup) in assetLookupByFolder where folder != "builder_base" {
+            for candidate in candidates {
+                if let image = UIImage(named: "\(folder)/\(candidate)") {
+                    return image
+                }
+                let slug = sanitize(candidate)
+                if let assetName = folderLookup[slug], let image = UIImage(named: "\(folder)/\(assetName)") {
+                    return image
+                }
+            }
+        }
+
+        for candidate in candidates {
+            if UIImage(named: "builder_base/\(candidate)") != nil { continue }
+            if let image = UIImage(named: candidate) {
                 return image
             }
         }
 
         return nil
+    }
+
+    private func normalizeLookupName(_ value: String?) -> String {
+        guard let value else { return "" }
+        return value
+            .lowercased()
+            .replacingOccurrences(of: "mini levels", with: "")
+            .replacingOccurrences(of: "supercharge", with: "")
+            .components(separatedBy: CharacterSet.alphanumerics.inverted)
+            .joined()
+    }
+
+    private func iconName(forResource rawResource: String?) -> String? {
+        guard let rawResource else { return nil }
+        let normalized = rawResource
+            .lowercased()
+            .replacingOccurrences(of: "_", with: "")
+            .replacingOccurrences(of: " ", with: "")
+
+        if normalized.contains("builder") && normalized.contains("gold") { return "builder_gold" }
+        if normalized.contains("builder") && normalized.contains("elixir") { return "builder_elixir" }
+        if normalized.contains("gold2") { return "builder_gold" }
+        if normalized.contains("elixir2") { return "builder_elixir" }
+        if normalized.contains("dark") && normalized.contains("elixir") { return "dark_elixir" }
+        if normalized.contains("gold") { return "gold" }
+        if normalized.contains("elixir") { return "elixir" }
+        return nil
+    }
+
+    @ViewBuilder
+    private func resourceIconView(named name: String) -> some View {
+        #if canImport(UIKit)
+        if let image = UIImage(named: "resources/\(name)") ?? UIImage(named: name) {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFit()
+                .frame(width: 16, height: 16)
+        } else {
+            Image(systemName: "questionmark.circle")
+                .font(.caption2)
+                .foregroundColor(.secondary)
+        }
+        #else
+        Image(systemName: "questionmark.circle")
+            .font(.caption2)
+            .foregroundColor(.secondary)
+        #endif
     }
     #endif
 }
