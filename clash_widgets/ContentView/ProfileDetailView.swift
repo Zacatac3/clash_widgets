@@ -269,6 +269,13 @@ struct ProfileDetailView: View {
                             order.move(fromOffsets: offsets, toOffset: destination)
                         }
                     }
+                    Section {
+                        Button("Reset to Default") {
+                            order = ProfileSection.defaultOrder
+                            hidden.removeAll()
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
                 }
                 .environment(\.editMode, .constant(.active))
                 .navigationTitle("Edit Profile Cards")

@@ -603,6 +603,7 @@ struct CoCExport: Decodable {
     let units: [ExportUnit]?
     let units2: [ExportUnit]?
     let spells: [ExportSpell]?
+    let equipment: [ExportUnit]?
 
     private enum CodingKeys: String, CodingKey {
         case tag
@@ -620,6 +621,7 @@ struct CoCExport: Decodable {
         case units
         case units2
         case spells
+        case equipment
     }
 
     init(from decoder: Decoder) throws {
@@ -649,6 +651,7 @@ struct CoCExport: Decodable {
         units = try container.decodeIfPresent([ExportUnit].self, forKey: .units)
         units2 = try container.decodeIfPresent([ExportUnit].self, forKey: .units2)
         spells = try container.decodeIfPresent([ExportSpell].self, forKey: .spells)
+        equipment = try container.decodeIfPresent([ExportUnit].self, forKey: .equipment)
     }
 
 }

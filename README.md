@@ -1,35 +1,66 @@
-## Clashboard Widgets
+# Clashboard
 
-Clashboard is an iOS app with a WidgetKit extension that tracks Clash of Clans upgrade timers and builder/lab/pet house availability at a glance.
+Keep up with your Clash of Clans villages, upgrades, and equipment on iPhone and iPad.
 
-### Features
-- Multi-profile support (store multiple player tags and switch between them).
-- Clash of Clans profile refresh via the official API.
-- Import/export support for the game’s JSON export to track ongoing upgrades.
-- Widget showing builder availability and upgrade progress.
-- Local persistence with app group storage shared between app and widget.
-- Optional notifications for upgrade completion.
+Clashboard brings your upgrade timers, village progress, hero equipment, and clan war status into one place. Switch between accounts, check what is ready next from your widgets, and share a snapshot of your progress with friends.
 
-### Wishlist/to-do
-- fix widget looks on certaind device sizes
-- add "over view" (4x4) widget which displayer all current upgrades in both villages
-- add "progress tracker" which shows a progress bar for each town hall displaying percent of upgrades complete for said town hall 
-- Implement backend for remote updates without pushing new build to app store
+## Your village at a glance
 
-### App + Widget Architecture
-- App target: `clash_widgets` (SwiftUI UI, data management, settings).
-- Widget target: `ClashboardWidget` (WidgetKit timeline + rendering).
-- Shared storage: App Group `group.Zachary-Buschmann.clash-widgets`.
+- **Upgrade dashboard:** Follow Home Village builders, Laboratory and Pet House upgrades, plus Builder Base builders and the Star Laboratory. See idle builders and remaining wall upgrade costs.
+- **Boosts and helpers:** Track helper cooldowns and account for potions, snacks, and custom boost durations. Gold Pass discounts are reflected in supported upgrade costs and timers.
+- **Profiles and clan information:** Keep multiple accounts together, switch profiles quickly, and view player details, heroes, clan information, and current war status.
+- **Make it yours:** Reorder or hide dashboard sections and profile cards, and use layouts that adapt to iPhone, iPad, and different window sizes.
 
+## See your progress
 
-### Assets & Mapping
-Asset images for buildings, heroes, pets, and lab items live under [clash_widgets/Assets.xcassets](clash_widgets/Assets.xcassets). Upgrade data, names, and asset overrides live under [clash_widgets/json](clash_widgets/json). See the [game data and asset update guide](clash_widgets/json/UPDATE_GUIDE.md) for the exact files to change after a game update.
+The **Progress (Beta)** tab shows the current levels of your Home Village troops, spells, heroes, pets, guardians, buildings, traps, walls, and equipment. Jump between categories, arrange your cards, and choose whether to show Supercharges and Crafted Defenses.
 
-### Local Data Storage
-The app stores profiles, upgrades, and preferences to an app group container so the widget can read shared data. The widget falls back to `UserDefaults` data if needed.
+Blue level badges show items maxed for your Town Hall; gold badges show items at their overall maximum level.
 
-### Development Tools
-Utility scripts and data files live under [tools](tools) and [json_files](json_files), these are not needed for the app and for personal use, not needed for install.
+<img src="clash_widgets/Assets.xcassets/changelog/progress.imageset/Image.png" alt="Clashboard Progress tab showing troop levels and maxed level badges on iPad" width="720">
 
-### Disclaimer
-Clash of Clans is a trademark of Supercell. This project is a fan-made utility and is not affiliated with or endorsed by Supercell.
+## Track your hero equipment
+
+View equipment by hero, check upgrade costs and the ores needed to reach maximum level, and focus on the items you actually use. Hidden equipment is excluded from your remaining-cost totals.
+
+<img src="clash_widgets/Assets.xcassets/changelog/equipment.imageset/Screenshot%202026-02-16%20at%203.55.51%E2%80%AFPM.png" alt="Equipment visibility controls for Archer Queen equipment" width="360">
+
+## Check in from your widgets
+
+Home Screen widgets cover builders, Laboratory and Pet House upgrades, Builder Base, helper cooldowns, and clan wars. Lock Screen widgets let you check upcoming upgrade completions and war status without opening the app.
+
+Choose a specific profile for a widget, or have it follow the last profile you opened. A Control Center import shortcut also helps you refresh your village data.
+
+<img src="clash_widgets/Assets.xcassets/changelog/lock_screen.imageset/lock_screen.png" alt="Lock Screen widgets showing builder and Laboratory upgrade countdowns" width="520">
+
+## Share your progress
+
+Open **Share Progress** from the Progress tab to preview your units or equipment on a dedicated canvas. Choose a background and a shape that suits where you want to post:
+
+- Square: **1:1**
+- Portrait: **4:5** or **3:4**
+- Landscape: **4:3** or **5:4**
+
+Copy the visible page straight to your clipboard or open the usual share sheet. Images are saved as detailed, compressed JPEGs for easy sharing. The canvas stays consistent across devices.
+
+## Get reminders that suit you
+
+Choose notifications separately for each profile and for builders, Laboratory, Pet House, Builder Base, helpers, and clan wars. Set an advance reminder, and optionally open Clash of Clans when you tap a notification. Profile-aware reminders help you return to the right account.
+
+## Getting started
+
+1. In Clash of Clans, open **Settings → More Settings → Data Export** and tap **Copy**.
+2. Open Clashboard and follow the setup steps to import your village and add your profile.
+3. Add the widgets you want and choose your notification preferences.
+
+Import fresh village data after making changes in-game to keep upgrade tracking and progress up to date. Player and clan details can also be refreshed in the app.
+
+Clashboard supports **iOS and iPadOS 18 or later**.
+
+## About this repository
+
+This repository contains the iOS app, its widgets, and the tools used to maintain game data. For maintenance details, see the [game data and asset update guide](clash_widgets/json/UPDATE_GUIDE.md), [release procedure](documentation/Clashboard%20Update%20Process.md), and [project organization notes](documentation/PROJECT_ORGANIZATION.md).
+
+Screenshots above come from the app's existing image library; some interface details may differ from the latest build.
+
+Clashboard is a fan-made companion app and is not affiliated with, endorsed, or sponsored by Supercell. Clash of Clans and its game artwork belong to Supercell.

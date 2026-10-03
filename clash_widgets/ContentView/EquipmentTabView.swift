@@ -662,10 +662,12 @@ Level,Shiny Ore Cost,Glowy Ore Cost,Starry Ore Cost,Cumulative Shiny,Cumulative 
 """
 }
 
-private struct EquipmentMetadata: Decodable, Hashable {
+struct EquipmentMetadata: Decodable, Hashable {
     let name: String
     let hero: String
     let rarity: EquipmentRarity
+
+    var assetName: String { "equipment/\(name.slugifiedAssetName)" }
 
     private enum CodingKeys: String, CodingKey {
         case name
@@ -720,7 +722,7 @@ struct HeroConfigStore {
     }
 }
 
-private struct EquipmentDataStore {
+struct EquipmentDataStore {
     let entries: [EquipmentMetadata]
 
     static let shared = EquipmentDataStore.load()
@@ -754,7 +756,7 @@ private extension NumberFormatter {
     }()
 }
 
-private extension String {
+extension String {
     var slugifiedAssetName: String {
         let lowered = lowercased()
         let allowed = lowered.map { char -> Character in

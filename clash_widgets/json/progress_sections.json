@@ -630,6 +630,11 @@
           "title": "Resources",
           "items": [
             {
+              "id": 1000001,
+              "name": "Town Hall",
+              "image": "town_hall"
+            },
+            {
               "id": 1000002,
               "name": "Elixir Collector",
               "image": "elixir_collector"
@@ -658,6 +663,16 @@
               "id": 1000024,
               "name": "Dark Elixir Storage",
               "image": "dark_elixir_storage"
+            },
+            {
+              "id": 1000093,
+              "name": "Helper Hut",
+              "image": "helper_hut"
+            },
+            {
+              "id": 1000064,
+              "name": "B.O.B's Hut",
+              "image": "b_o_b_s_hut"
             }
           ],
           "assetFolder": "buildings_home"
@@ -675,6 +690,11 @@
               "id": 1000068,
               "name": "Pet House",
               "image": "pet_house"
+            },
+            {
+              "id": 1000071,
+              "name": "Hero Hall",
+              "image": "hero_hall"
             },
             {
               "id": 1000000,
@@ -697,6 +717,11 @@
               "image": "laboratory"
             },
             {
+              "id": 1000070,
+              "name": "Blacksmith",
+              "image": "blacksmith"
+            },
+            {
               "id": 1000020,
               "name": "Spell Factory",
               "image": "spell_factory"
@@ -710,52 +735,6 @@
               "id": 1000059,
               "name": "Workshop",
               "image": "workshop"
-            }
-          ],
-          "assetFolder": "buildings_home"
-        },
-        {
-          "id": "utility",
-          "title": "Utility",
-          "items": [
-            {
-              "id": 1000070,
-              "name": "Blacksmith",
-              "image": "blacksmith"
-            },
-            {
-              "id": 1000093,
-              "name": "Helper Hut",
-              "image": "helper_hut"
-            },
-            {
-              "id": 1000064,
-              "name": "B.O.B's Hut",
-              "image": "b_o_b_s_hut"
-            }
-          ],
-          "assetFolder": "buildings_home"
-        },
-        {
-          "id": "hero",
-          "title": "Hero Buildings",
-          "items": [
-            {
-              "id": 1000071,
-              "name": "Hero Hall",
-              "image": "hero_hall"
-            }
-          ],
-          "assetFolder": "buildings_home"
-        },
-        {
-          "id": "core",
-          "title": "Village",
-          "items": [
-            {
-              "id": 1000001,
-              "name": "Town Hall",
-              "image": "town_hall"
             }
           ],
           "assetFolder": "buildings_home"

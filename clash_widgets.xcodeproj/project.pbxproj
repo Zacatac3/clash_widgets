@@ -37,6 +37,7 @@
 		B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
 		B7D4E6F22A3B4C5D6E7F8901 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */; };
 		F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */; };
+		F1A2B3C42F29000000FAE5F2 /* ProgressScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */; };
 		C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3122F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
@@ -124,6 +125,7 @@
 		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
 		F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressScreenshotView.swift; sourceTree = "<group>"; };
 		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
 		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000011 /* HelpAndWhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndWhatsNewView.swift; sourceTree = "<group>"; };
@@ -252,6 +254,7 @@
 				A9C1D2E3F4A5000000000008 /* ContentView+DebugMenu.swift */,
 				B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */,
 				F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */,
+				F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */,
 				D9E8F7A6B5C4D3E200000001 /* Settings */,
 				A9C1D2E3F4A500000000000A /* SettingsView.swift */,
 			);
@@ -281,6 +284,7 @@
 				8879E7C02F0F3B4E00FAE5F1 /* Sources */,
 				8879E7C12F0F3B4E00FAE5F1 /* Frameworks */,
 				8879E7C22F0F3B4E00FAE5F1 /* Resources */,
+				F1A2B3C42F29000000FAE5F4 /* List Screenshot Backgrounds */,
 				8879EAD42F0F5C2700FAE5F1 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
@@ -385,6 +389,27 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		F1A2B3C42F29000000FAE5F4 /* List Screenshot Backgrounds */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/clash_widgets/Assets.xcassets/backgrounds",
+				"$(SRCROOT)/clash_widgets/scripts/generate_screenshot_backgrounds.sh",
+			);
+			name = "List Screenshot Backgrounds";
+			outputPaths = (
+				"$(TARGET_BUILD_DIR)/$(UNLOCALIZED_RESOURCES_FOLDER_PATH)/ScreenshotBackgrounds.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "/bin/sh \"${SRCROOT}/clash_widgets/scripts/generate_screenshot_backgrounds.sh\"";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		8879E7C02F0F3B4E00FAE5F1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -402,6 +427,7 @@
 				A9C1D2E3F4A5000000000007 /* ContentView+DebugMenu.swift in Sources */,
 				B7D4E6F22A3B4C5D6E7F8901 /* ProfileDetailView.swift in Sources */,
 				F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */,
+				F1A2B3C42F29000000FAE5F2 /* ProgressScreenshotView.swift in Sources */,
 				A9C1D2E3F4A5000000000009 /* SettingsView.swift in Sources */,
 				D9E8F7A6B5C4D3E200000021 /* NotificationSettingsPage.swift in Sources */,
 				D9E8F7A6B5C4D3E200000022 /* AppBehaviorSettingsPage.swift in Sources */,

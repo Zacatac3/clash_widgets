@@ -1158,6 +1158,13 @@ struct DashboardView: View {
                             order.move(fromOffsets: offsets, toOffset: destination)
                         }
                     }
+                    Section {
+                        Button("Reset to Default") {
+                            order = HomeSection.defaultOrder
+                            hidden.removeAll()
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
                 }
                 .environment(\.editMode, .constant(.active))
                 .navigationTitle("Edit Home Cards")

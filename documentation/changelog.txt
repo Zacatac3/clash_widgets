@@ -1,0 +1,174 @@
+1.0 - 1/22/2026
+
+*New Features*
+- Release build
+
+1.0.1 - 1/25/2026
+Hotfix Update, uncludes updates and improvements, as well as fixing minor bugs and improving new user Experience
+
+*New Features*
+- Notification preferences now added to onboarding and new profile set-up
+
+*Fixes and Imporvements*
+- fixed interstitial ads showing up immediately following IAP 
+- fixed "what's new" pop up appearing erroneously, now fixed to show up on second app boot and when new builds are published
+- fixed "what's new splash" displaying in user onboarding instead of the "welcome" page
+- changed icon for splash screen from (!) to (?) and set default page to "welcome"
+- Added Restore error message for no contents to restore
+- Added help section to onboarding
+- App no longer prompts for notifications immediately, waits for user to enable notifications
+- notification settings now part of new profile set-up
+- Unranked icon now displays properly in profile tab
+- fixed app icon not tinting for dark clear and tinted modes 
+- changed display name for app/widgets from "clash_widgets" to production name "Clashboard"
+
+*Known issues*
+- on iPad, while using multitasking, when shrinking the app horizontally, the container for the (?) and edit button disappear into an unusable (...) menu
+- haptics are too strong when adjusting sliders
+- Widgets, when tinted or clear, have assets messed up
+
+1.0.2 - 1/27/2026
+Hotfix planned for after launch and collecting user feedback
+
+*New Features*
+- Widgets now allow for displaying both most recent profile as well as a specific profile
+- Walls section in the home screen showing remaining wall costs
+
+*Fixes and Improvements*
+- Helper timers now increment on the widget and home page
+- gold pass reminder no longer occurs before first season reset
+- Added "Full Changelog" button to what's new
+- Swapped places of "Import Data" and profile switcher
+- added "open game settings" button to home and profile setup
+- split onboarding into two pages for simplicity
+- added detailed instructions to onboarding, improved flow
+- goblin builder no longer breaks widgets, simply displays the 6 shortest upgrades
+- Widgets should look the same across screen sizes
+- Better asset fallback to prevent missing assets in almost all causes
+- Widgets are now better with longer troop/building names
+- lowered iOS requirement to iOS 18.0
+- 4 builders now makes the widget 2x2 for better looks
+- added notifications for helpers
+
+1.0.3 - 1/27/26
+Main Fix:
+- Widgets fixed: Widgets should now work on all iOS/iPadOS versions and devices
+
+- Added EU consent form
+- fixed league icons naming error
+- fixed hero levels in the profile tab not being relevant to current town hall
+- wall costs now display billions properly
+- wall costs now scale with gold pass
+- Changed Hero levels and Town Hall level to draw from import instead of API, for edge case scenarios 
+
+
+1.1 - 2/08/26
+Major Quality of Life + feature Update
+
+*New Features and Additions*
+- Lock screen widgets for upgrades
+- Helpers now only send one notification for all helpers
+- added helper gem cost section to profile
+- when editing the home page, you can now hide individual sections
+- Added toggle to open Clash of Clans directly when tapping on notification
+- Notifications now specify which profile the upgrade is for
+- new setting to "Pre-Notify" a few minutes before upgrades are done
+- new Current War home screen module
+- Clan stats added in profile tab
+- added boosts menu (helpers, potions, and snacks)
+- Profile page cards now re-orderable
+- added new setting to display precise timers
+- Added support for the stick horse equipment
+- helpers can now be refreshed without re-importing player data
+
+*Changes and Bug Fixes*
+- Import button now taller to avoid miss taps
+- widgets now display profile names
+- check mark and (...) button swapped in profile settings
+- user now prompted to modify paste settings after first import
+- Split notification settings by global vs profile specific settings
+- new import status visual confirmation
+- tapping a notification now automatically switches to the profile the notification was for
+- updated profile gradient handling
+- removed achievements section, not fully present in the API and inconsistent results
+- widgets now have profile name labels
+- fixed Town Hall level not updating with import (causing icon and wall levels to be messed up)
+- made toggle colors consistent in the settings menu
+- fixed cumulative wall cost not factoring in intermediate levels
+- Added "Done" button to feedback form, preventing users from getting stuck on the page
+- Ensure goblin builder no longer shows "1 builder remaining" when all builders are being used
+
+1.2 - 2/23/26
+Under the Hood Improvements & New Game Update Contents
+
+*New Features & Additions*
+- Images can now be displayed directly in the Changelog
+- Overall, the app should now run much smoother, code has been rebuilt from ground up, to continue scaling the app up. Previous code was getting bloated due to not expecting the app to reach this size
+- Individual equipment can now be hidden from the equipment tab
+image:equipment
+- iPad layout now supports two columns to better use screen real estate, optional toggle for "Legacy Layout"
+- Boosts can now be customized, allowing them to be applied immediately or for a custom duration
+image:custom_boosts
+- Simplified settings menu, with grouping of settings into sub menus
+- Added options to lock screen widgets for closest overall upgrades in home village and builder base
+- Added support for new game update content, including Dragon Duke (and equipment) and new building/troop levels
+
+*Changes and Fixes*
+- Profile page should no longer briefly freeze the app, and it's loading has been optimized
+- Profile selectors when customizing widgets now display actual profile names
+- War Card now tells you when your clan's war log is set to private
+- Pop up indicating empty clipboard when importing
+- Some assets were previously showing up very small, this should be resolved
+- Star lab assets should now properly display on the builder base widget
+- Notifications should now always use Player profile name instead of Profile tag
+- Images now work properly on clear and tinted widgets
+- Helpers, pet potions now only show up in boosts menu once they are unlocked
+- Factory reset now resets show/hide status and resets order of cards
+- Added option to review app from within settings
+- Added new option to reset layouts
+- Town Hall 18 now shows the correct number of walls that can be upgraded to max
+- Inferno artillery support added, previously acted like town hall upgrade
+- App website visual update
+
+1.2.1 - 4/27/26
+Added new update content & minor fixes
+
+*Changes and Fixes*
+- Added support for the new Elecro Fangs, Sky Wagon, and Logger
+- Update cost and time reductions added
+- Added missing asset for rocket backpack for dragon Duke
+- Greedy Raven now correctly named, no longer shows up as "crow"
+- builder base section now displays idle builders instead of nothing
+- Fixed the walls section showing "All walls Maxed" erroneously
+- updated max wall count for TH18
+- cleaned up various text blocks around the app
+
+1.2.2 - 9/28/26
+New Game Content
+
+*New Content and Balance Changes*
+- Added new game assets, including seasonal defense icons
+- Added new hero equipment and units
+- Added new upgrade levels
+- Updated upgrade costs and times to reflect the latest reductions
+
+1.3 - 10/xx/26
+
+*New Features and Additions*
+- New Page added, Progresss
+- see current levels of everything in your home village
+- Customizable UI
+- Supports Supercharges and Crafted Defenses
+- "Share progress" mode
+- See what is maxed for your town hall at a glance with the blue border
+- Page to track all equipment levels in one view
+- tap on a unit to view its max level for your town hall and overall
+- Official iPhone Duo Support
+
+*Changes and Fixes*
+- fixed display name for Mother Witch and Angry Spell
+- Updated max upgradeable walls for TH18 to reflect in-game
+- Fixed jittering when applying a boost
+- adapted layout of "Welcome" page to be more modern
+- Fixed image width on landscape orientation in the changelog
+- Rearrangeable views can now be reset to defaults

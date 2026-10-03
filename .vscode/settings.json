@@ -6,5 +6,12 @@
 	"sweetpad.build.destination": {
 		"id": "iossimulator-2C7454DE-420C-465F-9F67-AD3725FEE83C",
 		"type": "iOSSimulator"
-	}
+	},
+	"workbench.colorCustomizations": {
+    "titleBar.activeBackground": "#582d2d",
+    "titleBar.activeForeground": "#ffffff",
+    "activityBar.background": "#582d2d",
+    "statusBar.background": "#582d2d",
+    "statusBar.foreground": "#ffffff"
+  }
 }
