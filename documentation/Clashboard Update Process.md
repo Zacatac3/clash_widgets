@@ -38,15 +38,3 @@ notes:
 * make sure to be on the latest \*public\* release of xcode, otherwise the build will not be able to be pushed to the app store
 
 
-
-
-
-
-
-updates needed:
-
-* check the json maps for new additions
-* adjust the max walls count
-
-
-

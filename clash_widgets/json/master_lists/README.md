@@ -1,6 +1,6 @@
 # Master Upgrade Lists (Seed)
 
-This folder contains curated lists of available upgrades. The app's Master List debug view reads them. For the full update workflow, see [UPDATE_GUIDE.md](../UPDATE_GUIDE.md).
+This folder contains curated lists of available upgrades. The app's Master List debug view reads them. For the full update workflow, see [UPDATE_GUIDE.md](../../../documentation/UPDATE_GUIDE.md).
 
 ## Files
 

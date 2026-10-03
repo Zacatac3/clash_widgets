@@ -95,7 +95,7 @@ The proposed `fixtures/` relocation needs an Xcode-reference adjustment for `mis
 | `json/master_lists/home_village_master_upgrades.json` and `builder_base_master_upgrades.json` | Read by the Master List debug view. Debug-only does not mean unused. |
 | `data_extraction/clash_csv_to_json.py` and current `extraxted_data/*.csv` | Active development pipeline produces parsed data/maps using explicit paths. Not needed at runtime. |
 | `data_extraction/process_logic.sh` | Documented extraction step; expects `logic/` and writes `processed_csvs/` relative to the working directory, with external `sce`. |
-| `json/UPDATE_GUIDE.md`, master-list README, root README and update procedure | Maintenance documentation; useful but need not be bundled. Keep relative links valid if relocated. |
+| `documentation/UPDATE_GUIDE.md`, master-list README, root README and update procedure | Maintenance documentation; useful but need not be bundled. Keep relative links valid if relocated. |
 | `.vscode/settings.json`, `buildServer.json` | Local editor/build-server setup. Not app resources. `buildServer.json` contains machine-specific absolute paths. |
 
 The `json` directory is an Xcode **folder reference**. Everything in it is copied into the app, including backups and Markdown documents. A directory being bundled does not prove that the application reads it.

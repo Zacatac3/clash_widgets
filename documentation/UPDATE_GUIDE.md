@@ -1,6 +1,8 @@
 # Updating game data, names, and icons
 
-The app bundles this `json/` folder as an Xcode folder reference. Use these files in this order when a game update adds an upgrade or asset.
+The app bundles [clash_widgets/json](../clash_widgets/json) as an Xcode folder reference. This guide lives outside the app resources in `documentation/`. Use these files in this order when a game update adds an upgrade or asset.
+
+Unless otherwise noted, game-data filenames and subfolders below are relative to `clash_widgets/json/`. Script paths are relative to the repository root; run the parser from that root.
 
 ## What each file controls
 
@@ -10,7 +12,7 @@ The app bundles this `json/` folder as an Xcode folder reference. Use these file
 | `json_maps/<type>_json_map.json` | A new or renamed CSV entry needs a human readable `displayName` | ID/internal name lookup. The parser creates new entries and preserves `displayName` for entries it matches by ID. Review its diff report after every run. |
 | `mapping.json` | A game ID needs a canonical display name | ID to name lookup for imported upgrades. For seasonal defenses, this takes precedence over the JSON map in the app dashboard. |
 | `asset_map.json` | A display name does not naturally match its image set name | Display name to image slug. The app builder rows and Asset Map debug screen read the bundled file. This file does not add an image by itself. |
-| `../Assets.xcassets/<folder>/<slug>.imageset/` | A new icon is needed | Add the image and its `Contents.json`. The folder and slug must match the image name requested by the screen. |
+| `clash_widgets/Assets.xcassets/<folder>/<slug>.imageset/` (repository root) | A new icon is needed | Add the image and its `Contents.json`. The folder and slug must match the image name requested by the screen. |
 | `master_lists/home_village_master_upgrades.json` or `master_lists/builder_base_master_upgrades.json` | The curated list of available upgrades changes | Add/remove the ID and name in the matching village, section, and category. These lists power the Master List debug view; they do not supply dashboard icons. |
 | `equipment_data.json` | Hero equipment is added or its hero/rarity changes | Controls entries in the Equipment tab. Equipment is excluded from the village master lists. |
 
@@ -18,7 +20,7 @@ The app bundles this `json/` folder as an Xcode folder reference. Use these file
 
 ## Update checklist by type
 
-Start with decrypted UTF-8 CSVs in `../../data_extraction/extraxted_data/`. The directory name really is `extraxted_data`. `../../data_extraction/process_logic.sh` is an earlier extraction step: it expects a `logic/` folder in its current directory, strips the file header, runs `sce`, and writes decrypted CSVs to `processed_csvs/`. Copy the resulting CSVs into `extraxted_data/` before running `python3 data_extraction/clash_csv_to_json.py` from the repository root. That parser processes **all** expected CSVs, replaces the generated JSON files, updates the JSON maps, and prints added/removed/renamed entries. Review its output and diff before editing the hand maintained files below.
+Start with decrypted UTF-8 CSVs in [data_extraction/extraxted_data/](../data_extraction/extraxted_data). The directory name really is `extraxted_data`. [data_extraction/process_logic.sh](../data_extraction/process_logic.sh) is an earlier extraction step: it expects a `logic/` folder in its current directory, strips the file header, runs `sce`, and writes decrypted CSVs to `processed_csvs/`. Copy the resulting CSVs into `extraxted_data/` before running `python3 data_extraction/clash_csv_to_json.py` from the repository root. That parser processes **all** expected CSVs, replaces the generated JSON files, updates the JSON maps, and prints added/removed/renamed entries. Review its output and diff before editing the hand maintained files below.
 
 | Update | CSV → generated parsed file / JSON map | Hand maintained files and action | App image folder |
 | --- | --- | --- | --- |
