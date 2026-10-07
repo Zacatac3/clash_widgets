@@ -6,7 +6,7 @@ import UniformTypeIdentifiers
 struct ProgressExportPreviewView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.colorScheme) private var colorScheme
-    @AppStorage("progressScreenshotBackground") private var selectedBackground = ScreenshotBackgrounds.names.first ?? ""
+    @AppStorage("progressScreenshotBackground") private var selectedBackground = "Classic"
     @State private var format = ExportFormat.square
     @State private var isExporting = false
     @State private var shareFiles: ShareFiles?
@@ -14,10 +14,14 @@ struct ProgressExportPreviewView: View {
     @State private var exportError: String?
     @State private var copied = false
     @State private var pageIndex = 0
+    @State private var pages: [Page] = []
+    @State private var previewImages: [UIImage] = []
+    @State private var previewRequest: PreviewRequest?
     @State private var loadedBackground: UIImage?
     @State private var loadedBackgroundRequest: BackgroundRequest?
 
     let export: CoCExport
+    let contentRevision: String
     let townHall: Int
     let cachedEquipment: [HeroEquipment]
     let playerName: String
@@ -31,9 +35,13 @@ struct ProgressExportPreviewView: View {
 
     var body: some View {
         let size = format.size
-        let pages = makePages(width: size.width, height: size.height)
         let request = BackgroundRequest(name: selectedBackground,
                                         width: Int(size.width), height: Int(size.height))
+        let foregroundRequest = PreviewRequest(format: format, contentRevision: contentRevision,
+                                               townHall: townHall, equipment: cachedEquipment.map { "\($0.name):\($0.level)" },
+                                               hasBackground: !selectedBackground.isEmpty,
+                                               scheme: canvasScheme == .dark ? "dark" : "light",
+                                               playerName: playerName, playerTag: playerTag)
         NavigationStack {
             VStack(spacing: 12) {
                 HStack(spacing: 10) {
@@ -75,8 +83,17 @@ struct ProgressExportPreviewView: View {
                     let scale = max(0.01, min((geometry.size.width - 24) / size.width,
                                              geometry.size.height / size.height))
                     TabView(selection: $pageIndex) {
-                        ForEach(Array(pages.enumerated()), id: \.offset) { index, page in
-                            canvas(page, size: size)
+                        ForEach(Array(pages.enumerated()), id: \.offset) { index, _ in
+                            ZStack {
+                                background
+                                if previewRequest == foregroundRequest, previewImages.indices.contains(index) {
+                                    Image(uiImage: previewImages[index]).resizable().scaledToFit()
+                                } else {
+                                    ProgressView("Preparing preview…")
+                                }
+                            }
+                                .frame(width: size.width, height: size.height)
+                                .clipped()
                                 .scaleEffect(scale)
                                 .frame(width: size.width * scale, height: size.height * scale)
                                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -125,7 +142,7 @@ struct ProgressExportPreviewView: View {
                         Image(systemName: copied ? "checkmark" : "doc.on.doc")
                     }
                     .accessibilityLabel("Copy Current Page to Clipboard")
-                    .disabled(isExporting || pages.isEmpty || !backgroundReady)
+                    .disabled(isExporting || pages.isEmpty || !backgroundReady || previewRequest != foregroundRequest)
 
                     Button {
                         exportPage(pages, share: true)
@@ -137,7 +154,7 @@ struct ProgressExportPreviewView: View {
                         }
                     }
                     .accessibilityLabel("Share Current Page")
-                    .disabled(isExporting || pages.isEmpty || !backgroundReady)
+                    .disabled(isExporting || pages.isEmpty || !backgroundReady || previewRequest != foregroundRequest)
                 }
             }
         }
@@ -152,8 +169,36 @@ struct ProgressExportPreviewView: View {
         }
         .interactiveDismissDisabled(isExporting)
         .onChangeCompat(of: pageIndex) { _ in copied = false }
-        .onChangeCompat(of: format) { _ in pageIndex = 0; copied = false }
+        .onChangeCompat(of: format) { _ in
+            pageIndex = 0
+            copied = false
+        }
+        .onChangeCompat(of: contentRevision) { _ in pageIndex = 0; copied = false }
+        .onChangeCompat(of: townHall) { _ in copied = false }
+        .onChangeCompat(of: cachedEquipment.map { "\($0.name):\($0.level)" }) { _ in copied = false }
         .onChangeCompat(of: selectedBackground) { _ in copied = false }
+        .task(id: foregroundRequest) {
+            // Capture a consistent page set; UIKit image rendering stays on the main actor.
+            // Yield between pages so the loading state and navigation can update.
+            let currentPages = makePages(width: size.width, height: size.height)
+            pages = currentPages
+            var images: [UIImage] = []
+            for page in currentPages {
+                await Task.yield()
+                guard !Task.isCancelled else { return }
+                let renderer = ImageRenderer(content: foreground(page, size: size))
+                renderer.proposedSize = ProposedViewSize(size)
+                renderer.scale = 1440 / max(size.width, size.height)
+                guard let image = renderer.uiImage else {
+                    exportError = "The preview couldn’t be prepared. Please try again."
+                    return
+                }
+                images.append(image)
+            }
+            guard !Task.isCancelled else { return }
+            previewImages = images
+            previewRequest = foregroundRequest
+        }
         .task(id: request) {
             loadedBackground = nil
             loadedBackgroundRequest = nil
@@ -169,7 +214,7 @@ struct ProgressExportPreviewView: View {
         }
         .onAppear {
             if !selectedBackground.isEmpty && !ScreenshotBackgrounds.names.contains(selectedBackground) {
-                selectedBackground = ScreenshotBackgrounds.names.first ?? ""
+                selectedBackground = "Classic"
             }
         }
     }
@@ -194,9 +239,13 @@ struct ProgressExportPreviewView: View {
 
     // Preview and image rendering always use this same fixed-size view.
     private func canvas(_ page: Page, size: CGSize) -> some View {
+        foreground(page, size: size)
+            .background { background.frame(width: size.width, height: size.height).clipped() }
+    }
+
+    private func foreground(_ page: Page, size: CGSize) -> some View {
         pageView(page)
             .frame(width: size.width, height: size.height)
-            .background { background.frame(width: size.width, height: size.height).clipped() }
             .clipped()
             .environment(\.colorScheme, canvasScheme)
             .dynamicTypeSize(.medium)
@@ -358,6 +407,9 @@ struct ProgressExportPreviewView: View {
 
     private func tile(_ entry: Entry, size: CGFloat) -> some View {
         let fill: Color = {
+            if entry.level == 0 {
+                return selectedBackground.isEmpty ? Color.primary.opacity(0.055) : Color.black.opacity(0.42)
+            }
             switch entry.kind {
             case .unit: return selectedBackground.isEmpty ? Color.primary.opacity(0.055) : Color.black.opacity(0.42)
             case .common: return Color(red: 0.47, green: 0.77, blue: 0.96).opacity(0.43)
@@ -466,14 +518,13 @@ struct ProgressExportPreviewView: View {
 
     private func makeEquipmentEntries() -> [Entry] {
         let equipment = EquipmentDataStore.shared.entries
-        let exported = ProgressCatalog.equipmentLevels(in: export)
-        let cached = Dictionary(cachedEquipment.map { ($0.name.lowercased(), $0.level) }, uniquingKeysWith: max)
+        let cached = EquipmentDataStore.apiLevels(in: cachedEquipment)
         let orderedHeroes = HeroConfigStore.shared.configs
         let heroNames = orderedHeroes.map(\.displayName) + Set(equipment.map(\.hero)).subtracting(Set(orderedHeroes.map(\.displayName))).sorted()
         return heroNames.flatMap { hero -> [Entry] in
             let items = equipment.filter { $0.hero == hero }
             return items.map { item in
-                let level = exported[item.name.lowercased()] ?? cached[item.name.lowercased()] ?? 0
+                let level = cached[item.name.lowercased()] ?? 0
                 return Entry(name: item.name, assetName: item.assetName, level: level,
                              townHallMax: 0, overallMax: item.rarity.maxLevel,
                              kind: item.rarity == .epic ? .epic : .common)
@@ -489,6 +540,17 @@ struct ProgressExportPreviewView: View {
         let townHallMax: Int
         let overallMax: Int
         let kind: Kind
+    }
+
+    private struct PreviewRequest: Equatable {
+        let format: ExportFormat
+        let contentRevision: String
+        let townHall: Int
+        let equipment: [String]
+        let hasBackground: Bool
+        let scheme: String
+        let playerName: String
+        let playerTag: String
     }
 
     private struct BackgroundRequest: Hashable {
@@ -554,6 +616,10 @@ struct ProgressExportPreviewView: View {
 }
 
 private enum ScreenshotBackgrounds {
+    // CIContext creation is expensive; it is safe to reuse across background tasks.
+    nonisolated private static let context = CIContext(options: [.cacheIntermediates: false])
+    nonisolated private static let images = ProgressImageCache(totalCostLimit: 32 * 1024 * 1024)
+
     static let names: [String] = {
         guard let url = Bundle.main.url(forResource: "ScreenshotBackgrounds", withExtension: "txt"),
               let text = try? String(contentsOf: url, encoding: .utf8) else { return [] }
@@ -562,6 +628,8 @@ private enum ScreenshotBackgrounds {
     }()
 
     nonisolated static func renderedImage(named name: String, size: CGSize) -> UIImage? {
+        let key = "\(name)|\(size.width)|\(size.height)" as NSString
+        if let cached = images.image(forKey: key) { return cached }
         guard let source = UIImage(named: name), source.size.width > 0, source.size.height > 0,
               size.width > 0, size.height > 0 else { return nil }
         let format = UIGraphicsImageRendererFormat()
@@ -578,10 +646,12 @@ private enum ScreenshotBackgrounds {
         let desaturated = input.applyingFilter("CIColorControls", parameters: [kCIInputSaturationKey: 0.55])
         let blurred = desaturated.clampedToExtent()
             .applyingFilter("CIGaussianBlur", parameters: [kCIInputRadiusKey: 5 * format.scale])
-        guard let output = CIContext().createCGImage(blurred.cropped(to: input.extent), from: input.extent) else {
+        guard let output = context.createCGImage(blurred.cropped(to: input.extent), from: input.extent) else {
             return thumbnail
         }
-        return UIImage(cgImage: output, scale: format.scale, orientation: .up)
+        let result = UIImage(cgImage: output, scale: format.scale, orientation: .up)
+        images.insert(result, forKey: key, cost: output.bytesPerRow * output.height)
+        return result
     }
 }
 

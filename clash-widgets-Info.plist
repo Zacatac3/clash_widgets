@@ -2,6 +2,8 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>RemoteContentBaseURL</key>
+	<string>https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote</string>
 	<key>GADApplicationIdentifier</key>
 	<string>ca-app-pub-4499177240533852~7645248117</string>
 	<key>LSApplicationQueriesSchemes</key>

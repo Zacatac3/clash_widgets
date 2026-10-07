@@ -58,6 +58,10 @@
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
 		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
 		H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */ = {isa = PBXBuildFile; fileRef = H1A2B3C4D5E6F70012345670 /* clan_stats.json */; };
+		ABCDEF020000000000000001 /* RemoteContentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000001 /* RemoteContentModels.swift */; };
+		ABCDEF020000000000000002 /* RemoteContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000002 /* RemoteContentService.swift */; };
+		ABCDEF020000000000000003 /* RemoteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000003 /* RemoteContentView.swift */; };
+		ABCDEF020000000000000004 /* DataService+RemoteEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -144,6 +148,10 @@
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		H1A2B3C4D5E6F70012345670 /* clan_stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = clan_stats.json; path = ../misc_files/clan_stats.json; sourceTree = "<group>"; };
+		ABCDEF010000000000000001 /* RemoteContentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentModels.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000002 /* RemoteContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentService.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000003 /* RemoteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentView.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+RemoteEvents.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,6 +210,10 @@
 				A9C1D2E3F4A500000000000B /* ContentView */,
 				F1A2B3C4D5E6F70012345678 /* IAPManager.swift */,
 				A1B2C3042F0F3B4E00FAE5F1 /* DataService.swift */,
+				ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */,
+				ABCDEF010000000000000003 /* RemoteContentView.swift */,
+				ABCDEF010000000000000002 /* RemoteContentService.swift */,
+				ABCDEF010000000000000001 /* RemoteContentModels.swift */,
 				F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */,
 				A9C1D2E3F4A5000000000004 /* DataService+Profiles.swift */,
 				A9C1D2E3F4A5000000000006 /* DataService+Persistence.swift */,
@@ -437,6 +449,10 @@
 				D9E8F7A6B5C4D3E200000026 /* SettingsWebView.swift in Sources */,
 				A1B2C4032F0F3B4E00FAE5F1 /* ContentView.swift in Sources */,
 				A1B2C4042F0F3B4E00FAE5F1 /* DataService.swift in Sources */,
+				ABCDEF020000000000000004 /* DataService+RemoteEvents.swift in Sources */,
+				ABCDEF020000000000000003 /* RemoteContentView.swift in Sources */,
+				ABCDEF020000000000000002 /* RemoteContentService.swift in Sources */,
+				ABCDEF020000000000000001 /* RemoteContentModels.swift in Sources */,
 				F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */,
 				A9C1D2E3F4A5000000000002 /* DataService+Profiles.swift in Sources */,
 				A9C1D2E3F4A5000000000005 /* DataService+Persistence.swift in Sources */,

@@ -164,6 +164,8 @@ New Game Content
 - Page to track all equipment levels in one view
 - tap on a unit to view its max level for your town hall and overall
 - Official iPhone Duo Support
+- added support for hammer jam cost and time reductions
+- added a news tab
 
 *Changes and Fixes*
 - fixed display name for Mother Witch and Angry Spell
@@ -172,3 +174,4 @@ New Game Content
 - adapted layout of "Welcome" page to be more modern
 - Fixed image width on landscape orientation in the changelog
 - Rearrangeable views can now be reset to defaults
+- Legends League asset now properly displays

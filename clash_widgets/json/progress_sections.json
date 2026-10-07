@@ -23,14 +23,14 @@
               "image": "archer"
             },
             {
-              "id": 4000002,
-              "name": "Goblin",
-              "image": "goblin"
-            },
-            {
               "id": 4000003,
               "name": "Giant",
               "image": "giant"
+            },
+            {
+              "id": 4000002,
+              "name": "Goblin",
+              "image": "goblin"
             },
             {
               "id": 4000004,
@@ -73,14 +73,14 @@
               "image": "miner"
             },
             {
-              "id": 4000053,
-              "name": "Yeti",
-              "image": "yeti"
-            },
-            {
               "id": 4000059,
               "name": "Electro Dragon",
               "image": "electro_dragon"
+            },
+            {
+              "id": 4000053,
+              "name": "Yeti",
+              "image": "yeti"
             },
             {
               "id": 4000065,
@@ -98,14 +98,14 @@
               "image": "root_rider"
             },
             {
-              "id": 4000177,
-              "name": "Meteor Golem",
-              "image": "meteor_golem"
-            },
-            {
               "id": 4000132,
               "name": "Thrower",
               "image": "thrower"
+            },
+            {
+              "id": 4000177,
+              "name": "Meteor Golem",
+              "image": "meteor_golem"
             }
           ],
           "assetFolder": "lab"
@@ -288,6 +288,31 @@
               "image": "freeze_spell"
             },
             {
+              "id": 26000016,
+              "name": "Clone Spell",
+              "image": "clone_spell"
+            },
+            {
+              "id": 26000035,
+              "name": "Invisibility Spell",
+              "image": "invisibility_spell"
+            },
+            {
+              "id": 26000053,
+              "name": "Recall Spell",
+              "image": "recall_spell"
+            },
+            {
+              "id": 26000098,
+              "name": "Revive Spell",
+              "image": "revive_spell"
+            },
+            {
+              "id": 26000120,
+              "name": "Totem Spell",
+              "image": "totem_spell"
+            },
+            {
               "id": 26000009,
               "name": "Poison Spell",
               "image": "poison_spell"
@@ -303,11 +328,6 @@
               "image": "haste_spell"
             },
             {
-              "id": 26000016,
-              "name": "Clone Spell",
-              "image": "clone_spell"
-            },
-            {
               "id": 26000017,
               "name": "Skeleton Spell",
               "image": "skeleton_spell"
@@ -318,34 +338,14 @@
               "image": "bat_spell"
             },
             {
-              "id": 26000035,
-              "name": "Invisibility Spell",
-              "image": "invisibility_spell"
-            },
-            {
-              "id": 26000053,
-              "name": "Recall Spell",
-              "image": "recall_spell"
-            },
-            {
               "id": 26000070,
               "name": "Overgrowth Spell",
               "image": "overgrowth_spell"
             },
             {
-              "id": 26000098,
-              "name": "Revive Spell",
-              "image": "revive_spell"
-            },
-            {
               "id": 26000109,
               "name": "Ice Block Spell",
               "image": "ice_block_spell"
-            },
-            {
-              "id": 26000120,
-              "name": "Totem Spell",
-              "image": "totem_spell"
             },
             {
               "id": 26000123,
@@ -378,6 +378,11 @@
               "image": "Archer_Queen"
             },
             {
+              "id": 28000006,
+              "name": "Minion Prince",
+              "image": "minion_prince"
+            },
+            {
               "id": 28000002,
               "name": "Grand Warden",
               "image": "Grand_Warden"
@@ -386,11 +391,6 @@
               "id": 28000004,
               "name": "Royal Champion",
               "image": "Royal_Champion"
-            },
-            {
-              "id": 28000006,
-              "name": "Minion Prince",
-              "image": "minion_prince"
             },
             {
               "id": 28000007,
@@ -418,14 +418,14 @@
               "image": "l_a_s_s_i"
             },
             {
-              "id": 73000001,
-              "name": "Mighty Yak",
-              "image": "mighty_yak"
-            },
-            {
               "id": 73000002,
               "name": "Electro Owl",
               "image": "electro_owl"
+            },
+            {
+              "id": 73000001,
+              "name": "Mighty Yak",
+              "image": "mighty_yak"
             },
             {
               "id": 73000003,
@@ -433,14 +433,9 @@
               "image": "unicorn"
             },
             {
-              "id": 73000004,
-              "name": "Phoenix",
-              "image": "phoenix"
-            },
-            {
-              "id": 73000007,
-              "name": "Poison Lizard",
-              "image": "poison_lizard"
+              "id": 73000009,
+              "name": "Frosty",
+              "image": "frosty"
             },
             {
               "id": 73000008,
@@ -448,9 +443,14 @@
               "image": "diggy"
             },
             {
-              "id": 73000009,
-              "name": "Frosty",
-              "image": "frosty"
+              "id": 73000007,
+              "name": "Poison Lizard",
+              "image": "poison_lizard"
+            },
+            {
+              "id": 73000004,
+              "name": "Phoenix",
+              "image": "phoenix"
             },
             {
               "id": 73000010,
@@ -528,9 +528,9 @@
               "image": "archer_tower"
             },
             {
-              "id": 1000011,
-              "name": "Wizard Tower",
-              "image": "wizard_tower"
+              "id": 1000013,
+              "name": "Mortar",
+              "image": "mortar"
             },
             {
               "id": 1000012,
@@ -538,14 +538,24 @@
               "image": "air_defense"
             },
             {
-              "id": 1000013,
-              "name": "Mortar",
-              "image": "mortar"
+              "id": 1000011,
+              "name": "Wizard Tower",
+              "image": "wizard_tower"
+            },
+            {
+              "id": 1000028,
+              "name": "Air Sweeper",
+              "image": "air_sweeper"
             },
             {
               "id": 1000019,
               "name": "Hidden Tesla",
               "image": "hidden_tesla"
+            },
+            {
+              "id": 1000032,
+              "name": "Bomb Tower",
+              "image": "bomb_tower"
             },
             {
               "id": 1000021,
@@ -558,24 +568,19 @@
               "image": "inferno_tower"
             },
             {
-              "id": 1000028,
-              "name": "Air Sweeper",
-              "image": "air_sweeper"
-            },
-            {
               "id": 1000031,
               "name": "Eagle Artillery",
               "image": "eagle_artillery"
             },
             {
-              "id": 1000032,
-              "name": "Bomb Tower",
-              "image": "bomb_tower"
-            },
-            {
               "id": 1000067,
               "name": "Scattershot",
               "image": "scattershot"
+            },
+            {
+              "id": 1000015,
+              "name": "Builder's Hut",
+              "image": "builder_s_hut"
             },
             {
               "id": 1000072,
@@ -588,16 +593,6 @@
               "image": "monolith"
             },
             {
-              "id": 1000102,
-              "name": "Super Wizard Tower",
-              "image": "super_wizard_tower"
-            },
-            {
-              "id": 1000079,
-              "name": "Multi-Gear Tower",
-              "image": "multi_gear_tower"
-            },
-            {
               "id": 1000084,
               "name": "Multi-Archer Tower",
               "image": "multi_archer_tower"
@@ -608,9 +603,9 @@
               "image": "ricochet_cannon"
             },
             {
-              "id": 1000086,
-              "name": "Revenge Tower",
-              "image": "revenge_tower"
+              "id": 1000079,
+              "name": "Multi-Gear Tower",
+              "image": "multi_gear_tower"
             },
             {
               "id": 1000089,
@@ -618,9 +613,14 @@
               "image": "firespitter"
             },
             {
-              "id": 1000015,
-              "name": "Builder's Hut",
-              "image": "builder_s_hut"
+              "id": 1000102,
+              "name": "Super Wizard Tower",
+              "image": "super_wizard_tower"
+            },
+            {
+              "id": 1000086,
+              "name": "Revenge Tower",
+              "image": "revenge_tower"
             }
           ],
           "assetFolder": "buildings_home"
@@ -682,21 +682,6 @@
           "title": "Army",
           "items": [
             {
-              "id": 1000014,
-              "name": "Clan Castle",
-              "image": "clan_castle"
-            },
-            {
-              "id": 1000068,
-              "name": "Pet House",
-              "image": "pet_house"
-            },
-            {
-              "id": 1000071,
-              "name": "Hero Hall",
-              "image": "hero_hall"
-            },
-            {
               "id": 1000000,
               "name": "Army Camp",
               "image": "army_camp"
@@ -707,24 +692,34 @@
               "image": "barracks"
             },
             {
-              "id": 1000026,
-              "name": "Dark Barracks",
-              "image": "dark_barracks"
-            },
-            {
               "id": 1000007,
               "name": "Laboratory",
               "image": "laboratory"
             },
-            {
-              "id": 1000070,
-              "name": "Blacksmith",
-              "image": "blacksmith"
+			{
+              "id": 1000014,
+              "name": "Clan Castle",
+              "image": "clan_castle"
             },
             {
               "id": 1000020,
               "name": "Spell Factory",
               "image": "spell_factory"
+            },
+            {
+              "id": 1000071,
+              "name": "Hero Hall",
+              "image": "hero_hall"
+            },
+            {
+              "id": 1000026,
+              "name": "Dark Barracks",
+              "image": "dark_barracks"
+            },
+            {
+              "id": 1000070,
+              "name": "Blacksmith",
+              "image": "blacksmith"
             },
             {
               "id": 1000029,
@@ -735,6 +730,11 @@
               "id": 1000059,
               "name": "Workshop",
               "image": "workshop"
+            },
+            {
+              "id": 1000068,
+              "name": "Pet House",
+              "image": "pet_house"
             }
           ],
           "assetFolder": "buildings_home"

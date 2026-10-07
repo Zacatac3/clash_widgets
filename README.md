@@ -67,6 +67,6 @@ Clashboard supports **iOS and iPadOS 18 or later**.
 
 ## About this repository
 
-This repository contains the iOS app, its widgets, and the tools used to maintain game data. For maintenance details, see the [game data and asset update guide](documentation/UPDATE_GUIDE.md), [release procedure](documentation/Clashboard%20Update%20Process.md), and [project organization notes](documentation/PROJECT_ORGANIZATION.md).
+This repository contains the iOS app, its widgets, and the tools used to maintain game data. For publishing news and events without an app build, see the [remote content guide](documentation/REMOTE_CONTENT.md). For maintenance details, see the [game data and asset update guide](documentation/UPDATE_GUIDE.md), [release procedure](documentation/Clashboard%20Update%20Process.md), and [project organization notes](documentation/PROJECT_ORGANIZATION.md).
 
 Clashboard is a fan-made companion app and is not affiliated with, endorsed, or sponsored by Supercell. Clash of Clans and its game artwork belong to Supercell.

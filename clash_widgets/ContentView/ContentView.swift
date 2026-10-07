@@ -26,6 +26,7 @@ struct ContentView: View {
     @Environment(\.scenePhase) private var scenePhase
     @EnvironmentObject var iapManager: IAPManager
     @StateObject private var dataService: DataService
+    @ObservedObject private var remoteContent = RemoteContentService.shared
     @State private var selectedTab: MainTab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
@@ -123,6 +124,7 @@ struct ContentView: View {
                 .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
                 .environmentObject(dataService)
                 .onAppear {
+                    dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
                     dataService.pruneCompletedUpgrades()
                     initialSetupTag = dataService.playerTag
                     onboardingLocked = true
@@ -163,6 +165,7 @@ struct ContentView: View {
                         .environmentObject(dataService)
                 }
                 .onAppear {
+                    dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
                     dataService.pruneCompletedUpgrades()
                     handleGoldPassResetIfNeeded()
                     presentLaunchInterstitialIfNeeded()
@@ -176,6 +179,8 @@ struct ContentView: View {
                     case .active, .background:
                         dataService.pruneCompletedUpgrades()
                         if phase == .active {
+                            dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
+                            Task { await remoteContent.refreshIfNeeded() }
                             handleGoldPassResetIfNeeded()
                             presentLaunchInterstitialIfNeeded()
                             handleWidgetImportRequest()
@@ -205,6 +210,10 @@ struct ContentView: View {
                     }
                 }
             }
+        }
+        .task { await remoteContent.refreshIfNeeded() }
+        .onReceive(remoteContent.$now) { now in
+            if scenePhase == .active { dataService.reconcileRemoteEvents(remoteContent.events, at: now) }
         }
     }
 

@@ -18,6 +18,10 @@ struct ProgressTabView: View {
     @State private var export: CoCExport?
     @State private var isLoadingExport = true
     @State private var decodedRawJSON: String?
+    @State private var scrollPosition = ScrollPosition(idType: String.self)
+    #if canImport(UIKit)
+    @State private var scrollController = ProgressScrollController()
+    #endif
 
     private var townHall: Int {
         if let level = dataService.cachedProfile?.townHallLevel, level > 0 { return level }
@@ -26,7 +30,12 @@ struct ProgressTabView: View {
 
     var body: some View {
         NavigationStack {
-            ScrollViewReader { proxy in
+            VStack(spacing: 0) {
+                if export != nil {
+                    categorySelector
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom, 8)
+                }
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         if isLoadingExport {
@@ -46,22 +55,27 @@ struct ProgressTabView: View {
                             }
                         }
                     }
+                    .scrollTargetLayout()
                     .padding(.horizontal)
-                    .padding(.top, export == nil ? 20 : 66)
-                }
-                .overlay(alignment: .topLeading) {
-                    if export != nil {
-                        categorySelector(proxy: proxy)
+                    .padding(.top, export == nil ? 20 : 8)
+                    #if canImport(UIKit)
+                    .background {
+                        ProgressScrollViewProbe(controller: scrollController)
+                            .frame(width: 0, height: 0)
+                            .allowsHitTesting(false)
                     }
+                    #endif
                 }
-                .background(Color(.systemGroupedBackground))
-                .navigationTitle("Progress (Beta)")
-                .toolbar {
-                    if #available(iOS 26.0, *) {
-                        progressToolbar
-                    } else {
-                        progressToolbarFallback
-                    }
+                .scrollPosition($scrollPosition, anchor: .top)
+            }
+            .background(Color(.systemGroupedBackground))
+            .navigationTitle("Progress (Beta)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                if #available(iOS 26.0, *) {
+                    progressToolbar
+                } else {
+                    progressToolbarFallback
                 }
             }
             .sheet(isPresented: $editingCards) {
@@ -105,8 +119,9 @@ struct ProgressTabView: View {
             }
             .fullScreenCover(isPresented: $showingExportPreview) {
                 if let export {
-                    ProgressExportPreviewView(export: export, townHall: townHall,
-                                           cachedEquipment: dataService.currentProfile?.cachedProfile?.heroEquipment ?? [],
+                    ProgressExportPreviewView(export: export,
+                                           contentRevision: decodedRawJSON ?? "", townHall: townHall,
+                                           cachedEquipment: (dataService.currentProfile?.cachedProfile ?? dataService.cachedProfile)?.heroEquipment ?? [],
                                            playerName: dataService.currentProfile.map { dataService.displayName(for: $0) } ?? "Player",
                                            playerTag: dataService.currentProfile?.cachedProfile?.tag
                                                ?? dataService.currentProfile?.tag ?? export.tag ?? "")
@@ -192,15 +207,13 @@ struct ProgressTabView: View {
         ProgressDisplaySettings.save(enabled, option: option, profileID: id)
     }
 
-    private func categorySelector(proxy: ScrollViewProxy) -> some View {
+    private var categorySelector: some View {
         HStack {
             Menu {
                 ForEach(visibleSectionIDs, id: \.self) { id in
                     if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
                         Button(section.title) {
-                            withAnimation(.easeInOut(duration: 0.3)) {
-                                proxy.scrollTo(id, anchor: UnitPoint(x: 0.5, y: 0.12))
-                            }
+                            jumpToSection(id)
                         }
                     }
                 }
@@ -216,9 +229,28 @@ struct ProgressTabView: View {
                 .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
                 .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.separator).opacity(0.6)))
             }
+            .simultaneousGesture(TapGesture().onEnded {
+                stopProgressScrolling()
+            })
         }
         .padding(.leading, 16)
         .padding(.top, 8)
+    }
+
+    private func stopProgressScrolling() {
+        #if canImport(UIKit)
+        scrollController.stopScrolling()
+        #endif
+    }
+
+    private func jumpToSection(_ id: String) {
+        stopProgressScrolling()
+        // Let the cancelled scroll settle before SwiftUI starts the new animation.
+        DispatchQueue.main.async {
+            withAnimation(.easeInOut(duration: 0.3)) {
+                scrollPosition.scrollTo(id: id, anchor: .top)
+            }
+        }
     }
 
     private func loadDisplaySettings() {
@@ -517,7 +549,7 @@ struct ProgressTabView: View {
                     ProgressBadgeFlow(spacing: 6) {
                         ForEach(counts.keys.sorted(), id: \.self) { level in
                             HStack(spacing: 5) {
-                                numberBadge(level, style: level > 0 && level >= (definition?.maxLevel ?? Int.max) ? .overall : .normal)
+                                numberBadge(level, style: level > 0 && level >= (definition?.maxLevel ?? Int.max) ? .townHall : .normal)
                                 if (counts[level] ?? 0) > 1 { Text("×\(counts[level] ?? 0)").font(.caption) }
                             }
                             .accessibilityLabel("Supercharge level \(level), \(counts[level] ?? 0) copies")
@@ -602,16 +634,15 @@ struct ProgressTabView: View {
         let equipment = EquipmentDataStore.shared.entries
         let heroes = HeroConfigStore.shared.configs.map(\.displayName)
             .filter { hero in equipment.contains { $0.hero == hero } }
-        let exportLevels = ProgressCatalog.equipmentLevels(in: export)
-        let profileLevels = Dictionary((dataService.currentProfile?.cachedProfile?.heroEquipment ?? [])
-            .map { ($0.name.lowercased(), $0.level) }, uniquingKeysWith: max)
+        let profile = dataService.currentProfile?.cachedProfile ?? dataService.cachedProfile
+        let profileLevels = EquipmentDataStore.apiLevels(in: profile?.heroEquipment ?? [])
         return VStack(alignment: .leading, spacing: 12) {
             Text("Equipment").font(.headline)
             ForEach(heroes, id: \.self) { hero in
                 Text(hero).font(.subheadline.bold()).padding(.top, 4)
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 70), spacing: 8)], spacing: 12) {
                     ForEach(equipment.filter { $0.hero == hero }, id: \.name) { item in
-                        let level = exportLevels[item.name.lowercased()] ?? profileLevels[item.name.lowercased()] ?? 0
+                        let level = profileLevels[item.name.lowercased()] ?? 0
                         equipmentTile(item, level: level)
                     }
                 }
@@ -623,7 +654,8 @@ struct ProgressTabView: View {
     private func equipmentTile(_ item: EquipmentMetadata, level: Int) -> some View {
         let isEpic = item.rarity == .epic
         let isMax = level > 0 && level >= item.rarity.maxLevel
-        let fill = isEpic ? (colorScheme == .dark ? Color(red: 0.35, green: 0.18, blue: 0.29)
+        let fill = level == 0 ? Color(.secondarySystemGroupedBackground)
+            : isEpic ? (colorScheme == .dark ? Color(red: 0.35, green: 0.18, blue: 0.29)
                                              : Color(red: 1, green: 0.84, blue: 0.92))
             : (colorScheme == .dark ? Color(red: 0.16, green: 0.30, blue: 0.39)
                                     : Color(red: 0.78, green: 0.91, blue: 1))
@@ -650,6 +682,59 @@ struct ProgressTabView: View {
     }
 }
 
+#if canImport(UIKit)
+@MainActor
+private final class ProgressScrollController {
+    weak var scrollView: UIScrollView?
+
+    func stopScrolling() {
+        scrollView?.stopScrollingAndZooming()
+    }
+}
+
+// Resolve only the containing scroll view, so category taps can cancel its momentum.
+private struct ProgressScrollViewProbe: UIViewRepresentable {
+    let controller: ProgressScrollController
+
+    func makeUIView(context: Context) -> ProbeView {
+        let view = ProbeView()
+        view.isUserInteractionEnabled = false
+        view.controller = controller
+        return view
+    }
+
+    func updateUIView(_ uiView: ProbeView, context: Context) {
+        uiView.controller = controller
+        uiView.resolveScrollView()
+    }
+
+    final class ProbeView: UIView {
+        weak var controller: ProgressScrollController?
+
+        override func didMoveToWindow() {
+            super.didMoveToWindow()
+            resolveScrollView()
+        }
+
+        override func didMoveToSuperview() {
+            super.didMoveToSuperview()
+            resolveScrollView()
+        }
+
+        func resolveScrollView() {
+            var ancestor = superview
+            while let view = ancestor {
+                if let scrollView = view as? UIScrollView {
+                    controller?.scrollView = scrollView
+                    return
+                }
+                ancestor = view.superview
+            }
+        }
+    }
+}
+#endif
+
 private extension View {
     func progressStructureIconStyle(_ colorScheme: ColorScheme) -> some View {
         let fill = colorScheme == .dark ? Color.white.opacity(0.06) : Color.black.opacity(0.04)
@@ -670,13 +755,28 @@ private extension View {
 
 private struct ProgressStructureImage: View {
     let name: String
+    #if canImport(UIKit)
+    @State private var loadedImage: UIImage?
+    @State private var loadedName = ""
+    #endif
 
     var body: some View {
         #if canImport(UIKit)
-        if let image = ProgressStructureImageCache.trimmedImage(named: name) {
-            Image(uiImage: image).resizable().scaledToFit()
-        } else {
-            Image(name).resizable().scaledToFit()
+        Group {
+            if loadedName == name, let loadedImage {
+                Image(uiImage: loadedImage).resizable().scaledToFit()
+            } else {
+                Color.clear
+            }
+        }
+        .task(id: name) {
+            let requestedName = name
+            let image = await Task.detached(priority: .userInitiated) {
+                ProgressStructureImageCache.trimmedImage(named: requestedName)
+            }.value
+            guard !Task.isCancelled else { return }
+            loadedImage = image
+            loadedName = requestedName
         }
         #else
         Image(name).resizable().scaledToFit()
@@ -684,20 +784,38 @@ private struct ProgressStructureImage: View {
     }
 }
 
+#if canImport(UIKit)
+// NSCache synchronizes lookup/insertion; configure it once before sharing it.
+nonisolated final class ProgressImageCache: @unchecked Sendable {
+    private let cache = NSCache<NSString, UIImage>()
+
+    init(totalCostLimit: Int) {
+        cache.totalCostLimit = totalCostLimit
+    }
+
+    func image(forKey key: NSString) -> UIImage? { cache.object(forKey: key) }
+
+    func insert(_ image: UIImage, forKey key: NSString, cost: Int) {
+        cache.setObject(image, forKey: key, cost: cost)
+    }
+}
+#endif
+
 private enum ProgressStructureImageCache {
     #if canImport(UIKit)
-    private static let images = NSCache<NSString, UIImage>()
+    nonisolated private static let images = ProgressImageCache(totalCostLimit: 24 * 1024 * 1024)
 
-    static func trimmedImage(named name: String) -> UIImage? {
+    nonisolated static func trimmedImage(named name: String) -> UIImage? {
         let key = NSString(string: name)
-        if let cached = images.object(forKey: key) { return cached }
+        if let cached = images.image(forKey: key) { return cached }
         guard let source = UIImage(named: name) else { return nil }
         let trimmed = trimTransparentEdges(from: source)
-        images.setObject(trimmed, forKey: key)
+        let cost = trimmed.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        images.insert(trimmed, forKey: key, cost: cost)
         return trimmed
     }
 
-    private static func trimTransparentEdges(from image: UIImage) -> UIImage {
+    nonisolated private static func trimTransparentEdges(from image: UIImage) -> UIImage {
         guard let cgImage = image.cgImage,
               let providerData = cgImage.dataProvider?.data,
               let pixels = CFDataGetBytePtr(providerData) else { return image }
@@ -931,8 +1049,13 @@ enum ProgressCatalog {
     static let sections: [Section] = {
         guard let data = load("progress_sections", folder: "json"),
               let file = try? JSONDecoder().decode(CatalogFile.self, from: data) else { return [] }
+        // Several categories share a source file (troops/dark troops/siege, buildings/walls).
+        // Decode each source once during catalog construction.
+        let parsedByFile = Dictionary(uniqueKeysWithValues: Set(file.sections.map(\.levels)).map {
+            ($0, parsedEntries(file: $0))
+        })
         var sections = file.sections.map { definition in
-            let parsed = parsedEntries(file: definition.levels)
+            let parsed = parsedByFile[definition.levels] ?? [:]
             let groups = definition.groups.map { group in
                 Group(id: group.id, title: group.title, items: group.items.map { entry in
                     let rawLevels = parsed[entry.id]?["levels"] as? [[String: Any]] ?? []
@@ -975,20 +1098,6 @@ enum ProgressCatalog {
         if let crafted { sections.append(crafted) }
         return sections
     }()
-
-    private static let equipmentNamesByID: [String: String] = {
-        guard let data = load("mapping", folder: "json"),
-              let names = try? JSONDecoder().decode([String: String].self, from: data) else { return [:] }
-        return names
-    }()
-
-    static func equipmentLevels(in export: CoCExport?) -> [String: Int] {
-        guard let equipment = export?.equipment else { return [:] }
-        return Dictionary(equipment.compactMap { entry -> (String, Int)? in
-            guard let name = equipmentNamesByID[String(entry.data)] else { return nil }
-            return (name.lowercased(), entry.lvl)
-        }, uniquingKeysWith: max)
-    }
 
     private static let buildingFacilities: [Int: [[String: Any]]] = {
         let parsed = parsedEntries(file: "buildings")

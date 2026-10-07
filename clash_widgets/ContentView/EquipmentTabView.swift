@@ -260,10 +260,7 @@ struct EquipmentView: View {
         let profile = dataService.currentProfile?.cachedProfile ?? dataService.cachedProfile
         guard let profile else { return [] }
         let hasEquipmentUnlocked = profile.townHallLevel >= 8
-        let equipmentList: [HeroEquipment] = profile.heroEquipment ?? []
-        let levelsByName = Dictionary(
-            uniqueKeysWithValues: equipmentList.map { ($0.name.lowercased(), $0) }
-        )
+        let levelsByName = EquipmentDataStore.apiLevels(in: profile.heroEquipment ?? [])
 
         return EquipmentView.equipmentMetadata.entries.compactMap { metadata in
             let heroUnlockLevel = heroUnlockTownHall(metadata.hero)
@@ -271,10 +268,10 @@ struct EquipmentView: View {
                 return nil
             }
             let lookupKey = metadata.name.lowercased()
-            let equipment = levelsByName[lookupKey]
-            let level = hasEquipmentUnlocked ? (equipment?.level ?? 0) : 0
+            let apiLevel = levelsByName[lookupKey]
+            let level = hasEquipmentUnlocked ? (apiLevel ?? 0) : 0
             let maxLevel = metadata.rarity.maxLevel
-            let isUnlocked = hasEquipmentUnlocked && equipment != nil
+            let isUnlocked = hasEquipmentUnlocked && apiLevel != nil
             let isHidden = dataService.isEquipmentHidden(named: metadata.name)
 
             return EquipmentEntry(
@@ -364,6 +361,8 @@ private struct EquipmentRow: View {
                     .resizable()
                     .scaledToFit()
                     .frame(width: 36, height: 36)
+                    .saturation(entry.isUnlocked ? 1 : 0)
+                    .opacity(entry.isUnlocked ? 1 : 0.4)
                     .padding(6)
                     .background(RoundedRectangle(cornerRadius: 10).fill(Color(.tertiarySystemBackground)))
                 VStack(alignment: .leading, spacing: 4) {
@@ -726,6 +725,11 @@ struct EquipmentDataStore {
     let entries: [EquipmentMetadata]
 
     static let shared = EquipmentDataStore.load()
+
+    // The API lists owned equipment only; keep missing catalog entries at level zero.
+    static func apiLevels(in equipment: [HeroEquipment]) -> [String: Int] {
+        Dictionary(equipment.map { ($0.name.lowercased(), $0.level) }, uniquingKeysWith: max)
+    }
 
     static func load() -> EquipmentDataStore {
         // Try all candidate json folder locations (handles folder references and app group)

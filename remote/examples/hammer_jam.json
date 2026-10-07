@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "events": [
+    {
+      "id": "hammer-jam-example",
+      "enabled": false,
+      "start": "2026-11-09T08:00:00Z",
+      "end": "2026-11-23T08:00:00Z",
+      "presentation": {
+        "title": "Hammer Jam",
+        "summary": "Replace this text with the confirmed event rules.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/builder_potion"
+        },
+        "sections": [
+          {
+            "title": "Faster upgrades",
+            "body": "Replace with confirmed eligibility, reductions, and exclusions.",
+            "image": null
+          }
+        ]
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage",
+            "lab",
+            "pets"
+          ],
+          "excludedDataIDs": [],
+          "timeMultiplier": 0.5,
+          "excludeSupercharges": true
+        },
+        {
+          "categories": [
+            "walls"
+          ],
+          "wallCostMultiplier": 0.5
+        }
+      ]
+    }
+  ]
+}

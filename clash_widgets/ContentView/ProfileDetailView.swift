@@ -530,12 +530,12 @@ struct ProfileDetailView: View {
     private func leagueAssetName(for league: String) -> String? {
         let trimmed = league.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmed.isEmpty else { return nil }
-        // Show an explicit icon for Unranked (asset present as 'unranked')
-        if trimmed.localizedCaseInsensitiveCompare("Legend League") == .orderedSame {
-            return "leagues/legend_league"
-        }
         let firstWord = trimmed.split(separator: " ").first.map(String.init) ?? trimmed
         let normalized = firstWord.lowercased()
+        // All Legend tiers share the bundled Legend League icon.
+        if normalized == "legend" {
+            return "leagues/legend_league"
+        }
         let allowed = CharacterSet.alphanumerics
         let mapped = normalized.unicodeScalars.map { scalar -> Character in
             allowed.contains(scalar) ? Character(scalar) : "_"

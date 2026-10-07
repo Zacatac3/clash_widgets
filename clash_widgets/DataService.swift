@@ -845,7 +845,7 @@ class DataService: ObservableObject {
     }
     
     /// Calculate effective remaining time accounting for active boosts
-    private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
+    func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
         let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
         
         let start = upgrade.startTime
@@ -2141,7 +2141,7 @@ class DataService: ObservableObject {
         let resolvedName = displayNameOverride ?? mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))"
         let normalizedName = normalizeBuilderBasePrefixIfNeeded(resolvedName, category: category)
 
-        return BuildingUpgrade(
+        var upgrade = BuildingUpgrade(
             dataId: dataId,
             name: normalizedName,
             targetLevel: currentLevel + 1,
@@ -2154,6 +2154,8 @@ class DataService: ObservableObject {
             totalDuration: totalDuration,
             isSeasonalDefense: isSeasonalDefense
         )
+        upgrade.goldPassFactorAtImport = 1 - Double(max(0, min(100, goldPassBoost))) / 100
+        return upgrade
     }
 
     private func normalizeBuilderBasePrefixIfNeeded(_ name: String, category: UpgradeCategory) -> String {

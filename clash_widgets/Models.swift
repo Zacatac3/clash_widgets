@@ -289,6 +289,7 @@ enum AdsPreference: String, CaseIterable, Identifiable {
 internal enum InfoSheetPage: String, CaseIterable, Identifiable {
     case welcome = "Welcome"
     case whatsNew = "What’s New"
+    case news = "News"
     var id: String { rawValue }
 }
 
@@ -473,6 +474,8 @@ struct BuildingUpgrade: Identifiable, Codable {
     let superchargeLevel: Int?
     let superchargeTargetLevel: Int?
     var endTime: Date  // Mutable to allow boost adjustments
+    var appliedRemoteEventIDs: Set<String> = []
+    var goldPassFactorAtImport: Double?
     let category: UpgradeCategory
     let startTime: Date
     let totalDuration: TimeInterval
@@ -496,7 +499,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration, isSeasonalDefense
+        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration, isSeasonalDefense, appliedRemoteEventIDs, goldPassFactorAtImport
     }
     
     init(from decoder: Decoder) throws {
@@ -508,6 +511,8 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.superchargeLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeLevel)
         self.superchargeTargetLevel = try container.decodeIfPresent(Int.self, forKey: .superchargeTargetLevel)
         self.usesGoblin = try container.decodeIfPresent(Bool.self, forKey: .usesGoblin) ?? false
+        self.appliedRemoteEventIDs = try container.decodeIfPresent(Set<String>.self, forKey: .appliedRemoteEventIDs) ?? []
+        self.goldPassFactorAtImport = try container.decodeIfPresent(Double.self, forKey: .goldPassFactorAtImport)
         self.endTime = try container.decode(Date.self, forKey: .endTime)
         self.category = try container.decodeIfPresent(UpgradeCategory.self, forKey: .category) ?? .builderVillage
         self.startTime = try container.decodeIfPresent(Date.self, forKey: .startTime) ?? Date()
@@ -524,6 +529,8 @@ struct BuildingUpgrade: Identifiable, Codable {
         try container.encodeIfPresent(superchargeLevel, forKey: .superchargeLevel)
         try container.encodeIfPresent(superchargeTargetLevel, forKey: .superchargeTargetLevel)
         try container.encode(usesGoblin, forKey: .usesGoblin)
+        try container.encode(appliedRemoteEventIDs, forKey: .appliedRemoteEventIDs)
+        try container.encodeIfPresent(goldPassFactorAtImport, forKey: .goldPassFactorAtImport)
         try container.encode(endTime, forKey: .endTime)
         try container.encode(category, forKey: .category)
         try container.encode(startTime, forKey: .startTime)

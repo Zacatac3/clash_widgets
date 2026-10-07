@@ -6,6 +6,10 @@ import UIKit
 struct DashboardView: View {
     @EnvironmentObject private var dataService: DataService
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @ObservedObject private var remoteContent = RemoteContentService.shared
+    @State private var startupPopupSuppressed = false
+    @State private var presentedNews: RemoteNews?
+    @State private var didPresentNewsThisLaunch = false
     @State private var importStatus: String?
     @AppStorage("hasSeenClashboardOnboarding") private var hasSeenOnboarding = false
     @AppStorage("lastSeenAppVersion") private var lastSeenAppVersion = ""
@@ -32,6 +36,10 @@ struct DashboardView: View {
             GeometryReader { geometry in
                 dashboardList(width: geometry.size.width)
             }
+            .sheet(item: $presentedNews) { item in
+                RemoteNewsSheet(item: item).adaptivePanelPresentation()
+            }
+            .onReceive(remoteContent.$now) { _ in presentLatestNewsIfEligible() }
             .sheet(isPresented: $showInfoSheet) {
                 InfoSheetView(selectedPage: $infoSheetPage, sections: defaultWhatsNewSections())
                     .adaptivePanelPresentation()
@@ -71,17 +79,21 @@ struct DashboardView: View {
                         hasSeenOnboarding = true
                         infoSheetPage = .welcome
                         showInfoSheet = true
+                        startupPopupSuppressed = true
                     } else if !hasShownWhatsNewFirstColdBoot {
                         infoSheetPage = .whatsNew
                         showInfoSheet = true
+                        startupPopupSuppressed = true
                         hasShownWhatsNewFirstColdBoot = true
                         markWhatsNewSeen()
                     } else if shouldShowWhatsNew {
                         infoSheetPage = .whatsNew
                         showInfoSheet = true
+                        startupPopupSuppressed = true
                         markWhatsNewSeen()
                     }
                     didRunStartupSheets = true
+                    presentLatestNewsIfEligible()
                 }
             }
             .onChangeCompat(of: orderedSections) { newValue in
@@ -136,6 +148,32 @@ struct DashboardView: View {
                 selectedProfileSection
             }
 
+            if !remoteContent.visibleEvents.isEmpty {
+                Section("Events") {
+                    ForEach(remoteContent.visibleEvents) { event in
+                        NavigationLink { RemoteEventDetailView(event: event) } label: {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(event.presentation.title).font(.headline)
+                                HStack {
+                                    Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
+                                    Text(remoteContent.now < event.start ? event.start : event.end, style: .timer).monospacedDigit()
+                                }.font(.caption).foregroundStyle(.secondary)
+                            }
+                        }
+                    }
+                }
+            }
+
+            if shouldUseTwoColumnModules(width: width) {
+                Section {
+                    modulesTwoColumnLayout
+                }
+            } else {
+                ForEach(orderedSections, id: \.self) { section in
+                    sectionView(for: section)
+                }
+            }
+
             if adsPreference == .banner {
                 Section {
                     BannerAdPlaceholder()
@@ -147,16 +185,6 @@ struct DashboardView: View {
                     Text("No active upgrades tracked. Paste your exported JSON to start tracking timers.")
                         .font(.caption)
                         .foregroundColor(.secondary)
-                }
-            }
-
-            if shouldUseTwoColumnModules(width: width) {
-                Section {
-                    modulesTwoColumnLayout
-                }
-            } else {
-                ForEach(orderedSections, id: \.self) { section in
-                    sectionView(for: section)
                 }
             }
 
@@ -574,8 +602,13 @@ struct DashboardView: View {
                 showInfoSheet = true
             } label: {
                 Image(systemName: "questionmark.circle")
+                    .overlay(alignment: .topTrailing) {
+                        if remoteContent.unreadPopup != nil {
+                            Circle().fill(Color.accentColor).frame(width: 6, height: 6).offset(x: 3, y: -3)
+                        }
+                    }
             }
-            .accessibilityLabel("Show Help")
+            .accessibilityLabel("Welcome, What’s New, and News")
             .buttonStyle(.plain)
             .foregroundColor(.accentColor)
             
@@ -614,8 +647,13 @@ struct DashboardView: View {
                 showInfoSheet = true
             } label: {
                 Image(systemName: "questionmark.circle")
+                    .overlay(alignment: .topTrailing) {
+                        if remoteContent.unreadPopup != nil {
+                            Circle().fill(Color.accentColor).frame(width: 6, height: 6).offset(x: 3, y: -3)
+                        }
+                    }
             }
-            .accessibilityLabel("Show Help")
+            .accessibilityLabel("Welcome, What’s New, and News")
             .buttonStyle(.plain)
             .foregroundColor(.accentColor)
         }
@@ -1641,11 +1679,9 @@ struct DashboardView: View {
     }
 
     private func applyGoldPassDiscount(to cost: Int, boostPercentage: Int) -> Int {
-        if boostPercentage <= 0 {
-            return cost
-        }
-        let discountFactor = Double(100 - boostPercentage) / 100.0
-        return Int(Double(cost) * discountFactor)
+        let discountFactor = Double(100 - max(0, min(100, boostPercentage))) / 100.0
+        let eventFactor = remoteContent.wallFactor(townHall: dataService.getTownHallLevel(from: .home))
+        return Int(Double(cost) * discountFactor * eventFactor)
     }
 
     private func pasteAndImport() {
@@ -1709,10 +1745,20 @@ struct DashboardView: View {
         .tint(.accentColor)
     }
 
+    private func presentLatestNewsIfEligible() {
+        guard didRunStartupSheets, remoteContent.launchRefreshResolved,
+              !startupPopupSuppressed, !didPresentNewsThisLaunch,
+              !showInfoSheet, !showHomeOrderSheet, !showBoostSheet, !showFirstImportTip,
+              let latest = remoteContent.unreadPopup else { return }
+        didPresentNewsThisLaunch = true
+        presentedNews = latest
+    }
+
     private var shouldShowWhatsNew: Bool {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         guard !version.isEmpty else { return false }
-        return version != lastSeenAppVersion
+        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
+        return version != lastSeenAppVersion || build != lastSeenBuildNumber
     }
 
     private func markWhatsNewSeen() {

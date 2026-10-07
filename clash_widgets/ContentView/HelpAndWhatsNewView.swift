@@ -28,10 +28,12 @@ struct InfoSheetView: View {
                         .tag(InfoSheetPage.welcome)
                     WhatsNewContent(sections: sections)
                         .tag(InfoSheetPage.whatsNew)
+                    RemoteNewsListView()
+                        .tag(InfoSheetPage.news)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .never))
             }
-            .navigationTitle("Welcome & What’s New")
+            .navigationTitle(selectedPage.rawValue)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {

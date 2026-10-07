@@ -1,0 +1,25 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "example-update-preview-v1",
+      "published": "2026-10-06T15:00:00Z",
+      "showAsPopup": true,
+      "presentation": {
+        "title": "Update preview",
+        "summary": "Your announcement goes here.",
+        "image": null,
+        "sections": [
+          {
+            "title": "What is coming",
+            "body": "Add update information here.",
+            "image": {
+              "source": "remote",
+              "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/example.png"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
