@@ -152,12 +152,19 @@ struct DashboardView: View {
                 Section("Events") {
                     ForEach(remoteContent.visibleEvents) { event in
                         NavigationLink { RemoteEventDetailView(event: event) } label: {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text(event.presentation.title).font(.headline)
-                                HStack {
-                                    Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
-                                    Text(remoteContent.now < event.start ? event.start : event.end, style: .timer).monospacedDigit()
-                                }.font(.caption).foregroundStyle(.secondary)
+                            HStack(spacing: 12) {
+                                if let icon = event.icon {
+                                    RemoteContentImageView(reference: icon, fallbackSystemImage: "calendar")
+                                        .frame(width: 48, height: 48)
+                                        .accessibilityHidden(true)
+                                }
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text(event.presentation.title).font(.headline)
+                                    HStack {
+                                        Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
+                                        Text(remoteContent.now < event.start ? event.start : event.end, style: .timer).monospacedDigit()
+                                    }.font(.caption).foregroundStyle(.secondary)
+                                }
                             }
                         }
                     }

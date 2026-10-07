@@ -44,6 +44,7 @@ struct RemoteEvent: Codable, Identifiable {
     let enabled: Bool
     let start: Date
     let end: Date
+    let icon: RemoteImage?
     let presentation: RemotePresentation
     let modifiers: [RemoteModifier]
 

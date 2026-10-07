@@ -52,6 +52,7 @@ def validate(folder):
         ids.add(event['id'])
         assert isinstance(event['enabled'], bool)
         assert date(event['start']) < date(event['end']), 'Event must end after it starts'
+        image(event.get('icon'))
         presentation(event['presentation'])
         for rule in event['modifiers']:
             assert rule['categories'] and set(rule['categories']) <= CATEGORIES

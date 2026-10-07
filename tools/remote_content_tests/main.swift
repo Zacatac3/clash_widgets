@@ -5,7 +5,7 @@ decoder.dateDecodingStrategy = .iso8601
 let example = try decoder.decode(RemoteEventFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/examples/hammer_jam.json")))
 try example.validate()
 let sample = example.events[0]
-let event = RemoteEvent(id: sample.id, enabled: true, start: sample.start, end: sample.end, presentation: sample.presentation, modifiers: sample.modifiers)
+let event = RemoteEvent(id: sample.id, enabled: true, start: sample.start, end: sample.end, icon: sample.icon, presentation: sample.presentation, modifiers: sample.modifiers)
 let start = event.start
 let day: TimeInterval = 86400
 func factor(now: Date, tracked: Date? = nil, end: Date? = nil, category: String = "builderVillage", applied: Set<String> = [], seasonal: Bool = false) -> Double? {
@@ -42,7 +42,7 @@ for path in ["remote/news_feed.json", "remote/examples/news_feed.json"] {
     try decoder.decode(RemoteNewsFeed.self, from: Data(contentsOf: URL(fileURLWithPath: path))).validate()
 }
 let invalidRule = RemoteModifier(categories: ["lab"], dataIDs: nil, excludedDataIDs: nil, townHallMin: nil, townHallMax: nil, timeMultiplier: 0, wallCostMultiplier: nil, excludeSupercharges: nil)
-let invalid = RemoteEvent(id: "bad", enabled: true, start: start, end: event.end, presentation: event.presentation, modifiers: [invalidRule])
+let invalid = RemoteEvent(id: "bad", enabled: true, start: start, end: event.end, icon: nil, presentation: event.presentation, modifiers: [invalidRule])
 do {
     try RemoteEventFeed(schemaVersion: 1, events: [invalid]).validate()
     fatalError("Unsafe multipliers must be rejected")

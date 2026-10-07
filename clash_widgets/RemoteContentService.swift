@@ -52,7 +52,7 @@ final class RemoteContentService: ObservableObject {
         objectWillChange.send()
     }
 
-    func refreshIfNeeded(force: Bool = false) async {
+    func refreshIfNeeded(force: Bool = false, downloadFullFeed: Bool = false) async {
         now = Date()
         guard !isRefreshing else { return }
         defer { launchRefreshResolved = true }
@@ -79,7 +79,7 @@ final class RemoteContentService: ObservableObject {
             let latest = try decoder.decode(LatestRemoteNews.self, from: latestBytes)
             guard latest.schemaVersion == 1 else { throw RemoteContentError.invalidPayload }
             var feed = RemoteNewsFeed(schemaVersion: 1, entries: news)
-            if !hasCache || (latest.id != nil && !news.contains(where: { $0.id == latest.id })) {
+            if downloadFullFeed || !hasCache || (latest.id != nil && !news.contains(where: { $0.id == latest.id })) {
                 feed = try decoder.decode(RemoteNewsFeed.self, from: await fetch(baseURL.appendingPathComponent("news_feed.json")))
                 try feed.validate()
                 if let id = latest.id, !feed.entries.contains(where: { $0.id == id }) { throw RemoteContentError.invalidPayload }

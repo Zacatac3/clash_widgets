@@ -34,7 +34,7 @@ News lives in the third tab of the Welcome/What’s New sheet. Home begins with 
 
 Copy `remote/examples/hammer_jam.json`, confirm the actual rules, supply a permanent unique ID, replace dates/copy, and set `enabled: true`. Keep event IDs stable across routine text edits; never reuse an ID for next year's event. Set `enabled: false` or remove an event to hide it and stop future modifiers. Already adjusted tracked timers stay adjusted; changes do not undo historical timer effects.
 
-Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary.
+Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. An optional top-level `icon` uses the image schema below and appears on the left of its Home event card (48 × 48 points). It is separate from `presentation.image`, which is the detail-page artwork. Older feeds can omit `icon`. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary.
 
 Supported modifier fields:
 
@@ -63,6 +63,14 @@ When multiple rules/events match, the smallest factor wins; event reductions do 
 
 ## Images
 
+The event card icon can be configured independently:
+
+```json
+{ "icon": { "source": "remote", "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png" } }
+```
+
+The Hammer Jam test uses the existing `remote/images/builder.png`. If its icon cannot load, the card displays a calendar symbol while keeping its title and countdown.
+
 A `presentation` or section can include:
 
 ```json
@@ -86,7 +94,7 @@ To add more, ship the asset and extend the allow-list in `RemoteContentView.swif
 
 ## Refreshing and validation
 
-The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. It downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed fetches retain the cache and allow a retry after 15 minutes. Pull to refresh bypasses both intervals. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
+The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. It downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed fetches retain the cache and allow a retry after 15 minutes. Pull to refresh bypasses both intervals. In Settings → Debug, **Grab Remote Files Now** also bypasses both intervals and always downloads all three JSON files, including the full news feed even if its latest ID is already cached. It reports success/failure, shows cache counts and the source URL, and immediately reconciles the refreshed events. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
 
 Run before publishing:
 

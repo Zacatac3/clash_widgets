@@ -38,7 +38,11 @@
           ],
           "wallCostMultiplier": 0.5
         }
-      ]
+      ],
+      "icon": {
+        "source": "remote",
+        "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png"
+      }
     }
   ]
 }
