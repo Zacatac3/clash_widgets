@@ -1,7 +1,10 @@
 import Foundation
 import Combine
 import SwiftUI
+
+#if canImport(UIKit)
 import UIKit
+#endif
 import CryptoKit
 
 @MainActor
@@ -10,22 +13,26 @@ final class RemoteContentService: ObservableObject {
     @Published private(set) var environment: RemoteContentEnvironment = .live
     @Published private(set) var remoteEvents: [RemoteEvent] = []
     @Published private(set) var testEvent: RemoteEvent?
+    @Published private(set) var localTestEnabled = true
     @Published private(set) var testProfileID: UUID?
     private(set) var profileBeforeTest: UUID?
-    var events: [RemoteEvent] { remoteEvents.map { environment.scopedEvent($0) } + (environment == .live ? (testEvent.map { [$0] } ?? []) : []) }
+    var events: [RemoteEvent] { remoteEvents.map { environment.scopedEvent($0) } + (environment == .live && localTestEnabled ? (testEvent.map { [$0] } ?? []) : []) }
     @Published private(set) var news: [RemoteNews] = []
     @Published private(set) var lastError: String?
     @Published private(set) var isRefreshing = false
     @Published private(set) var launchRefreshResolved = false
+    @Published private(set) var eventsUpdatedInLastRefresh = false
     @Published private(set) var now = Date()
     private let defaults: UserDefaults
+    private let session: URLSession
+    private let configuredBaseURL: URL?
     private var timer: AnyCancellable?
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     // Set this Info.plist key before shipping. No credentials belong in a public feed.
     var baseURL: URL? {
-        guard let value = Bundle.main.object(forInfoDictionaryKey: "RemoteContentBaseURL") as? String,
-              let url = URL(string: value), url.scheme == "https", url.host != nil else { return nil }
+        let bundledURL = (Bundle.main.object(forInfoDictionaryKey: "RemoteContentBaseURL") as? String).flatMap(URL.init(string:))
+        guard let url = configuredBaseURL ?? bundledURL, url.scheme == "https", url.host != nil else { return nil }
         return environment.baseURL(liveURL: url)
     }
     var visibleEvents: [RemoteEvent] { events.filter { $0.isVisible(at: now) }.sorted { $0.start < $1.start } }
@@ -36,14 +43,17 @@ final class RemoteContentService: ObservableObject {
         return item
     }
 
-    init(defaults: UserDefaults = .standard) {
+    init(defaults: UserDefaults = .standard, session: URLSession = .shared, baseURL: URL? = nil) {
         self.defaults = defaults
+        self.session = session
+        self.configuredBaseURL = baseURL
         decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         environment = defaults.string(forKey: "remoteContent.environment").flatMap(RemoteContentEnvironment.init(rawValue:)) ?? .live
         loadEnvironmentCache()
+        localTestEnabled = defaults.object(forKey: "remoteContent.localTestEnabled") as? Bool ?? true
         if let data = defaults.data(forKey: "remoteContent.testEvent"),
            let event = try? decoder.decode(RemoteEvent.self, from: data),
            let rawID = defaults.string(forKey: "remoteContent.testProfile"), let profileID = UUID(uuidString: rawID) {
@@ -102,54 +112,72 @@ final class RemoteContentService: ObservableObject {
             successfulBuild: successfulBuild,
             attemptedBuild: defaults.string(forKey: environment.cacheKey("attemptedBuild"))) else { return }
         isRefreshing = true
+        eventsUpdatedInLastRefresh = false
         defaults.set(now, forKey: environment.cacheKey("lastAttempt"))
         defaults.set(currentBuild, forKey: environment.cacheKey("attemptedBuild"))
         defer { isRefreshing = false }
         do {
-            async let eventData = fetch(baseURL.appendingPathComponent("latest_event.json"))
-            async let latestData = fetch(baseURL.appendingPathComponent("latest_news.json"))
-            let (eventBytes, latestBytes) = try await (eventData, latestData)
+            let bypassServerCache = force || needsBuildRefresh
+            async let eventData = fetch(baseURL.appendingPathComponent("latest_event.json"), bypassServerCache: bypassServerCache)
+            async let latestData = fetch(baseURL.appendingPathComponent("latest_news.json"), bypassServerCache: bypassServerCache)
+            let eventBytes = try await eventData
             let eventFeed = try decoder.decode(RemoteEventFeed.self, from: eventBytes)
             try eventFeed.validate()
-            let latest = try decoder.decode(LatestRemoteNews.self, from: latestBytes)
+            // A valid event feed is authoritative, including an empty events array.
+            // Commit it before news so unrelated news failures cannot retain removed events.
+            defaults.set(eventBytes, forKey: environment.cacheKey("events"))
+            remoteEvents = eventFeed.events
+            eventsUpdatedInLastRefresh = true
+            let latest = try decoder.decode(LatestRemoteNews.self, from: await latestData)
             guard latest.schemaVersion == 1 else { throw RemoteContentError.invalidPayload }
             var feed = RemoteNewsFeed(schemaVersion: 1, entries: news)
             if downloadFullFeed || needsBuildRefresh || !hasCache || (latest.id != nil && !news.contains(where: { $0.id == latest.id })) {
-                feed = try decoder.decode(RemoteNewsFeed.self, from: await fetch(baseURL.appendingPathComponent("news_feed.json")))
+                feed = try decoder.decode(RemoteNewsFeed.self, from: await fetch(baseURL.appendingPathComponent("news_feed.json"), bypassServerCache: bypassServerCache))
                 try feed.validate()
                 if let id = latest.id, !feed.entries.contains(where: { $0.id == id }) { throw RemoteContentError.invalidPayload }
             }
-            // Commit together so a partially published or malformed feed preserves the cache.
+            // News is committed together with its pointer validation.
             let newsBytes = try encoder.encode(feed)
-            defaults.set(eventBytes, forKey: environment.cacheKey("events"))
             defaults.set(newsBytes, forKey: environment.cacheKey("news"))
-            remoteEvents = eventFeed.events
             news = feed.entries.sorted { $0.published > $1.published }
             defaults.set(Date(), forKey: environment.cacheKey("lastSuccess"))
             defaults.set(currentBuild, forKey: environment.cacheKey("successfulBuild"))
             lastError = nil
         } catch {
-            lastError = "Unable to refresh news and events. Saved content is still available."
+            lastError = eventsUpdatedInLastRefresh
+                ? "Events updated (\(remoteEvents.count) downloaded). News could not be refreshed; saved news is still available."
+                : "Unable to refresh events. Saved events and news are still available."
         }
     }
 
-    private func fetch(_ url: URL) async throws -> Data {
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 20)
+    private func fetch(_ url: URL, bypassServerCache: Bool = false) async throws -> Data {
+        var requestURL = url
+        if bypassServerCache, var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+            components.queryItems = (components.queryItems ?? []) + [URLQueryItem(name: "refresh", value: UUID().uuidString)]
+            requestURL = components.url ?? url
+        }
+        var request = URLRequest(url: requestURL, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 20)
         request.setValue("application/json", forHTTPHeaderField: "Accept")
-        let (data, response) = try await URLSession.shared.data(for: request)
+        if bypassServerCache { request.setValue("no-cache", forHTTPHeaderField: "Cache-Control") }
+        let (data, response) = try await session.data(for: request)
         guard let http = response as? HTTPURLResponse, http.statusCode == 200,
               data.count <= 2_000_000 else { throw RemoteContentError.httpStatus }
         return data
     }
 
     func eventApplies(_ event: RemoteEvent, to profileID: UUID?) -> Bool {
-        guard environment == .live, let testEvent else { return true }
+        guard environment == .live, localTestEnabled, let testEvent else { return true }
         if event.id == testEvent.id { return profileID == testProfileID }
         return profileID != testProfileID
     }
 
     func visibleEvents(for profileID: UUID?) -> [RemoteEvent] {
         visibleEvents.filter { eventApplies($0, to: profileID) }
+    }
+
+    func useDownloadedEvents() {
+        localTestEnabled = false
+        defaults.set(false, forKey: "remoteContent.localTestEnabled")
     }
 
     func beginEventTest(_ event: RemoteEvent, profileID: UUID, previousProfileID: UUID?) throws {
@@ -159,6 +187,8 @@ final class RemoteContentService: ObservableObject {
         defaults.set(previousProfileID?.uuidString, forKey: "remoteContent.profileBeforeTest")
         profileBeforeTest = previousProfileID
         testProfileID = profileID
+        localTestEnabled = true
+        defaults.set(true, forKey: "remoteContent.localTestEnabled")
         testEvent = event
         now = Date()
     }
@@ -167,6 +197,8 @@ final class RemoteContentService: ObservableObject {
         testEvent = nil
         testProfileID = nil
         profileBeforeTest = nil
+        localTestEnabled = true
+        defaults.removeObject(forKey: "remoteContent.localTestEnabled")
         defaults.removeObject(forKey: "remoteContent.testEvent")
         defaults.removeObject(forKey: "remoteContent.testProfile")
         defaults.removeObject(forKey: "remoteContent.profileBeforeTest")
@@ -180,6 +212,7 @@ final class RemoteContentService: ObservableObject {
 
 }
 
+#if canImport(UIKit)
 // HTTPS images use a bounded disk cache and render only after image decoding succeeds.
 actor RemoteImageCache {
     static let shared = RemoteImageCache()
@@ -204,3 +237,5 @@ actor RemoteImageCache {
         return data
     }
 }
+
+#endif

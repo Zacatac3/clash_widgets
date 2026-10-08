@@ -95,6 +95,6 @@ python3 tools/validate_remote_content.py remote_dev
 
 Commit and push the JSON and images to the configured branch (`main` by default). Local edits do not reach installed apps. Use Debug → **Grab Remote Dev Files** for immediate testing, or **Grab Remote Files Now** for live content. Use disposable profiles because applied timer changes persist.
 
-Normally the app refreshes once per 24 hours. The first launch of a new version/build bypasses that cooldown and downloads all three files. Failures retain the cache and permit another attempt after 15 minutes. Live and dev caches/build-refresh markers are separate. New installs default to Live. Later supported JSON changes do not require an app build.
+Normally the app refreshes once per 24 hours. The first launch of a new version/build bypasses that cooldown and downloads all three files. Failed event requests retain the event cache and permit another attempt after 15 minutes. A valid empty event list clears removed events immediately, even if news cannot refresh. Manual Debug remote refreshes pause the separate local test overlay, leaving only downloaded events visible. Live and dev caches/build-refresh markers are separate. New installs default to Live. Later supported JSON changes do not require an app build.
 
 For a longer test checklist, see [REMOTE_CONTENT.md](REMOTE_CONTENT.md).

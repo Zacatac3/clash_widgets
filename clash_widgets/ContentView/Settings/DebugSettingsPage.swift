@@ -41,7 +41,7 @@ struct DebugSettingsPage: View {
                         .font(.caption)
                         .foregroundStyle(remoteRefreshFailed ? Color.red : Color.secondary)
                 }
-                Text("Cached: \(remoteContent.events.count) events · \(remoteContent.news.count) news articles")
+                Text("Downloaded feed: \(remoteContent.remoteEvents.count) events · \(remoteContent.news.count) news articles")
                     .font(.caption)
                     .foregroundStyle(.secondary)
                 Text(remoteContent.baseURL?.absoluteString ?? "Remote content URL is not configured.")
@@ -56,7 +56,7 @@ struct DebugSettingsPage: View {
 
             Section("Event Testing") {
                 if let event = remoteContent.testEvent {
-                    Text(remoteContent.environment == .development ? "Local event paused — Development feed active" : (remoteContent.now < event.start ? "Waiting to start" : (event.isActive(at: remoteContent.now) ? "Active" : "Ended")))
+                    Text(remoteContent.environment == .development || !remoteContent.localTestEnabled ? "Local test paused — using downloaded events" : (remoteContent.now < event.start ? "Waiting to start" : (event.isActive(at: remoteContent.now) ? "Active" : "Ended")))
                         .font(.headline)
                     Text(remoteEventCountdown(until: remoteContent.now < event.start ? event.start : event.end, at: remoteContent.now))
                         .monospacedDigit()
@@ -123,14 +123,18 @@ struct DebugSettingsPage: View {
         remoteRefreshStatus = nil
         defer { manualRefreshInProgress = false }
 
+        remoteContent.useDownloadedEvents()
         await remoteContent.refreshIfNeeded(force: true, downloadFullFeed: true)
+        if remoteContent.eventsUpdatedInLastRefresh {
+            dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
+        }
         if let error = remoteContent.lastError {
             remoteRefreshFailed = true
             remoteRefreshStatus = error
         } else {
             dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
             remoteRefreshFailed = false
-            remoteRefreshStatus = "\(environment.label) remote files refreshed successfully."
+            remoteRefreshStatus = "\(environment.label) refreshed: \(remoteContent.remoteEvents.count) remote events.\(remoteContent.testEvent != nil && environment == .live ? " The local test is paused; only downloaded events are active." : "")"
         }
     }
 }

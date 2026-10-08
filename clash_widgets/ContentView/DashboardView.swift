@@ -166,6 +166,10 @@ struct DashboardView: View {
                                 }
                                 VStack(alignment: .leading, spacing: 4) {
                                     Text(event.presentation.title).font(.headline)
+                                    if event.id == remoteContent.testEvent?.id {
+                                        Text("Local debug test — not from the remote feed")
+                                            .font(.caption2).foregroundStyle(.orange)
+                                    }
                                     HStack {
                                         Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
                                         Text(remoteEventCountdown(until: remoteContent.now < event.start ? event.start : event.end, at: remoteContent.now)).monospacedDigit()

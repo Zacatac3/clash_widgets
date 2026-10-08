@@ -2,32 +2,24 @@
   "schemaVersion": 1,
   "entries": [
     {
-      "id": "hammer-jam-test-announcement-2026-10-v1",
+      "id": "1.3_update_launch",
       "published": "2026-10-06T08:00:00Z",
       "showAsPopup": true,
       "presentation": {
-        "title": "Hammer Jam is here — test announcement",
-        "summary": "We’re testing remote news and events in Clashboard. A sample Hammer Jam is now active, with an ending countdown and a full event information page.",
+        "title": "Big Update - Share your and view your village progress",
+        "summary": "Clashboard just got more social! Introducing the new proges tab. Easily track all your Home village levels, and click the share button at the top to get a shareable image of your progress for lab or equipment (buildings and builder base coming soon).",
         "image": {
           "source": "bundle",
-          "value": "extras/builder_potion"
+          "value": "changelog/share_progress"
         },
         "sections": [
           {
-            "title": "Meet the test Hammer Jam",
-            "body": "The test runs October 6–20, 2026. It configures 50% shorter eligible Home Village upgrade durations and 50% lower wall costs, combined with Gold Pass. Supercharges, Crafted Defenses, and Builder Base upgrades are excluded."
+            "title": "Event Support",
+            "body": "Clashboard now supports in game events, so that when there is a new event, it will be visible to you with all the details you need. Stay tuned for hammer jam, clashboard will show you the boosts provided by hammer jam, as well as all the details before it starts."
           },
           {
-            "title": "Open the event details",
-            "body": "On Home, look below Selected Profile for Hammer Jam (Test). Tap the event card for the countdown, boost explanation, Gold Pass examples, timer behavior, and exclusions."
-          },
-          {
-            "title": "News without an app update",
-            "body": "Announcements like this can be published through the remote JSON feed. Find the archive in Help (?) → News, alongside Welcome and What’s New. Only the latest unread announcement can open automatically; What’s New takes priority on a new app build."
-          },
-          {
-            "title": "Testing notice",
-            "body": "This is a Clashboard test, not an official Supercell announcement or an in-game boost. Use a test village when checking timers: fetching this configuration can shorten eligible timers tracked before its start. Fresh exports remain authoritative."
+            "title": "iPhone Duo Support",
+            "body": "Clashboard supports the all new iphone duo, with a new layout that takes advantage of both the inner and cover screen, as well as the new UI that comes with it."
           }
         ]
       }

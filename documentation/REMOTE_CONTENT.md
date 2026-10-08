@@ -96,7 +96,7 @@ To add more, ship the asset and extend the allow-list in `RemoteContentView.swif
 
 ## Refreshing and validation
 
-The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. The first launch on a new app version or build bypasses the daily cooldown and downloads all three files. A build is marked refreshed only after success; a failed attempt retries after the 15-minute backoff. On ordinary same-build checks it downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed fetches retain the cache and allow a retry after 15 minutes. Pull to refresh bypasses both intervals. In Settings → Debug, **Grab Remote Files Now** also bypasses both intervals and always downloads all three JSON files, including the full news feed even if its latest ID is already cached. It reports success/failure, shows cache counts and the source URL, and immediately reconciles the refreshed events. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
+The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. The first launch on a new app version or build bypasses the daily cooldown and downloads all three files. A build is marked refreshed only after success; a failed attempt retries after the 15-minute backoff. On ordinary same-build checks it downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed event fetches retain the last valid event cache and allow a retry after 15 minutes. A valid event feed replaces the event cache immediately, including an empty list, even if a separate news request fails. Forced and new-build requests bypass server/CDN caching. Pull to refresh bypasses both intervals. In Settings → Debug, **Grab Remote Files Now** also bypasses both intervals and always downloads all three JSON files, including the full news feed even if its latest ID is already cached. It reports success/failure, shows cache counts and the source URL, and immediately reconciles the refreshed events. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
 
 Run before publishing:
 
@@ -160,3 +160,15 @@ The two environments have independent event/news caches, last-attempt/last-succe
 Only installations explicitly selecting Development use this folder. Test events still modify the local tracker on that installation, and switching feeds does not undo applied timer reductions. Use disposable profiles or reimport real village data afterward. If the synthetic five-minute fixture exists, its local event is paused in Development so that fixture can receive the downloaded dev events instead.
 
 GitHub Actions validates both folders independently. No new app build is needed for later dev payload changes after installing the build containing this environment switch.
+
+
+### Event removal regression check
+
+Run the service integration check with mocked HTTP responses:
+
+```sh
+xcrun swiftc -parse-as-library -module-cache-path /tmp/clashboard-swift-module-cache clash_widgets/Models.swift clash_widgets/RemoteContentModels.swift clash_widgets/RemoteContentService.swift tools/remote_refresh_tests/main.swift -o /tmp/clashboard-refresh-tests
+/tmp/clashboard-refresh-tests
+```
+
+This checks that an empty remote event list clears saved events even when news fails, stays empty after restart, and preserves the old cache only when the event response itself is invalid. Manual Debug remote refreshes pause any local test overlay and preserve its profile for cleanup in Debug → Event Testing. News articles remain independent of event removal.
