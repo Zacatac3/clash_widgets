@@ -6,7 +6,7 @@ struct RemoteContentImageView: View {
     var fallbackSystemImage: String? = nil
     @State private var remoteImage: UIImage?
     // Extend this list when shipping additional bundled artwork.
-    private let allowedAssets: Set<String> = ["extras/builder_potion", "extras/research_potion", "extras/pet_potion", "profile/gold_pass", "profile/free_pass", "changelog/home_example", "changelog/progress", "changelog/equipment"]
+    private let allowedAssets: Set<String> = ["profile/home_builder", "extras/builder_potion", "extras/research_potion", "extras/pet_potion", "profile/gold_pass", "profile/free_pass", "changelog/home_example", "changelog/progress", "changelog/equipment"]
     var body: some View {
         Group {
             if reference.source == "bundle", allowedAssets.contains(reference.value), let image = UIImage(named: reference.value) {
@@ -71,7 +71,7 @@ struct RemoteEventDetailView: View {
                     Text("Event ended")
                 } else {
                     Text(content.now < event.start ? "Starts in" : "Ends in")
-                    Text(content.now < event.start ? event.start : event.end, style: .timer).monospacedDigit()
+                    Text(remoteEventCountdown(until: content.now < event.start ? event.start : event.end, at: content.now)).monospacedDigit()
                 }
             }.font(.subheadline).padding()
             RemoteArticleView(presentation: event.presentation)

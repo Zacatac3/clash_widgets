@@ -77,8 +77,47 @@ struct BuilderRow: View {
     @EnvironmentObject private var dataService: DataService
     @AppStorage("globalShowFullTimerPrecision") private var globalShowFullTimerPrecision = false
     let upgrade: BuildingUpgrade
-    
+    @State private var showingCompletionError = false
+
     var body: some View {
+        rowContent
+            .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                Button(role: .destructive) {
+                    dataService.finishTrackedUpgrade(upgrade.id, completed: false)
+                } label: {
+                    Label("Cancel", systemImage: "trash")
+                }
+                Button {
+                    completeUpgrade()
+                } label: {
+                    Label("Complete", systemImage: "checkmark")
+                }
+                .tint(.blue)
+            }
+            .contextMenu {
+                Button { completeUpgrade() } label: {
+                    Label("Complete Upgrade", systemImage: "checkmark")
+                }
+                Button(role: .destructive) {
+                    dataService.finishTrackedUpgrade(upgrade.id, completed: false)
+                } label: {
+                    Label("Cancel Upgrade", systemImage: "trash")
+                }
+            }
+            .alert("Unable to Update Progress", isPresented: $showingCompletionError) {
+                Button("OK", role: .cancel) { }
+            } message: {
+                Text("Import a fresh village export so this upgrade can be matched to its Progress entry.")
+            }
+    }
+
+    private func completeUpgrade() {
+        if !dataService.finishTrackedUpgrade(upgrade.id, completed: true) {
+            showingCompletionError = true
+        }
+    }
+
+    private var rowContent: some View {
         HStack(spacing: 12) {
             // Icon
             VStack {
@@ -87,9 +126,7 @@ struct BuilderRow: View {
                 Text(upgrade.levelDisplayText)
                     .font(.caption2)
                     .foregroundColor(.secondary)
-                Text(formatBoostedDuration(boostedTotalDuration(for: upgrade)))
-                    .font(.caption2)
-                    .foregroundColor(.secondary)
+                upgradeDurationLabel
             }
 
             VStack(alignment: .leading, spacing: 6) {
@@ -241,75 +278,36 @@ struct BuilderRow: View {
         return min(max(elapsed / total, 0.0), 1.0)
     }
 
+    @ViewBuilder
+    private var upgradeDurationLabel: some View {
+        let duration = formatBoostedDuration(boostedTotalDuration(for: upgrade))
+        if let factor = upgrade.remoteEventTimeMultiplier, factor < 1 {
+            let original = formatBoostedDuration(upgrade.durationBeforeRemoteEvent(goldPassBoost: dataService.goldPassBoost))
+            VStack(spacing: 2) {
+                Text(original)
+                    .strikethrough()
+                    .foregroundStyle(.secondary)
+                Text(duration)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.accentColor)
+            }
+            .font(.caption2)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel("Event-reduced duration: \(duration), originally \(original)")
+        } else {
+            Text(duration)
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+        }
+    }
+
     private func boostedTotalDuration(for upgrade: BuildingUpgrade) -> TimeInterval {
-        let boost = max(0, min(100, dataService.goldPassBoost))
-        let goldPassFactor = max(0.0, 1.0 - (Double(boost) / 100.0))
-        let goldPassBoosted = upgrade.totalDuration * goldPassFactor
-        
-        return max(goldPassBoosted, 1)
+        upgrade.effectiveTotalDuration(goldPassBoost: dataService.goldPassBoost)
     }
 
     private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, referenceDate: Date) -> TimeInterval {
-        let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
-        guard let profile = dataService.currentProfile else { return baseRemaining }
-
-        let start = upgrade.startTime
-        let now = referenceDate
-        if now <= start { return baseRemaining }
-
-        let relevantBoosts = profile.activeBoosts.compactMap { boost -> ActiveBoost? in
-            guard let boostType = boost.boostType,
-                  boostType.affectedCategories.contains(upgrade.category) else { return nil }
-            if boostType == .builderApprentice || boostType == .labAssistant {
-                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
-            }
-            return boost
-        }
-        if relevantBoosts.isEmpty { return baseRemaining }
-
-        var timePoints: [Date] = [start, now]
-        for boost in relevantBoosts {
-            let s = max(start, boost.startTime)
-            let e = min(now, boost.endTime)
-            if s < e {
-                timePoints.append(s)
-                timePoints.append(e)
-            }
-        }
-        let sortedPoints = Array(Set(timePoints)).sorted()
-        if sortedPoints.count <= 1 { return baseRemaining }
-
-        var extraElapsed: TimeInterval = 0
-        for idx in 0..<(sortedPoints.count - 1) {
-            let segmentStart = sortedPoints[idx]
-            let segmentEnd = sortedPoints[idx + 1]
-            if segmentEnd <= segmentStart { continue }
-
-            var totalExtra: Double = 0
-            var clockTowerApplied = false
-            for boost in relevantBoosts {
-                guard let boostType = boost.boostType else { continue }
-                let s = max(start, boost.startTime)
-                let e = min(now, boost.endTime)
-                if segmentStart < s || segmentStart >= e { continue }
-
-                let level = boost.helperLevel ?? 0
-                if boostType.isClockTowerBoost {
-                    if !clockTowerApplied {
-                        totalExtra += boostType.speedMultiplier(level: level)
-                        clockTowerApplied = true
-                    }
-                } else {
-                    totalExtra += boostType.speedMultiplier(level: level)
-                }
-            }
-            extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
-        }
-
-        let adjustedRemaining = baseRemaining - extraElapsed
-        return max(0, adjustedRemaining)
+        upgrade.remainingSeconds(activeBoosts: dataService.currentProfile?.activeBoosts ?? [], referenceDate: referenceDate)
     }
-
 
     private func formatRemaining(_ seconds: TimeInterval) -> String {
         let remaining = Int(max(seconds, 0))

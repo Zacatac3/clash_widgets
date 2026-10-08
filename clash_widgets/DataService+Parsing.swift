@@ -108,12 +108,14 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
         WhatsNewSection(dateLabel: "10/2026 - 1.3 - Progress Update", bullets: [
-            "New Progress (Beta) tab: See the current levels of your Home Village units, buildings, traps, and walls.",
-			"Improved layouts for iPhone Duo.",
-            "See what is maxed for your Town Hall in blue and what is fully maxed in gold.",
-            "Customize Progress cards, jump between categories, and show Supercharges and Crafted Defenses.",
-            "Fixed boost animation jitter and updated how many Town Hall 18 walls can be upgraded to the maximum level.",
-            "Corrected the names of Mother Witch and Angry Spell."
+            "New Progress tab: Track your Home Village levels, including lab, buildings, equipment, Supercharges and Crafted Defenses, and tap for more info.",            
+			"Added iPhone Duo support and adapted layouts for its screen and OS.",
+            "Customize Progress page by hiding and reordering cards, jumping between categories",
+            "Share Progress: Preview and share an image of your village or equipment progress.",
+            "Added support for Hammer Jam upgrade-time and wall-cost reductions.",
+            "Get updates with the News tab and the new events section on the home page.",
+            "Refreshed the Welcome page, updated game data, and improved boost animations and display behavior.",
+			"Many other minor fixes and changes."
         ]),
         WhatsNewSection(dateLabel: "9/28/2026 - 1.2.2 - New In-Game Content", bullets: [
             "Added new game assets, and Crafted defenses.",

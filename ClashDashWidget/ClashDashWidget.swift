@@ -557,7 +557,7 @@ struct ClashDashWidgetEntryView : View {
                         Text(upgrade.levelDisplayText)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
-                        Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
+                        LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
                             .font(.system(size: 9))
                             .foregroundColor(.orange)
                     }
@@ -800,7 +800,7 @@ struct ClosestUpgradeWidgetEntryView: View {
                     Text(upgrade.name)
                         .font(.system(size: 12, weight: .semibold))
                         .lineLimit(1)
-                    Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
+                    LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
                         .font(.system(size: 11))
                         .foregroundColor(.orange)
                     ProgressView(value: progressFraction(for: upgrade))
@@ -1221,74 +1221,27 @@ struct ImportClipboardControl: ControlWidget {
 /// Calculate effective remaining time accounting for active boosts (potions, clock tower, helpers)
 /// This ensures widget timers match the boosted times shown in the app
 private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
-    let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
-    
-    let start = upgrade.startTime
-    let now = referenceDate
-    if now <= start { return baseRemaining }
-    
-    // Filter boosts that affect this upgrade's category
-    let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
-        guard let boostType = boost.boostType,
-              boostType.affectedCategories.contains(upgrade.category) else { return nil }
-        // For targeted boosts (builder's apprentice), only include if it targets this upgrade
-        if boostType == .builderApprentice || boostType == .labAssistant {
-            if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
-        }
-        return boost
-    }
-    
-    if relevantBoosts.isEmpty { return baseRemaining }
-    
-    // Build timeline of boost periods
-    var timePoints: [Date] = [start, now]
-    for boost in relevantBoosts {
-        let s = max(start, boost.startTime)
-        let e = min(now, boost.endTime)
-        if s < e {
-            timePoints.append(s)
-            timePoints.append(e)
-        }
-    }
-    let sortedPoints = Array(Set(timePoints)).sorted()
-    if sortedPoints.count <= 1 { return baseRemaining }
-    
-    // Calculate extra elapsed time from boosts
-    var extraElapsed: TimeInterval = 0
-    for idx in 0..<(sortedPoints.count - 1) {
-        let segmentStart = sortedPoints[idx]
-        let segmentEnd = sortedPoints[idx + 1]
-        if segmentEnd <= segmentStart { continue }
-        
-        var totalExtra: Double = 0
-        var clockTowerApplied = false
-        for boost in relevantBoosts {
-            guard let boostType = boost.boostType else { continue }
-            let s = max(start, boost.startTime)
-            let e = min(now, boost.endTime)
-            if segmentStart < s || segmentStart >= e { continue }
-            
-            let level = boost.helperLevel ?? 0
-            if boostType.isClockTowerBoost {
-                if !clockTowerApplied {
-                    totalExtra += boostType.speedMultiplier(level: level)
-                    clockTowerApplied = true
-                }
-            } else {
-                totalExtra += boostType.speedMultiplier(level: level)
-            }
-        }
-        extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
-    }
-    
-    let adjustedRemaining = baseRemaining - extraElapsed
-    return max(0, adjustedRemaining)
+    upgrade.remainingSeconds(activeBoosts: activeBoosts, referenceDate: referenceDate)
 }
 
-/// Get the actual completion time accounting for boosts
+private struct LiveUpgradeCountdown: View {
+    let upgrade: BuildingUpgrade
+    let activeBoosts: [ActiveBoost]
+
+    var body: some View {
+        let now = Date()
+        let completion = upgrade.projectedCompletionDate(activeBoosts: activeBoosts, referenceDate: now)
+        if completion > now {
+            Text(timerInterval: now...completion, countsDown: true)
+                .monospacedDigit()
+        } else {
+            Text("Complete")
+        }
+    }
+}
+
 private func effectiveCompletionDate(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date = Date()) -> Date {
-    let boostedRemaining = effectiveRemainingSeconds(for: upgrade, activeBoosts: activeBoosts, referenceDate: referenceDate)
-    return referenceDate.addingTimeInterval(boostedRemaining)
+    upgrade.projectedCompletionDate(activeBoosts: activeBoosts, referenceDate: referenceDate)
 }
 
 /// Format time remaining with boost calculations applied
@@ -1320,8 +1273,7 @@ private func boostedProgressFraction(for upgrade: BuildingUpgrade, activeBoosts:
     let boostedRemaining = effectiveRemainingSeconds(for: upgrade, activeBoosts: activeBoosts, referenceDate: referenceDate)
     
     // Calculate the effective total duration (with gold pass applied)
-    let goldPassFactor = max(0.0, 1.0 - (Double(max(0, min(100, goldPassBoost))) / 100.0))
-    let effectiveTotal = max(upgrade.totalDuration * goldPassFactor, 1)
+    let effectiveTotal = upgrade.effectiveTotalDuration(goldPassBoost: goldPassBoost)
     
     // Calculate elapsed time based on boosted remaining
     let elapsed = max(effectiveTotal - boostedRemaining, 0)
@@ -1337,9 +1289,7 @@ private func goldPassProgressFraction(for upgrade: BuildingUpgrade, boost: Int, 
 }
 
 private func goldPassBoostedTotalDuration(for upgrade: BuildingUpgrade, boost: Int) -> TimeInterval {
-    let clamped = max(0, min(100, boost))
-    let factor = max(0.0, 1.0 - (Double(clamped) / 100.0))
-    return max(upgrade.totalDuration * factor, 1)
+    upgrade.effectiveTotalDuration(goldPassBoost: boost)
 }
 
 private func goldPassEffectiveRemaining(for upgrade: BuildingUpgrade, referenceDate: Date, totalDuration: TimeInterval) -> TimeInterval {
@@ -2248,7 +2198,7 @@ struct LabPetWidgetEntryView: View {
                 }
 
                 // Time remaining on separate line
-                Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
+                LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
                     .font(.system(size: 10))
                     .foregroundColor(.orange)
 
@@ -2541,7 +2491,7 @@ struct BuilderBaseWidgetEntryView: View {
                 }
 
                 // Time remaining on separate line
-                Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
+                LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
                     .font(.system(size: 9))
                     .foregroundColor(.orange)
                     .bold()

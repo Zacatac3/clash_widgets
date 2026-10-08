@@ -33,6 +33,11 @@ struct EquipmentView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Equipment")
+            .toolbar {
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    ProfileSwitcherMenu()
+                }
+            }
             .sheet(isPresented: $showHideEquipmentSheet) {
                 EquipmentVisibilitySheet(
                     entries: visibilityMenuEntries,

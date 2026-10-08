@@ -167,6 +167,11 @@ struct ContentView: View {
                 .onAppear {
                     dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
                     dataService.pruneCompletedUpgrades()
+                    if dataService.profiles.contains(where: { $0.notificationSettings.notificationsEnabled }) {
+                        dataService.requestNotificationAuthorizationIfNeeded { granted in
+                            if granted { dataService.scheduleUpgradeNotifications() }
+                        }
+                    }
                     handleGoldPassResetIfNeeded()
                     presentLaunchInterstitialIfNeeded()
                     handleWidgetImportRequest()

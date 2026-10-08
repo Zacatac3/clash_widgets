@@ -20,7 +20,7 @@ assert(!event.isActive(at: event.end))
 assert(!event.isVisible(at: event.end))
 assert(factor(now: start) == 0.5)
 assert(factor(now: event.end.addingTimeInterval(day)) == nil, "Entirely skipped events must not replay")
-assert(factor(now: start, tracked: start) == nil, "An import during an event is authoritative")
+assert(factor(now: start, tracked: start) == 0.5, "Imports during an event still receive the full-duration cap")
 assert(factor(now: start, end: start.addingTimeInterval(-1)) == nil)
 assert(factor(now: start, applied: [event.id]) == nil, "Repeat reconciliation must not halve twice")
 assert(factor(now: start, seasonal: true) == nil)
@@ -69,3 +69,102 @@ let liveNews = try decoder.decode(RemoteNewsFeed.self, from: Data(contentsOf: UR
 let latest = try decoder.decode(LatestRemoteNews.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/latest_news.json")))
 if let latestID = latest.id { assert(liveNews.entries.contains { $0.id == latestID }) }
 print("Active test feed checks passed: matching popup, event dates, detail sections, and Supercharge exclusion.")
+
+func building(trackedAt: Date, remainingDays: Double, baseDays: Double = 10,
+              category: UpgradeCategory = .builderVillage, supercharge: Int? = nil,
+              seasonal: Bool = false) -> BuildingUpgrade {
+    BuildingUpgrade(dataId: 1, name: "Test Building", targetLevel: 10,
+        superchargeTargetLevel: supercharge,
+        endTime: trackedAt.addingTimeInterval(remainingDays * day), category: category,
+        startTime: trackedAt, totalDuration: baseDays * day, isSeasonalDefense: seasonal)
+}
+let lateLaunch = start.addingTimeInterval(6 * 3600)
+var previouslyTracked = building(trackedAt: start.addingTimeInterval(-2 * day), remainingDays: 10)
+assert(previouslyTracked.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 0))
+assert(previouslyTracked.endTime == start.addingTimeInterval(5 * day))
+assert(previouslyTracked.endTime.timeIntervalSince(lateLaunch) == 4.75 * day)
+assert(previouslyTracked.effectiveTotalDuration(goldPassBoost: 0) == 5 * day)
+let onceAdjustedEnd = previouslyTracked.endTime
+assert(!previouslyTracked.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 0))
+assert(previouslyTracked.endTime == onceAdjustedEnd)
+var importedDuringEvent = building(trackedAt: lateLaunch, remainingDays: 8)
+assert(importedDuringEvent.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 20))
+assert(importedDuringEvent.endTime == lateLaunch.addingTimeInterval(4 * day))
+assert(importedDuringEvent.effectiveTotalDuration(goldPassBoost: 20) == 4 * day)
+var alreadyDiscounted = building(trackedAt: lateLaunch, remainingDays: 2)
+let exportedEnd = alreadyDiscounted.endTime
+assert(alreadyDiscounted.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 20))
+assert(alreadyDiscounted.endTime == exportedEnd, "Fresh already-discounted exports must not be halved again")
+assert(alreadyDiscounted.effectiveTotalDuration(goldPassBoost: 20) == 4 * day)
+var excludedSC = building(trackedAt: start.addingTimeInterval(-day), remainingDays: 8, supercharge: 1)
+assert(!excludedSC.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 0))
+var excludedCrafted = building(trackedAt: start.addingTimeInterval(-day), remainingDays: 8, seasonal: true)
+assert(!excludedCrafted.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 0))
+var excludedBB = building(trackedAt: start.addingTimeInterval(-day), remainingDays: 8, category: .builderBase)
+assert(!excludedBB.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 0))
+var skipped = building(trackedAt: start.addingTimeInterval(-day), remainingDays: 30, baseDays: 30)
+assert(!skipped.applyRemoteEvent(event, at: event.end, townHall: 15, goldPassBoost: 0))
+let saved = try JSONEncoder().encode(importedDuringEvent)
+var restored = try JSONDecoder().decode(BuildingUpgrade.self, from: saved)
+assert(restored.remoteEventTimeMultiplier == 0.5)
+assert(!restored.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 20))
+assert(restored.endTime == importedDuringEvent.endTime)
+assert(restored.effectiveTotalDuration(goldPassBoost: 20) == 4 * day)
+var legacyJSON = try JSONSerialization.jsonObject(with: saved) as! [String: Any]
+legacyJSON.removeValue(forKey: "remoteEventTimeMultiplier")
+var legacy = try JSONDecoder().decode(BuildingUpgrade.self, from: JSONSerialization.data(withJSONObject: legacyJSON))
+assert(legacy.applyRemoteEvent(event, at: lateLaunch, townHall: 15, goldPassBoost: 20))
+assert(legacy.endTime == importedDuringEvent.endTime, "Backfill duration without shortening twice")
+assert(legacy.remoteEventTimeMultiplier == 0.5)
+assert(remoteEventCountdown(until: start.addingTimeInterval(2 * day + 3 * 3600 + 4 * 60 + 5), at: start) == "02 Days 03:04:05")
+assert(remoteEventCountdown(until: start.addingTimeInterval(-1), at: start) == "00 Days 00:00:00")
+assert(remoteEventCountdown(until: start.addingTimeInterval(0.1), at: start) == "00 Days 00:00:01")
+print("Building timer regressions passed: existing/late/imported timers, display durations, Gold Pass, exclusions, repeat application, persisted state, legacy backfill, and countdown formatting.")
+
+
+// Exercise both boundaries of the same short test used by the Debug menu.
+let shortStart = Date(timeIntervalSince1970: 1_800_000_000)
+let shortEvent = RemoteEvent.fiveMinuteTest(at: shortStart, id: "short-lifecycle-test")
+try RemoteEventFeed(schemaVersion: 1, events: [shortEvent]).validate()
+precondition(shortEvent.isVisible(at: shortStart) && !shortEvent.isActive(at: shortStart))
+precondition(shortEvent.isActive(at: shortEvent.start))
+precondition(!shortEvent.isActive(at: shortEvent.end) && !shortEvent.isVisible(at: shortEvent.end))
+var shortUpgrade = BuildingUpgrade(dataId: 1000008, name: "Cannon", targetLevel: 11,
+    endTime: shortStart.addingTimeInterval(1080), category: .builderVillage,
+    startTime: shortStart, totalDuration: 1200)
+precondition(!shortUpgrade.applyRemoteEvent(shortEvent, at: shortStart, townHall: 18, goldPassBoost: 0))
+precondition(shortUpgrade.applyRemoteEvent(shortEvent, at: shortEvent.start, townHall: 18, goldPassBoost: 0))
+precondition(shortUpgrade.endTime == shortEvent.start.addingTimeInterval(600))
+let discountedEnd = shortUpgrade.endTime
+precondition(!shortUpgrade.applyRemoteEvent(shortEvent, at: shortEvent.end, townHall: 18, goldPassBoost: 0))
+precondition(shortUpgrade.endTime == discountedEnd && shortUpgrade.remoteEventTimeMultiplier == 0.5)
+var afterEnd = BuildingUpgrade(dataId: 1000008, name: "Cannon", targetLevel: 11,
+    endTime: shortEvent.end.addingTimeInterval(1080), category: .builderVillage,
+    startTime: shortEvent.end, totalDuration: 1200)
+precondition(!afterEnd.applyRemoteEvent(shortEvent, at: shortEvent.end, townHall: 18, goldPassBoost: 0))
+precondition(afterEnd.remoteEventTimeMultiplier == nil)
+let savedShortUpgrade = try JSONDecoder().decode(BuildingUpgrade.self, from: JSONEncoder().encode(shortUpgrade))
+precondition(savedShortUpgrade.endTime == discountedEnd && savedShortUpgrade.remoteEventTimeMultiplier == 0.5)
+print("Five-minute event lifecycle passed: countdown, exact boundaries, expiry, retained discounts, post-event imports and restart persistence.")
+
+
+let liveEnvironment = RemoteContentEnvironment.live
+let devEnvironment = RemoteContentEnvironment.development
+let liveFeedURL = URL(string: "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote")!
+precondition(liveEnvironment.baseURL(liveURL: liveFeedURL) == liveFeedURL)
+precondition(devEnvironment.baseURL(liveURL: liveFeedURL).path == "/Zacatac3/clash_widgets/main/remote_dev")
+precondition(devEnvironment.baseURL(liveURL: liveFeedURL.appendingPathComponent("", isDirectory: true)).path == "/Zacatac3/clash_widgets/main/remote_dev")
+let isolatedDefaults = UserDefaults(suiteName: "clashboard-remote-environment-tests-" + UUID().uuidString)!
+for name in ["events", "news", "lastSeenNews", "lastAttempt", "lastSuccess"] {
+    precondition(liveEnvironment.cacheKey(name) != devEnvironment.cacheKey(name))
+    isolatedDefaults.set("live-value", forKey: liveEnvironment.cacheKey(name))
+    isolatedDefaults.set("dev-value", forKey: devEnvironment.cacheKey(name))
+    precondition(isolatedDefaults.string(forKey: liveEnvironment.cacheKey(name)) == "live-value")
+    precondition(isolatedDefaults.string(forKey: devEnvironment.cacheKey(name)) == "dev-value")
+    isolatedDefaults.removeObject(forKey: liveEnvironment.cacheKey(name))
+    isolatedDefaults.removeObject(forKey: devEnvironment.cacheKey(name))
+}
+precondition(liveEnvironment.scopedEvent(shortEvent).id == shortEvent.id)
+precondition(devEnvironment.scopedEvent(shortEvent).id != shortEvent.id)
+precondition(devEnvironment.scopedEvent(shortEvent).modifiers.first?.timeMultiplier == 0.5)
+print("Development feed checks passed: URL selection, cache/read-state isolation, backwards-compatible live keys and event identity isolation.")

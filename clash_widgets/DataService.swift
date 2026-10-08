@@ -452,7 +452,7 @@ class DataService: ObservableObject {
                 }
             } else if village == .builder {
                 // Find builder hall building in export
-                if let builderHall = export.buildings?.first(where: { building in
+                if let builderHall = export.buildings2?.first(where: { building in
                     let name = mapping[building.data]?.lowercased() ?? ""
                     return name.contains("builder hall") || name.contains("builderhall") || name.contains("builder base")
                 }), let level = builderHall.lvl {
@@ -829,6 +829,24 @@ class DataService: ObservableObject {
         persistChanges(reloadWidgets: true)
     }
 
+    @discardableResult
+    func finishTrackedUpgrade(_ upgradeID: UUID, completed: Bool) -> Bool {
+        guard let upgrade = activeUpgrades.first(where: { $0.id == upgradeID }) else { return false }
+        let updatedJSON = upgrade.updatingExport(rawJSON, completed: completed)
+        guard !completed || updatedJSON != nil else { return false }
+        if let updatedJSON { rawJSON = updatedJSON }
+        updateCurrentProfile { profile in
+            profile.activeBoosts.removeAll { $0.targetUpgradeId == upgradeID }
+            // Prevent an old instant-boost undo from restoring a manually removed upgrade.
+            profile.instantBoostUndoActions.removeAll { action in
+                action.endTimeSnapshots.contains { $0.upgradeID == upgradeID }
+                    || action.removedUpgrades.contains { $0.id == upgradeID }
+            }
+        }
+        activeUpgrades.removeAll { $0.id == upgradeID }
+        return true
+    }
+
     func pruneCompletedUpgrades(referenceDate: Date = Date()) {
         // Get active boosts for the current profile to calculate true completion times
         let activeBoosts = currentProfile?.activeBoosts.filter { $0.endTime > referenceDate } ?? []
@@ -846,66 +864,7 @@ class DataService: ObservableObject {
     
     /// Calculate effective remaining time accounting for active boosts
     func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
-        let baseRemaining = max(0, upgrade.endTime.timeIntervalSince(referenceDate))
-        
-        let start = upgrade.startTime
-        let now = referenceDate
-        if now <= start { return baseRemaining }
-        
-        // Filter boosts that affect this upgrade's category
-        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
-            guard let boostType = boost.boostType,
-                  boostType.affectedCategories.contains(upgrade.category) else { return nil }
-            if boostType == .builderApprentice || boostType == .labAssistant {
-                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
-            }
-            return boost
-        }
-        if relevantBoosts.isEmpty { return baseRemaining }
-        
-        // Build timeline of boost periods
-        var timePoints: [Date] = [start, now]
-        for boost in relevantBoosts {
-            let s = max(start, boost.startTime)
-            let e = min(now, boost.endTime)
-            if s < e {
-                timePoints.append(s)
-                timePoints.append(e)
-            }
-        }
-        let sortedPoints = Array(Set(timePoints)).sorted()
-        if sortedPoints.count <= 1 { return baseRemaining }
-        
-        // Calculate extra elapsed time from boosts
-        var extraElapsed: TimeInterval = 0
-        for idx in 0..<(sortedPoints.count - 1) {
-            let segmentStart = sortedPoints[idx]
-            let segmentEnd = sortedPoints[idx + 1]
-            if segmentEnd <= segmentStart { continue }
-            
-            var totalExtra: Double = 0
-            var clockTowerApplied = false
-            for boost in relevantBoosts {
-                guard let boostType = boost.boostType else { continue }
-                let s = max(start, boost.startTime)
-                let e = min(now, boost.endTime)
-                if segmentStart < s || segmentStart >= e { continue }
-                
-                let level = boost.helperLevel ?? 0
-                if boostType.isClockTowerBoost {
-                    if !clockTowerApplied {
-                        totalExtra += boostType.speedMultiplier(level: level)
-                        clockTowerApplied = true
-                    }
-                } else {
-                    totalExtra += boostType.speedMultiplier(level: level)
-                }
-            }
-            extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
-        }
-        
-        let adjustedRemaining = baseRemaining - extraElapsed
-        return max(0, adjustedRemaining)
+        upgrade.remainingSeconds(activeBoosts: activeBoosts, referenceDate: referenceDate)
     }
 
     func triggerDebugNotification() {
@@ -913,8 +872,8 @@ class DataService: ObservableObject {
         notificationManager.scheduleDebugNotification()
     }
 
-    func requestNotificationAuthorizationIfNeeded(completion: @escaping (Bool) -> Void) {
-        notificationManager.ensureAuthorization(promptIfNeeded: true) { granted in
+    func requestNotificationAuthorizationIfNeeded(promptIfNeeded: Bool = true, completion: @escaping (Bool) -> Void) {
+        notificationManager.ensureAuthorization(promptIfNeeded: promptIfNeeded) { granted in
             DispatchQueue.main.async {
                 completion(granted)
             }
@@ -1532,22 +1491,17 @@ class DataService: ObservableObject {
 
     func scheduleUpgradeNotifications() {
         let now = Date()
-        var combined: [BuildingUpgrade] = []
-        var combinedBoosts: [ActiveBoost] = []
-        
+        var requests: [NotificationManager.UpgradeNotificationRequest] = []
         for profile in profiles {
             let settings = profile.notificationSettings
             guard settings.notificationsEnabled else { continue }
-            let filtered = profile.activeUpgrades.filter { settings.allows(category: $0.category) && $0.endTime > now }
-            combined.append(contentsOf: filtered)
-            // Include active boosts for this profile to calculate accurate completion times
-            combinedBoosts.append(contentsOf: profile.activeBoosts.filter { $0.endTime > now })
+            for upgrade in profile.activeUpgrades where settings.allows(category: upgrade.category) && upgrade.endTime > now {
+                requests.append(.init(upgrade: upgrade, profileID: profile.id,
+                                      profileName: displayName(for: profile), activeBoosts: profile.activeBoosts))
+            }
         }
-        
-        // Set profile context for notification manager to include profile names
         notificationManager.setProfileContext(allProfiles: profiles, currentProfileID: selectedProfileID)
-        notificationManager.setNotificationSettings(notificationSettings)
-        notificationManager.syncNotifications(for: combined, activeBoosts: combinedBoosts)
+        notificationManager.syncNotifications(for: requests)
 
         // Also schedule helper notifications where applicable
         scheduleHelperNotifications()
@@ -1912,7 +1866,8 @@ class DataService: ObservableObject {
 
     private func sanitizedClipboardData(from input: String) -> Data? {
         let trimmed = input.trimmingCharacters(in: .whitespacesAndNewlines)
-        if let data = trimmed.data(using: .utf8), data.count > 0 {
+        if trimmed.hasPrefix("{"), trimmed.hasSuffix("}"),
+           let data = trimmed.data(using: .utf8), data.count > 0 {
             return data
         }
 
@@ -1931,7 +1886,8 @@ class DataService: ObservableObject {
 
     private func collectUpgrades(from export: CoCExport) -> [BuildingUpgrade] {
         var upgrades: [BuildingUpgrade] = []
-        let referenceDate = Date()
+        let now = Date()
+        let referenceDate = export.timestamp.map { min(Date(timeIntervalSince1970: TimeInterval($0)), now) } ?? now
 
         if let list = export.buildings {
             upgrades.append(contentsOf: convert(list, category: .builderVillage, fallbackPrefix: "Building", referenceDate: referenceDate))
@@ -2137,7 +2093,7 @@ class DataService: ObservableObject {
         let end = referenceDate.addingTimeInterval(remainingSeconds)
         // CRITICAL FIX: Start time should be NOW (import time), not calculated backward
         // This prevents boosts from being retroactively applied to imported upgrades
-        let start = referenceDate
+        let start = Date()
         let resolvedName = displayNameOverride ?? mapping[dataId] ?? "\(fallbackPrefix) (\(dataId))"
         let normalizedName = normalizeBuilderBasePrefixIfNeeded(resolvedName, category: category)
 
@@ -2154,6 +2110,7 @@ class DataService: ObservableObject {
             totalDuration: totalDuration,
             isSeasonalDefense: isSeasonalDefense
         )
+        upgrade.sourceExportTimer = Int(remainingSeconds)
         upgrade.goldPassFactorAtImport = 1 - Double(max(0, min(100, goldPassBoost))) / 100
         return upgrade
     }

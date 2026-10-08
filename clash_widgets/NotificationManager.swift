@@ -43,44 +43,41 @@ final class NotificationManager: ObservableObject {
         self.currentNotificationSettings = settings
     }
 
-    func syncNotifications(for upgrades: [BuildingUpgrade], settings: NotificationSettings) {
-        guard settings.notificationsEnabled else {
-            removeAllUpgradeNotifications()
-            return
-        }
-        setNotificationSettings(settings)
-        
-        let filteredUpgrades = upgrades.filter { settings.allows(category: $0.category) && $0.endTime > Date() }
-        syncNotifications(for: filteredUpgrades)
+    struct UpgradeNotificationRequest {
+        let upgrade: BuildingUpgrade
+        let profileID: UUID
+        let profileName: String
+        let activeBoosts: [ActiveBoost]
     }
 
-    func syncNotifications(for upgrades: [BuildingUpgrade], activeBoosts: [ActiveBoost] = []) {
-        guard !upgrades.isEmpty else {
-            removeAllUpgradeNotifications()
-            return
-        }
+    private var upgradeSyncRevision = 0
 
+    func syncNotifications(for requests: [UpgradeNotificationRequest]) {
+        upgradeSyncRevision += 1
+        let revision = upgradeSyncRevision
+        // Capture ownership and alert content before asynchronous permission checks.
+        let desired = requests.map { makeRequest(for: $0) }
         ensureAuthorization(promptIfNeeded: false) { granted in
-            guard granted else {
-                self.removeAllUpgradeNotifications()
-                return
-            }
-
-            let desiredRequests = upgrades.map { self.makeRequest(for: $0, activeBoosts: activeBoosts) }
+            guard revision == self.upgradeSyncRevision else { return }
+            guard granted else { return }
             self.center.getPendingNotificationRequests { existing in
-                let managed = existing.filter { $0.identifier.hasPrefix(Self.identifierPrefix) }
-                let managedIdentifiers = Set(managed.map { $0.identifier })
-                let desiredIdentifiers = Set(desiredRequests.map { $0.identifier })
-
-                let identifiersToRemove = Array(managedIdentifiers.subtracting(desiredIdentifiers))
-                if !identifiersToRemove.isEmpty {
-                    self.center.removePendingNotificationRequests(withIdentifiers: identifiersToRemove)
-                }
-
-                let existingSet = managedIdentifiers
-                let newRequests = desiredRequests.filter { !existingSet.contains($0.identifier) }
-                for request in newRequests {
-                    self.center.add(request)
+                DispatchQueue.main.async {
+                    guard revision == self.upgradeSyncRevision else { return }
+                    let managed = existing.filter { $0.identifier.hasPrefix(Self.identifierPrefix) }
+                    let wanted = Set(desired.map(\.identifier))
+                    self.center.removePendingNotificationRequests(withIdentifiers:
+                        managed.filter { !wanted.contains($0.identifier) }.map(\.identifier))
+                    for request in desired {
+                        let previous = managed.first { $0.identifier == request.identifier }
+                        let oldDate = (previous?.trigger as? UNTimeIntervalNotificationTrigger)?.nextTriggerDate()
+                        let newDate = (request.trigger as? UNTimeIntervalNotificationTrigger)?.nextTriggerDate()
+                        let dateChanged = oldDate == nil || newDate == nil || abs(oldDate!.timeIntervalSince(newDate!)) > 2
+                        if previous?.content.body != request.content.body
+                            || !(NSDictionary(dictionary: previous?.content.userInfo ?? [:]).isEqual(to: request.content.userInfo))
+                            || dateChanged {
+                            self.center.add(request)
+                        }
+                    }
                 }
             }
         }
@@ -218,28 +215,20 @@ final class NotificationManager: ObservableObject {
         return formatter.date(from: value)
     }
 
-    private func makeRequest(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost] = []) -> UNNotificationRequest {
+    private func makeRequest(for request: UpgradeNotificationRequest) -> UNNotificationRequest {
+        let upgrade = request.upgrade
+        let activeBoosts = request.activeBoosts
         let content = UNMutableNotificationContent()
         content.title = "Upgrade Complete"
         
         var bodyText = "\(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
         
-        // Add profile name if multiple profiles exist - format: "Username: upgrade x completed"
-        if let profiles = allProfiles, profiles.count > 1, let profileID = currentProfileID,
-           let profile = profiles.first(where: { $0.id == profileID }) {
-            let resolvedName = resolvedNotificationProfileName(for: profile)
-            bodyText = "\(resolvedName): \(upgrade.name) finished upgrading to level \(upgrade.targetLevel)."
-        }
-        
+        bodyText = "\(request.profileName): \(bodyText)"
         content.body = bodyText
         content.sound = .default
         content.threadIdentifier = Self.threadIdentifier(for: upgrade.category)
-        
-        // Store profile ID for handling notification tap
-        if let profileID = currentProfileID {
-            content.userInfo["profileID"] = profileID.uuidString
-        }
-        
+        content.userInfo["profileID"] = request.profileID.uuidString
+
         // Include target URL for auto-redirect if enabled (global setting)
         let autoOpenClash = UserDefaults.standard.bool(forKey: "globalAutoOpenClashOfClans")
         if autoOpenClash {
@@ -254,90 +243,14 @@ final class NotificationManager: ObservableObject {
         let offsetSeconds = Double(offsetMinutes * 60)
         let interval = max(completionTime.timeIntervalSinceNow - offsetSeconds, 1)
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: interval, repeats: false)
-        let identifier = Self.identifier(for: upgrade.id)
+        let identifier = Self.identifierPrefix + request.profileID.uuidString + "." + upgrade.id.uuidString
         return UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
     }
     
     /// Calculate the effective completion date accounting for active and future boosts
     /// This projects forward in time to determine WHEN the upgrade will actually complete
     private func effectiveCompletionDate(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost]) -> Date {
-        let now = Date()
-        var remainingWork = max(0, upgrade.endTime.timeIntervalSince(now))
-        
-        // If no boosts or no work remaining, use raw endTime
-        guard !activeBoosts.isEmpty, remainingWork > 0 else {
-            return upgrade.endTime
-        }
-        
-        // Filter boosts that affect this upgrade's category
-        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
-            guard let boostType = boost.boostType,
-                  boostType.affectedCategories.contains(upgrade.category),
-                  boost.endTime > now else { return nil }
-            // For targeted boosts, only include if it targets this upgrade
-            if boostType == .builderApprentice || boostType == .labAssistant {
-                if let targetId = boost.targetUpgradeId, targetId != upgrade.id { return nil }
-            }
-            return boost
-        }.sorted { $0.endTime < $1.endTime }
-        
-        if relevantBoosts.isEmpty { return upgrade.endTime }
-        
-        // Simulate time passing and calculate when work completes
-        var currentTime = now
-        
-        // Build timeline of future boost transitions
-        var transitions: [Date] = [now]
-        for boost in relevantBoosts {
-            if boost.startTime > now {
-                transitions.append(boost.startTime)
-            }
-            transitions.append(boost.endTime)
-        }
-        transitions = Array(Set(transitions)).sorted()
-        
-        // Process each time segment
-        for idx in 0..<(transitions.count - 1) {
-            let segmentStart = transitions[idx]
-            let segmentEnd = transitions[idx + 1]
-            
-            // Calculate effective speed multiplier for this segment
-            var speedMultiplier = 1.0
-            var clockTowerApplied = false
-            
-            for boost in relevantBoosts {
-                guard let boostType = boost.boostType else { continue }
-                // Check if this boost is active during this segment
-                if boost.startTime <= segmentStart && boost.endTime > segmentStart {
-                    let level = boost.helperLevel ?? 0
-                    if boostType.isClockTowerBoost {
-                        if !clockTowerApplied {
-                            speedMultiplier += boostType.speedMultiplier(level: level)
-                            clockTowerApplied = true
-                        }
-                    } else {
-                        speedMultiplier += boostType.speedMultiplier(level: level)
-                    }
-                }
-            }
-            
-            // How much real time passes in this segment
-            let realTime = segmentEnd.timeIntervalSince(segmentStart)
-            // How much work gets done (boosted time)
-            let workDone = realTime * speedMultiplier
-            
-            if workDone >= remainingWork {
-                // Upgrade completes during this segment
-                let timeNeeded = remainingWork / speedMultiplier
-                return segmentStart.addingTimeInterval(timeNeeded)
-            }
-            
-            remainingWork -= workDone
-            currentTime = segmentEnd
-        }
-        
-        // If we still have work after all boosts expire, add unboosted time
-        return currentTime.addingTimeInterval(remainingWork)
+        upgrade.projectedCompletionDate(activeBoosts: activeBoosts, referenceDate: Date())
     }
 
     private static func identifier(for upgradeID: UUID) -> String {

@@ -155,10 +155,8 @@ New Game Content
 1.3 - 10/xx/26
 
 *New Features and Additions*
-- New Page added, Progresss
-- see current levels of everything in your home village
-- Customizable UI
-- Supports Supercharges and Crafted Defenses
+- New Page added, Progresss, for tracking all of your home village levels
+- see current levels of everything in your home village, with customizable Customizable UI, and Supports Supercharges and Crafted Defenses
 - "Share progress" mode
 - See what is maxed for your town hall at a glance with the blue border
 - Page to track all equipment levels in one view
@@ -166,6 +164,7 @@ New Game Content
 - Official iPhone Duo Support
 - added support for hammer jam cost and time reductions
 - added a news tab
+- added events section for when major events are active in game
 
 *Changes and Fixes*
 - fixed display name for Mother Witch and Angry Spell

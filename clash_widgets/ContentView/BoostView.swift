@@ -584,14 +584,12 @@ struct BoostView: View {
         switch boostType {
         case .labAssistant:
             let level = dataService.labAssistantLevel
-            let multiplier = level + 1
-            Text("\(multiplier)x for 1hr (Lv\(level))")
+            Text("Saves \(level)hr in 1hr (Lv\(level))")
                 .font(.caption2)
                 .foregroundColor(.secondary)
         case .builderApprentice:
             let level = dataService.builderApprenticeLevel
-            let multiplier = level + 1
-            Text("\(multiplier)x for 1hr (Lv\(level))")
+            Text("Saves \(level)hr in 1hr (Lv\(level))")
                 .font(.caption2)
                 .foregroundColor(.secondary)
         case .clockTower:
@@ -829,8 +827,7 @@ private struct BuilderSelectionView: View {
             Text("Select Builder")
         } footer: {
             let level = dataService.builderApprenticeLevel
-            let multiplier = level + 1
-            Text("Builder's Apprentice (Level \(level)) provides a \(multiplier)x speed boost for 1 hour to one builder.")
+            Text("Builder's Apprentice (Level \(level)) saves \(level) hours of additional upgrade time while helping one builder for 1 hour.")
         }
     }
     
@@ -883,8 +880,7 @@ private struct BuilderSelectionView: View {
             Text("Select Lab Upgrade")
         } footer: {
             let level = dataService.labAssistantLevel
-            let multiplier = level + 1
-            Text("Lab Assistant (Level \(level)) provides a \(multiplier)x speed boost for 1 hour to one lab upgrade.")
+            Text("Lab Assistant (Level \(level)) saves \(level) hours of additional upgrade time while helping one lab upgrade for 1 hour.")
         }
     }
 }

@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "entries": [
+    {
+      "id": "hammer-jam-test-announcement-2026-10-v1",
+      "published": "2026-10-06T08:00:00Z",
+      "showAsPopup": true,
+      "presentation": {
+        "title": "DEV \u2014 Hammer Jam is here \u2014 test announcement",
+        "summary": "We\u2019re testing remote news and events in Clashboard. A sample Hammer Jam is now active, with an ending countdown and a full event information page.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/builder_potion"
+        },
+        "sections": [
+          {
+            "title": "DEV \u2014 Meet the test Hammer Jam",
+            "body": "The test runs October 6\u201320, 2026. It configures 50% shorter eligible Home Village upgrade durations and 50% lower wall costs, combined with Gold Pass. Supercharges, Crafted Defenses, and Builder Base upgrades are excluded."
+          },
+          {
+            "title": "DEV \u2014 Open the event details",
+            "body": "On Home, look below Selected Profile for Hammer Jam (Test). Tap the event card for the countdown, boost explanation, Gold Pass examples, timer behavior, and exclusions."
+          },
+          {
+            "title": "DEV \u2014 News without an app update",
+            "body": "Announcements like this can be published through the remote JSON feed. Find the archive in Help (?) \u2192 News, alongside Welcome and What\u2019s New. Only the latest unread announcement can open automatically; What\u2019s New takes priority on a new app build."
+          },
+          {
+            "title": "DEV \u2014 Testing notice",
+            "body": "This is a Clashboard test, not an official Supercell announcement or an in-game boost. Use a test village when checking timers: fetching this configuration can shorten eligible timers tracked before its start. Fresh exports remain authoritative."
+          }
+        ]
+      }
+    }
+  ]
+}

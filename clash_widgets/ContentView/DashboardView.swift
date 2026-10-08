@@ -146,11 +146,16 @@ struct DashboardView: View {
         List {
             Section("Selected Profile") {
                 selectedProfileSection
+                if remoteContent.environment == .development {
+                    Label("Development Feed Active", systemImage: "testtube.2")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
             }
 
-            if !remoteContent.visibleEvents.isEmpty {
+            if !remoteContent.visibleEvents(for: dataService.selectedProfileID).isEmpty {
                 Section("Events") {
-                    ForEach(remoteContent.visibleEvents) { event in
+                    ForEach(remoteContent.visibleEvents(for: dataService.selectedProfileID)) { event in
                         NavigationLink { RemoteEventDetailView(event: event) } label: {
                             HStack(spacing: 12) {
                                 if let icon = event.icon {
@@ -162,7 +167,7 @@ struct DashboardView: View {
                                     Text(event.presentation.title).font(.headline)
                                     HStack {
                                         Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
-                                        Text(remoteContent.now < event.start ? event.start : event.end, style: .timer).monospacedDigit()
+                                        Text(remoteEventCountdown(until: remoteContent.now < event.start ? event.start : event.end, at: remoteContent.now)).monospacedDigit()
                                     }.font(.caption).foregroundStyle(.secondary)
                                 }
                             }
@@ -375,9 +380,7 @@ struct DashboardView: View {
                 helperCooldownSummaryRow
             case .builders:
                 VStack(spacing: 8) {
-                    ForEach(builderVillageUpgrades) { upgrade in
-                        BuilderRow(upgrade: upgrade)
-                    }
+                    nativeUpgradeList(builderVillageUpgrades)
                     if idleBuilders > 0 {
                         ForEach(0..<idleBuilders, id: \.self) { index in
                             IdleBuilderRow(builderIndex: busyBuilders + index + 1)
@@ -387,9 +390,7 @@ struct DashboardView: View {
             case .lab:
                 if !labUpgrades.isEmpty {
                     VStack(spacing: 8) {
-                        ForEach(labUpgrades) { upgrade in
-                            BuilderRow(upgrade: upgrade)
-                        }
+                        nativeUpgradeList(labUpgrades)
                     }
                 } else {
                     IdleStatusRow(title: "Laboratory", status: "Idle")
@@ -397,9 +398,7 @@ struct DashboardView: View {
             case .pets:
                 if !petUpgrades.isEmpty {
                     VStack(spacing: 8) {
-                        ForEach(petUpgrades) { upgrade in
-                            BuilderRow(upgrade: upgrade)
-                        }
+                        nativeUpgradeList(petUpgrades)
                     }
                 } else {
                     IdleStatusRow(title: "Pet House", status: "Idle")
@@ -409,9 +408,7 @@ struct DashboardView: View {
             case .builderBase:
                 if busyBuilderBaseBuilders > 0 || idleBuilderBaseBuilders > 0 {
                     VStack(spacing: 8) {
-                        ForEach(builderBaseUpgrades) { upgrade in
-                            BuilderRow(upgrade: upgrade)
-                        }
+                        nativeUpgradeList(builderBaseUpgrades)
                         if idleBuilderBaseBuilders > 0 {
                             ForEach(0..<idleBuilderBaseBuilders, id: \.self) { index in
                                 IdleBuilderRow(
@@ -428,9 +425,7 @@ struct DashboardView: View {
             case .starLab:
                 if !starLabUpgrades.isEmpty {
                     VStack(spacing: 8) {
-                        ForEach(starLabUpgrades) { upgrade in
-                            BuilderRow(upgrade: upgrade)
-                        }
+                        nativeUpgradeList(starLabUpgrades)
                     }
                 } else {
                     IdleStatusRow(title: "Star Laboratory", status: "Idle")
@@ -438,6 +433,25 @@ struct DashboardView: View {
             }
         }
     }
+
+    // Each upgrade must be a native List row for SwiftUI swipe actions to work.
+    private func nativeUpgradeList(_ upgrades: [BuildingUpgrade]) -> some View {
+        List {
+            ForEach(upgrades) { upgrade in
+                BuilderRow(upgrade: upgrade)
+                    .frame(minHeight: 92)
+                    .listRowInsets(EdgeInsets(top: 4, leading: 0, bottom: 4, trailing: 0))
+                    .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+            }
+        }
+        .listStyle(.plain)
+        .scrollDisabled(true)
+        .scrollContentBackground(.hidden)
+        .environment(\.defaultMinListRowHeight, 100)
+        .frame(height: CGFloat(upgrades.count) * 100)
+    }
+
 
     private var selectedProfileSection: some View {
         VStack(alignment: .leading, spacing: 10) {
@@ -1596,7 +1610,11 @@ struct DashboardView: View {
         let boostedTotalCost = applyGoldPassDiscount(to: totalCost, boostPercentage: goldPassBoost)
         
         return VStack(alignment: .leading, spacing: 12) {
-            if cumulativeRows.isEmpty {
+            if allWallData.isEmpty {
+                Text("Import your village data to see wall progress.")
+                    .font(.subheadline)
+                    .foregroundColor(.secondary)
+            } else if cumulativeRows.isEmpty {
                 Text("All walls maxed out!")
                     .font(.subheadline)
                     .foregroundColor(.secondary)
@@ -1687,7 +1705,7 @@ struct DashboardView: View {
 
     private func applyGoldPassDiscount(to cost: Int, boostPercentage: Int) -> Int {
         let discountFactor = Double(100 - max(0, min(100, boostPercentage))) / 100.0
-        let eventFactor = remoteContent.wallFactor(townHall: dataService.getTownHallLevel(from: .home))
+        let eventFactor = remoteContent.wallFactor(townHall: dataService.getTownHallLevel(from: .home), profileID: dataService.selectedProfileID)
         return Int(Double(cost) * discountFactor * eventFactor)
     }
 

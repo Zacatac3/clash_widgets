@@ -476,6 +476,8 @@ struct BuildingUpgrade: Identifiable, Codable {
     var endTime: Date  // Mutable to allow boost adjustments
     var appliedRemoteEventIDs: Set<String> = []
     var goldPassFactorAtImport: Double?
+    var remoteEventTimeMultiplier: Double?
+    var sourceExportTimer: Int?
     let category: UpgradeCategory
     let startTime: Date
     let totalDuration: TimeInterval
@@ -499,7 +501,7 @@ struct BuildingUpgrade: Identifiable, Codable {
     }
 
     private enum CodingKeys: String, CodingKey {
-        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration, isSeasonalDefense, appliedRemoteEventIDs, goldPassFactorAtImport
+        case id, dataId, name, targetLevel, superchargeLevel, superchargeTargetLevel, usesGoblin, endTime, category, startTime, totalDuration, isSeasonalDefense, appliedRemoteEventIDs, goldPassFactorAtImport, remoteEventTimeMultiplier, sourceExportTimer
     }
     
     init(from decoder: Decoder) throws {
@@ -513,6 +515,8 @@ struct BuildingUpgrade: Identifiable, Codable {
         self.usesGoblin = try container.decodeIfPresent(Bool.self, forKey: .usesGoblin) ?? false
         self.appliedRemoteEventIDs = try container.decodeIfPresent(Set<String>.self, forKey: .appliedRemoteEventIDs) ?? []
         self.goldPassFactorAtImport = try container.decodeIfPresent(Double.self, forKey: .goldPassFactorAtImport)
+        self.remoteEventTimeMultiplier = try container.decodeIfPresent(Double.self, forKey: .remoteEventTimeMultiplier)
+        self.sourceExportTimer = try container.decodeIfPresent(Int.self, forKey: .sourceExportTimer)
         self.endTime = try container.decode(Date.self, forKey: .endTime)
         self.category = try container.decodeIfPresent(UpgradeCategory.self, forKey: .category) ?? .builderVillage
         self.startTime = try container.decodeIfPresent(Date.self, forKey: .startTime) ?? Date()
@@ -531,11 +535,23 @@ struct BuildingUpgrade: Identifiable, Codable {
         try container.encode(usesGoblin, forKey: .usesGoblin)
         try container.encode(appliedRemoteEventIDs, forKey: .appliedRemoteEventIDs)
         try container.encodeIfPresent(goldPassFactorAtImport, forKey: .goldPassFactorAtImport)
+        try container.encodeIfPresent(remoteEventTimeMultiplier, forKey: .remoteEventTimeMultiplier)
+        try container.encodeIfPresent(sourceExportTimer, forKey: .sourceExportTimer)
         try container.encode(endTime, forKey: .endTime)
         try container.encode(category, forKey: .category)
         try container.encode(startTime, forKey: .startTime)
         try container.encode(totalDuration, forKey: .totalDuration)
         try container.encodeIfPresent(isSeasonalDefense, forKey: .isSeasonalDefense)
+    }
+
+    func durationBeforeRemoteEvent(goldPassBoost: Int) -> TimeInterval {
+        let currentGold = 1 - Double(max(0, min(100, goldPassBoost))) / 100
+        let gold = remoteEventTimeMultiplier == nil ? currentGold : (goldPassFactorAtImport ?? currentGold)
+        return max(totalDuration * gold, 1)
+    }
+
+    func effectiveTotalDuration(goldPassBoost: Int) -> TimeInterval {
+        max(durationBeforeRemoteEvent(goldPassBoost: goldPassBoost) * (remoteEventTimeMultiplier ?? 1), 1)
     }
 
     var levelDisplayText: String {
@@ -1119,5 +1135,221 @@ struct HouseElement: Codable, Identifiable {
     enum CodingKeys: String, CodingKey {
         case type
         case elementID = "id"
+    }
+}
+
+// Edit only the tracked export item, preserving unrelated timers and unknown JSON fields.
+extension BuildingUpgrade {
+    func updatingExport(_ rawJSON: String, completed: Bool) -> String? {
+        guard let dataId, let data = rawJSON.data(using: .utf8),
+              var root = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        let keys: [String]
+        switch category {
+        case .builderVillage: keys = ["buildings", "traps", "heroes", "guardians"]
+        case .builderBase: keys = ["buildings2", "traps2", "heroes2"]
+        case .lab: keys = ["units", "spells", "siege_machines"]
+        case .starLab: keys = ["units2"]
+        case .pets: keys = ["pets"]
+        }
+        func updated(_ item: [String: Any]) -> [String: Any] {
+            var result = item
+            result.removeValue(forKey: "timer")
+            result.removeValue(forKey: "extra")
+            if completed {
+                if let target = superchargeTargetLevel { result["supercharge"] = target }
+                else if name == "Town Hall Weapon" { result["weapon"] = targetLevel }
+                else { result["lvl"] = targetLevel }
+            }
+            return result
+        }
+        for key in keys {
+            guard var items = root[key] as? [[String: Any]] else { continue }
+            if isSeasonalDefense == true {
+                for i in items.indices {
+                    guard var types = items[i]["types"] as? [[String: Any]] else { continue }
+                    for t in types.indices where (types[t]["data"] as? Int) == dataId {
+                        guard var modules = types[t]["modules"] as? [[String: Any]],
+                              let m = modules.firstIndex(where: {
+                                  ($0["lvl"] as? Int) == targetLevel - 1 && ($0["timer"] as? Int ?? 0) > 0
+                                    && (sourceExportTimer == nil || ($0["timer"] as? Int) == sourceExportTimer)
+                              }) else { continue }
+                        modules[m] = updated(modules[m])
+                        types[t]["modules"] = modules
+                        items[i]["types"] = types
+                        root[key] = items
+                        return Self.serializeExport(root)
+                    }
+                }
+            } else if let i = items.firstIndex(where: {
+                ($0["data"] as? Int) == dataId && ($0["timer"] as? Int ?? 0) > 0
+                    && (superchargeTargetLevel != nil || ($0[name == "Town Hall Weapon" ? "weapon" : "lvl"] as? Int) == targetLevel - 1)
+                    && (sourceExportTimer == nil || ($0["timer"] as? Int) == sourceExportTimer)
+                    && (superchargeLevel == nil || ($0["supercharge"] as? Int) == superchargeLevel)
+                    && ($0["extra"] as? Bool ?? false) == usesGoblin
+            }) {
+                let count = items[i]["cnt"] as? Int ?? 1
+                if completed && count > 1 && superchargeTargetLevel == nil {
+                    var finished = updated(items[i])
+                    finished["cnt"] = 1
+                    items[i]["cnt"] = count - 1
+                    items.append(finished)
+                } else { items[i] = updated(items[i]) }
+                root[key] = items
+                return Self.serializeExport(root)
+            }
+        }
+        return nil
+    }
+
+    private static func serializeExport(_ root: [String: Any]) -> String? {
+        guard let data = try? JSONSerialization.data(withJSONObject: root, options: [.sortedKeys]) else { return nil }
+        return String(data: data, encoding: .utf8)
+    }
+}
+
+extension BuildingUpgrade {
+    func remainingSeconds(activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
+        let baseRemaining = max(0, endTime.timeIntervalSince(referenceDate))
+
+        let start = startTime
+        let now = referenceDate
+        if now <= start { return baseRemaining }
+
+        // Filter boosts that affect this upgrade's category
+        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
+            guard let boostType = boost.boostType,
+                  boostType.affectedCategories.contains(category) else { return nil }
+            if boostType == .builderApprentice || boostType == .labAssistant {
+                if let targetId = boost.targetUpgradeId, targetId != id { return nil }
+            }
+            return boost
+        }
+        if relevantBoosts.isEmpty { return baseRemaining }
+
+        // Build timeline of boost periods
+        var timePoints: [Date] = [start, now]
+        for boost in relevantBoosts {
+            let s = max(start, boost.startTime)
+            let e = min(now, boost.endTime)
+            if s < e {
+                timePoints.append(s)
+                timePoints.append(e)
+            }
+        }
+        let sortedPoints = Array(Set(timePoints)).sorted()
+        if sortedPoints.count <= 1 { return baseRemaining }
+
+        // Calculate extra elapsed time from boosts
+        var extraElapsed: TimeInterval = 0
+        for idx in 0..<(sortedPoints.count - 1) {
+            let segmentStart = sortedPoints[idx]
+            let segmentEnd = sortedPoints[idx + 1]
+            if segmentEnd <= segmentStart { continue }
+
+            var totalExtra: Double = 0
+            var clockTowerApplied = false
+            for boost in relevantBoosts {
+                guard let boostType = boost.boostType else { continue }
+                let s = max(start, boost.startTime)
+                let e = min(now, boost.endTime)
+                if segmentStart < s || segmentStart >= e { continue }
+
+                let level = boost.helperLevel ?? 0
+                if boostType.isClockTowerBoost {
+                    if !clockTowerApplied {
+                        totalExtra += boostType.speedMultiplier(level: level)
+                        clockTowerApplied = true
+                    }
+                } else {
+                    totalExtra += boostType.speedMultiplier(level: level)
+                }
+            }
+            extraElapsed += segmentEnd.timeIntervalSince(segmentStart) * totalExtra
+        }
+
+        let adjustedRemaining = baseRemaining - extraElapsed
+        return max(0, adjustedRemaining)
+    }
+}
+
+extension BuildingUpgrade {
+    func projectedCompletionDate(activeBoosts: [ActiveBoost], referenceDate: Date) -> Date {
+        let now = referenceDate
+        var remainingWork = remainingSeconds(activeBoosts: activeBoosts, referenceDate: now)
+
+        // With no remaining work or boosts, no further projection is needed.
+        guard !activeBoosts.isEmpty, remainingWork > 0 else {
+            return now.addingTimeInterval(remainingWork)
+        }
+
+        // Filter boosts that affect this upgrade's category
+        let relevantBoosts = activeBoosts.compactMap { boost -> ActiveBoost? in
+            guard let boostType = boost.boostType,
+                  boostType.affectedCategories.contains(category),
+                  boost.endTime > now else { return nil }
+            // For targeted boosts, only include if it targets this upgrade
+            if boostType == .builderApprentice || boostType == .labAssistant {
+                if let targetId = boost.targetUpgradeId, targetId != id { return nil }
+            }
+            return boost
+        }.sorted { $0.endTime < $1.endTime }
+
+        if relevantBoosts.isEmpty { return now.addingTimeInterval(remainingWork) }
+
+        // Simulate time passing and calculate when work completes
+        var currentTime = now
+
+        // Build timeline of future boost transitions
+        var transitions: [Date] = [now]
+        for boost in relevantBoosts {
+            if boost.startTime > now {
+                transitions.append(boost.startTime)
+            }
+            transitions.append(boost.endTime)
+        }
+        transitions = Array(Set(transitions)).sorted()
+
+        // Process each time segment
+        for idx in 0..<(transitions.count - 1) {
+            let segmentStart = transitions[idx]
+            let segmentEnd = transitions[idx + 1]
+
+            // Calculate effective speed multiplier for this segment
+            var speedMultiplier = 1.0
+            var clockTowerApplied = false
+
+            for boost in relevantBoosts {
+                guard let boostType = boost.boostType else { continue }
+                // Check if this boost is active during this segment
+                if boost.startTime <= segmentStart && boost.endTime > segmentStart {
+                    let level = boost.helperLevel ?? 0
+                    if boostType.isClockTowerBoost {
+                        if !clockTowerApplied {
+                            speedMultiplier += boostType.speedMultiplier(level: level)
+                            clockTowerApplied = true
+                        }
+                    } else {
+                        speedMultiplier += boostType.speedMultiplier(level: level)
+                    }
+                }
+            }
+
+            // How much real time passes in this segment
+            let realTime = segmentEnd.timeIntervalSince(segmentStart)
+            // How much work gets done (boosted time)
+            let workDone = realTime * speedMultiplier
+
+            if workDone >= remainingWork {
+                // Upgrade completes during this segment
+                let timeNeeded = remainingWork / speedMultiplier
+                return segmentStart.addingTimeInterval(timeNeeded)
+            }
+
+            remainingWork -= workDone
+            currentTime = segmentEnd
+        }
+
+        // If we still have work after all boosts expire, add unboosted time
+        return currentTime.addingTimeInterval(remainingWork)
     }
 }

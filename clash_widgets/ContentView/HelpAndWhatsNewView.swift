@@ -112,9 +112,14 @@ private struct WhatsNewContent: View {
     }
 
     private func whatsNewInlineImageName(for bullet: String, in section: WhatsNewSection) -> String? {
-        if section.dateLabel.contains("1.3"),
-           bullet.lowercased().contains("progress (beta)") {
-            return "progress"
+        if section.dateLabel.contains("1.3") {
+            let normalized = bullet.lowercased()
+            if normalized.contains("share progress") {
+                return "share_progress"
+            }
+            if normalized.contains("progress (beta)") {
+                return "progress"
+            }
         }
         if section.dateLabel.contains("2/24/2026") {
             let normalized = bullet.lowercased()
@@ -382,7 +387,7 @@ private struct ChangelogView: View {
             .replacingOccurrences(of: ".jpeg", with: "")
             .replacingOccurrences(of: ".webp", with: "")
 
-        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts", "custom_boosts", "equipment", "duke", "progress"]
+        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts", "custom_boosts", "equipment", "duke", "progress", "share_progress"]
         return knownImageNames.contains(name) ? name : nil
     }
 

@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "events": [
+    {
+      "id": "hammer-jam-test-2026-10-v1",
+      "enabled": true,
+      "start": "2026-10-06T08:00:00Z",
+      "end": "2026-10-20T08:00:00Z",
+      "presentation": {
+        "title": "DEV \u2014 Hammer Jam (Test)",
+        "summary": "Our remote event test is active: 50% shorter eligible Home Village upgrades and 50% lower wall costs, combined with Gold Pass. These are test dates and tracker adjustments, not a live in-game announcement.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/builder_potion"
+        },
+        "sections": [
+          {
+            "title": "DEV \u2014 Test event \u2014 not an official announcement",
+            "body": "This event is enabled to test Clashboard\u2019s remote news, countdowns, detail pages, wall discounts, and upgrade adjustments. The October 6\u201320 dates are test dates, not announced Clash of Clans event dates. This configuration changes the tracker only; it cannot activate a boost in the game."
+          },
+          {
+            "title": "DEV \u2014 50% shorter upgrade times",
+            "body": "This test uses a 0.5 time multiplier for eligible Home Village builder, Laboratory, and Pet House upgrades at every Town Hall level. Builder Base and Star Laboratory upgrades are outside this test. Actual event rules must be confirmed before a real announcement."
+          },
+          {
+            "title": "DEV \u2014 50% lower upgrade costs",
+            "body": "The recent Hammer Jam format reduced eligible upgrade resource costs by half, including walls. In this Clashboard test, wall costs show the 50% discount; other upgrade cost displays are not modified by this event engine."
+          },
+          {
+            "title": "DEV \u2014 Gold Pass works alongside the event",
+            "body": "Gold Pass and the event multiply. A 20% Gold Pass discount combined with the 50% event factor leaves 40% of the base amount\u2014a total reduction of 60%. For example, a 10-day duration becomes 4 days, and a 4,000,000 wall cost becomes 1,600,000.",
+            "image": {
+              "source": "bundle",
+              "value": "profile/gold_pass"
+            }
+          },
+          {
+            "title": "DEV \u2014 What happens to upgrades already running?",
+            "body": "For eligible timers tracked before the test begins, Clashboard caps the remaining duration at the event-adjusted full upgrade duration, calculated at the event\u2019s start time. Shorter remaining timers stay unchanged. Opening the app later uses that original boundary, so elapsed time is not reset. Importing fresh Clash data during the event preserves the exported remaining times without applying the discount again."
+          },
+          {
+            "title": "DEV \u2014 Supercharges and Crafted Defenses",
+            "body": "Supercell\u2019s November 2025 Hammer Jam excluded Supercharges and Crafted Defenses. This test follows those exclusions. Hero equipment and ore costs are not discounted by this configuration. Future events may have different rules."
+          },
+          {
+            "title": "DEV \u2014 Resource collectors",
+            "body": "The November 2025 event also doubled Resource Collector production and capacity. That is described here for context only: Clashboard does not simulate collector output or resource capacity."
+          },
+          {
+            "title": "DEV \u2014 When the event ends",
+            "body": "The event card disappears at the configured end time and displayed wall costs return to normal. Previously adjusted upgrade end times stay adjusted. If the app misses the entire event, it does not replay old boosts; import a fresh village export to correct stale timers. Widgets and notifications sync the event adjustments when the app opens."
+          },
+          {
+            "title": "DEV \u2014 Try the remote content flow",
+            "body": "Open the News tab in the Welcome / What\u2019s New sheet to read the announcement. Tap Hammer Jam below Selected Profile to open this page and see the ending countdown. Pull to refresh in News after the feed is published. Use a test village for timer checks, because this active test can shorten eligible tracked timers."
+          },
+          {
+            "title": "DEV \u2014 Reference rules",
+            "body": "The historical event format used for this test comes from Supercell\u2019s \u201cHAMMER JAM Kickstarts the November Season!\u201d announcement, published November 1, 2025: https://supercell.com/en/games/clashofclans/blog/news/hammer-jam-kickstarts-the-november-season/"
+          }
+        ]
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage",
+            "lab",
+            "pets"
+          ],
+          "townHallMin": 1,
+          "timeMultiplier": 0.5,
+          "excludeSupercharges": true
+        },
+        {
+          "categories": [
+            "walls"
+          ],
+          "townHallMin": 1,
+          "wallCostMultiplier": 0.5
+        }
+      ],
+      "icon": {
+        "source": "remote",
+        "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote_dev/images/builder.png"
+      }
+    }
+  ]
+}

@@ -6,6 +6,7 @@ import UIKit
 struct ProgressTabView: View {
     @EnvironmentObject private var dataService: DataService
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage("progressSectionOrder") private var storedOrder = ""
     @AppStorage("hiddenProgressSections") private var storedHidden = ""
     @State private var showCraftedDefenses = false
@@ -13,7 +14,7 @@ struct ProgressTabView: View {
     @State private var order: [String] = []
     @State private var hidden: Set<String> = []
     @State private var editingCards = false
-    @State private var showingDisplayOptions = false
+    @State private var showingCategoryPicker = false
     @State private var showingExportPreview = false
     @State private var export: CoCExport?
     @State private var isLoadingExport = true
@@ -30,47 +31,48 @@ struct ProgressTabView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(spacing: 0) {
-                if export != nil {
-                    categorySelector
-                        .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.bottom, 8)
-                }
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        if isLoadingExport {
-                            ProgressView("Loading progress…")
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .progressCardStyle()
-                        } else if export == nil {
-                            Text("Import your village export to see progress.")
-                                .font(.subheadline).foregroundColor(.secondary)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .progressCardStyle()
-                        } else {
-                            ForEach(visibleSectionIDs, id: \.self) { id in
-                                if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
-                                    sectionCard(section).id(id)
-                                }
+            ScrollView {
+                LazyVStack(spacing: 16) {
+                    if isLoadingExport {
+                        ProgressView("Loading progress…")
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .progressCardStyle()
+                    } else if export == nil {
+                        Text("Import your village export to see progress.")
+                            .font(.subheadline).foregroundColor(.secondary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .progressCardStyle()
+                    } else {
+                        ForEach(visibleSectionIDs, id: \.self) { id in
+                            if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
+                                sectionCard(section).id(id)
                             }
                         }
                     }
-                    .scrollTargetLayout()
-                    .padding(.horizontal)
-                    .padding(.top, export == nil ? 20 : 8)
-                    #if canImport(UIKit)
-                    .background {
-                        ProgressScrollViewProbe(controller: scrollController)
-                            .frame(width: 0, height: 0)
-                            .allowsHitTesting(false)
-                    }
-                    #endif
                 }
-                .scrollPosition($scrollPosition, anchor: .top)
+                .scrollTargetLayout()
+                .padding(.horizontal)
+                .padding(.top, export == nil ? 20 : 8)
+                .padding(.bottom, export == nil ? 0 : 64)
+                #if canImport(UIKit)
+                .background {
+                    ProgressScrollViewProbe(controller: scrollController)
+                        .frame(width: 0, height: 0)
+                        .allowsHitTesting(false)
+                }
+                #endif
             }
+            .scrollPosition($scrollPosition, anchor: .top)
             .background(Color(.systemGroupedBackground))
+            .overlay(alignment: .bottomLeading) {
+                if export != nil {
+                    categorySelector
+                        .padding(.bottom, 12)
+                }
+            }
             .navigationTitle("Progress (Beta)")
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.large)
+            .toolbarBackground(.hidden, for: .navigationBar)
             .toolbar {
                 if #available(iOS 26.0, *) {
                     progressToolbar
@@ -81,6 +83,21 @@ struct ProgressTabView: View {
             .sheet(isPresented: $editingCards) {
                 NavigationStack {
                     List {
+                        Section {
+                            Toggle("Enable Temporary Content", isOn: Binding(
+                                get: { showSupercharges || showCraftedDefenses },
+                                set: { enabled in
+                                    updateDisplayOption("supercharges", enabled: enabled)
+                                    updateDisplayOption("craftedDefenses", enabled: enabled)
+                                    if enabled {
+                                        hidden.subtract(["supercharges", "crafted_defenses"])
+                                        storedHidden = hidden.sorted().joined(separator: ",")
+                                    }
+                                }
+                            ))
+                        } footer: {
+                            Text("Show both Supercharges and Crafted Defenses.")
+                        }
                         Section("Cards") {
                             ForEach(editableSectionIDs, id: \.self) { id in
                                 if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
@@ -208,33 +225,56 @@ struct ProgressTabView: View {
     }
 
     private var categorySelector: some View {
-        HStack {
-            Menu {
-                ForEach(visibleSectionIDs, id: \.self) { id in
-                    if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
-                        Button(section.title) {
-                            jumpToSection(id)
+        Button {
+            stopProgressScrolling()
+            showingCategoryPicker = true
+        } label: {
+            HStack(spacing: 7) {
+                Image(systemName: "list.bullet")
+                Text("Category")
+                Image(systemName: "chevron.up").font(.caption2.bold())
+            }
+            .font(.subheadline.weight(.medium))
+            .padding(.horizontal, 12)
+            .padding(.vertical, 8)
+            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
+            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.separator).opacity(0.6)))
+        }
+        .buttonStyle(.plain)
+        .foregroundStyle(Color.accentColor)
+        .accessibilityLabel("Jump to category")
+        .popover(isPresented: $showingCategoryPicker, arrowEdge: .bottom) {
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Jump to Category")
+                    .font(.headline)
+                    .padding(12)
+                Divider()
+                ScrollView {
+                    LazyVStack(spacing: 0) {
+                        // Keep the same top-to-bottom order as the Progress cards.
+                        ForEach(visibleSectionIDs, id: \.self) { id in
+                            if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
+                                Button {
+                                    showingCategoryPicker = false
+                                    jumpToSection(id)
+                                } label: {
+                                    Text(section.title)
+                                        .frame(maxWidth: .infinity, minHeight: 44, alignment: .leading)
+                                        .padding(.horizontal, 12)
+                                        .contentShape(Rectangle())
+                                }
+                                .buttonStyle(.plain)
+                            }
                         }
                     }
+                    .padding(.vertical, 4)
                 }
-            } label: {
-                HStack(spacing: 7) {
-                    Image(systemName: "list.bullet")
-                    Text("Category")
-                    Image(systemName: "chevron.down").font(.caption2.bold())
-                }
-                .font(.subheadline.weight(.medium))
-                .padding(.horizontal, 12)
-                .padding(.vertical, 8)
-                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
-                .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.separator).opacity(0.6)))
+                .frame(maxHeight: 320)
             }
-            .simultaneousGesture(TapGesture().onEnded {
-                stopProgressScrolling()
-            })
+            .frame(width: 260)
+            .presentationCompactAdaptation(.popover)
         }
         .padding(.leading, 16)
-        .padding(.top, 8)
     }
 
     private func stopProgressScrolling() {
@@ -257,54 +297,16 @@ struct ProgressTabView: View {
         guard let id = dataService.selectedProfileID else { return }
         showSupercharges = ProgressDisplaySettings.value(for: "supercharges", profileID: id, townHall: townHall)
         showCraftedDefenses = ProgressDisplaySettings.value(for: "craftedDefenses", profileID: id, townHall: townHall)
-    }
-
-    private var displayOptionsButton: some View {
-        Button { showingDisplayOptions = true } label: {
-            Image(systemName: "eye")
-                .environment(\.symbolVariants, .none)
-        }
-        .accessibilityLabel("Progress Display Options")
-        .buttonStyle(.plain)
-        .foregroundColor(.accentColor)
-        .popover(isPresented: $showingDisplayOptions, arrowEdge: .top) {
-            VStack(alignment: .leading, spacing: 4) {
-                Text("Display Options")
-                    .font(.headline)
-                    .padding(.horizontal, 12)
-                    .padding(.bottom, 6)
-                displayOptionRow("Supercharges", option: "supercharges", isEnabled: showSupercharges)
-                displayOptionRow("Crafted Defenses", option: "craftedDefenses", isEnabled: showCraftedDefenses)
-            }
-            .padding(12)
-            .frame(width: 240)
-            .presentationCompactAdaptation(.popover)
-        }
-    }
-
-    private func displayOptionRow(_ title: String, option: String, isEnabled: Bool) -> some View {
-        Button {
-            updateDisplayOption(option, enabled: !isEnabled)
-        } label: {
-            HStack {
-                Text(title)
-                Spacer()
-                if isEnabled { Image(systemName: "checkmark") }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 9)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-        .accessibilityAddTraits(isEnabled ? .isSelected : [])
+        let temporaryContentEnabled = showSupercharges || showCraftedDefenses
+        updateDisplayOption("supercharges", enabled: temporaryContentEnabled)
+        updateDisplayOption("craftedDefenses", enabled: temporaryContentEnabled)
     }
 
     private var reorderCardsButton: some View {
         Button { editingCards = true } label: {
             Image(systemName: "slider.horizontal.3")
         }
-        .accessibilityLabel("Reorder Progress Cards")
+        .accessibilityLabel("Customize Progress Cards")
         .buttonStyle(.plain)
         .foregroundColor(.accentColor)
     }
@@ -319,18 +321,35 @@ struct ProgressTabView: View {
         .disabled(export == nil)
     }
 
+    // Expanded phones keep their actions on the right. Compact phone layouts
+    // put display/reorder and share on the left, with the profile menu on the right.
+    private var usesTrailingProgressActions: Bool {
+        #if canImport(UIKit)
+        UIDevice.current.userInterfaceIdiom == .phone && horizontalSizeClass == .regular
+        #else
+        false
+        #endif
+    }
+
+    private var progressActionsPlacement: ToolbarItemPlacement {
+        usesTrailingProgressActions ? .navigationBarTrailing : .navigationBarLeading
+    }
+
     @available(iOS 26.0, *)
     @ToolbarContentBuilder
     private var progressToolbar: some ToolbarContent {
-        ToolbarItemGroup(placement: .navigationBarLeading) {
-            displayOptionsButton
+        ToolbarItemGroup(placement: progressActionsPlacement) {
             reorderCardsButton
         }
-        ToolbarSpacer(.fixed, placement: .navigationBarLeading)
-        ToolbarItem(placement: .navigationBarLeading) {
+        ToolbarSpacer(.fixed, placement: progressActionsPlacement)
+        ToolbarItem(placement: progressActionsPlacement) {
             exportPreviewButton
         }
-        ToolbarSpacer(placement: .navigationBarLeading)
+        if usesTrailingProgressActions {
+            ToolbarSpacer(.fixed, placement: .navigationBarTrailing)
+        } else {
+            ToolbarSpacer(placement: .navigationBarLeading)
+        }
         ToolbarItem(placement: .navigationBarTrailing) {
             ProfileSwitcherMenu()
         }
@@ -338,9 +357,8 @@ struct ProgressTabView: View {
 
     @ToolbarContentBuilder
     private var progressToolbarFallback: some ToolbarContent {
-        ToolbarItem(placement: .navigationBarLeading) { displayOptionsButton }
-        ToolbarItem(placement: .navigationBarLeading) { reorderCardsButton }
-        ToolbarItem(placement: .navigationBarLeading) { exportPreviewButton }
+        ToolbarItem(placement: progressActionsPlacement) { reorderCardsButton }
+        ToolbarItem(placement: progressActionsPlacement) { exportPreviewButton }
         ToolbarItem(placement: .navigationBarTrailing) { ProfileSwitcherMenu() }
     }
 

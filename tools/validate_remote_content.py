@@ -5,7 +5,7 @@ import json
 import pathlib
 import sys
 
-ASSETS = {'extras/builder_potion', 'extras/research_potion', 'extras/pet_potion',
+ASSETS = {'profile/home_builder', 'extras/builder_potion', 'extras/research_potion', 'extras/pet_potion',
           'profile/gold_pass', 'profile/free_pass', 'changelog/home_example',
           'changelog/progress', 'changelog/equipment'}
 CATEGORIES = {'builderVillage', 'lab', 'pets', 'builderBase', 'starLab', 'walls'}

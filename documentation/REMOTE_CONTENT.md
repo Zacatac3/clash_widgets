@@ -34,7 +34,7 @@ News lives in the third tab of the Welcome/What’s New sheet. Home begins with 
 
 Copy `remote/examples/hammer_jam.json`, confirm the actual rules, supply a permanent unique ID, replace dates/copy, and set `enabled: true`. Keep event IDs stable across routine text edits; never reuse an ID for next year's event. Set `enabled: false` or remove an event to hide it and stop future modifiers. Already adjusted tracked timers stay adjusted; changes do not undo historical timer effects.
 
-Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. An optional top-level `icon` uses the image schema below and appears on the left of its Home event card (48 × 48 points). It is separate from `presentation.image`, which is the detail-page artwork. Older feeds can omit `icon`. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary.
+Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. An optional top-level `icon` uses the image schema below and appears on the left of its Home event card (48 × 48 points). It is separate from `presentation.image`, which is the detail-page artwork. Older feeds can omit `icon`. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary. Home and detail countdowns use `xx Days hh:mm:ss` (for example `02 Days 03:04:05`).
 
 Supported modifier fields:
 
@@ -54,9 +54,9 @@ When multiple rules/events match, the smallest factor wins; event reductions do 
 
 ## Timer behavior and limits
 
-- Imported remaining seconds are authoritative. Imports during an active event are not shortened a second time.
+- Imports during an active event receive the discounted full-duration cap at their import timestamp. Already discounted remaining times below that cap stay unchanged; the app never simply halves an exported remaining timer.
 - A timer tracked before an active event can be capped at `event.start + baseDuration × Gold Pass at import × event factor`. If its existing end is earlier, keep it. Late launches use the event start timestamp, not the time the app was opened. Existing potion/helper credit is retained for the downstream boost calculations.
-- Applied event IDs are persisted on each upgrade, alongside its adjusted end date, so repeated launches cannot halve it repeatedly. Existing saves decode with default values. For legacy upgrades without a stored Gold Pass snapshot, the profile's current selection is used.
+- The event multiplier is persisted on each upgrade and used by duration labels and app/widget progress bars, including after the event ends. Applied event IDs are persisted alongside the adjusted end date, so repeated launches cannot halve it repeatedly. Existing saves decode with default values. For legacy upgrades without a stored Gold Pass snapshot, the profile's current selection is used.
 - The app does not restore the original duration when the event ends. It ignores events first encountered after they have ended, matching the simplified proposal. **There is no reconstruction of an entirely missed event. Reimport Clash data to correct stale timers in that case.**
 - Reconciliation handles all saved villages and persists the result to app-group storage, reloads widgets, and reschedules notifications. The app checks local state while open and on return to the foreground. It does not run a background service: widgets/notifications cannot be guaranteed to reflect a newly started event while the app has never opened since its start. Open the app to sync them.
 - Event rules are data, not downloadable code. New mechanics, automatic resource mapping, new calculation categories, new bundled assets, or changes to the native layouts require an app build.
@@ -107,7 +107,7 @@ A GitHub Actions workflow runs the same validation for feed changes. This valida
 Run the shared Swift timer/schema checks from the repository root:
 
 ```sh
-xcrun swiftc -module-cache-path /tmp/clashboard-swift-module-cache clash_widgets/RemoteContentModels.swift tools/remote_content_tests/main.swift -o /tmp/clashboard-remote-tests
+xcrun swiftc -module-cache-path /tmp/clashboard-swift-module-cache clash_widgets/Models.swift clash_widgets/RemoteContentModels.swift tools/remote_content_tests/main.swift -o /tmp/clashboard-remote-tests
 /tmp/clashboard-remote-tests
 ```
 
@@ -120,3 +120,45 @@ The normal Xcode app build covers the native screens and app/widget model compat
 Publish all three live JSON files together to test remote fetching, then open Help (?) → News and pull to refresh. No feed is bundled automatically: local edits alone do not reach the app. The Supercharge exclusion support added with this test requires running the updated app build. New or edited content afterward can be changed through JSON.
 
 The test follows the reductions and collector bonus described in [Supercell’s November 2025 announcement](https://supercell.com/en/games/clashofclans/blog/news/hammer-jam-kickstarts-the-november-season/). Only timer and wall-cost rules are calculated by Clashboard; collector bonuses and other resource cost reductions are informational. Disable or remove the test event when finished. Already applied timer changes are preserved, so use a test village or reimport actual Clash data afterward.
+
+## Five-minute lifecycle test (no publishing required)
+
+Use **Settings → Debug → Event Testing → Start 5-Minute Hammer Jam Test** in the updated app. This creates and selects **Event Test (Synthetic)**. It has synthetic 20-minute timers and a partial wall inventory. Notifications are off for this fixture. The event and profile persist through restarts. The test event applies only to this profile; regular feeds continue to apply only to real profiles.
+
+| Stage | What to verify |
+| --- | --- |
+| First 30 seconds | Home shows an upcoming test event and a live start countdown. Timers have no event strikethrough or discount. Wall prices use the normal multiplier. |
+| Event starts | Cannon, Barbarian research and L.A.S.S.I timers are capped at 10 minutes from the event start. Their full durations show 20 minutes crossed out above 10 minutes. With optional 20% Gold Pass, the full-duration label changes from 16 minutes to 8 minutes. |
+| Exclusions | Builder Base Cannon, Archer Tower Supercharge and Crafted Defense module do not receive an event multiplier or strikethrough. |
+| During the five minutes | Open the event details. Restart the app and confirm no second reduction. Optionally use **Add Test Upgrade During / After Event** to simulate importing a Barbarian King upgrade during the event; it receives the same cap. |
+| Exact event end | Home's event card disappears. Wall prices return to normal. Previously reduced timer deadlines and labels remain reduced. They do not double again. |
+| After expiry | If the extra test upgrade was not added earlier, use **Add Test Upgrade During / After Event** now. Barbarian King keeps its normal imported countdown and has no event strikethrough. |
+| Cleanup | **Remove Test and Test Profile** removes the synthetic profile and local event, and restores the previously selected real profile if still present. |
+
+Run twice to check importing during the event and importing after expiry (the extra-upgrade button adds one hero per test). Run again with Gold Pass enabled. Use the fixture to test native red Cancel / blue Complete swipe actions; completing Cannon, Barbarian, L.A.S.S.I, or the Crafted Defense module advances that item's Progress entry. Enable Temporary Content in Progress to inspect Supercharges and Crafted Defenses.
+
+This local test exercises the app's actual event reconciliation, persistence, Home card, detail page, countdowns and wall calculations. It does **not** test HTTP downloads, news popups, or the contents of a separately published feed. For those, use the remote workflow below.
+
+### Remote publishing check
+
+For an actual short remote event, use a fresh event ID and UTC `start` / `end` dates five minutes apart, with enough lead time to publish and fetch before `start`. Keep the same modifiers and icon as the event you want to test. Run the validator, publish the feed, then use **Grab Remote Files Now** and confirm success while the event is still upcoming. A normal restart may use the daily cache, so do not rely on restarting to fetch a five-minute event.
+
+Publishing to the configured production feed affects other app installations too. Use the separate `remote_dev` feed through **Grab Remote Dev Files** for remote testing (see below). Test with disposable exported village data: reductions already applied to an upgrade are retained after event removal or expiry, and changing the event ID may make it a new event.
+
+For malformed JSON/schema, leave a valid feed cached, publish the invalid payload on staging, and force-refresh: the refresh should report failure while the valid cache remains available. Restore the valid feed afterward. Also check the news pointer and full feed together, remote icon loading, offline cache behavior, per-Town-Hall rules, disabled events, and overlapping events. The Swift regression harness covers exact time boundaries, Gold Pass, exclusions, idempotence, skipped events, imported upgrades, and restart persistence.
+
+## Separate development feed
+
+`remote_dev/` now mirrors `remote/` in the same repository. Its JSON uses the same schema, and its image URLs point to `/remote_dev/images/`. Default app installations keep using `/remote`.
+
+1. Edit the event/news payloads in `remote_dev/`. Give each new test event a fresh ID and suitable UTC dates.
+2. Run `python3 tools/validate_remote_content.py remote_dev`, then commit and push that folder.
+3. In the updated app, use **Settings → Debug → Grab Remote Dev Files**, directly below the live refresh button. Wait for the Development success message and check the active URL.
+4. Inspect Home/News and test the event. Home displays **Development Feed Active**. The selected feed persists through restarts and normal refreshes.
+5. Use **Grab Remote Files Now** to return to Live.
+
+The two environments have independent event/news caches, last-attempt/last-success times, and last-seen news IDs. Existing live cache keys remain compatible with older builds. Development event IDs receive an internal `dev:` prefix so a copied test event ID does not mark the live event as already processed. An invalid/unavailable development feed keeps its own cached content; it does not overwrite or fall back to the live cache.
+
+Only installations explicitly selecting Development use this folder. Test events still modify the local tracker on that installation, and switching feeds does not undo applied timer reductions. Use disposable profiles or reimport real village data afterward. If the synthetic five-minute fixture exists, its local event is paused in Development so that fixture can receive the downloaded dev events instead.
+
+GitHub Actions validates both folders independently. No new app build is needed for later dev payload changes after installing the build containing this environment switch.
