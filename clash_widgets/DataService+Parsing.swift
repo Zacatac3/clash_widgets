@@ -107,7 +107,7 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
-        WhatsNewSection(dateLabel: "10/2026 - 1.3 - Progress Update", bullets: [
+        WhatsNewSection(dateLabel: "10/08/2026 - 1.3 - Progress Update", bullets: [
             "New Progress tab: Track your Home Village levels, including lab, buildings, equipment, Supercharges and Crafted Defenses, and tap for more info.",            
 			"Added iPhone Duo support and adapted layouts for its screen and OS.",
             "Customize Progress page by hiding and reordering cards, jumping between categories",

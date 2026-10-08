@@ -31,6 +31,7 @@ struct EquipmentView: View {
                     equipmentSection
                 }
             }
+            .trackTabBarScrollDirection()
             .listStyle(.insetGrouped)
             .navigationTitle("Equipment")
             .toolbar {

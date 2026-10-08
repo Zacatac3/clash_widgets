@@ -191,3 +191,19 @@ enum RemoteContentEnvironment: String, CaseIterable {
                            icon: event.icon, presentation: event.presentation, modifiers: event.modifiers)
     }
 }
+
+
+enum RemoteContentRefreshPolicy {
+    static func shouldRefresh(now: Date, force: Bool, hasCache: Bool,
+                              lastSuccess: Date?, lastAttempt: Date?, currentBuild: String,
+                              successfulBuild: String?, attemptedBuild: String?) -> Bool {
+        if force { return true }
+        let needsBuildRefresh = successfulBuild != currentBuild
+        if !needsBuildRefresh, hasCache, let lastSuccess,
+           (0..<86400).contains(now.timeIntervalSince(lastSuccess)) { return false }
+        // Each new version/build gets an immediate attempt, then normal failure backoff.
+        if attemptedBuild == currentBuild, let lastAttempt,
+           (0..<900).contains(now.timeIntervalSince(lastAttempt)) { return false }
+        return true
+    }
+}

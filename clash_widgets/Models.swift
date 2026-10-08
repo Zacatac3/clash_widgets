@@ -1353,3 +1353,32 @@ extension BuildingUpgrade {
         return currentTime.addingTimeInterval(remainingWork)
     }
 }
+
+
+// Expansion requires half a viewport of upward content travel; collapse remains native.
+struct TabBarScrollDirectionTracker {
+    private var previousOffset: Double?
+    private var upwardDistance: Double = 0
+
+    mutating func reset() {
+        previousOffset = nil
+        upwardDistance = 0
+    }
+
+    mutating func update(offset: Double, viewportHeight: Double) -> Bool? {
+        defer { previousOffset = offset }
+        guard let previousOffset else { return nil }
+        if offset <= 0 { upwardDistance = 0; return true }
+        let delta = offset - previousOffset
+        guard abs(delta) > 0.1 else { return nil }
+        if delta > 0 {
+            upwardDistance = 0
+            // Release forced expansion immediately, allowing iOS to choose collapse timing.
+            return false
+        }
+        upwardDistance += -delta
+        guard upwardDistance >= max(1, viewportHeight) * 0.5 else { return nil }
+        upwardDistance = 0
+        return true
+    }
+}

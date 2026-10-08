@@ -1,5 +1,7 @@
 # Remote news and events
 
+For a short schema and publishing reference, see [REMOTE_CONTENT_QUICK_GUIDE.md](REMOTE_CONTENT_QUICK_GUIDE.md).
+
 The app can now read native news articles and event configuration from a public HTTPS folder. The default URL in `clash-widgets-Info.plist` is:
 
 `https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote`
@@ -7,14 +9,14 @@ The app can now read native news articles and event configuration from a public 
 ## Your initial setup
 
 1. Decide where to host the three feed files. The default uses this repository's `main` branch. **The repository and branch must be publicly readable without signing in.** If this repository is private, create a separate public content repository, copy `remote/` there, and change `RemoteContentBaseURL` in `clash-widgets-Info.plist` before building. No GitHub token is needed or should be put in the app.
-2. Commit and push the implementation and the live files in `remote/` (currently populated with test content). If using another host, publish the three files there. `remote/examples/` is documentation only; the app never reads it.
+2. Commit and push the implementation and the live files in `remote/` (the live event list is currently empty). If using another host, publish the three files there. `remote/examples/` is documentation only; the app never reads it.
 3. Confirm the base URL plus `/latest_event.json`, `/latest_news.json`, and `/news_feed.json` returns raw JSON without authentication. `main` is the configured branch; change the URL if you use a different branch.
 4. Run the app on a device or simulator, complete setup, then open **Home → Help (?) → News**. Pull to refresh forces a check, which is useful while testing.
 5. Publish a temporary news article with a unique ID, a past UTC `published` date, and `showAsPopup: true`. Restart the app on an already seen build to test the popup. Reading/dismissing it marks it seen. With a new build, What’s New takes priority and news stays unread until the next launch. Verify the image, article, and countdowns on iPhone and iPad.
 6. Test a short event against a test village/export before publishing real rules. Check timers, wall costs, widgets after opening the app, and notifications.
 7. Ship **one new app build** containing this infrastructure. Older installed builds cannot use it. Subsequent supported content changes require only publishing the JSON/images.
 
-Nothing has been pushed to GitHub or released by this implementation. The live feed files now contain an enabled Hammer Jam test (October 6–20, 2026) and a matching announcement. These are test dates, not confirmed game dates; publish them only when you intend to test tracker adjustments. The example under `remote/examples/` stays disabled.
+The live event feed currently contains no events. Existing live news articles are retained independently. Development test content remains in `remote_dev/`, and the example under `remote/examples/` stays disabled. Commit and push feed edits to publish them; local edits alone do not update installed apps.
 
 ## Publishing news
 
@@ -94,7 +96,7 @@ To add more, ship the asset and extend the allow-list in `RemoteContentView.swif
 
 ## Refreshing and validation
 
-The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. It downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed fetches retain the cache and allow a retry after 15 minutes. Pull to refresh bypasses both intervals. In Settings → Debug, **Grab Remote Files Now** also bypasses both intervals and always downloads all three JSON files, including the full news feed even if its latest ID is already cached. It reports success/failure, shows cache counts and the source URL, and immediately reconciles the refreshed events. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
+The app renders saved content immediately. On launch/foreground it fetches the events and latest-news pointer if the last successful refresh was at least 24 hours ago. The first launch on a new app version or build bypasses the daily cooldown and downloads all three files. A build is marked refreshed only after success; a failed attempt retries after the 15-minute backoff. On ordinary same-build checks it downloads the full news feed only if the latest ID is missing locally or there is no initial cache. Failed fetches retain the cache and allow a retry after 15 minutes. Pull to refresh bypasses both intervals. In Settings → Debug, **Grab Remote Files Now** also bypasses both intervals and always downloads all three JSON files, including the full news feed even if its latest ID is already cached. It reports success/failure, shows cache counts and the source URL, and immediately reconciles the refreshed events. New content is not a push notification and may take a day to reach an active installation, or longer if the app is not opened/offline. Publish event dates at least a couple of days early.
 
 Run before publishing:
 
@@ -113,13 +115,9 @@ xcrun swiftc -module-cache-path /tmp/clashboard-swift-module-cache clash_widgets
 
 The normal Xcode app build covers the native screens and app/widget model compatibility.
 
-## Current active test
+## Current live state
 
-`remote/latest_event.json` includes `hammer-jam-test-2026-10-v1`, enabled from October 6 at 08:00 UTC through October 20 at 08:00 UTC (4:00 AM Eastern on both dates). The matching latest announcement is `hammer-jam-test-announcement-2026-10-v1`.
-
-Publish all three live JSON files together to test remote fetching, then open Help (?) → News and pull to refresh. No feed is bundled automatically: local edits alone do not reach the app. The Supercharge exclusion support added with this test requires running the updated app build. New or edited content afterward can be changed through JSON.
-
-The test follows the reductions and collector bonus described in [Supercell’s November 2025 announcement](https://supercell.com/en/games/clashofclans/blog/news/hammer-jam-kickstarts-the-november-season/). Only timer and wall-cost rules are calculated by Clashboard; collector bonuses and other resource cost reductions are informational. Disable or remove the test event when finished. Already applied timer changes are preserved, so use a test village or reimport actual Clash data afterward.
+`remote/latest_event.json` contains `{"schemaVersion": 1, "events": []}`. No live event card or new event modifier applies after that feed is fetched. Already applied timer reductions are retained. The live news archive and development fixtures are unchanged; see `remote_dev/` for test content.
 
 ## Five-minute lifecycle test (no publishing required)
 

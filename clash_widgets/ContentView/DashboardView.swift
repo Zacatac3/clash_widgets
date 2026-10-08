@@ -35,6 +35,7 @@ struct DashboardView: View {
         NavigationStack {
             GeometryReader { geometry in
                 dashboardList(width: geometry.size.width)
+                    .trackTabBarScrollDirection()
             }
             .sheet(item: $presentedNews) { item in
                 RemoteNewsSheet(item: item).adaptivePanelPresentation()

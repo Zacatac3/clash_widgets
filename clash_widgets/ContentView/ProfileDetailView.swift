@@ -52,6 +52,7 @@ struct ProfileDetailView: View {
     var body: some View {
         NavigationStack {
             mainContent
+                .trackTabBarScrollDirection()
             .background(Color(.systemGroupedBackground))
             .navigationTitle("Profile")
             .sheet(isPresented: $showProfileOrderSheet) {

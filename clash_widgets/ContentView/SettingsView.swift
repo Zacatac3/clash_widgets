@@ -15,7 +15,7 @@ struct SettingsView: View {
     @State private var showRestoreResultAlert = false
     @State private var iapErrorMessage: String?
     @State private var showIAPErrorAlert = false
-    @State private var showDebugMenu = false
+    @AppStorage("debugMenuVisible") private var showDebugMenu = false
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @AppStorage("profilesSectionExpanded") private var profilesSectionExpanded = true
     @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
@@ -87,6 +87,7 @@ struct SettingsView: View {
                     }
                 }
             }
+            .trackTabBarScrollDirection()
             .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
             .navigationTitle("Settings")
             .sheet(isPresented: $showAddProfile) {

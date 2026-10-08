@@ -27,6 +27,7 @@ struct ContentView: View {
     @EnvironmentObject var iapManager: IAPManager
     @StateObject private var dataService: DataService
     @ObservedObject private var remoteContent = RemoteContentService.shared
+    @State private var forceExpandedTabBar = false
     @State private var selectedTab: MainTab = .dashboard
     @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
 
@@ -158,6 +159,12 @@ struct ContentView: View {
                         .tabItem { Label("Settings", systemImage: "gearshape") }
                         .tag(MainTab.settings)
                 }
+                .minimizeTabBarOnScrollIfAvailable(forceExpanded: forceExpandedTabBar)
+                .environment(\.tabBarExpansionRequest, { expanded in
+                    guard forceExpandedTabBar != expanded else { return }
+                    withAnimation(.easeInOut(duration: 0.2)) { forceExpandedTabBar = expanded }
+                })
+                .onChangeCompat(of: selectedTab) { _ in forceExpandedTabBar = false }
                 .preferredColorScheme(dataService.appearancePreference.preferredColorScheme)
                 .environmentObject(dataService)
                 .sheet(isPresented: $showGoldPassResetPrompt) {

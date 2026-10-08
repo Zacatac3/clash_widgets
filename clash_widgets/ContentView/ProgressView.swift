@@ -32,7 +32,7 @@ struct ProgressTabView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 16) {
+                LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
                     if isLoadingExport {
                         ProgressView("Loading progress…")
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,17 +43,23 @@ struct ProgressTabView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .progressCardStyle()
                     } else {
-                        ForEach(visibleSectionIDs, id: \.self) { id in
-                            if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
-                                sectionCard(section).id(id)
+                        Section {
+                            ForEach(visibleSectionIDs, id: \.self) { id in
+                                if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
+                                    sectionCard(section).id(id)
+                                }
                             }
+                        } header: {
+                            categorySelector
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.vertical, 4)
                         }
                     }
                 }
                 .scrollTargetLayout()
                 .padding(.horizontal)
                 .padding(.top, export == nil ? 20 : 8)
-                .padding(.bottom, export == nil ? 0 : 64)
+                .padding(.bottom, 16)
                 #if canImport(UIKit)
                 .background {
                     ProgressScrollViewProbe(controller: scrollController)
@@ -63,13 +69,8 @@ struct ProgressTabView: View {
                 #endif
             }
             .scrollPosition($scrollPosition, anchor: .top)
+            .trackTabBarScrollDirection()
             .background(Color(.systemGroupedBackground))
-            .overlay(alignment: .bottomLeading) {
-                if export != nil {
-                    categorySelector
-                        .padding(.bottom, 12)
-                }
-            }
             .navigationTitle("Progress (Beta)")
             .navigationBarTitleDisplayMode(.large)
             .toolbarBackground(.hidden, for: .navigationBar)
@@ -232,18 +233,15 @@ struct ProgressTabView: View {
             HStack(spacing: 7) {
                 Image(systemName: "list.bullet")
                 Text("Category")
-                Image(systemName: "chevron.up").font(.caption2.bold())
+                Image(systemName: "chevron.down").font(.caption2.bold())
             }
             .font(.subheadline.weight(.medium))
-            .padding(.horizontal, 12)
-            .padding(.vertical, 8)
-            .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 10))
-            .overlay(RoundedRectangle(cornerRadius: 10).stroke(Color(.separator).opacity(0.6)))
         }
-        .buttonStyle(.plain)
+        .modifier(CategoryJumpButtonStyle())
+        .controlSize(.regular)
         .foregroundStyle(Color.accentColor)
         .accessibilityLabel("Jump to category")
-        .popover(isPresented: $showingCategoryPicker, arrowEdge: .bottom) {
+        .popover(isPresented: $showingCategoryPicker, arrowEdge: .top) {
             VStack(alignment: .leading, spacing: 0) {
                 Text("Jump to Category")
                     .font(.headline)
@@ -274,7 +272,6 @@ struct ProgressTabView: View {
             .frame(width: 260)
             .presentationCompactAdaptation(.popover)
         }
-        .padding(.leading, 16)
     }
 
     private func stopProgressScrolling() {
@@ -1213,5 +1210,20 @@ enum ProgressDisplaySettings {
 
     private static func key(_ option: String, _ profileID: UUID) -> String {
         "progressDisplay.\(profileID.uuidString).\(option)"
+    }
+}
+
+private struct CategoryJumpButtonStyle: ViewModifier {
+    @ViewBuilder
+    func body(content: Content) -> some View {
+        if #available(iOS 26.0, *) {
+            content
+                .buttonStyle(.glass)
+                .buttonBorderShape(.capsule)
+        } else {
+            content
+                .buttonStyle(.bordered)
+                .buttonBorderShape(.roundedRectangle(radius: 10))
+        }
     }
 }

@@ -8,7 +8,6 @@ struct SupportSettingsPage: View {
     let onOpenFeedback: () -> Void
     let onRevealDebug: () -> Void
     let appStoreReviewURL: URL?
-    @State private var debugTapCount = 0
 
     var body: some View {
         Form {
@@ -23,13 +22,7 @@ struct SupportSettingsPage: View {
                     .font(.caption)
                     .foregroundColor(.secondary)
                     .contentShape(Rectangle())
-                    .onTapGesture {
-                        debugTapCount += 1
-                        if debugTapCount >= 3 {
-                            onRevealDebug()
-                            debugTapCount = 0
-                        }
-                    }
+                    .onTapGesture(count: 3) { onRevealDebug() }
             }
 
             Section("App Store") {

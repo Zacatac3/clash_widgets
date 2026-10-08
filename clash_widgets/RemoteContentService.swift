@@ -92,15 +92,18 @@ final class RemoteContentService: ObservableObject {
         let lastAttempt = defaults.object(forKey: environment.cacheKey("lastAttempt")) as? Date
         let lastSuccess = defaults.object(forKey: environment.cacheKey("lastSuccess")) as? Date
         let hasCache = defaults.data(forKey: environment.cacheKey("events")) != nil && defaults.data(forKey: environment.cacheKey("news")) != nil
-        if !force {
-            if hasCache, let lastSuccess, now.timeIntervalSince(lastSuccess) >= 0,
-               now.timeIntervalSince(lastSuccess) < 86400 { return }
-            // Brief backoff for offline/invalid responses; don't wait a day after failure.
-            if let lastAttempt, now.timeIntervalSince(lastAttempt) >= 0,
-               now.timeIntervalSince(lastAttempt) < 900 { return }
-        }
+        let version = Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "0"
+        let build = Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "0"
+        let currentBuild = "\(version) (\(build))"
+        let successfulBuild = defaults.string(forKey: environment.cacheKey("successfulBuild"))
+        let needsBuildRefresh = successfulBuild != currentBuild
+        guard RemoteContentRefreshPolicy.shouldRefresh(now: now, force: force, hasCache: hasCache,
+            lastSuccess: lastSuccess, lastAttempt: lastAttempt, currentBuild: currentBuild,
+            successfulBuild: successfulBuild,
+            attemptedBuild: defaults.string(forKey: environment.cacheKey("attemptedBuild"))) else { return }
         isRefreshing = true
         defaults.set(now, forKey: environment.cacheKey("lastAttempt"))
+        defaults.set(currentBuild, forKey: environment.cacheKey("attemptedBuild"))
         defer { isRefreshing = false }
         do {
             async let eventData = fetch(baseURL.appendingPathComponent("latest_event.json"))
@@ -111,7 +114,7 @@ final class RemoteContentService: ObservableObject {
             let latest = try decoder.decode(LatestRemoteNews.self, from: latestBytes)
             guard latest.schemaVersion == 1 else { throw RemoteContentError.invalidPayload }
             var feed = RemoteNewsFeed(schemaVersion: 1, entries: news)
-            if downloadFullFeed || !hasCache || (latest.id != nil && !news.contains(where: { $0.id == latest.id })) {
+            if downloadFullFeed || needsBuildRefresh || !hasCache || (latest.id != nil && !news.contains(where: { $0.id == latest.id })) {
                 feed = try decoder.decode(RemoteNewsFeed.self, from: await fetch(baseURL.appendingPathComponent("news_feed.json")))
                 try feed.validate()
                 if let id = latest.id, !feed.entries.contains(where: { $0.id == id }) { throw RemoteContentError.invalidPayload }
@@ -123,6 +126,7 @@ final class RemoteContentService: ObservableObject {
             remoteEvents = eventFeed.events
             news = feed.entries.sorted { $0.published > $1.published }
             defaults.set(Date(), forKey: environment.cacheKey("lastSuccess"))
+            defaults.set(currentBuild, forKey: environment.cacheKey("successfulBuild"))
             lastError = nil
         } catch {
             lastError = "Unable to refresh news and events. Saved content is still available."

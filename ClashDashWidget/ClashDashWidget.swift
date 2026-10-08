@@ -557,7 +557,7 @@ struct ClashDashWidgetEntryView : View {
                         Text(upgrade.levelDisplayText)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
-                        LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
+                        Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
                             .font(.system(size: 9))
                             .foregroundColor(.orange)
                     }
@@ -800,7 +800,7 @@ struct ClosestUpgradeWidgetEntryView: View {
                     Text(upgrade.name)
                         .font(.system(size: 12, weight: .semibold))
                         .lineLimit(1)
-                    LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
+                    Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
                         .font(.system(size: 11))
                         .foregroundColor(.orange)
                     ProgressView(value: progressFraction(for: upgrade))
@@ -1222,22 +1222,6 @@ struct ImportClipboardControl: ControlWidget {
 /// This ensures widget timers match the boosted times shown in the app
 private func effectiveRemainingSeconds(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date) -> TimeInterval {
     upgrade.remainingSeconds(activeBoosts: activeBoosts, referenceDate: referenceDate)
-}
-
-private struct LiveUpgradeCountdown: View {
-    let upgrade: BuildingUpgrade
-    let activeBoosts: [ActiveBoost]
-
-    var body: some View {
-        let now = Date()
-        let completion = upgrade.projectedCompletionDate(activeBoosts: activeBoosts, referenceDate: now)
-        if completion > now {
-            Text(timerInterval: now...completion, countsDown: true)
-                .monospacedDigit()
-        } else {
-            Text("Complete")
-        }
-    }
 }
 
 private func effectiveCompletionDate(for upgrade: BuildingUpgrade, activeBoosts: [ActiveBoost], referenceDate: Date = Date()) -> Date {
@@ -2198,7 +2182,7 @@ struct LabPetWidgetEntryView: View {
                 }
 
                 // Time remaining on separate line
-                LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
+                Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
                     .font(.system(size: 10))
                     .foregroundColor(.orange)
 
@@ -2491,7 +2475,7 @@ struct BuilderBaseWidgetEntryView: View {
                 }
 
                 // Time remaining on separate line
-                LiveUpgradeCountdown(upgrade: upgrade, activeBoosts: entry.activeBoosts)
+                Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
                     .font(.system(size: 9))
                     .foregroundColor(.orange)
                     .bold()

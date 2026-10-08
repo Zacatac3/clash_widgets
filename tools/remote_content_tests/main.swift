@@ -59,16 +59,13 @@ assert(remoteEventTimeFactor(event: event, now: start, trackedSince: start.addin
     "A rule excluding Supercharges must preserve their timers")
 let liveFeed = try decoder.decode(RemoteEventFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/latest_event.json")))
 try liveFeed.validate()
-let testDate = ISO8601DateFormatter().date(from: "2026-10-07T00:00:00Z")!
-if let testEvent = liveFeed.events.first(where: { $0.id == "hammer-jam-test-2026-10-v1" }) {
-    assert(testEvent.isActive(at: testDate))
-    assert(testEvent.modifiers.first?.excludeSupercharges == true)
-    assert(!testEvent.presentation.sections.isEmpty)
-}
+assert(liveFeed.events.isEmpty, "The live event feed should default to no events")
+let devFeed = try decoder.decode(RemoteEventFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote_dev/latest_event.json")))
+try devFeed.validate()
 let liveNews = try decoder.decode(RemoteNewsFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/news_feed.json")))
 let latest = try decoder.decode(LatestRemoteNews.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/latest_news.json")))
 if let latestID = latest.id { assert(liveNews.entries.contains { $0.id == latestID }) }
-print("Active test feed checks passed: matching popup, event dates, detail sections, and Supercharge exclusion.")
+print("Live/default and development feed checks passed: empty live events, development schema and news pointer consistency.")
 
 func building(trackedAt: Date, remainingDays: Double, baseDays: Double = 10,
               category: UpgradeCategory = .builderVillage, supercharge: Int? = nil,
@@ -168,3 +165,24 @@ precondition(liveEnvironment.scopedEvent(shortEvent).id == shortEvent.id)
 precondition(devEnvironment.scopedEvent(shortEvent).id != shortEvent.id)
 precondition(devEnvironment.scopedEvent(shortEvent).modifiers.first?.timeMultiplier == 0.5)
 print("Development feed checks passed: URL selection, cache/read-state isolation, backwards-compatible live keys and event identity isolation.")
+
+
+let refreshNow = Date(timeIntervalSince1970: 1_800_000_000)
+func refreshDecision(build: String = "1.3 (10)", successful: String? = "1.3 (10)",
+                     attempted: String? = "1.3 (10)", attemptAge: Double = 60,
+                     successAge: Double = 60, force: Bool = false, hasCache: Bool = true) -> Bool {
+    RemoteContentRefreshPolicy.shouldRefresh(now: refreshNow, force: force, hasCache: hasCache,
+        lastSuccess: refreshNow.addingTimeInterval(-successAge),
+        lastAttempt: refreshNow.addingTimeInterval(-attemptAge), currentBuild: build,
+        successfulBuild: successful, attemptedBuild: attempted)
+}
+precondition(!refreshDecision(), "Same build must respect daily cache")
+precondition(refreshDecision(build: "1.3 (11)"), "New build must bypass recent successful refresh and retry cooldown")
+precondition(refreshDecision(build: "1.4 (10)"), "Version changes must refresh even if build number is reused")
+precondition(refreshDecision(successful: nil, attempted: nil), "First install and migration must fetch immediately")
+precondition(!refreshDecision(successful: "1.2 (9)"), "Failed new-build refresh must back off for 15 minutes")
+precondition(refreshDecision(successful: "1.2 (9)", attemptAge: 900), "Failed new-build refresh must retry after backoff despite yesterday's cache")
+precondition(refreshDecision(force: true), "Manual refresh must bypass cooldown")
+precondition(refreshDecision(attemptAge: 86400, successAge: 86400), "Same build must refresh after a day")
+precondition(RemoteContentEnvironment.live.cacheKey("successfulBuild") != RemoteContentEnvironment.development.cacheKey("successfulBuild"))
+print("Build-update refresh checks passed: install, new build/version, successful cooldown, failure retry and environment isolation.")
