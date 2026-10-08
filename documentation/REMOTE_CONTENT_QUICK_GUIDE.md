@@ -83,7 +83,7 @@ For no news, set `entries` to `[]` and the latest pointer `id` to `null`.
 
 The event's optional `icon` appears on the left of the Home event row. Both `presentation` and individual sections may also have an optional `image`. All use the same shape:
 
-- Bundled: `{"source": "bundle", "value": "extras/builder_potion"}`. Only app-allowlisted assets work; see `RemoteContentView.swift` for the list.
+- Bundled: `{"source": "bundle", "value": "extras/builder_potion"}`. Any image already bundled in the installed app works. Use its catalog name, including namespace prefixes such as `changelog/share_progress`; omit filename extensions. The validator checks names directly against the asset catalog.
 - Remote: `{"source": "remote", "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png"}`. Use a public HTTPS URL and replace `/remote/` with `/remote_dev/` for test artwork.
 
 Validate before committing:

@@ -81,7 +81,7 @@ A `presentation` or section can include:
 
 Upload reward graphics to `remote/images/` or another HTTPS host. Use a new filename or URL whenever you replace an image; the app caches by URL. Images are limited to 8 MB and 8192 pixels per dimension, with a disk cache of up to 40 images. Failed or unknown images are omitted while article text remains readable. Full absolute HTTPS URLs let you migrate images to another host later without an app release.
 
-Bundled images use `source: "bundle"` with one of the current allowed names:
+Bundled images use `source: "bundle"` with an image’s asset catalog name. Examples:
 
 - `extras/builder_potion`
 - `extras/research_potion`
@@ -90,9 +90,10 @@ Bundled images use `source: "bundle"` with one of the current allowed names:
 - `profile/free_pass`
 - `changelog/home_example`
 - `changelog/progress`
+- `changelog/share_progress`
 - `changelog/equipment`
 
-To add more, ship the asset and extend the allow-list in `RemoteContentView.swift` and the publishing validator. There are no bundled Hammer Jam or Summer Jam banners yet; use a remote graphic if desired.
+Any image already in the installed app’s asset catalog can be referenced by its catalog name (including namespace folders, without a filename extension). No per-image code allow-list is required. The publishing validator discovers image and symbol names from the catalog automatically. Images added to the project after an app was shipped require a new build to become bundled on that device; use a remote image for new artwork without an app update.
 
 ## Refreshing and validation
 

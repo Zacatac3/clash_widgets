@@ -5,9 +5,26 @@ import json
 import pathlib
 import sys
 
-ASSETS = {'profile/home_builder', 'extras/builder_potion', 'extras/research_potion', 'extras/pet_potion',
-          'profile/gold_pass', 'profile/free_pass', 'changelog/home_example',
-          'changelog/progress', 'changelog/equipment'}
+def bundled_image_names():
+    """Match asset catalog names, including only folders that provide namespaces."""
+    catalog = pathlib.Path(__file__).resolve().parents[1] / 'clash_widgets' / 'Assets.xcassets'
+    names = set()
+    for contents in catalog.rglob('Contents.json'):
+        asset = contents.parent
+        if asset.suffix not in ('.imageset', '.symbolset'):
+            continue
+        parts = [asset.stem]
+        parent = asset.parent
+        while parent != catalog:
+            metadata = parent / 'Contents.json'
+            if metadata.exists() and json.loads(metadata.read_text()).get('properties', {}).get('provides-namespace'):
+                parts.append(parent.name)
+            parent = parent.parent
+        names.add('/'.join(reversed(parts)))
+    return names
+
+
+ASSETS = bundled_image_names()
 CATEGORIES = {'builderVillage', 'lab', 'pets', 'builderBase', 'starLab', 'walls'}
 
 
@@ -21,7 +38,7 @@ def image(value):
         return
     assert value['source'] in ('bundle', 'remote'), 'Unknown image source'
     if value['source'] == 'bundle':
-        assert value['value'] in ASSETS, f"Asset not in app allow-list: {value['value']}"
+        assert value['value'] in ASSETS, f"Image not found in app asset catalog: {value['value']}"
     else:
         from urllib.parse import urlparse
         url = urlparse(value['value'])

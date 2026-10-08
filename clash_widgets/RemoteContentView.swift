@@ -5,11 +5,9 @@ struct RemoteContentImageView: View {
     let reference: RemoteImage
     var fallbackSystemImage: String? = nil
     @State private var remoteImage: UIImage?
-    // Extend this list when shipping additional bundled artwork.
-    private let allowedAssets: Set<String> = ["profile/home_builder", "extras/builder_potion", "extras/research_potion", "extras/pet_potion", "profile/gold_pass", "profile/free_pass", "changelog/home_example", "changelog/progress", "changelog/equipment"]
     var body: some View {
         Group {
-            if reference.source == "bundle", allowedAssets.contains(reference.value), let image = UIImage(named: reference.value) {
+            if reference.source == "bundle", let image = UIImage(named: reference.value) {
                 Image(uiImage: image).resizable().scaledToFit()
             } else if let remoteImage {
                 Image(uiImage: remoteImage).resizable().scaledToFit()

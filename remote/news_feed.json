@@ -3,11 +3,11 @@
   "entries": [
     {
       "id": "1.3_update_launch",
-      "published": "2026-10-06T08:00:00Z",
+      "published": "2026-10-08T08:00:00Z",
       "showAsPopup": true,
       "presentation": {
         "title": "Big Update - Share your and view your village progress",
-        "summary": "Clashboard just got more social! Introducing the new proges tab. Easily track all your Home village levels, and click the share button at the top to get a shareable image of your progress for lab or equipment (buildings and builder base coming soon).",
+        "summary": "Clashboard just got more social! Introducing the new progress tab. Easily track all your Home village levels, and click the share button at the top to get a shareable image of your progress for lab or equipment (buildings and builder base coming soon).",
         "image": {
           "source": "bundle",
           "value": "changelog/share_progress"
