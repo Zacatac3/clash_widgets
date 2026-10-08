@@ -117,7 +117,7 @@ private struct WhatsNewContent: View {
             if normalized.contains("share progress") {
                 return "share_progress"
             }
-            if normalized.contains("progress (beta)") {
+            if normalized.contains("new progress tab") || normalized.contains("progress (beta)") {
                 return "progress"
             }
         }

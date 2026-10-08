@@ -1886,8 +1886,10 @@ class DataService: ObservableObject {
 
     private func collectUpgrades(from export: CoCExport) -> [BuildingUpgrade] {
         var upgrades: [BuildingUpgrade] = []
-        let now = Date()
-        let referenceDate = export.timestamp.map { min(Date(timeIntervalSince1970: TimeInterval($0)), now) } ?? now
+        // Export timers are remaining durations. The export's metadata timestamp
+        // is not a reliable clock for them (including freshly copied exports).
+        // Using it can put every positive timer in the past, across all profiles.
+        let referenceDate = Date()
 
         if let list = export.buildings {
             upgrades.append(contentsOf: convert(list, category: .builderVillage, fallbackPrefix: "Building", referenceDate: referenceDate))

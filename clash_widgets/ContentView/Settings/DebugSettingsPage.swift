@@ -134,7 +134,9 @@ struct DebugSettingsPage: View {
         } else {
             dataService.reconcileRemoteEvents(remoteContent.events, at: Date())
             remoteRefreshFailed = false
-            remoteRefreshStatus = "\(environment.label) refreshed: \(remoteContent.remoteEvents.count) remote events.\(remoteContent.testEvent != nil && environment == .live ? " The local test is paused; only downloaded events are active." : "")"
+            let publishedNewsCount = remoteContent.news.filter { $0.published <= remoteContent.now }.count
+            let scheduledNewsCount = remoteContent.news.count - publishedNewsCount
+            remoteRefreshStatus = "\(environment.label) refreshed: \(remoteContent.remoteEvents.count) remote events, \(publishedNewsCount) published news articles.\(scheduledNewsCount > 0 ? " \(scheduledNewsCount) news articles are scheduled for later." : "")\(remoteContent.testEvent != nil && environment == .live ? " The local test is paused; only downloaded events are active." : "")"
         }
     }
 }
