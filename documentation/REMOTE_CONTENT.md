@@ -12,7 +12,7 @@ The app can now read native news articles and event configuration from a public 
 2. Commit and push the implementation and the live files in `remote/` (the live event list is currently empty). If using another host, publish the three files there. `remote/examples/` is documentation only; the app never reads it.
 3. Confirm the base URL plus `/latest_event.json`, `/latest_news.json`, and `/news_feed.json` returns raw JSON without authentication. `main` is the configured branch; change the URL if you use a different branch.
 4. Run the app on a device or simulator, complete setup, then open **Home → Help (?) → News**. Pull to refresh forces a check, which is useful while testing.
-5. Publish a temporary news article with a unique ID, a past UTC `published` date, and `showAsPopup: true`. Restart the app on an already seen build to test the popup. Reading/dismissing it marks it seen. With a new build, What’s New takes priority and news stays unread until the next launch. Verify the image, article, and countdowns on iPhone and iPad.
+5. Publish a temporary news article with a unique ID, a past UTC `published` date, and `showAsPopup: true`. Restart the app on an already seen version to test the popup. Displaying it marks it seen. With a new app version, What’s New takes priority and news stays unread until the next launch. Verify the image, article, and countdowns on iPhone and iPad.
 6. Test a short event against a test village/export before publishing real rules. Check timers, wall costs, widgets after opening the app, and notifications.
 7. Ship **one new app build** containing this infrastructure. Older installed builds cannot use it. Subsequent supported content changes require only publishing the JSON/images.
 
@@ -28,7 +28,8 @@ News lives in the third tab of the Welcome/What’s New sheet. Home begins with 
 - **Publish the feed and images first, then the latest pointer**, preferably in one commit. If publishing isn't atomic, the app rejects a pointer whose entry is absent and keeps its previous cache.
 - Give an edited announcement a **new ID** if devices should download the change. The latest pointer is deliberately a cheap ID check; editing an already cached entry under the same ID will not trigger a feed download.
 - Only the newest article published by the current date can popup. Older missing articles are downloaded together and appear in the archive. `showAsPopup: false` adds an article without an automatic sheet. Avoid future-dated articles; publish when ready.
-- Welcome/What’s New suppresses news popups for the rest of that launch. What’s New now checks both version and build number. Closing it does not stack a news modal immediately afterward.
+- Welcome/What’s New suppresses news popups for the rest of that launch. What’s New checks the app version; a build-number-only change does not reopen it. Closing it does not stack a news modal immediately afterward.
+- News read history persists as a set of article IDs for each environment, independently of app versions, builds, and feed refreshes. Opening an article from the archive or displaying its popup marks that ID seen permanently while app data is retained. Older builds’ last-seen marker is preserved. Keep an article’s ID unchanged when editing it; changing the ID makes it new news. Seen articles remain available in the News archive.
 
 ## Publishing events
 

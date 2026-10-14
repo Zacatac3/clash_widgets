@@ -118,6 +118,7 @@ def build_grouped_json(
     time_field_minutes: Optional[str] = None,
     include_tid: bool = True,
     global_id_field: Optional[str] = None,
+    level_fallback_field: Optional[str] = None,
 ) -> List[Dict[str, Any]]:
     items: List[Dict[str, Any]] = []
     current: Optional[Dict[str, Any]] = None
@@ -151,7 +152,10 @@ def build_grouped_json(
             continue
 
         if level_field:
-            level_value = safe_int(row.get(level_field, ""))
+            raw_level = row.get(level_field, "").strip()
+            if not raw_level and level_fallback_field:
+                raw_level = row.get(level_fallback_field, "").strip()
+            level_value = safe_int(raw_level)
         else:
             level_counter += 1
             level_value = level_counter
@@ -597,6 +601,8 @@ def main() -> None:
         guardians_rows,
         id_prefix=107,
         level_field="Level",
+        # Logger's continuation rows omit Level but supply CharacterLevels.
+        level_fallback_field="CharacterLevels",
         level_fields=[],
         include_tid=True,
     )

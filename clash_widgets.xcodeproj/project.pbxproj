@@ -31,13 +31,15 @@
 		A9C1D2E3F4A5000000000009 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A500000000000A /* SettingsView.swift */; };
 		A9C1D2E3F4A5000000000010 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000011 /* DashboardView.swift */; };
 		A9C1D2E3F4A5000000000012 /* BoostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9C1D2E3F4A5000000000013 /* BoostView.swift */; };
+		ABCDEF020000000000000001 /* RemoteContentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000001 /* RemoteContentModels.swift */; };
+		ABCDEF020000000000000002 /* RemoteContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000002 /* RemoteContentService.swift */; };
+		ABCDEF020000000000000003 /* RemoteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000003 /* RemoteContentView.swift */; };
+		ABCDEF020000000000000004 /* DataService+RemoteEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */; };
 		B2C3E5012F0F5C9600FAE5F1 /* ClashDashWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */; };
 		B2C3E5022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */; };
 		B2C3E5052F0F5C9600FAE5F1 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */; };
 		B2C3E5062F0F5C9600FAE5F1 /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3052F0F3B4E00FAE5F1 /* Models.swift */; };
 		B7D4E6F22A3B4C5D6E7F8901 /* ProfileDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */; };
-		F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */; };
-		F1A2B3C42F29000000FAE5F2 /* ProgressScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */; };
 		C1D2E3112F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3122F10AAAA00FAE5F1 /* PersistentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */; };
 		C1D2E3152F10AE5A00FAE5F1 /* PlayerAccount.swift in Sources */ = {isa = PBXBuildFile; fileRef = C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */; };
@@ -56,12 +58,10 @@
 		E5A6B0012F1A100000FAE5F1 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */; };
 		F0A1B2C3A1B2C3D4E5F60001 /* DataService+Parsing.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */; };
 		F0A1B2C3A1B2C3D4E5F60003 /* DataService+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */; };
+		F1A2B3C42F29000000FAE5F1 /* ProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */; };
+		F1A2B3C42F29000000FAE5F2 /* ProgressScreenshotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */; };
 		F1A2B3C4D5E6F70012345679 /* IAPManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70012345678 /* IAPManager.swift */; };
 		H1A2B3C4D5E6F70012345671 /* clan_stats.json in Resources */ = {isa = PBXBuildFile; fileRef = H1A2B3C4D5E6F70012345670 /* clan_stats.json */; };
-		ABCDEF020000000000000001 /* RemoteContentModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000001 /* RemoteContentModels.swift */; };
-		ABCDEF020000000000000002 /* RemoteContentService.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000002 /* RemoteContentService.swift */; };
-		ABCDEF020000000000000003 /* RemoteContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000003 /* RemoteContentView.swift */; };
-		ABCDEF020000000000000004 /* DataService+RemoteEvents.swift in Sources */ = {isa = PBXBuildFile; fileRef = ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -123,13 +123,15 @@
 		A9C1D2E3F4A500000000000A /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A9C1D2E3F4A5000000000011 /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		A9C1D2E3F4A5000000000013 /* BoostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BoostView.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000001 /* RemoteContentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentModels.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000002 /* RemoteContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentService.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000003 /* RemoteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentView.swift; sourceTree = "<group>"; };
+		ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+RemoteEvents.swift"; sourceTree = "<group>"; };
 		B2C3D4012F0F5C9600FAE5F1 /* ClashDashWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidget.swift; sourceTree = "<group>"; };
 		B2C3D4022F0F5C9600FAE5F1 /* ClashDashWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClashDashWidgetBundle.swift; sourceTree = "<group>"; };
 		B2C3D4042F0F5C9600FAE5F1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B2C3D4052F0F5C9600FAE5F1 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		B7D4E6F12A3B4C5D6E7F8901 /* ProfileDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileDetailView.swift; sourceTree = "<group>"; };
-		F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
-		F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressScreenshotView.swift; sourceTree = "<group>"; };
 		C1D2E3012F10AAAA00FAE5F1 /* PersistentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentStore.swift; sourceTree = "<group>"; };
 		C1D2E3132F10AE5A00FAE5F1 /* PlayerAccount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerAccount.swift; sourceTree = "<group>"; };
 		C9A1B2C3D4E5F60000000011 /* HelpAndWhatsNewView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndWhatsNewView.swift; sourceTree = "<group>"; };
@@ -146,12 +148,10 @@
 		E5A6AFFE2F1A100000FAE5F1 /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60002 /* DataService+Parsing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Parsing.swift"; sourceTree = "<group>"; };
 		F0A1B2C3A1B2C3D4E5F60004 /* DataService+Progress.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+Progress.swift"; sourceTree = "<group>"; };
+		F1A2B3C32F29000000FAE5F1 /* ProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressView.swift; sourceTree = "<group>"; };
+		F1A2B3C32F29000000FAE5F2 /* ProgressScreenshotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressScreenshotView.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70012345678 /* IAPManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IAPManager.swift; sourceTree = "<group>"; };
 		H1A2B3C4D5E6F70012345670 /* clan_stats.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; name = clan_stats.json; path = ../misc_files/clan_stats.json; sourceTree = "<group>"; };
-		ABCDEF010000000000000001 /* RemoteContentModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentModels.swift; sourceTree = "<group>"; };
-		ABCDEF010000000000000002 /* RemoteContentService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentService.swift; sourceTree = "<group>"; };
-		ABCDEF010000000000000003 /* RemoteContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RemoteContentView.swift; sourceTree = "<group>"; };
-		ABCDEF010000000000000004 /* DataService+RemoteEvents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DataService+RemoteEvents.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,7 +573,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -592,7 +592,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -612,7 +612,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = clash_widgets/clash_widgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -631,7 +631,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets";
 				PRODUCT_NAME = Clashboard;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
@@ -673,7 +673,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -686,7 +686,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;
@@ -729,7 +729,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_ENTITLEMENTS = ClashDashWidgetExtension.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 18;
 				DEVELOPMENT_TEAM = 4Y85TW5U7U;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ClashDashWidget/Info.plist;
@@ -742,7 +742,7 @@
 					"@executable_path/../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.2.2;
+				MARKETING_VERSION = 1.3.1;
 				PRODUCT_BUNDLE_IDENTIFIER = "Zachary-Buschmann.clash-widgets.ClashDashWidget";
 				PRODUCT_NAME = ClashboardWidget;
 				SKIP_INSTALL = YES;

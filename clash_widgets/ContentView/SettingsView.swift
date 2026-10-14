@@ -6,8 +6,6 @@ struct SettingsView: View {
     @EnvironmentObject var iapManager: IAPManager
     @State private var showAddProfile = false
     @State private var profileToEdit: PlayerAccount?
-    @State private var showResetConfirmation = false
-    @State private var showResetLayoutConfirmation = false
     @State private var showFeedbackForm = false
     @State private var isPurchasing = false
     @State private var isRestoringPurchases = false
@@ -78,8 +76,11 @@ struct SettingsView: View {
 
                     NavigationLink {
                         AdvancedSettingsPage(
-                            onResetLayout: { showResetLayoutConfirmation = true },
-                            onFactoryReset: { showResetConfirmation = true }
+                            onResetLayout: { dataService.resetLayoutPreferences() },
+                            onFactoryReset: {
+                                dataService.resetToFactory()
+                                hasCompletedInitialSetup = false
+                            }
                         )
                         .environmentObject(dataService)
                     } label: {
@@ -117,23 +118,6 @@ struct SettingsView: View {
                         .foregroundColor(.secondary)
                         .padding()
                 }
-            }
-            .alert("Reset Clashboard?", isPresented: $showResetConfirmation) {
-                Button("Cancel", role: .cancel) {}
-                Button("Reset", role: .destructive) {
-                    hasCompletedInitialSetup = false
-                    dataService.resetToFactory()
-                }
-            } message: {
-                Text("All profiles, timers, and settings will be erased. You'll need to enter your player tag again before using the app.")
-            }
-            .alert("Reset Layout?", isPresented: $showResetLayoutConfirmation) {
-                Button("Cancel", role: .cancel) {}
-                Button("Reset Layout", role: .destructive) {
-                    dataService.resetLayoutPreferences()
-                }
-            } message: {
-                Text("This only resets home/profile card order and visibility, plus hidden equipment. Your profiles and tracked data stay intact.")
             }
             .alert("Purchase Error", isPresented: $showIAPErrorAlert) {
                 Button("OK", role: .cancel) {}

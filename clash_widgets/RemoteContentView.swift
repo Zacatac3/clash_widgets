@@ -80,20 +80,30 @@ struct RemoteEventDetailView: View {
 struct RemoteNewsListView: View {
     @ObservedObject private var content = RemoteContentService.shared
     var body: some View {
-        List {
-            Section("News") {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("News").font(.headline)
                 ForEach(content.news.filter { $0.published <= content.now }) { item in
                     NavigationLink { RemoteArticleView(presentation: item.presentation).onAppear { content.markSeen(item) } } label: {
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(item.presentation.title).font(.headline)
                             Text(item.published, style: .date).font(.caption).foregroundStyle(.secondary)
                         }
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding()
+                        .background(Color(.secondarySystemGroupedBackground), in: RoundedRectangle(cornerRadius: 12))
                     }
+                    .buttonStyle(.plain)
                 }
-                if !content.news.contains(where: { $0.published <= content.now }) { Text("No news yet.").foregroundStyle(.secondary) }
+                if !content.news.contains(where: { $0.published <= content.now }) {
+                    Text("No news yet.").foregroundStyle(.secondary)
+                }
+                if let error = content.lastError { Text(error).font(.caption).foregroundStyle(.secondary) }
             }
-            if let error = content.lastError { Section { Text(error).font(.caption).foregroundStyle(.secondary) } }
+            .padding()
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .background(Color(.systemGroupedBackground))
         .refreshable { await content.refreshIfNeeded(force: true) }
     }
 }

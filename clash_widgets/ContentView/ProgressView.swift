@@ -32,7 +32,7 @@ struct ProgressTabView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-                LazyVStack(spacing: 16, pinnedViews: [.sectionHeaders]) {
+                VStack(spacing: 16) {
                     if isLoadingExport {
                         ProgressView("Loading progress…")
                             .frame(maxWidth: .infinity, alignment: .leading)
@@ -43,16 +43,13 @@ struct ProgressTabView: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .progressCardStyle()
                     } else {
-                        Section {
-                            ForEach(visibleSectionIDs, id: \.self) { id in
-                                if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
-                                    sectionCard(section).id(id)
-                                }
+                        categorySelector
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.vertical, 4)
+                        ForEach(visibleSectionIDs, id: \.self) { id in
+                            if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
+                                sectionCard(section).id(id)
                             }
-                        } header: {
-                            categorySelector
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                                .padding(.vertical, 4)
                         }
                     }
                 }
@@ -248,7 +245,7 @@ struct ProgressTabView: View {
                     .padding(12)
                 Divider()
                 ScrollView {
-                    LazyVStack(spacing: 0) {
+                    VStack(spacing: 0) {
                         // Keep the same top-to-bottom order as the Progress cards.
                         ForEach(visibleSectionIDs, id: \.self) { id in
                             if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
@@ -407,7 +404,7 @@ struct ProgressTabView: View {
                         }
                     }
                 } else {
-                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 70), spacing: 8)], spacing: 12) {
+                    ProgressTileGrid() {
                         ForEach(group.items) { item in
                             let counts = inventory[item.id] ?? [:]
                             tile(item, level: counts.keys.max() ?? 0, count: 1)
@@ -655,7 +652,7 @@ struct ProgressTabView: View {
             Text("Equipment").font(.headline)
             ForEach(heroes, id: \.self) { hero in
                 Text(hero).font(.subheadline.bold()).padding(.top, 4)
-                LazyVGrid(columns: [GridItem(.adaptive(minimum: 70), spacing: 8)], spacing: 12) {
+                ProgressTileGrid() {
                     ForEach(equipment.filter { $0.hero == hero }, id: \.name) { item in
                         let level = profileLevels[item.name.lowercased()] ?? 0
                         equipmentTile(item, level: level)
@@ -1224,6 +1221,46 @@ private struct CategoryJumpButtonStyle: ViewModifier {
             content
                 .buttonStyle(.bordered)
                 .buttonBorderShape(.roundedRectangle(radius: 10))
+        }
+    }
+}
+
+// Eager adaptive grid: every progress tile is created once rather than on scroll.
+private struct ProgressTileGrid: Layout {
+    private let minimum: CGFloat = 70
+    private let horizontalSpacing: CGFloat = 8
+    private let verticalSpacing: CGFloat = 12
+
+    private func metrics(width: CGFloat, subviews: Subviews) -> (columns: Int, tileWidth: CGFloat, heights: [CGFloat]) {
+        let columns = max(1, Int((width + horizontalSpacing) / (minimum + horizontalSpacing)))
+        let tileWidth = max(0, (width - CGFloat(columns - 1) * horizontalSpacing) / CGFloat(columns))
+        var heights: [CGFloat] = []
+        for index in subviews.indices {
+            let row = index / columns
+            if row == heights.count { heights.append(0) }
+            heights[row] = max(heights[row], subviews[index].sizeThatFits(ProposedViewSize(width: tileWidth, height: nil)).height)
+        }
+        return (columns, tileWidth, heights)
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minimum
+        let layout = metrics(width: width, subviews: subviews)
+        return CGSize(width: width, height: layout.heights.reduce(0, +) + CGFloat(max(0, layout.heights.count - 1)) * verticalSpacing)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let layout = metrics(width: bounds.width, subviews: subviews)
+        var y = bounds.minY
+        for row in layout.heights.indices {
+            for column in 0..<layout.columns {
+                let index = row * layout.columns + column
+                guard index < subviews.count else { break }
+                subviews[index].place(at: CGPoint(x: bounds.minX + CGFloat(column) * (layout.tileWidth + horizontalSpacing), y: y),
+                                     anchor: .topLeading,
+                                     proposal: ProposedViewSize(width: layout.tileWidth, height: layout.heights[row]))
+            }
+            y += layout.heights[row] + verticalSpacing
         }
     }
 }

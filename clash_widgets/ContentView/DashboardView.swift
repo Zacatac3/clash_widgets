@@ -1787,8 +1787,8 @@ struct DashboardView: View {
     private var shouldShowWhatsNew: Bool {
         let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
         guard !version.isEmpty else { return false }
-        let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? ""
-        return version != lastSeenAppVersion || build != lastSeenBuildNumber
+        // A new build downloads fresh remote content, but does not itself add release notes.
+        return version != lastSeenAppVersion
     }
 
     private func markWhatsNewSeen() {

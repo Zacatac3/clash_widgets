@@ -39,8 +39,17 @@ final class RemoteContentService: ObservableObject {
     var latestNews: RemoteNews? { news.first { $0.published <= now } }
     var unreadPopup: RemoteNews? {
         guard let item = latestNews, item.showAsPopup,
-              defaults.string(forKey: environment.cacheKey("lastSeenNews")) != item.id else { return nil }
+              !seenNewsIDs.contains(item.id) else { return nil }
         return item
+    }
+
+    private var seenNewsIDs: Set<String> {
+        var ids = Set(defaults.stringArray(forKey: environment.cacheKey("seenNewsIDs")) ?? [])
+        // Carry forward the read marker saved by older builds.
+        if let legacyID = defaults.string(forKey: environment.cacheKey("lastSeenNews")) {
+            ids.insert(legacyID)
+        }
+        return ids
     }
 
     init(defaults: UserDefaults = .standard, session: URLSession = .shared, baseURL: URL? = nil) {
@@ -89,8 +98,9 @@ final class RemoteContentService: ObservableObject {
     }
 
     func markSeen(_ item: RemoteNews) {
-        // Reading an older article must not make the latest article unread again.
-        if item.id == latestNews?.id { defaults.set(item.id, forKey: environment.cacheKey("lastSeenNews")) }
+        var ids = seenNewsIDs
+        ids.insert(item.id)
+        defaults.set(ids.sorted(), forKey: environment.cacheKey("seenNewsIDs"))
         objectWillChange.send()
     }
 

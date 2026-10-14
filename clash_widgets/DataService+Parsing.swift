@@ -107,6 +107,13 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
+        WhatsNewSection(dateLabel: "10/13/2026 - 1.3.1 - Widgets & Fixes", bullets: [
+            "New 2x2 Builder widget: Track your two closest Home Village builder upgrades and see how many builders are free.",
+            "Fixed scrolling issues in What’s New, News, and the Progress tab.",
+            "Fixed Guardians showing a maximum level of 1 at Town Hall 18.",
+            "Updated village importing during setup to use the system Paste button.",
+            "Fixed reset confirmations in Advanced Settings for layout and factory resets."
+        ]),
         WhatsNewSection(dateLabel: "10/08/2026 - 1.3 - Progress Update", bullets: [
             "New Progress tab: Track your Home Village levels, including lab, buildings, equipment, Supercharges and Crafted Defenses, and tap for more info.",            
 			"Added iPhone Duo support and adapted layouts for its screen and OS.",

@@ -70,7 +70,7 @@ private struct WhatsNewContent: View {
                     .buttonStyle(.bordered)
                 }
 
-                LazyVStack(spacing: 12) {
+                VStack(spacing: 12) {
                     ForEach(sections) { section in
                         VStack(alignment: .leading, spacing: 8) {
                             Text(section.dateLabel)
@@ -112,6 +112,9 @@ private struct WhatsNewContent: View {
     }
 
     private func whatsNewInlineImageName(for bullet: String, in section: WhatsNewSection) -> String? {
+        if section.dateLabel.contains("1.3.1"), bullet.lowercased().contains("2x2 builder widget") {
+            return "2x2builder"
+        }
         if section.dateLabel.contains("1.3") {
             let normalized = bullet.lowercased()
             if normalized.contains("share progress") {
@@ -387,7 +390,7 @@ private struct ChangelogView: View {
             .replacingOccurrences(of: ".jpeg", with: "")
             .replacingOccurrences(of: ".webp", with: "")
 
-        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts", "custom_boosts", "equipment", "duke", "progress", "share_progress"]
+        let knownImageNames: Set<String> = ["lock_screen", "war_section", "boosts", "custom_boosts", "equipment", "duke", "progress", "share_progress", "2x2builder"]
         return knownImageNames.contains(name) ? name : nil
     }
 

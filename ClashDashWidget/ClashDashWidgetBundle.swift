@@ -13,6 +13,7 @@ struct ClashDashWidgetBundle: WidgetBundle {
     var body: some Widget {
         ClashDashWidget()
         LabPetWidget()
+        HomeBuilderWidget()
         BuilderBaseWidget()
         HelperCooldownWidget()
         ClosestUpgradeWidget()

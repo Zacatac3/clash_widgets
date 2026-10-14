@@ -16,9 +16,17 @@ import UserNotifications
 
 // MARK: - App Delegate for Notification Handling
 class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDelegate {
+    private var pendingNotificationInteraction: [AnyHashable: Any]?
+
     override init() {
         super.init()
         UNUserNotificationCenter.current().delegate = self
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(handlePendingNotificationInteraction),
+            name: UIApplication.didBecomeActiveNotification,
+            object: nil
+        )
     }
     
     // Handle notification when app is in foreground
@@ -27,8 +35,6 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         willPresent notification: UNNotification,
         withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
     ) {
-        let userInfo = notification.request.content.userInfo
-        handleNotificationInteraction(userInfo)
         completionHandler([.banner, .sound, .badge])
     }
     
@@ -38,9 +44,24 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
         didReceive response: UNNotificationResponse,
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
+        guard response.actionIdentifier == UNNotificationDefaultActionIdentifier else {
+            completionHandler()
+            return
+        }
         let userInfo = response.notification.request.content.userInfo
-        handleNotificationInteraction(userInfo)
+        DispatchQueue.main.async {
+            self.pendingNotificationInteraction = userInfo
+            self.handlePendingNotificationInteraction()
+        }
         completionHandler()
+    }
+
+    @objc private func handlePendingNotificationInteraction() {
+        // A cold launch or background tap must finish activating before opening another app.
+        guard UIApplication.shared.applicationState == .active,
+              let userInfo = pendingNotificationInteraction else { return }
+        pendingNotificationInteraction = nil
+        handleNotificationInteraction(userInfo)
     }
     
     private func handleNotificationInteraction(_ userInfo: [AnyHashable: Any]) {
@@ -54,12 +75,13 @@ class AppDelegate: NSObject, UIApplicationDelegate, UNUserNotificationCenterDele
             )
         }
         
-        // Handle redirect to Clash of Clans using trampoline strategy
-        if let targetURLString = userInfo["targetURL"] as? String,
-           let url = URL(string: targetURLString) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                if UIApplication.shared.canOpenURL(url) {
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        // Read the current toggle for every notification type, including already-delivered alerts.
+        if UserDefaults.standard.bool(forKey: "globalAutoOpenClashOfClans"),
+           let url = URL(string: "clashofclans://"),
+           UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url, options: [:]) { opened in
+                if !opened {
+                    NSLog("[NOTIFICATIONS] Unable to open Clash of Clans after notification tap.")
                 }
             }
         }

@@ -151,7 +151,7 @@ private struct ProfileSetupPane: View {
                                                 .fill(Color.accentColor)
                                                 .frame(width: 28, height: 28)
                                                 .overlay(Text("3").font(.subheadline).foregroundColor(.white))
-                                            Text("3. Press the Paste & Import Village Data button below")
+                                            Text("3. Press the Paste button below to import your village data")
                                                 .font(.body)
                                         }
                                     }
@@ -170,19 +170,9 @@ private struct ProfileSetupPane: View {
                                 .foregroundColor(.primary)
 
 #if canImport(UIKit)
-                                Button {
-                                    importVillageDataFromClipboard()
-                                } label: {
-                                    HStack(spacing: 12) {
-                                        Image(systemName: "plus")
-                                        Text("Paste & Import Village Data")
-                                    }
-                                    .frame(maxWidth: .infinity)
-                                    .frame(height: 48)
-                                    .font(.headline)
-                                }
-                                .buttonStyle(.borderedProminent)
-                                .tint(.accentColor)
+                                OnboardingPasteControl { importVillageData($0) }
+                                .frame(maxWidth: .infinity)
+                                .frame(height: 64)
 #endif
 
                                 Button {
@@ -244,19 +234,9 @@ private struct ProfileSetupPane: View {
                             }
                         } else {
 #if canImport(UIKit)
-                            Button {
-                                importVillageDataFromClipboard()
-                            } label: {
-                                HStack(spacing: 12) {
-                                    Image(systemName: "plus")
-                                    Text("Paste & Import Village Data")
-                                }
-                                .frame(maxWidth: .infinity)
-                                .frame(height: 48)
-                                .font(.headline)
-                            }
-                            .buttonStyle(.borderedProminent)
-                            .tint(.accentColor)
+                            OnboardingPasteControl { importVillageData($0) }
+                            .frame(maxWidth: .infinity)
+                            .frame(height: 64)
 #endif
 
                             Button {
@@ -581,8 +561,8 @@ private struct ProfileSetupPane: View {
     }
 
 #if canImport(UIKit)
-    private func importVillageDataFromClipboard() {
-        guard let input = clipboardTextFromPasteboard(), !input.isEmpty else {
+    private func importVillageData(_ input: String) {
+        guard !input.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             statusMessage = "Clipboard was empty—copy your export from Clash first."
             return
         }
@@ -815,3 +795,54 @@ func normalizePlayerTag(_ rawTag: String) -> String {
     view.append(contentsOf: filteredScalars)
     return String(view)
 }
+
+#if canImport(UIKit)
+// Keep the system paste gesture while sizing and tinting it like the other setup actions.
+private struct OnboardingPasteControl: UIViewRepresentable {
+    let onPaste: (String) -> Void
+
+    func makeUIView(context: Context) -> OnboardingPasteTargetView {
+        OnboardingPasteTargetView(onPaste: onPaste)
+    }
+
+    func updateUIView(_ uiView: OnboardingPasteTargetView, context: Context) {
+        uiView.onPaste = onPaste
+    }
+}
+
+private final class OnboardingPasteTargetView: UIView {
+    var onPaste: (String) -> Void
+
+    init(onPaste: @escaping (String) -> Void) {
+        self.onPaste = onPaste
+        super.init(frame: .zero)
+        pasteConfiguration = UIPasteConfiguration(forAccepting: NSString.self)
+        let configuration = UIPasteControl.Configuration()
+        configuration.displayMode = .iconAndLabel
+        configuration.cornerStyle = .capsule
+        configuration.baseForegroundColor = .white
+        configuration.baseBackgroundColor = UIColor(Color.accentColor)
+        let control = UIPasteControl(configuration: configuration)
+        control.target = self
+        control.accessibilityLabel = "Paste & Import Village Data"
+        control.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(control)
+        NSLayoutConstraint.activate([
+            control.leadingAnchor.constraint(equalTo: leadingAnchor),
+            control.trailingAnchor.constraint(equalTo: trailingAnchor),
+            control.topAnchor.constraint(equalTo: topAnchor),
+            control.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
+
+    required init?(coder: NSCoder) { fatalError("init(coder:) has not been implemented") }
+
+    override func paste(itemProviders: [NSItemProvider]) {
+        guard let provider = itemProviders.first(where: { $0.canLoadObject(ofClass: NSString.self) }) else { return }
+        provider.loadObject(ofClass: NSString.self) { [weak self] value, _ in
+            guard let text = value as? String else { return }
+            DispatchQueue.main.async { self?.onPaste(text) }
+        }
+    }
+}
+#endif

@@ -2116,6 +2116,7 @@ struct ClanWarWidget: Widget {
 struct LabPetWidgetEntryView: View {
     var entry: LabPetProvider.Entry
     let maxSlots = 2
+    var tracksHomeBuilders = false
 
     var body: some View {
         VStack(spacing: 4) {
@@ -2125,12 +2126,14 @@ struct LabPetWidgetEntryView: View {
 
             HStack {
                 Spacer()
-                if entry.upgrades.count >= maxSlots {
+                if (tracksHomeBuilders ? entry.totalBuilderUpgradesCount >= entry.builderCount : entry.upgrades.count >= maxSlots) {
                     Text("All Busy")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(Color.green)
                 } else {
-                    let free = maxSlots - entry.upgrades.count
+                    let free = tracksHomeBuilders
+                        ? max(0, entry.builderCount - entry.totalBuilderUpgradesCount)
+                        : maxSlots - entry.upgrades.count
                     Text("\(free) free")
                         .font(.system(size: 9, weight: .bold))
                         .foregroundColor(Color.orange)
@@ -2246,6 +2249,21 @@ struct LabPetWidgetEntryView: View {
         }
         
         return "\(folder)/\(sanitizedName)" // Default fallback
+    }
+}
+
+// Home Village builders use the same settings, timeline and two-row layout as the other widgets.
+struct HomeBuilderWidget: Widget {
+    let kind = "HomeBuilderWidget"
+
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: kind, intent: WidgetProfileIntent.self, provider: Provider()) { entry in
+            LabPetWidgetEntryView(entry: entry, tracksHomeBuilders: true)
+                .containerBackground(.fill.tertiary, for: .widget)
+        }
+        .configurationDisplayName("Home Builders")
+        .description("Track your two closest Home Village builder upgrades, choose a profile or use the last opened profile.")
+        .supportedFamilies([.systemSmall])
     }
 }
 

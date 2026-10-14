@@ -153,6 +153,7 @@ New Game Content
 - Updated upgrade costs and times to reflect the latest reductions
 
 1.3 - 10/08/26
+Major update with new progress tools
 
 *New Features and Additions*
 - New Page added, Progresss, for tracking all of your home village levels
@@ -169,6 +170,7 @@ New Game Content
 
 *Changes and Fixes*
 - fixed display name for Mother Witch and Angry Spell
+- Navigation now collapses when scrolling
 - Updated max upgradeable walls for TH18 to reflect in-game
 - Fixed jittering when applying a boost
 - adapted layout of "Welcome" page to be more modern
@@ -177,3 +179,13 @@ New Game Content
 - Legends League asset now properly displays
 - Notifications should now display the correct profile name, instead of the most recent
 - Imporved player data paste handling on import 
+
+1.3.1 - 10/13/26
+*What's New*
+- new 2x2 Builder widget, displaying your two closest builders for the home village
+
+*Changes and Fixes*
+- fixed scrolling issues in the changelog and progress tab
+- Fixed Guardians showing max level of 1 at town hall 18x
+- Fixed the same news article being pushed to the user multiple times
+- When tapping notifications is set to open Clash of Clans, previously sent notifications now open the game as expected
