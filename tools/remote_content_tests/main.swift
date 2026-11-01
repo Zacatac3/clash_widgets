@@ -277,3 +277,39 @@ for (level, hours, expectedHours) in [(1, 144.0, 58.0), (2, 168.0, 67.0)] {
     assert(abs(hours * multiplier - expectedHours) < 0.000001)
 }
 print("Exact reference ratios and Town Hall wall ranges passed.")
+
+var refreshCalendar = Calendar(identifier: .gregorian)
+refreshCalendar.timeZone = TimeZone(identifier: "America/New_York")!
+let cadenceNow = ISO8601DateFormatter().date(from: "2026-11-01T17:00:00Z")! // noon after DST fallback
+func cadenceDecision(now: Date = cadenceNow, success: Date?, attempt: Date?,
+                     coldLaunch: Bool = false, force: Bool = false) -> Bool {
+    RemoteContentRefreshPolicy.shouldRefresh(now: now, force: force, hasCache: true,
+        lastSuccess: success, lastAttempt: attempt, currentBuild: "same",
+        successfulBuild: "same", attemptedBuild: "same", coldLaunch: coldLaunch,
+        calendar: refreshCalendar)
+}
+let recentSuccess = cadenceNow.addingTimeInterval(-60)
+assert(!cadenceDecision(success: recentSuccess, attempt: recentSuccess))
+assert(cadenceDecision(success: recentSuccess, attempt: recentSuccess, coldLaunch: true))
+assert(cadenceDecision(success: recentSuccess, attempt: recentSuccess, force: true))
+for (age, expected) in [(21599.0, false), (21600.0, true), (21601.0, true)] {
+    let success = cadenceNow.addingTimeInterval(-age)
+    assert(cadenceDecision(success: success, attempt: success) == expected)
+}
+// Midnight is a calendar boundary, independent of elapsed hours and DST.
+let yesterdayLate = ISO8601DateFormatter().date(from: "2026-11-01T03:59:00Z")! // Oct 31, 23:59 EDT
+let newDay = yesterdayLate.addingTimeInterval(120)
+assert(cadenceDecision(now: newDay, success: yesterdayLate, attempt: yesterdayLate))
+assert(!cadenceDecision(now: newDay, success: yesterdayLate, attempt: newDay.addingTimeInterval(-30)))
+assert(cadenceDecision(now: newDay.addingTimeInterval(900), success: yesterdayLate, attempt: newDay))
+// First daily attempt is guaranteed even following a failure just before midnight.
+assert(cadenceDecision(now: newDay, success: yesterdayLate.addingTimeInterval(-3600), attempt: yesterdayLate))
+// Retry a failed forced fetch after 15 minutes, despite a recent successful fetch.
+let successBeforeFailure = cadenceNow.addingTimeInterval(-3600)
+assert(!cadenceDecision(success: successBeforeFailure, attempt: cadenceNow.addingTimeInterval(-899)))
+assert(cadenceDecision(success: successBeforeFailure, attempt: cadenceNow.addingTimeInterval(-900)))
+// The repeated 01:30 during DST fallback is still the same local day.
+let firstOneThirty = ISO8601DateFormatter().date(from: "2026-11-01T05:30:00Z")!
+let secondOneThirty = ISO8601DateFormatter().date(from: "2026-11-01T06:30:00Z")!
+assert(!cadenceDecision(now: secondOneThirty, success: firstOneThirty, attempt: firstOneThirty))
+print("Refresh cadence checks passed: six-hour boundary, cold launch/manual bypass, local midnight, daily failure retries and DST fallback.")

@@ -27,6 +27,8 @@ final class RemoteContentService: ObservableObject {
     private let session: URLSession
     private let configuredBaseURL: URL?
     private var timer: AnyCancellable?
+    // In-memory only: a fresh process gets one immediate fetch per environment.
+    private var launchAttemptedEnvironments: Set<RemoteContentEnvironment> = []
     private let decoder: JSONDecoder
     private let encoder: JSONEncoder
     // Set this Info.plist key before shipping. No credentials belong in a public feed.
@@ -117,27 +119,27 @@ final class RemoteContentService: ObservableObject {
         let currentBuild = "\(version) (\(build))"
         let successfulBuild = defaults.string(forKey: environment.cacheKey("successfulBuild"))
         let needsBuildRefresh = successfulBuild != currentBuild
+        let coldLaunch = !launchAttemptedEnvironments.contains(environment)
         guard RemoteContentRefreshPolicy.shouldRefresh(now: now, force: force, hasCache: hasCache,
             lastSuccess: lastSuccess, lastAttempt: lastAttempt, currentBuild: currentBuild,
             successfulBuild: successfulBuild,
-            attemptedBuild: defaults.string(forKey: environment.cacheKey("attemptedBuild"))) else { return }
+            attemptedBuild: defaults.string(forKey: environment.cacheKey("attemptedBuild")),
+            coldLaunch: coldLaunch) else { return }
+        launchAttemptedEnvironments.insert(environment)
         isRefreshing = true
         eventsUpdatedInLastRefresh = false
         defaults.set(now, forKey: environment.cacheKey("lastAttempt"))
         defaults.set(currentBuild, forKey: environment.cacheKey("attemptedBuild"))
         defer { isRefreshing = false }
         do {
-            let bypassServerCache = force || needsBuildRefresh
+            let bypassServerCache = true
             async let eventData = fetch(baseURL.appendingPathComponent("latest_event.json"), bypassServerCache: bypassServerCache)
             async let latestData = fetch(baseURL.appendingPathComponent("latest_news.json"), bypassServerCache: bypassServerCache)
             let eventBytes = try await eventData
             let eventFeed = try decoder.decode(RemoteEventFeed.self, from: eventBytes)
             try eventFeed.validate()
-            // A valid event feed is authoritative, including an empty events array.
-            // Commit it before news so unrelated news failures cannot retain removed events.
-            defaults.set(eventBytes, forKey: environment.cacheKey("events"))
-            remoteEvents = eventFeed.events
-            eventsUpdatedInLastRefresh = true
+            // Replace before awaiting news: removed events end immediately even if news fails.
+            replaceRemoteEvents(with: eventFeed, bytes: eventBytes)
             let latest = try decoder.decode(LatestRemoteNews.self, from: await latestData)
             guard latest.schemaVersion == 1 else { throw RemoteContentError.invalidPayload }
             var feed = RemoteNewsFeed(schemaVersion: 1, entries: news)
@@ -158,6 +160,21 @@ final class RemoteContentService: ObservableObject {
                 ? "Events updated (\(remoteEvents.count) downloaded). News could not be refreshed; saved news is still available."
                 : "Unable to refresh events. Saved events and news are still available."
         }
+    }
+
+    private func replaceRemoteEvents(with feed: RemoteEventFeed, bytes: Data) {
+        // This is a complete snapshot, never a merge with locally running events.
+        // Persist the replacement so a removed event cannot return after restart.
+        defaults.set(bytes, forKey: environment.cacheKey("events"))
+        now = Date()
+        remoteEvents = feed.events
+        eventsUpdatedInLastRefresh = true
+    }
+
+    // Screens must resolve by ID on each render instead of continuing a captured
+    // event's old countdown after removal, disabling, expiry or a feed switch.
+    func currentEvent(id: String) -> RemoteEvent? {
+        events.first { $0.id == id && $0.isVisible(at: now) }
     }
 
     private func fetch(_ url: URL, bypassServerCache: Bool = false) async throws -> Data {

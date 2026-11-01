@@ -230,14 +230,24 @@ enum RemoteContentEnvironment: String, CaseIterable {
 enum RemoteContentRefreshPolicy {
     static func shouldRefresh(now: Date, force: Bool, hasCache: Bool,
                               lastSuccess: Date?, lastAttempt: Date?, currentBuild: String,
-                              successfulBuild: String?, attemptedBuild: String?) -> Bool {
-        if force { return true }
+                              successfulBuild: String?, attemptedBuild: String?,
+                              coldLaunch: Bool = false, calendar: Calendar = .current) -> Bool {
+        if force || coldLaunch { return true }
         let needsBuildRefresh = successfulBuild != currentBuild
-        if !needsBuildRefresh, hasCache, let lastSuccess,
-           (0..<86400).contains(now.timeIntervalSince(lastSuccess)) { return false }
-        // Each new version/build gets an immediate attempt, then normal failure backoff.
+        if needsBuildRefresh && attemptedBuild != currentBuild { return true }
+        let needsDailyRefresh = lastSuccess.map { !calendar.isDate($0, inSameDayAs: now) } ?? true
+        // The first attempt on a new local calendar day bypasses even a recent
+        // failed attempt from yesterday. Further failures use normal backoff.
+        if needsDailyRefresh && (lastAttempt.map { !calendar.isDate($0, inSameDayAs: now) } ?? true) {
+            return true
+        }
         if attemptedBuild == currentBuild, let lastAttempt,
            (0..<900).contains(now.timeIntervalSince(lastAttempt)) { return false }
+        // A failed forced/daily fetch must be retryable after 15 minutes even
+        // when the previous successful fetch was less than six hours ago.
+        if let lastAttempt, lastSuccess.map({ lastAttempt > $0 }) ?? true { return true }
+        if !needsBuildRefresh, !needsDailyRefresh, hasCache, let lastSuccess,
+           (0..<21600).contains(now.timeIntervalSince(lastSuccess)) { return false }
         return true
     }
 }

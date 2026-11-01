@@ -132,6 +132,83 @@ struct RefreshChecks {
         precondition(historyRestart.selectEnvironment(.development))
         await historyRestart.refreshIfNeeded(force: true, downloadFullFeed: true)
         precondition(historyRestart.unreadPopup?.id == olderArticle.id, "Read history must be isolated by environment")
+        let coldLaunchService = RemoteContentService(defaults: defaults, session: session,
+            baseURL: URL(string: "https://example.com/remote")!)
+        let beforeLaunch = FeedStubProtocol.requests.count
+        await coldLaunchService.refreshIfNeeded()
+        precondition(FeedStubProtocol.requests.count > beforeLaunch, "A fresh launch must fetch despite recent success")
+        precondition(FeedStubProtocol.requests.suffix(2).allSatisfy { $0.url?.query?.contains("refresh=") == true })
+        let afterLaunch = FeedStubProtocol.requests.count
+        await coldLaunchService.refreshIfNeeded()
+        precondition(FeedStubProtocol.requests.count == afterLaunch, "Duplicate launch/foreground callbacks must respect cooldown")
+        await coldLaunchService.refreshIfNeeded(force: true)
+        precondition(FeedStubProtocol.requests.count > afterLaunch, "Manual refresh must always fetch")
+        // A partial snapshot must end only the deleted event, not keep it alive
+        // until its original end timestamp or require an entirely empty feed.
+        do {
+            let removalSuite = "clashboard-event-removal-" + UUID().uuidString
+            let removalDefaults = UserDefaults(suiteName: removalSuite)!
+            defer { removalDefaults.removePersistentDomain(forName: removalSuite) }
+            let start = Date().addingTimeInterval(-3600)
+            let end = Date().addingTimeInterval(86400)
+            let scRule = try JSONDecoder().decode(RemoteModifier.self, from: Data(
+                #"{"categories":["builderVillage"],"dataIDs":[1000027,1000077],"onlySupercharges":true,"timeMultiplier":0.4,"costMultiplier":0.4}"#.utf8))
+            let hammer = RemoteEvent(id: "hammer-stays", enabled: true, start: start, end: end,
+                icon: nil, presentation: presentation, modifiers: [])
+            let supercharges = RemoteEvent(id: "supercharges-removed", enabled: true, start: start, end: end,
+                icon: nil, presentation: presentation, modifiers: [scRule])
+            let twoEvents = try encoder.encode(RemoteEventFeed(schemaVersion: 2, events: [hammer, supercharges]))
+            let hammerOnly = try encoder.encode(RemoteEventFeed(schemaVersion: 1, events: [hammer]))
+            FeedStubProtocol.failNews = false
+            FeedStubProtocol.eventPayload = twoEvents
+            let live = RemoteContentService(defaults: removalDefaults, session: session,
+                baseURL: URL(string: "https://example.com/remote")!)
+            await live.refreshIfNeeded(force: true)
+            precondition(live.currentEvent(id: supercharges.id) != nil)
+            precondition(live.visibleEvents.map(\.id).contains(supercharges.id))
+            precondition(live.upgradeFactor(category: "builderVillage", dataID: 1000027, townHall: 18,
+                superchargeLevel: 1, cost: true) == 0.4)
+            // Removal remains authoritative when the independent news fetch fails.
+            FeedStubProtocol.eventPayload = hammerOnly
+            FeedStubProtocol.failNews = true
+            await live.refreshIfNeeded(force: true)
+            precondition(live.eventsUpdatedInLastRefresh && live.lastError != nil)
+            precondition(live.currentEvent(id: supercharges.id) == nil, "Open detail must stop its countdown immediately")
+            precondition(live.currentEvent(id: hammer.id) != nil)
+            precondition(live.visibleEvents.map(\.id) == [hammer.id])
+            precondition(live.upgradeFactor(category: "builderVillage", dataID: 1000027, townHall: 18,
+                superchargeLevel: 1, cost: true) == 1, "Removed event effects end just as on normal expiry")
+            let restart = RemoteContentService(defaults: removalDefaults, session: session,
+                baseURL: URL(string: "https://example.com/remote")!)
+            precondition(restart.currentEvent(id: supercharges.id) == nil)
+            // Keep the test in dev, then return to live. Neither environment may
+            // resurrect the other's cached event or a detail's original snapshot.
+            precondition(restart.selectEnvironment(.development))
+            FeedStubProtocol.eventPayload = twoEvents
+            FeedStubProtocol.failNews = false
+            await restart.refreshIfNeeded(force: true)
+            precondition(restart.currentEvent(id: "dev:" + supercharges.id) != nil)
+            precondition(restart.currentEvent(id: supercharges.id) == nil)
+            precondition(restart.selectEnvironment(.live))
+            precondition(restart.currentEvent(id: "dev:" + supercharges.id) == nil)
+            precondition(restart.currentEvent(id: supercharges.id) == nil)
+            FeedStubProtocol.eventPayload = hammerOnly
+            await restart.refreshIfNeeded(force: true)
+            precondition(restart.visibleEvents.map(\.id) == [hammer.id])
+            // Updating dates/disabled status also changes an already open detail.
+            let disabled = RemoteEvent(id: hammer.id, enabled: false, start: start, end: end,
+                icon: nil, presentation: presentation, modifiers: [])
+            FeedStubProtocol.eventPayload = try encoder.encode(RemoteEventFeed(schemaVersion: 1, events: [disabled]))
+            await restart.refreshIfNeeded(force: true)
+            precondition(restart.currentEvent(id: hammer.id) == nil && restart.visibleEvents.isEmpty)
+            let expired = RemoteEvent(id: hammer.id, enabled: true, start: start,
+                end: Date().addingTimeInterval(-1), icon: nil, presentation: presentation, modifiers: [])
+            FeedStubProtocol.eventPayload = try encoder.encode(RemoteEventFeed(schemaVersion: 1, events: [expired]))
+            await restart.refreshIfNeeded(force: true)
+            precondition(restart.currentEvent(id: hammer.id) == nil)
+            print("Partial event removal passed: live card/detail ending, expired/disabled events, cost expiry, independent news failure, persisted removal and live/dev switching.")
+        }
+        print("Cold-launch integration passed: immediate fetch, server-cache bypass, duplicate callback suppression and manual refresh.")
         print("Lifetime news history checks passed: migration, new articles, older reads, build refresh, feed rollback, restart and environment isolation.")
         print("Remote refresh integration checks passed: authoritative removal, independent news failures, restart cache, invalid response fallback and forced cache bypass.")
         print("News checks passed: scheduled publication, archive/read state, dev/live cache switching, forced live refresh and restart.")

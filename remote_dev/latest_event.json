@@ -2,61 +2,33 @@
   "schemaVersion": 2,
   "events": [
     {
-      "id": "hammer-jam-test-2026-10-v1",
+      "id": "hammer-jam-2026-11",
       "enabled": true,
-      "start": "2026-10-06T08:00:00Z",
-      "end": "2026-10-20T08:00:00Z",
+      "start": "2026-11-01T08:00:00Z",
+      "end": "2026-11-16T08:00:00Z",
       "presentation": {
-        "title": "DEV \u2014 Hammer Jam (Test)",
-        "summary": "Our remote event test is active: 50% shorter eligible Home Village upgrades and 50% lower wall costs, combined with Gold Pass. These are test dates and tracker adjustments, not a live in-game announcement.",
+        "title": "DEV \u2014 Hammer Jam",
+        "summary": "50% off Home Village upgrade costs and times, plus 2x resource production and storage for resource production buildings. Temporary content is excluded.",
         "image": {
           "source": "bundle",
           "value": "extras/builder_potion"
         },
         "sections": [
           {
-            "title": "DEV \u2014 Test event \u2014 not an official announcement",
-            "body": "This event is enabled to test Clashboard\u2019s remote news, countdowns, detail pages, wall discounts, and upgrade adjustments. The October 6\u201320 dates are test dates, not announced Clash of Clans event dates. This configuration changes the tracker only; it cannot activate a boost in the game."
+            "title": "November 1\u201316",
+            "body": "Hammer Jam starts November 1, 2026 at 08:00 UTC and ends November 16, 2026 at 08:00 UTC."
           },
           {
-            "title": "DEV \u2014 50% shorter upgrade times",
-            "body": "This test uses a 0.5 time multiplier for eligible Home Village builder, Laboratory, and Pet House upgrades at every Town Hall level. Builder Base and Star Laboratory upgrades are outside this test. Actual event rules must be confirmed before a real announcement."
+            "title": "50% off upgrade costs and times",
+            "body": "Home Village upgrades cost 50% less and take 50% less time. Temporary content is excluded."
           },
           {
-            "title": "DEV \u2014 50% lower upgrade costs",
-            "body": "The recent Hammer Jam format reduced eligible upgrade resource costs by half, including walls. In this Clashboard test, wall costs show the 50% discount; other upgrade cost displays are not modified by this event engine."
+            "title": "Boosted farming",
+            "body": "Resource production buildings have 2x production and 2x storage capacity during Hammer Jam."
           },
           {
-            "title": "DEV \u2014 Gold Pass works alongside the event",
-            "body": "Gold Pass and the event multiply. A 20% Gold Pass discount combined with the 50% event factor leaves 40% of the base amount\u2014a total reduction of 60%. For example, a 10-day duration becomes 4 days, and a 4,000,000 wall cost becomes 1,600,000.",
-            "image": {
-              "source": "bundle",
-              "value": "profile/gold_pass"
-            }
-          },
-          {
-            "title": "DEV \u2014 What happens to upgrades already running?",
-            "body": "For eligible timers tracked before the test begins, Clashboard caps the remaining duration at the event-adjusted full upgrade duration, calculated at the event\u2019s start time. Shorter remaining timers stay unchanged. Opening the app later uses that original boundary, so elapsed time is not reset. Importing fresh Clash data during the event preserves the exported remaining times without applying the discount again."
-          },
-          {
-            "title": "DEV \u2014 Supercharges and Crafted Defenses",
-            "body": "Supercell\u2019s November 2025 Hammer Jam excluded Supercharges and Crafted Defenses. This test follows those exclusions. Hero equipment and ore costs are not discounted by this configuration. Future events may have different rules."
-          },
-          {
-            "title": "DEV \u2014 Resource collectors",
-            "body": "The November 2025 event also doubled Resource Collector production and capacity. That is described here for context only: Clashboard does not simulate collector output or resource capacity."
-          },
-          {
-            "title": "DEV \u2014 When the event ends",
-            "body": "The event card disappears at the configured end time and displayed wall costs return to normal. Previously adjusted upgrade end times stay adjusted. If the app misses the entire event, it does not replay old boosts; import a fresh village export to correct stale timers. Widgets and notifications sync the event adjustments when the app opens."
-          },
-          {
-            "title": "DEV \u2014 Try the remote content flow",
-            "body": "Open the News tab in the Welcome / What\u2019s New sheet to read the announcement. Tap Hammer Jam below Selected Profile to open this page and see the ending countdown. Pull to refresh in News after the feed is published. Use a test village for timer checks, because this active test can shorten eligible tracked timers."
-          },
-          {
-            "title": "DEV \u2014 Reference rules",
-            "body": "The historical event format used for this test comes from Supercell\u2019s \u201cHAMMER JAM Kickstarts the November Season!\u201d announcement, published November 1, 2025: https://supercell.com/en/games/clashofclans/blog/news/hammer-jam-kickstarts-the-november-season/"
+            "title": "Goblin Workers all November",
+            "body": "Goblin researcher and builder are available throughout the entire month of November, even after hammer jam ends."
           }
         ]
       },
@@ -67,7 +39,6 @@
             "lab",
             "pets"
           ],
-          "townHallMin": 1,
           "timeMultiplier": 0.5,
           "excludeSupercharges": true
         },
@@ -75,7 +46,6 @@
           "categories": [
             "walls"
           ],
-          "townHallMin": 1,
           "wallCostMultiplier": 0.5
         }
       ],
@@ -85,29 +55,69 @@
       }
     },
     {
-      "id": "supercharge-test-inferno-monolith-2026-11",
+      "id": "supercharge-image-reductions-dev-2026-11-v1",
       "enabled": true,
       "start": "2026-11-01T08:00:00Z",
       "end": "2026-11-16T08:00:00Z",
       "presentation": {
-        "title": "DEV \u2014 Supercharge Test: Inferno Tower & Monolith",
-        "summary": "Tracker test: 60% off Inferno Tower and Monolith Supercharge costs and times during Hammer Jam.",
+        "title": "DEV \u2014 Supercharge Reductions",
+        "summary": "Development test of the October 2026 Supercharge reduction image: exact costs and times for 23 Supercharge levels across 10 buildings.",
         "image": {
           "source": "bundle",
           "value": "extras/supercharge"
         },
         "sections": [
           {
-            "title": "Test configuration",
-            "body": "This is a Clashboard tracker test, not an in-game event announcement. It does not activate any discount in Clash of Clans."
+            "title": "Development test dates",
+            "body": "This tracker test runs November 1\u201316, 2026, from 08:00 UTC to 08:00 UTC, alongside the development Hammer Jam event. The reference image is labeled October 2026; these are test dates, not an announcement of an official event."
           },
           {
-            "title": "60% off Supercharges",
-            "body": "All Supercharge levels for Inferno Tower and Monolith use 40% of their base upgrade time and resource cost. Regular upgrades and other buildings are not affected by this test. Gold Pass discounts multiply with the test factor. Supercharge costs are shown in Progress upgrade details."
+            "title": "Exact per-level adjustments",
+            "body": "Each listed target cost and time is calculated against the bundled Supercharge data. The image\u2019s rounded reduction percentages are not used as blanket discounts. Values below are before Gold Pass. Gold Pass multiplies with these factors. Hammer Jam excludes Supercharges, so its 50% factor does not additionally reduce these upgrades. Regular upgrades and buildings not listed here, including Inferno Tower and Monolith, receive no Supercharge discount from this event."
           },
           {
-            "title": "Same dates as Hammer Jam",
-            "body": "Starts November 1, 2026 at 08:00 UTC and ends November 16, 2026 at 08:00 UTC. Previously adjusted tracked deadlines remain adjusted after the test ends."
+            "title": "Multi-Gear Tower",
+            "body": "Supercharge 1: 4,750,000 resources and 2d 10h. Supercharge 2: 4,000,000 resources and 2d 19h."
+          },
+          {
+            "title": "Ricochet Cannon",
+            "body": "Supercharge 1: 4,750,000 resources and 2d 10h. Supercharge 2: 4,000,000 resources and 2d 19h."
+          },
+          {
+            "title": "Multi-Archer Tower",
+            "body": "Supercharge 1: 4,750,000 resources and 2d 10h. Supercharge 2: 4,000,000 resources and 2d 19h."
+          },
+          {
+            "title": "Air Defense",
+            "body": "Supercharge 1: 2,500,000 resources and 1d 2h. Supercharge 2: 1,250,000 resources and 1d 17h."
+          },
+          {
+            "title": "Builder\u2019s Hut",
+            "body": "Supercharge 1: 4,000,000 resources and 1d 14h. Supercharge 2: 3,250,000 resources and 2d 10h."
+          },
+          {
+            "title": "Hidden Tesla",
+            "body": "Supercharge 1: 4,750,000 resources and 1d 19h. Supercharge 2: 3,250,000 resources and 2d 14h."
+          },
+          {
+            "title": "X-Bow",
+            "body": "Supercharge 1: 5,500,000 resources and 2d 5h. Supercharge 2: 3,500,000 resources and 3d."
+          },
+          {
+            "title": "Gold Mine",
+            "body": "Supercharge 1: 250,000 resources and 9h 30m. Supercharge 2: 250,000 resources and 14h 30m. Supercharge 3: 250,000 resources and 19h."
+          },
+          {
+            "title": "Elixir Collector",
+            "body": "Supercharge 1: 250,000 resources and 9h 30m. Supercharge 2: 250,000 resources and 14h 30m. Supercharge 3: 250,000 resources and 19h."
+          },
+          {
+            "title": "Dark Elixir Drill",
+            "body": "Supercharge 1: 750,000 resources and 14h 30m. Supercharge 2: 750,000 resources and 19h. Supercharge 3: 500,000 resources and 1d."
+          },
+          {
+            "title": "Tracker behavior",
+            "body": "Supercharge prices and durations appear in Progress upgrade details. Tracked timers are capped using the discounted full duration; existing shorter remaining timers are preserved. Removing or expiring this event ends its active discounts and hides the card, while previously adjusted building timers retain their changes."
           }
         ]
       },
@@ -117,12 +127,322 @@
             "builderVillage"
           ],
           "dataIDs": [
-            1000027,
-            1000077
+            1000079
           ],
           "onlySupercharges": true,
-          "timeMultiplier": 0.4,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000079
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
           "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000085
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000085
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000084
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000084
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000012
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.3939393939393939,
+          "costMultiplier": 0.4166666666666667
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000012
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4019607843137255,
+          "costMultiplier": 0.4166666666666667
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000015
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.3958333333333333,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000015
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.40625
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000019
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.39814814814814814,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000019
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.3974358974358974,
+          "costMultiplier": 0.40625
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000021
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4015151515151515,
+          "costMultiplier": 0.39285714285714285
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000021
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4,
+          "costMultiplier": 0.3888888888888889
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.19230769230769232
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.19230769230769232
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.2,
+          "costMultiplier": 0.1282051282051282
         }
       ],
       "icon": {

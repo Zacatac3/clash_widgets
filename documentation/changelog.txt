@@ -189,3 +189,12 @@ Major update with new progress tools
 - Fixed Guardians showing max level of 1 at town hall 18x
 - Fixed the same news article being pushed to the user multiple times
 - When tapping notifications is set to open Clash of Clans, previously sent notifications now open the game as expected
+
+1.3.2 - 11/01/26
+*What's New*
+- Events now support supercharges, so time reductions to their upgrade times can be applied
+
+*Changes and Fixes*
+- the main builder widget layout was updated for iPhone duo to fix visual issues
+- events are now checked for more regularly, and can be force checked on app refresh
+- deleted or modified events are now handled properly when the app fetches events
