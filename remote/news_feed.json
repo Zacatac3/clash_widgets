@@ -2,6 +2,25 @@
   "schemaVersion": 1,
   "entries": [
     {
+      "id": "hammer-jam-started-2026-11-01",
+      "published": "2026-11-01T14:03:14Z",
+      "showAsPopup": true,
+      "presentation": {
+        "title": "Hammer Jam has started!",
+        "summary": "Hammer Jam is live! Check the Hammer Jam event on Home for the dates, discounts, and farming boosts.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/builder_potion"
+        },
+        "sections": [
+          {
+            "title": "Supercharge fix coming soon",
+            "body": "A Clashboard update is expected in the next 1\u20132 days with a fix for tracking Supercharge upgrade-time reductions. Until then, your current app version may not reflect those reductions correctly."
+          }
+        ]
+      }
+    },
+    {
       "id": "1.3_update_launch",
       "published": "2026-10-07T08:00:00Z",
       "showAsPopup": true,

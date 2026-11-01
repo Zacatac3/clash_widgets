@@ -107,6 +107,12 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
+        WhatsNewSection(dateLabel: "11/01/2026 - 1.3.2 - Events & Widget Fixes", bullets: [
+            "Events now support Supercharge upgrade-time reductions, including different reductions for individual Supercharge levels.",
+            "Updated the main builder widget layout to fix visual issues on iPhone Duo.",
+            "Events refresh more frequently, including on the first open each day and after restarting the app. Manual refresh always checks for updates.",
+            "Deleted and modified events now update correctly when the app refreshes the event feed."
+        ]),
         WhatsNewSection(dateLabel: "10/13/2026 - 1.3.1 - Widgets & Fixes", bullets: [
             "New 2x2 Builder widget: Track your two closest Home Village builder upgrades and see how many builders are free.",
             "Fixed scrolling issues in What’s New, News, and the Progress tab.",
