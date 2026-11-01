@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "events": [
     {
       "id": "hammer-jam-test-2026-10-v1",
@@ -82,6 +82,52 @@
       "icon": {
         "source": "remote",
         "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote_dev/images/builder.png"
+      }
+    },
+    {
+      "id": "supercharge-test-inferno-monolith-2026-11",
+      "enabled": true,
+      "start": "2026-11-01T08:00:00Z",
+      "end": "2026-11-16T08:00:00Z",
+      "presentation": {
+        "title": "DEV \u2014 Supercharge Test: Inferno Tower & Monolith",
+        "summary": "Tracker test: 60% off Inferno Tower and Monolith Supercharge costs and times during Hammer Jam.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/supercharge"
+        },
+        "sections": [
+          {
+            "title": "Test configuration",
+            "body": "This is a Clashboard tracker test, not an in-game event announcement. It does not activate any discount in Clash of Clans."
+          },
+          {
+            "title": "60% off Supercharges",
+            "body": "All Supercharge levels for Inferno Tower and Monolith use 40% of their base upgrade time and resource cost. Regular upgrades and other buildings are not affected by this test. Gold Pass discounts multiply with the test factor. Supercharge costs are shown in Progress upgrade details."
+          },
+          {
+            "title": "Same dates as Hammer Jam",
+            "body": "Starts November 1, 2026 at 08:00 UTC and ends November 16, 2026 at 08:00 UTC. Previously adjusted tracked deadlines remain adjusted after the test ends."
+          }
+        ]
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000027,
+            1000077
+          ],
+          "onlySupercharges": true,
+          "timeMultiplier": 0.4,
+          "costMultiplier": 0.4
+        }
+      ],
+      "icon": {
+        "source": "bundle",
+        "value": "extras/supercharge"
       }
     }
   ]
