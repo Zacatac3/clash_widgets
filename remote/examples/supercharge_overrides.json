@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 2,
+  "events": [
+    {
+      "id": "supercharge-overrides-example",
+      "enabled": false,
+      "start": "2026-11-09T08:00:00Z",
+      "end": "2026-11-23T08:00:00Z",
+      "presentation": {
+        "title": "Supercharge overrides example",
+        "summary": "Configuration example only. Replace dates, IDs and reductions with confirmed event rules.",
+        "sections": []
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "excludeSupercharges": true,
+          "timeMultiplier": 0.5
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000079
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.4,
+          "priority": 1
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000079
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4,
+          "priority": 1
+        }
+      ],
+      "icon": {
+        "source": "remote",
+        "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png"
+      }
+    }
+  ]
+}

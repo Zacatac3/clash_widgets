@@ -460,81 +460,66 @@ struct Provider: AppIntentTimelineProvider {
 struct ClashDashWidgetEntryView : View {
     var entry: Provider.Entry
     
-    var columns: [GridItem] {
-        // 4 builders → 2x2 grid, 5-6 builders → 3 columns
-        let columnCount = entry.builderCount == 4 ? 2 : 3
-        return Array(repeating: GridItem(.flexible(), spacing: 8), count: columnCount)
+    private var columnCount: Int { entry.builderCount == 4 ? 2 : 3 }
+    private var slotCount: Int { max(min(entry.builderCount, 6), 0) }
+    private var rowCount: Int { max(1, (slotCount + columnCount - 1) / columnCount) }
+    private var allBusy: Bool { entry.totalBuilderUpgradesCount >= entry.builderCount }
+
+    private var statusText: String {
+        let free = max(entry.builderCount - entry.totalBuilderUpgradesCount, 0)
+        let status = allBusy ? "All Builders Busy" : "\(free) \(free == 1 ? "builder" : "builders") free"
+        return entry.profileName.isEmpty ? status : status + " • " + entry.profileName
     }
 
     var body: some View {
-        VStack(spacing: 2) {
-            // Dynamic grid: 2x2 for 4 builders, 3x2 for 5-6 builders
-            LazyVGrid(columns: columns, spacing: 4) {
-                ForEach(0..<max(min(entry.builderCount, 6), 0), id: \.self) { index in
-                    builderCell(for: index)
-                        .frame(minHeight: 68)
-                }
-            }
-            // Center align bottom row for exactly 5 builders
-            .frame(maxWidth: .infinity, alignment: entry.builderCount == 5 ? .center : .leading)
-            .padding(.horizontal, 6)
-            
-            // Status line (always visible) - with extra padding on bottom to avoid widget edge
-            HStack {
-                Spacer()
-                if entry.totalBuilderUpgradesCount >= entry.builderCount {
-                    let statusText = "All Builders Busy"
-                    if !entry.profileName.isEmpty {
-                        Text(statusText + " • " + entry.profileName)
-                            .font(.caption2)
-                            .foregroundColor(Color.green)
-                            .bold()
-                            .lineLimit(1)
-                    } else {
-                        Text(statusText)
-                            .font(.caption2)
-                            .foregroundColor(Color.green)
-                            .bold()
-                            .lineLimit(1)
-                    }
-                } else {
-                    let free = max(entry.builderCount - entry.totalBuilderUpgradesCount, 0)
-                    let noun = free == 1 ? "builder" : "builders"
-                    let statusText = "\(free) \(noun) free"
-                    if !entry.profileName.isEmpty {
-                        Text(statusText + " • " + entry.profileName)
-                            .font(.caption2)
-                            .foregroundColor(Color.orange)
-                            .bold()
-                            .lineLimit(1)
-                    } else {
-                        Text(statusText + "!")
-                            .font(.caption2)
-                            .foregroundColor(Color.orange)
-                            .bold()
-                            .lineLimit(1)
+        GeometryReader { geometry in
+            // WidgetKit supplies the safe content margins. Divide the remaining
+            // height explicitly so wrapped text cannot push rows past those margins.
+            let columnWidth = max(0, (geometry.size.width - CGFloat(columnCount - 1) * 8) / CGFloat(columnCount))
+            let iconSize = min(28, max(20, columnWidth * 0.28))
+            VStack(spacing: 4) {
+                VStack(spacing: 6) {
+                    ForEach(0..<rowCount, id: \.self) { row in
+                        HStack(spacing: 8) {
+                            ForEach(0..<columnCount, id: \.self) { column in
+                                let index = row * columnCount + column
+                                if index < slotCount {
+                                    builderCell(for: index, iconSize: iconSize)
+                                        .frame(width: columnWidth)
+                                        .frame(maxHeight: .infinity)
+                                } else {
+                                    Color.clear.frame(width: columnWidth)
+                                }
+                            }
+                        }
+                        .frame(maxHeight: .infinity)
                     }
                 }
-                Spacer()
+                .frame(maxHeight: .infinity)
+
+                Text(statusText)
+                    .font(.system(size: 10, weight: .bold))
+                    .foregroundColor(allBusy ? .green : .orange)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+                    .frame(maxWidth: .infinity)
             }
-            .frame(minHeight: 16)
-            .padding(.bottom, 8)
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
-        .padding(12)
         .widgetURL(URL(string: "clashdash://refresh"))
     }
-    
+
     @ViewBuilder
-    private func builderCell(for index: Int) -> some View {
-        VStack(alignment: .leading, spacing: 4) {
+    private func builderCell(for index: Int, iconSize: CGFloat) -> some View {
+        VStack(alignment: .leading, spacing: 3) {
             if index < entry.upgrades.count {
                 let upgrade = entry.upgrades[index]
 
-                // Name spans full width at top
                 HStack(spacing: 2) {
                     Text(upgrade.name)
                         .font(.system(size: 10, weight: .semibold))
                         .lineLimit(1)
+                        .minimumScaleFactor(0.75)
                     if upgrade.showsSuperchargeIcon {
                         Image("extras/supercharge")
                             .resizable()
@@ -544,52 +529,52 @@ struct ClashDashWidgetEntryView : View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                // Icon on left, Level + Time on right (same row)
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
                     trimmedWidgetImage(named: iconName(for: upgrade))
                         .interpolation(.none)
                         .resizable()
                         .clashWidgetTintAwareRendering()
                         .scaledToFit()
-                        .frame(width: 28, height: 28)
-                    
-                    VStack(alignment: .leading, spacing: 0) {
+                        .frame(width: iconSize, height: iconSize)
+
+                    VStack(alignment: .leading, spacing: 1) {
                         Text(upgrade.levelDisplayText)
                             .font(.system(size: 8))
                             .foregroundColor(.secondary)
                         Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
                             .font(.system(size: 9))
+                            .monospacedDigit()
                             .foregroundColor(.orange)
                     }
-                    
-                    Spacer()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
 
-                // progress bar (thin)
                 ProgressView(value: progressFraction(for: upgrade))
                     .progressViewStyle(LinearProgressViewStyle(tint: .green))
                     .frame(height: 4)
             } else {
-                HStack(spacing: 6) {
+                HStack(spacing: 4) {
                     Image(systemName: "checkmark.circle.fill")
-                        .font(.system(size: 20))
+                        .font(.system(size: iconSize * 0.75))
                         .foregroundColor(.green.opacity(0.7))
-                    
-                    VStack(alignment: .leading, spacing: 0) {
+
+                    VStack(alignment: .leading, spacing: 1) {
                         Text("Builder \(index + 1)")
                             .font(.system(size: 9, weight: .semibold))
-                            .foregroundColor(.gray.opacity(0.6))
+                            .foregroundColor(.secondary)
                         Text("Available")
                             .font(.system(size: 8))
                             .foregroundColor(.green.opacity(0.7))
                     }
-                    
-                    Spacer()
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .frame(maxWidth: .infinity, alignment: .leading)
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 6)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .center)
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade) -> Double {

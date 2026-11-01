@@ -214,10 +214,20 @@ final class RemoteContentService: ObservableObject {
         defaults.removeObject(forKey: "remoteContent.profileBeforeTest")
     }
 
+    func upgradeFactor(category: String, dataID: Int, townHall: Int, superchargeLevel: Int? = nil,
+                       cost: Bool = false, profileID: UUID? = nil) -> Double {
+        events.filter { $0.isActive(at: now) && eventApplies($0, to: profileID) }.compactMap {
+            remoteEventModifierFactor(modifiers: $0.modifiers, category: category, dataID: dataID,
+                townHall: townHall, superchargeLevel: superchargeLevel,
+                value: cost ? \.costMultiplier : \.timeMultiplier)
+        }.min() ?? 1
+    }
+
     func wallFactor(townHall: Int, profileID: UUID? = nil) -> Double {
-        events.filter { $0.isActive(at: now) && eventApplies($0, to: profileID) }.flatMap(\.modifiers)
-            .filter { $0.matches(category: "walls", dataID: nil, townHall: townHall) }
-            .compactMap(\.wallCostMultiplier).min() ?? 1
+        events.filter { $0.isActive(at: now) && eventApplies($0, to: profileID) }.compactMap {
+            remoteEventModifierFactor(modifiers: $0.modifiers, category: "walls", dataID: nil,
+                townHall: townHall, value: \.wallCostMultiplier)
+        }.min() ?? 1
     }
 
 }

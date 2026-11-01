@@ -59,13 +59,13 @@ assert(remoteEventTimeFactor(event: event, now: start, trackedSince: start.addin
     "A rule excluding Supercharges must preserve their timers")
 let liveFeed = try decoder.decode(RemoteEventFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/latest_event.json")))
 try liveFeed.validate()
-assert(liveFeed.events.isEmpty, "The live event feed should default to no events")
+assert(Set(liveFeed.events.map(\.id)).count == liveFeed.events.count)
 let devFeed = try decoder.decode(RemoteEventFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote_dev/latest_event.json")))
 try devFeed.validate()
 let liveNews = try decoder.decode(RemoteNewsFeed.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/news_feed.json")))
 let latest = try decoder.decode(LatestRemoteNews.self, from: Data(contentsOf: URL(fileURLWithPath: "remote/latest_news.json")))
 if let latestID = latest.id { assert(liveNews.entries.contains { $0.id == latestID }) }
-print("Live/default and development feed checks passed: empty live events, development schema and news pointer consistency.")
+print("Live/default and development feed checks passed: unique live events, development schema and news pointer consistency.")
 
 func building(trackedAt: Date, remainingDays: Double, baseDays: Double = 10,
               category: UpgradeCategory = .builderVillage, supercharge: Int? = nil,
@@ -186,3 +186,94 @@ precondition(refreshDecision(force: true), "Manual refresh must bypass cooldown"
 precondition(refreshDecision(attemptAge: 86400, successAge: 86400), "Same build must refresh after a day")
 precondition(RemoteContentEnvironment.live.cacheKey("successfulBuild") != RemoteContentEnvironment.development.cacheKey("successfulBuild"))
 print("Build-update refresh checks passed: install, new build/version, successful cooldown, failure retry and environment isolation.")
+
+// Advanced schema: select actual target Supercharge levels, never regular levels.
+func advancedRule(_ json: String) throws -> RemoteModifier {
+    try decoder.decode(RemoteModifier.self, from: Data(json.utf8))
+}
+let sc1 = try advancedRule("""
+{"categories":["builderVillage"],"dataIDs":[1],"onlySupercharges":true,
+ "superchargeLevels":[1],"timeMultiplier":0.4,"costMultiplier":0.3,"priority":1}
+""")
+let sc2 = try advancedRule("""
+{"categories":["builderVillage"],"dataIDs":[1],"onlySupercharges":true,
+ "superchargeLevels":[2],"timeMultiplier":0.7,"costMultiplier":0.4,"priority":1}
+""")
+let broad = try advancedRule("""
+{"categories":["builderVillage"],"timeMultiplier":0.5,"costMultiplier":0.5}
+""")
+let advancedEvent = RemoteEvent(id: "advanced", enabled: true, start: start, end: event.end,
+    icon: nil, presentation: event.presentation, modifiers: [broad, sc1, sc2])
+try RemoteEventFeed(schemaVersion: 2, events: [advancedEvent]).validate()
+do {
+    try RemoteEventFeed(schemaVersion: 1, events: [advancedEvent]).validate()
+    fatalError("Advanced rules must require v2 so old apps reject instead of ignoring selectors")
+} catch RemoteContentError.invalidPayload {}
+assert(!sc1.matches(category: "builderVillage", dataID: 1, townHall: 18))
+assert(!sc1.matches(category: "builderVillage", dataID: 1, townHall: 18, isSupercharge: true))
+assert(sc1.matches(category: "builderVillage", dataID: 1, townHall: 18, isSupercharge: true, superchargeLevel: 1))
+assert(!sc1.matches(category: "builderVillage", dataID: 2, townHall: 18, isSupercharge: true, superchargeLevel: 1))
+assert(!sc1.matches(category: "builderVillage", dataID: 1, townHall: 18, isSupercharge: true, superchargeLevel: 2))
+for (level, expectedTime, expectedCost) in [(1, 0.4, 0.3), (2, 0.7, 0.4), (3, 0.5, 0.5)] {
+    var upgrade = building(trackedAt: start, remainingDays: 10, supercharge: level)
+    assert(upgrade.applyRemoteEvent(advancedEvent, at: start, townHall: 18, goldPassBoost: 20))
+    assert(upgrade.remoteEventTimeMultiplier == expectedTime)
+    assert(abs(upgrade.endTime.timeIntervalSince(start) - 10 * day * 0.8 * expectedTime) < 0.001)
+    assert(remoteEventModifierFactor(modifiers: advancedEvent.modifiers, category: "builderVillage",
+        dataID: 1, townHall: 18, superchargeLevel: level, value: \.costMultiplier) == expectedCost)
+    assert(!upgrade.applyRemoteEvent(advancedEvent, at: start, townHall: 18, goldPassBoost: 20))
+}
+assert(remoteEventModifierFactor(modifiers: [sc1, sc2], category: "builderVillage", dataID: 1,
+    townHall: 18, value: \.timeMultiplier) == nil, "SC-only rules must not affect normal upgrades")
+assert(remoteEventModifierFactor(modifiers: [broad, sc1], category: "builderVillage", dataID: 1,
+    townHall: 18, value: \.timeMultiplier) == 0.5)
+let lowTH = try advancedRule("""
+{"categories":["builderVillage","lab","pets"],"townHallMax":16,"timeMultiplier":0.6,"costMultiplier":0.6}
+""")
+let highTH = try advancedRule("""
+{"categories":["builderVillage","lab","pets"],"townHallMin":17,"townHallMax":18,"timeMultiplier":0.8,"costMultiplier":0.8}
+""")
+for (th, expected) in [(1, 0.6), (16, 0.6), (17, 0.8), (18, 0.8)] {
+    for key in [\RemoteModifier.timeMultiplier, \RemoteModifier.costMultiplier] {
+        assert(remoteEventModifierFactor(modifiers: [lowTH, highTH], category: "lab", dataID: 7,
+            townHall: th, value: key) == expected)
+    }
+}
+assert(remoteEventModifierFactor(modifiers: [lowTH, highTH], category: "lab", dataID: 7,
+    townHall: 19, value: \.timeMultiplier) == nil)
+for extra in ["\"superchargeLevels\":[]", "\"superchargeLevels\":[0]", "\"costMultiplier\":0", "\"costMultiplier\":1.1", "\"priority\":-1", "\"onlySupercharges\":true,\"excludeSupercharges\":true"] {
+    let bad = try advancedRule("{\"categories\":[\"builderVillage\"]," + extra + "}")
+    let badEvent = RemoteEvent(id: "invalid-v2", enabled: true, start: start, end: event.end,
+        icon: nil, presentation: event.presentation, modifiers: [bad])
+    do {
+        try RemoteEventFeed(schemaVersion: 2, events: [badEvent]).validate()
+        fatalError("Invalid advanced rule accepted: \(extra)")
+    } catch RemoteContentError.invalidPayload {}
+}
+let advancedRoundTrip = try decoder.decode(RemoteEventFeed.self,
+    from: { let encoder = JSONEncoder(); encoder.dateEncodingStrategy = .iso8601
+        return try encoder.encode(RemoteEventFeed(schemaVersion: 2, events: [advancedEvent])) }())
+try advancedRoundTrip.validate()
+assert(advancedRoundTrip.events[0].modifiers[1].superchargeLevels == [1])
+print("Advanced event checks passed: SC-only and level matching, independent costs, override priority, TH ranges, schema migration, invalid rules, Gold Pass, timers and persistence.")
+
+let wallLow = try advancedRule("""
+{"categories":["walls"],"townHallMax":16,"wallCostMultiplier":0.6}
+""")
+let wallHigh = try advancedRule("""
+{"categories":["walls"],"townHallMin":17,"townHallMax":18,"wallCostMultiplier":0.8,"priority":1}
+""")
+assert(remoteEventModifierFactor(modifiers: [wallLow, wallHigh], category: "walls", dataID: nil,
+    townHall: 16, value: \.wallCostMultiplier) == 0.6)
+assert(remoteEventModifierFactor(modifiers: [wallLow, wallHigh], category: "walls", dataID: nil,
+    townHall: 18, value: \.wallCostMultiplier) == 0.8)
+let advancedExample = try decoder.decode(RemoteEventFeed.self,
+    from: Data(contentsOf: URL(fileURLWithPath: "remote/examples/supercharge_overrides.json")))
+try advancedExample.validate()
+for (level, hours, expectedHours) in [(1, 144.0, 58.0), (2, 168.0, 67.0)] {
+    let multiplier = remoteEventModifierFactor(modifiers: advancedExample.events[0].modifiers,
+        category: "builderVillage", dataID: 1000079, townHall: 18, superchargeLevel: level,
+        value: \.timeMultiplier)!
+    assert(abs(hours * multiplier - expectedHours) < 0.000001)
+}
+print("Exact reference ratios and Town Hall wall ranges passed.")

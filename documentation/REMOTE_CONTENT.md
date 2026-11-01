@@ -37,7 +37,7 @@ News lives in the third tab of the Welcome/What’s New sheet. Home begins with 
 
 Copy `remote/examples/hammer_jam.json`, confirm the actual rules, supply a permanent unique ID, replace dates/copy, and set `enabled: true`. Keep event IDs stable across routine text edits; never reuse an ID for next year's event. Set `enabled: false` or remove an event to hide it and stop future modifiers. Already adjusted tracked timers stay adjusted; changes do not undo historical timer effects.
 
-Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. An optional top-level `icon` uses the image schema below and appears on the left of its Home event card (48 × 48 points). It is separate from `presentation.image`, which is the detail-page artwork. Older feeds can omit `icon`. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary. Home and detail countdowns use `xx Days hh:mm:ss` (for example `02 Days 03:04:05`).
+Each event requires `id`, `enabled`, `start`, `end`, `presentation`, and `modifiers`. An optional top-level `icon` uses the image schema below and appears on the left of its Home event card (48 × 48 points). It is separate from `presentation.image`, which is the detail-page artwork. Older feeds can omit `icon`. Advanced rules require event `schemaVersion: 2`; see the [advanced configuration examples](REMOTE_CONTENT_QUICK_GUIDE.md#advanced-event-rules-requires-the-updated-app). Legacy version 1 remains supported. Dates must be UTC in `YYYY-MM-DDTHH:MM:SSZ` format. Before `start` it is upcoming; from `start` up to but excluding `end` it is active; at/after `end` it disappears. This uses the device clock and cached timestamps, without a network request at the boundary. Home and detail countdowns use `xx Days hh:mm:ss` (for example `02 Days 03:04:05`).
 
 Supported modifier fields:
 
@@ -50,10 +50,14 @@ Supported modifier fields:
 | `dataIDs` | Optional allow-list of exact exported upgrade IDs |
 | `excludedDataIDs` | Optional deny-list of exported upgrade IDs |
 | `excludeSupercharges` | Optional boolean; set `true` to exclude Supercharge upgrades from that rule |
+| `onlySupercharges` | Version 2: only match Supercharge upgrades |
+| `superchargeLevels` | Version 2: positive target Supercharge levels, e.g. `[1]` for 0→1 |
+| `costMultiplier` | Version 2: resource cost factor, displayed in Supercharge upgrade details |
+| `priority` | Version 2: nonnegative rule priority (default 0); highest matching priority per metric wins within an event |
 
 Use separate rules for different Town Hall reductions. **Resource-conditioned Summer Jam rules currently require explicit `dataIDs` for the affected upgrades. There is no automatic resource-name selector.** Use IDs from the bundled mappings and verify against exports. Walls have no single exported upgrade ID, so wall rules should use category and Town Hall bounds only. Seasonal crafted defenses are excluded from timer shortening. Apply any other official exclusions explicitly.
 
-When multiple rules/events match, the smallest factor wins; event reductions do not multiply with each other. Gold Pass and the chosen event factor multiply. Only displayed wall costs support event cost reductions today; other upgrade costs and ore costs are unaffected.
+Within an event, the highest matching priority wins separately for each metric; tied rules use the smallest factor. Across events, the smallest factor wins; event reductions do not multiply with each other. Gold Pass and the chosen event factor multiply. Displayed wall costs use `wallCostMultiplier`. Supercharge details in Progress support `costMultiplier`; regular upgrade cost screens, max totals, and ore costs are unaffected.
 
 ## Timer behavior and limits
 

@@ -4,6 +4,7 @@ import UIKit
 #endif
 
 struct ProgressTabView: View {
+    @ObservedObject private var remoteContent = RemoteContentService.shared
     @EnvironmentObject private var dataService: DataService
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
@@ -568,11 +569,39 @@ struct ProgressTabView: View {
                         }
                     }
                 }
+                if let definition, townHall >= definition.unlockTownHall {
+                    DisclosureGroup("Upgrade costs and times") {
+                        ForEach(ProgressCatalog.superchargeUpgradeDetails(for: item)) { detail in
+                            superchargeUpgradeDetail(detail, item: item)
+                        }
+                    }
+                    .font(.caption)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 6)
-        .accessibilityElement(children: .combine)
+    }
+
+    private func superchargeUpgradeDetail(_ detail: ProgressCatalog.SuperchargeUpgradeDetail,
+                                          item: ProgressCatalog.Item) -> some View {
+        let profileID = dataService.currentProfile?.id
+        let gold = 1 - Double(max(0, min(100, dataService.goldPassBoost))) / 100
+        let timeFactor = remoteContent.upgradeFactor(category: "builderVillage", dataID: item.id,
+            townHall: townHall, superchargeLevel: detail.level, profileID: profileID)
+        let costFactor = remoteContent.upgradeFactor(category: "builderVillage", dataID: item.id,
+            townHall: townHall, superchargeLevel: detail.level, cost: true, profileID: profileID)
+        let seconds = Int((Double(detail.seconds) * gold * timeFactor).rounded())
+        let minutes = seconds / 60
+        let duration = "\(minutes / 1440)d \((minutes % 1440) / 60)h \(minutes % 60)m"
+        let cost = Int((Double(detail.cost) * gold * costFactor).rounded())
+        return VStack(alignment: .leading, spacing: 2) {
+            Text("Supercharge \(detail.level)").fontWeight(.medium)
+            Text("\(cost.formatted()) \(detail.resource) · \(duration)")
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.vertical, 3)
     }
 
     private func craftedDefenseRow(_ item: ProgressCatalog.Item) -> some View {
@@ -1137,6 +1166,25 @@ enum ProgressCatalog {
               let level = values["max_town_hall_level"] as? Int else { return 0 }
         return level
     }()
+
+    struct SuperchargeUpgradeDetail: Identifiable {
+        var id: Int { level }
+        let level: Int
+        let seconds: Int
+        let cost: Int
+        let resource: String
+    }
+
+    static func superchargeUpgradeDetails(for item: Item) -> [SuperchargeUpgradeDetail] {
+        var resource = ""
+        return (miniLevelsByBuilding[normalized(item.name)] ?? []).compactMap { entry in
+            if let value = entry["BuildResource"] as? String, !value.isEmpty { resource = value }
+            guard let level = integer(entry["level"]),
+                  let seconds = integer(entry["buildTimeSeconds"]),
+                  let cost = integer(entry["BuildCost"]) else { return nil }
+            return SuperchargeUpgradeDetail(level: level, seconds: seconds, cost: cost, resource: resource)
+        }
+    }
 
     static func superchargeDefinition(for item: Item) -> SuperchargeDefinition? {
         guard let miniLevels = miniLevelsByBuilding[normalized(item.name)],

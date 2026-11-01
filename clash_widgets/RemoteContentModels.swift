@@ -29,10 +29,24 @@ struct RemoteModifier: Codable {
     let wallCostMultiplier: Double?
     let excludeSupercharges: Bool?
 
-    func matches(category: String, dataID: Int?, townHall: Int, isSupercharge: Bool = false) -> Bool {
+    var onlySupercharges: Bool? = nil
+    var superchargeLevels: [Int]? = nil
+    var costMultiplier: Double? = nil
+    var priority: Int? = nil
+
+    var requiresSchemaV2: Bool {
+        onlySupercharges != nil || superchargeLevels != nil || costMultiplier != nil || priority != nil
+    }
+
+    func matches(category: String, dataID: Int?, townHall: Int, isSupercharge: Bool = false,
+                 superchargeLevel: Int? = nil) -> Bool {
         guard categories.contains(category), townHall >= (townHallMin ?? 1),
               townHall <= (townHallMax ?? Int.max) else { return false }
         if excludeSupercharges == true && isSupercharge { return false }
+        if onlySupercharges == true && !isSupercharge { return false }
+        if let levels = superchargeLevels {
+            guard isSupercharge, let level = superchargeLevel, levels.contains(level) else { return false }
+        }
         if let ids = dataIDs, !ids.contains(dataID ?? -1) { return false }
         if let ids = excludedDataIDs, ids.contains(dataID ?? -1) { return false }
         return true
@@ -57,7 +71,7 @@ struct RemoteEventFeed: Codable {
     let events: [RemoteEvent]
 
     func validate() throws {
-        guard schemaVersion == 1, events.count <= 30,
+        guard [1, 2].contains(schemaVersion), events.count <= 30,
               Set(events.map(\.id)).count == events.count else { throw RemoteContentError.invalidPayload }
         for event in events {
             guard !event.id.isEmpty, event.start < event.end else { throw RemoteContentError.invalidPayload }
@@ -66,7 +80,11 @@ struct RemoteEventFeed: Codable {
                 guard !rule.categories.isEmpty, rule.categories.allSatisfy({ supported.contains($0) }),
                       (rule.townHallMin ?? 1) > 0,
                       (rule.townHallMax ?? Int.max) >= (rule.townHallMin ?? 1) else { throw RemoteContentError.invalidPayload }
-                for value in [rule.timeMultiplier, rule.wallCostMultiplier].compactMap({ $0 }) {
+                guard schemaVersion >= 2 || !rule.requiresSchemaV2,
+                      !(rule.excludeSupercharges == true && (rule.onlySupercharges == true || rule.superchargeLevels != nil)),
+                      rule.superchargeLevels.map({ !$0.isEmpty && $0.allSatisfy { $0 > 0 } }) ?? true,
+                      rule.priority.map({ $0 >= 0 }) ?? true else { throw RemoteContentError.invalidPayload }
+                for value in [rule.timeMultiplier, rule.wallCostMultiplier, rule.costMultiplier].compactMap({ $0 }) {
                     guard value.isFinite, value > 0, value <= 1 else { throw RemoteContentError.invalidPayload }
                 }
             }
@@ -110,12 +128,27 @@ func remoteEventAdjustedEnd(originalEnd: Date, eventStart: Date,
 
 func remoteEventTimeFactor(event: RemoteEvent, now: Date, trackedSince: Date,
                            currentEnd: Date, category: String, dataID: Int?,
-                           townHall: Int, appliedIDs: Set<String>, seasonal: Bool, supercharge: Bool = false) -> Double? {
+                           townHall: Int, appliedIDs: Set<String>, seasonal: Bool, supercharge: Bool = false, superchargeLevel: Int? = nil) -> Double? {
     guard event.isActive(at: now), trackedSince <= now, currentEnd > max(event.start, trackedSince),
           !appliedIDs.contains(event.id), !seasonal else { return nil }
-    return event.modifiers.filter {
-        $0.matches(category: category, dataID: dataID, townHall: townHall, isSupercharge: supercharge)
-    }.compactMap(\.timeMultiplier).min()
+    return remoteEventModifierFactor(modifiers: event.modifiers, category: category, dataID: dataID,
+        townHall: townHall, superchargeLevel: superchargeLevel, isSupercharge: supercharge, value: \.timeMultiplier)
+
+}
+
+// Priority selects deliberate overrides within one event, separately for each metric.
+// Equal-priority rules use the lowest factor; separate events still use the lowest factor.
+func remoteEventModifierFactor(modifiers: [RemoteModifier], category: String, dataID: Int?,
+                               townHall: Int, superchargeLevel: Int? = nil,
+                               isSupercharge: Bool = false,
+                               value: KeyPath<RemoteModifier, Double?>) -> Double? {
+    let matches = modifiers.filter {
+        $0[keyPath: value] != nil && $0.matches(category: category, dataID: dataID,
+            townHall: townHall, isSupercharge: isSupercharge || superchargeLevel != nil,
+            superchargeLevel: superchargeLevel)
+    }
+    guard let priority = matches.map({ $0.priority ?? 0 }).max() else { return nil }
+    return matches.filter { ($0.priority ?? 0) == priority }.compactMap { $0[keyPath: value] }.min()
 }
 
 // Shared by the Home event card and details. Clamp at zero after the boundary.
@@ -135,7 +168,8 @@ extension BuildingUpgrade {
               let factor = remoteEventTimeFactor(event: event, now: now,
                 trackedSince: startTime, currentEnd: endTime, category: category.rawValue,
                 dataID: dataId, townHall: townHall, appliedIDs: [],
-                seasonal: isSeasonalDefense == true, supercharge: superchargeTargetLevel != nil) else { return false }
+                seasonal: isSeasonalDefense == true, supercharge: superchargeTargetLevel != nil,
+                superchargeLevel: superchargeTargetLevel) else { return false }
         if appliedRemoteEventIDs.contains(event.id), remoteEventTimeMultiplier != nil { return false }
         let snapshotFactor = min(remoteEventTimeMultiplier ?? 1, factor)
         var changed = remoteEventTimeMultiplier != snapshotFactor

@@ -56,12 +56,13 @@ def presentation(value):
 
 def load(folder, name):
     value = json.loads((folder / name).read_text())
-    assert value['schemaVersion'] == 1, 'Unsupported schema version'
+    assert value['schemaVersion'] in ((1, 2) if name == 'latest_event.json' else (1,)), 'Unsupported schema version'
     return value
 
 
 def validate(folder):
-    events = load(folder, 'latest_event.json')['events']
+    feed = load(folder, 'latest_event.json')
+    events = feed['events']
     assert len(events) <= 30
     ids = set()
     for event in events:
@@ -75,7 +76,16 @@ def validate(folder):
             assert rule['categories'] and set(rule['categories']) <= CATEGORIES
             assert rule.get('townHallMin', 1) > 0
             assert rule.get('townHallMax', sys.maxsize) >= rule.get('townHallMin', 1)
-            for key in ('timeMultiplier', 'wallCostMultiplier'):
+            advanced = ('onlySupercharges', 'superchargeLevels', 'costMultiplier', 'priority')
+            assert feed['schemaVersion'] >= 2 or not any(key in rule for key in advanced), 'Advanced modifiers require schemaVersion 2'
+            if 'onlySupercharges' in rule:
+                assert isinstance(rule['onlySupercharges'], bool)
+            if 'superchargeLevels' in rule:
+                assert rule['superchargeLevels'] and all(type(level) is int and level > 0 for level in rule['superchargeLevels'])
+            assert not (rule.get('excludeSupercharges') and (rule.get('onlySupercharges') or 'superchargeLevels' in rule)), 'Conflicting Supercharge selectors'
+            if 'priority' in rule:
+                assert type(rule['priority']) is int and rule['priority'] >= 0
+            for key in ('timeMultiplier', 'wallCostMultiplier', 'costMultiplier'):
                 if key in rule:
                     assert isinstance(rule[key], (int, float)) and 0 < rule[key] <= 1
             if 'excludeSupercharges' in rule:
