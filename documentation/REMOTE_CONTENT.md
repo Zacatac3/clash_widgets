@@ -9,14 +9,14 @@ The app can now read native news articles and event configuration from a public 
 ## Your initial setup
 
 1. Decide where to host the three feed files. The default uses this repository's `main` branch. **The repository and branch must be publicly readable without signing in.** If this repository is private, create a separate public content repository, copy `remote/` there, and change `RemoteContentBaseURL` in `clash-widgets-Info.plist` before building. No GitHub token is needed or should be put in the app.
-2. Commit and push the implementation and the live files in `remote/` (the live event list is currently empty). If using another host, publish the three files there. `remote/examples/` is documentation only; the app never reads it.
+2. Commit and push the implementation and the live files in `remote/` (including the live event definitions). If using another host, publish the three files there. `remote/examples/` is documentation only; the app never reads it.
 3. Confirm the base URL plus `/latest_event.json`, `/latest_news.json`, and `/news_feed.json` returns raw JSON without authentication. `main` is the configured branch; change the URL if you use a different branch.
 4. Run the app on a device or simulator, complete setup, then open **Home → Help (?) → News**. Pull to refresh forces a check, which is useful while testing.
 5. Publish a temporary news article with a unique ID, a past UTC `published` date, and `showAsPopup: true`. Restart the app on an already seen version to test the popup. Displaying it marks it seen. With a new app version, What’s New takes priority and news stays unread until the next launch. Verify the image, article, and countdowns on iPhone and iPad.
 6. Test a short event against a test village/export before publishing real rules. Check timers, wall costs, widgets after opening the app, and notifications.
 7. Ship **one new app build** containing this infrastructure. Older installed builds cannot use it. Subsequent supported content changes require only publishing the JSON/images.
 
-The live event feed currently contains no events. Existing live news articles are retained independently. Development test content remains in `remote_dev/`, and the example under `remote/examples/` stays disabled. Commit and push feed edits to publish them; local edits alone do not update installed apps.
+The live event feed contains Hammer Jam for November 1–16, 2026 at 08:00 UTC and an information-only Goblin Workers entry for the full UTC calendar month of November. Existing live news articles are retained independently. Development test content remains in `remote_dev/`, and the example under `remote/examples/` stays disabled. Commit and push feed edits to publish them; local edits alone do not update installed apps.
 
 ## Publishing news
 
@@ -119,7 +119,7 @@ The normal Xcode app build covers the native screens and app/widget model compat
 
 ## Current live state
 
-`remote/latest_event.json` contains `{"schemaVersion": 1, "events": []}`. No live event card or new event modifier applies after that feed is fetched. Already applied timer reductions are retained. The live news archive and development fixtures are unchanged; see `remote_dev/` for test content.
+`remote/latest_event.json` enables Hammer Jam from `2026-11-01T08:00:00Z` until `2026-11-16T08:00:00Z`, with a 0.5 time multiplier for eligible Home Village builder, Laboratory, and Pet House upgrades and a 0.5 wall cost multiplier. Temporary Supercharges and seasonal Crafted Defenses are excluded. The event details describe the 50% upgrade cost reduction and doubled resource production and collector storage; the engine only calculates timer and wall cost reductions. A separate information-only Goblin Workers entry runs for the full UTC calendar month of November (November 1 at 00:00 UTC until December 1 at 00:00 UTC). The live news archive and development fixtures are unchanged; see `remote_dev/` for test content. Commit and push these feed changes to publish them.
 
 ## Five-minute lifecycle test (no publishing required)
 

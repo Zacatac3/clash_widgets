@@ -1,4 +1,58 @@
 {
   "schemaVersion": 1,
-  "events": []
+  "events": [
+    {
+      "id": "hammer-jam-2026-11",
+      "enabled": true,
+      "start": "2026-11-01T08:00:00Z",
+      "end": "2026-11-16T08:00:00Z",
+      "presentation": {
+        "title": "Hammer Jam",
+        "summary": "50% off Home Village upgrade costs and times, plus 2x resource production and storage for resource production buildings. Temporary content is excluded.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/builder_potion"
+        },
+        "sections": [
+          {
+            "title": "November 1\u201316",
+            "body": "Hammer Jam starts November 1, 2026 at 08:00 UTC and ends November 16, 2026 at 08:00 UTC."
+          },
+          {
+            "title": "50% off upgrade costs and times",
+            "body": "Home Village upgrades cost 50% less and take 50% less time. Temporary content is excluded."
+          },
+          {
+            "title": "Boosted farming",
+            "body": "Resource production buildings have 2x production and 2x storage capacity during Hammer Jam."
+          },
+          {
+            "title": "Goblin Workers all November",
+            "body": "Goblin researcher and builder are available throughout the entire month of November, even after hammer jam ends."
+          }
+        ]
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage",
+            "lab",
+            "pets"
+          ],
+          "timeMultiplier": 0.5,
+          "excludeSupercharges": true
+        },
+        {
+          "categories": [
+            "walls"
+          ],
+          "wallCostMultiplier": 0.5
+        }
+      ],
+      "icon": {
+        "source": "remote",
+        "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png"
+      }
+    }
+  ]
 }
