@@ -1,5 +1,5 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "events": [
     {
       "id": "hammer-jam-2026-11",
@@ -52,6 +52,354 @@
       "icon": {
         "source": "remote",
         "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/builder.png"
+      }
+    },
+    {
+      "id": "supercharge-reductions-2026-11",
+      "enabled": true,
+      "start": "2026-11-01T08:00:00Z",
+      "end": "2026-11-16T08:00:00Z",
+      "presentation": {
+        "title": "Supercharge Reductions",
+        "summary": "These buildings now cost significantly less and take significantly less time to Supercharge. They will receive new Supercharge levels with the Town Hall 19 update.",
+        "image": {
+          "source": "bundle",
+          "value": "extras/supercharge"
+        },
+        "sections": [
+          {
+            "title": "Affected buildings",
+            "body": "- Multi-Gear Tower\n- Ricochet Cannon\n- Multi-Archer Tower\n- Air Defense\n- Builder\u2019s Hut\n- Hidden Tesla\n- X-Bow\n- Gold Mine\n- Elixir Collector\n- Dark Elixir Drill"
+          }
+        ]
+      },
+      "modifiers": [
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000079
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000079
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000085
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000085
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000084
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000084
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.39880952380952384,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000012
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.3939393939393939,
+          "costMultiplier": 0.4166666666666667
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000012
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4019607843137255,
+          "costMultiplier": 0.4166666666666667
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000015
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.3958333333333333,
+          "costMultiplier": 0.4
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000015
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4027777777777778,
+          "costMultiplier": 0.40625
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000019
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.39814814814814814,
+          "costMultiplier": 0.3958333333333333
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000019
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.3974358974358974,
+          "costMultiplier": 0.40625
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000021
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.4015151515151515,
+          "costMultiplier": 0.39285714285714285
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000021
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.4,
+          "costMultiplier": 0.3888888888888889
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000004
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.19230769230769232
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000002
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.19230769230769232
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            1
+          ],
+          "timeMultiplier": 0.2013888888888889,
+          "costMultiplier": 0.14705882352941177
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            2
+          ],
+          "timeMultiplier": 0.19791666666666666,
+          "costMultiplier": 0.16666666666666666
+        },
+        {
+          "categories": [
+            "builderVillage"
+          ],
+          "dataIDs": [
+            1000023
+          ],
+          "onlySupercharges": true,
+          "superchargeLevels": [
+            3
+          ],
+          "timeMultiplier": 0.2,
+          "costMultiplier": 0.1282051282051282
+        }
+      ],
+      "icon": {
+        "source": "bundle",
+        "value": "extras/supercharge"
       }
     }
   ]
