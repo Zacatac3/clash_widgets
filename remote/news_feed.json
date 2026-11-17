@@ -2,18 +2,30 @@
   "schemaVersion": 1,
   "entries": [
     {
-      "id": "town-hall-19-update-coming-2026-11-16",
+      "id": "town-hall-19-update-coming-2026-11-16-v2",
       "published": "2026-11-17T01:38:15Z",
       "showAsPopup": true,
       "presentation": {
-        "title": "Town Hall 19 update coming soon",
-        "summary": "The Clashboard update for Town Hall 19 is expected within the next couple of days.",
+        "title": "Town Hall 19 update coming very soon!",
+        "summary": "The Town Hall 19 Update is ready, and should be live within the next couple days",
         "sections": [
           {
             "title": "What to expect",
-            "body": "The update will add Town Hall 19 content and new multi-account widgets, so you can track upgrades across your villages in one place. Stay tuned!"
+            "body": "Town hall 19 is now out! With it comes many new exciting content changes. And unfortunately, these changes break my app until I update it for the new town hall. So I have been working hard today to bring support for all the new content in the update, as well as all of the cost and time reductions, for the best accuracy and experience."
+          },
+          {
+            "title": "What's new",
+            "body": "Alongside the new content from within the game, I am also releasing some changes I have been working on. An overhaul to multi-account management is coming. You can now prioritize profiles, and reorder them in the settings tab. This will impact the all new multi account widgets, which display 6 upgrades, prioritizing upgrades from your starred accounts. I've also added the first large (4x4) widget for multi account management."
+          },
+          {
+            "title": "Performance Improvements",
+            "body": "What started as a basic widget utility, has now become a much larger project. And since the initial release, there has been very little focus on optimization and performace. So a sweep has been done of the app, and there have been many enhancements to prevent the app from freezing and lagging, as well as to prevent stutters while scrolling. Hopefully this will improve the experience on all devices. Clash On!"
           }
-        ]
+        ],
+        "image": {
+          "source": "remote",
+          "value": "https://raw.githubusercontent.com/Zacatac3/clash_widgets/main/remote/images/Town_Hall19.png"
+        }
       }
     },
     {
