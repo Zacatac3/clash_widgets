@@ -23,6 +23,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
     var activeBoosts: [ActiveBoost]
     var instantBoostUndoActions: [InstantBoostUndoAction]
     var helperCooldownOverrides: [Int: Date]
+    var isWidgetPriority: Bool
 
     init(
         id: UUID = UUID(),
@@ -45,7 +46,8 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         hiddenEquipmentNames: Set<String> = [],
         activeBoosts: [ActiveBoost] = [],
         instantBoostUndoActions: [InstantBoostUndoAction] = [],
-        helperCooldownOverrides: [Int: Date] = [:]
+        helperCooldownOverrides: [Int: Date] = [:],
+        isWidgetPriority: Bool = false
     ) {
         self.id = id
         self.displayName = displayName
@@ -68,6 +70,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         self.activeBoosts = activeBoosts
         self.instantBoostUndoActions = instantBoostUndoActions
         self.helperCooldownOverrides = helperCooldownOverrides
+        self.isWidgetPriority = isWidgetPriority
     }
 
     private enum CodingKeys: String, CodingKey {
@@ -92,6 +95,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         case activeBoosts
         case instantBoostUndoActions
         case helperCooldownOverrides
+        case isWidgetPriority
     }
 
     init(from decoder: Decoder) throws {
@@ -125,6 +129,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         }
         self.instantBoostUndoActions = try container.decodeIfPresent([InstantBoostUndoAction].self, forKey: .instantBoostUndoActions) ?? []
         self.helperCooldownOverrides = try container.decodeIfPresent([Int: Date].self, forKey: .helperCooldownOverrides) ?? [:]
+        self.isWidgetPriority = try container.decodeIfPresent(Bool.self, forKey: .isWidgetPriority) ?? false
     }
 
     func encode(to encoder: Encoder) throws {
@@ -150,6 +155,7 @@ struct PlayerAccount: Identifiable, Codable, Equatable {
         try container.encode(activeBoosts, forKey: .activeBoosts)
         try container.encode(instantBoostUndoActions, forKey: .instantBoostUndoActions)
         try container.encode(helperCooldownOverrides, forKey: .helperCooldownOverrides)
+        try container.encode(isWidgetPriority, forKey: .isWidgetPriority)
     }
 }
 

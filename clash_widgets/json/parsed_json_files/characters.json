@@ -106,6 +106,17 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
+        "UpgradeTimeH": "60",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "5000000",
+        "upgradeTimeSeconds": 216000
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "13",
         "UpgradeTimeH": "72",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -113,32 +124,32 @@
         "upgradeTimeSeconds": 259200
       },
       {
-        "level": 11,
-        "TID": "",
-        "BarrackLevel": "",
-        "LaboratoryLevel": "13",
-        "UpgradeTimeH": "96",
-        "UpgradeTimeM": "",
-        "UpgradeResource": "",
-        "UpgradeCost": "8000000",
-        "upgradeTimeSeconds": 345600
-      },
-      {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "300",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "24000000",
-        "upgradeTimeSeconds": 1080000
+        "UpgradeCost": "18000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "30000000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -245,61 +256,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "72",
+        "UpgradeTimeH": "60",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "4500000",
-        "upgradeTimeSeconds": 259200
+        "UpgradeCost": "3800000",
+        "upgradeTimeSeconds": 216000
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6500000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "5500000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "108",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "9000000",
-        "upgradeTimeSeconds": 388800
+        "UpgradeCost": "8000000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14000000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "11000000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "25000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "19000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "31000000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -406,61 +428,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "72",
+        "UpgradeTimeH": "66",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "5000000",
-        "upgradeTimeSeconds": 259200
+        "UpgradeCost": "4600000",
+        "upgradeTimeSeconds": 237600
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "7500000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "6500000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "10000000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "8000000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "228",
+        "UpgradeTimeH": "156",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "15000000",
-        "upgradeTimeSeconds": 820800
+        "UpgradeCost": "10500000",
+        "upgradeTimeSeconds": 561600
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "25000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "20000000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29500000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -545,39 +578,50 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "8",
-        "UpgradeTimeH": "54",
+        "UpgradeTimeH": "48",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "3700000",
-        "upgradeTimeSeconds": 194400
+        "UpgradeCost": "3300000",
+        "upgradeTimeSeconds": 172800
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "8000000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "5500000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "15000000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "252",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "22000000",
+        "upgradeTimeSeconds": 907200
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -662,83 +706,94 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "60",
+        "UpgradeTimeH": "48",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "3800000",
-        "upgradeTimeSeconds": 216000
+        "UpgradeCost": "3200000",
+        "upgradeTimeSeconds": 172800
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "72",
+        "UpgradeTimeH": "60",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "5200000",
-        "upgradeTimeSeconds": 259200
+        "UpgradeCost": "4300000",
+        "upgradeTimeSeconds": 216000
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6500000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "5000000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "9500000",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "8000000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "11000000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "9000000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "156",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "15500000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "10000000",
+        "upgradeTimeSeconds": 561600
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "19000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29000000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -834,11 +889,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "108",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "7000000",
-        "upgradeTimeSeconds": 388800
+        "UpgradeCost": "6000000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 9,
@@ -856,39 +911,50 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "204",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14000000",
-        "upgradeTimeSeconds": 734400
+        "UpgradeCost": "13000000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "17500000",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "15500000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "354",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
-        "upgradeTimeSeconds": 1274400
+        "UpgradeCost": "22500000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "288",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1036800
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -995,22 +1061,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "84",
+        "UpgradeTimeH": "72",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "5500000",
-        "upgradeTimeSeconds": 302400
+        "UpgradeCost": "4700000",
+        "upgradeTimeSeconds": 259200
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "10000000",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "7000000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 11,
@@ -1020,7 +1086,7 @@
         "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "11500000",
+        "UpgradeCost": "9000000",
         "upgradeTimeSeconds": 604800
       },
       {
@@ -1028,28 +1094,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "252",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16000000",
-        "upgradeTimeSeconds": 907200
+        "UpgradeCost": "11500000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "27000000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "348",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1252800
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1112,11 +1189,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "108",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6000000",
-        "upgradeTimeSeconds": 388800
+        "UpgradeCost": "5500000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 6,
@@ -1156,28 +1233,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "228",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "17000000",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "15000000",
+        "upgradeTimeSeconds": 820800
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28500000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "20000000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29500000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1295,39 +1383,50 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "204",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14000000",
-        "upgradeTimeSeconds": 734400
+        "UpgradeCost": "13500000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18500000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "15500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28500000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28500000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1434,11 +1533,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "10500000",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "7500000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 10,
@@ -1448,7 +1547,7 @@
         "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "12000000",
+        "UpgradeCost": "9500000",
         "upgradeTimeSeconds": 604800
       },
       {
@@ -1456,28 +1555,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16000000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "12000000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "348",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
-        "upgradeTimeSeconds": 1252800
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "276",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 993600
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1551,22 +1661,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6200000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "5500000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "9500000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "8500000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 8,
@@ -1595,28 +1705,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16500000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "15000000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "366",
+        "UpgradeTimeH": "264",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "29000000",
-        "upgradeTimeSeconds": 1317600
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 950400
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29000000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1690,72 +1811,83 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6000000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "5500000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "8600000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "7000000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "156",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "10500000",
-        "upgradeTimeSeconds": 561600
+        "UpgradeCost": "9000000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "168",
+        "UpgradeTimeH": "144",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "12500000",
-        "upgradeTimeSeconds": 604800
+        "UpgradeCost": "10500000",
+        "upgradeTimeSeconds": 518400
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "228",
+        "UpgradeTimeH": "156",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16500000",
-        "upgradeTimeSeconds": 820800
+        "UpgradeCost": "12000000",
+        "upgradeTimeSeconds": 561600
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "348",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
-        "upgradeTimeSeconds": 1252800
+        "UpgradeCost": "19000000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "264",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 950400
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1807,61 +1939,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "11000000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "10500000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "204",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14000000",
-        "upgradeTimeSeconds": 734400
+        "UpgradeCost": "13000000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16000000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "15000000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "20000000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "18000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "288",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "30000000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "22500000",
+        "upgradeTimeSeconds": 1036800
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29500000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -1891,11 +2034,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "108",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "6500000",
-        "upgradeTimeSeconds": 388800
+        "UpgradeCost": "6000000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 3,
@@ -1924,39 +2067,50 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "198",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14500000",
-        "upgradeTimeSeconds": 712800
+        "UpgradeCost": "14000000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "17000000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "15500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "264",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "27500000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "19000000",
+        "upgradeTimeSeconds": 950400
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "276",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "25000000",
+        "upgradeTimeSeconds": 993600
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2057,6 +2211,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_YETIMITE",
@@ -2070,61 +2235,72 @@
         "TID": "TID_CHARACTER_MECHA_DRAGON",
         "BarrackLevel": "15",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "7500000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "7000000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "12000000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "11000000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "14500000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "13500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "246",
+        "UpgradeTimeH": "228",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "19000000",
-        "upgradeTimeSeconds": 885600
+        "UpgradeCost": "17500000",
+        "upgradeTimeSeconds": 820800
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "29500000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28500000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2143,50 +2319,61 @@
         "TID": "TID_CHARACTER_ELECTRO_TITAN",
         "BarrackLevel": "16",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "14000000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "11500000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "16000000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "13500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18500000",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "15500000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "30000000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "18000000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "288",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1036800
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2205,39 +2392,50 @@
         "TID": "TID_CHARACTER_TREANT",
         "BarrackLevel": "17",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "15000000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "14000000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "17600000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "16000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "300",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "30000000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "23000000",
+        "upgradeTimeSeconds": 1080000
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29000000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2256,39 +2454,50 @@
         "TID": "TID_CHARACTER_THROWER",
         "BarrackLevel": "18",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "228",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "16000000",
-        "upgradeTimeSeconds": 820800
+        "UpgradeCost": "15500000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "252",
+        "UpgradeTimeH": "228",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 907200
+        "UpgradeCost": "16000000",
+        "upgradeTimeSeconds": 820800
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "27000000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "20500000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "29500000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2307,28 +2516,39 @@
         "TID": "TID_METEOR_GOLEM",
         "BarrackLevel": "19",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "0",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "28000000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "20000000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "0",
         "UpgradeResource": "",
-        "UpgradeCost": "30000000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "22000000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "0",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2366,6 +2586,17 @@
       },
       {
         "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -2414,6 +2645,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_METEOR_GOLEM",
@@ -2446,6 +2688,17 @@
       },
       {
         "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -2544,17 +2797,28 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "72",
+        "UpgradeTimeH": "60",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "75000",
-        "upgradeTimeSeconds": 259200
+        "UpgradeCost": "60000",
+        "upgradeTimeSeconds": 216000
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
+        "UpgradeTimeH": "84",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "80000",
+        "upgradeTimeSeconds": 302400
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "12",
         "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2562,54 +2826,54 @@
         "upgradeTimeSeconds": 345600
       },
       {
-        "level": 10,
-        "TID": "",
-        "BarrackLevel": "",
-        "LaboratoryLevel": "12",
-        "UpgradeTimeH": "108",
-        "UpgradeTimeM": "",
-        "UpgradeResource": "",
-        "UpgradeCost": "115000",
-        "upgradeTimeSeconds": 388800
-      },
-      {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "160000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "120000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "144",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "220000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "150000",
+        "upgradeTimeSeconds": 518400
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "335000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "280000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "430000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2727,61 +2991,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "107500",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "95000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "125000",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "115000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "156",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "175000",
-        "upgradeTimeSeconds": 561600
+        "UpgradeCost": "135000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "156",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "240000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "155000",
+        "upgradeTimeSeconds": 561600
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "348",
+        "UpgradeTimeH": "252",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "340000",
-        "upgradeTimeSeconds": 1252800
+        "UpgradeCost": "285000",
+        "upgradeTimeSeconds": 907200
       },
       {
         "level": 15,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "440000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -2866,61 +3141,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "72",
+        "UpgradeTimeH": "66",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "77500",
-        "upgradeTimeSeconds": 259200
+        "UpgradeCost": "70000",
+        "upgradeTimeSeconds": 237600
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "108",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "105000",
-        "upgradeTimeSeconds": 388800
+        "UpgradeCost": "95000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "120000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "110000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "170000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "140000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "228",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "340000",
-        "upgradeTimeSeconds": 1209600
+        "UpgradeCost": "235000",
+        "upgradeTimeSeconds": 820800
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
+        "UpgradeTimeH": "252",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "370000",
+        "upgradeTimeSeconds": 907200
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3038,61 +3324,72 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "105000",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "95000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "122500",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "110000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 12,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "175000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "135000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 13,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "156",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "230000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "160000",
+        "upgradeTimeSeconds": 561600
       },
       {
         "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "348",
+        "UpgradeTimeH": "252",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "350000",
-        "upgradeTimeSeconds": 1252800
+        "UpgradeCost": "295000",
+        "upgradeTimeSeconds": 907200
       },
       {
         "level": 15,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "455000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3270,6 +3567,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_GOLEM_SEC",
@@ -3327,39 +3635,50 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "108",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "150000",
-        "upgradeTimeSeconds": 475200
+        "UpgradeCost": "125000",
+        "upgradeTimeSeconds": 388800
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "174",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "180000",
-        "upgradeTimeSeconds": 626400
+        "UpgradeCost": "175000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "355000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "300000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "348",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "460000",
+        "upgradeTimeSeconds": 1252800
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3440,11 +3759,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "60000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "50000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 5,
@@ -3462,28 +3781,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "200000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "190000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "366",
+        "UpgradeTimeH": "252",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "345000",
-        "upgradeTimeSeconds": 1317600
+        "UpgradeCost": "285000",
+        "upgradeTimeSeconds": 907200
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "264",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "375000",
+        "upgradeTimeSeconds": 950400
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3602,6 +3932,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_AD_SEEKER",
@@ -3648,22 +3989,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "85000",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "75000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "132",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "110000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "100000",
+        "upgradeTimeSeconds": 475200
       },
       {
         "level": 6,
@@ -3692,28 +4033,39 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "240",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 864000
+        "UpgradeCost": "205000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "360000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "245000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 10,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "276",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "385000",
+        "upgradeTimeSeconds": 993600
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3754,66 +4106,66 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "78",
+        "UpgradeTimeH": "72",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
         "UpgradeCost": "50000",
-        "upgradeTimeSeconds": 280800
+        "upgradeTimeSeconds": 259200
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "96",
+        "UpgradeTimeH": "84",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "62500",
-        "upgradeTimeSeconds": 345600
+        "UpgradeCost": "55000",
+        "upgradeTimeSeconds": 302400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "156",
+        "UpgradeTimeH": "144",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "110000",
-        "upgradeTimeSeconds": 561600
+        "UpgradeCost": "100000",
+        "upgradeTimeSeconds": 518400
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "140000",
-        "upgradeTimeSeconds": 648000
+        "UpgradeCost": "130000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 7,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "180000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "170000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 8,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "254",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "280000",
-        "upgradeTimeSeconds": 914400
+        "UpgradeCost": "225000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 9,
@@ -3944,11 +4296,11 @@
         "TID": "TID_CHARACTER_HEADHUNTER",
         "BarrackLevel": "9",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "120",
+        "UpgradeTimeH": "96",
         "UpgradeTimeM": "",
         "UpgradeResource": "DarkElixir",
-        "UpgradeCost": "57500",
-        "upgradeTimeSeconds": 432000
+        "UpgradeCost": "45000",
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 2,
@@ -3966,17 +4318,28 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "370000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "275000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "425000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -3995,33 +4358,33 @@
         "TID": "TID_CHARACTER_APPRENTICE_WARDEN",
         "BarrackLevel": "10",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "144",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "DarkElixir",
-        "UpgradeCost": "90000",
-        "upgradeTimeSeconds": 518400
+        "UpgradeCost": "75000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "135000",
-        "upgradeTimeSeconds": 648000
+        "UpgradeCost": "125000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "160000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "150000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 4,
@@ -4046,61 +4409,72 @@
         "TID": "TID_CHARACTER_SHAPESHIFTER_DRUID",
         "BarrackLevel": "11",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "DarkElixir",
-        "UpgradeCost": "125000",
-        "upgradeTimeSeconds": 691200
+        "UpgradeCost": "110000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "180",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "175000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "130000",
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "192",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "187500",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "150000",
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "288",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "300000",
-        "upgradeTimeSeconds": 1036800
+        "UpgradeCost": "215000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "300",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "380000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "340000",
+        "upgradeTimeSeconds": 1080000
       },
       {
         "level": 6,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "415000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -4179,6 +4553,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_SHAPESHIFTER_DRUID_BEAR",
@@ -4192,44 +4577,44 @@
         "TID": "TID_CHARACTER_FURNACE",
         "BarrackLevel": "12",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "DarkElixir",
-        "UpgradeCost": "200000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "175000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "200000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "320000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "265000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "380000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_FURNACE",
@@ -4489,6 +4874,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_ELITE_BARBARIAN",
@@ -4598,6 +4994,17 @@
       },
       {
         "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -4723,6 +5130,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_ELITE_GIANT",
@@ -4788,6 +5206,17 @@
       },
       {
         "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -4913,6 +5342,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_ELITE_WALLBREAKER",
@@ -5011,6 +5451,17 @@
       },
       {
         "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -5128,6 +5579,17 @@
       },
       {
         "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -5256,6 +5718,17 @@
       },
       {
         "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -5403,6 +5876,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_INFERNO_DRAGON",
@@ -5542,6 +6026,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_SUPER_MINER",
@@ -5637,6 +6132,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_SUPER_YETI",
@@ -5724,6 +6230,17 @@
       },
       {
         "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -5860,6 +6377,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_SUPER_MINION",
@@ -5980,6 +6508,17 @@
       },
       {
         "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -6127,6 +6666,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_SUPER_HOG_RIDER",
@@ -6258,6 +6808,17 @@
       },
       {
         "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -6405,6 +6966,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_HOGLESS_RIDER",
@@ -6544,6 +7116,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_SUPER_VALKYRIE",
@@ -6631,6 +7214,17 @@
       },
       {
         "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -6752,6 +7346,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_ICE_HOUND",
@@ -6857,6 +7462,17 @@
       },
       {
         "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -6982,6 +7598,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_SUPER_BOWLER",
@@ -7039,11 +7666,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "240",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "17500000",
+        "upgradeTimeSeconds": 864000
       },
       {
         "level": 6,
@@ -7112,11 +7739,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "252",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "18500000",
+        "upgradeTimeSeconds": 907200
       },
       {
         "level": 6,
@@ -7185,11 +7812,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "264",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "19500000",
+        "upgradeTimeSeconds": 950400
       },
       {
         "level": 6,
@@ -7247,22 +7874,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "288",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 1036800
+        "UpgradeCost": "14500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "276",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "27000000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "20500000",
+        "upgradeTimeSeconds": 993600
       },
       {
         "level": 6,
@@ -7320,22 +7947,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "288",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 1036800
+        "UpgradeCost": "14500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "360",
+        "UpgradeTimeH": "288",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "27000000",
-        "upgradeTimeSeconds": 1296000
+        "UpgradeCost": "21500000",
+        "upgradeTimeSeconds": 1036800
       },
       {
         "level": 6,
@@ -7393,17 +8020,28 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "288",
+        "UpgradeTimeH": "204",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 1036800
+        "UpgradeCost": "14500000",
+        "upgradeTimeSeconds": 734400
       },
       {
         "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "14",
+        "UpgradeTimeH": "360",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "31000000",
+        "upgradeTimeSeconds": 1296000
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -7466,11 +8104,11 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "312",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "24500000",
+        "upgradeTimeSeconds": 1123200
       },
       {
         "level": 6,
@@ -7608,44 +8246,99 @@
         "TID": "TID_MELEE_AREA_GUARDIAN",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
-        "UpgradeTimeH": "168",
+        "UpgradeTimeH": "120",
         "UpgradeTimeM": "",
         "UpgradeResource": "Elixir",
-        "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 604800
+        "UpgradeCost": "13000000",
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 2,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
-        "UpgradeTimeH": "216",
+        "UpgradeTimeH": "168",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "22000000",
-        "upgradeTimeSeconds": 777600
+        "UpgradeCost": "16000000",
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
-        "UpgradeTimeH": "264",
+        "UpgradeTimeH": "216",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 950400
+        "UpgradeCost": "19000000",
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
+        "UpgradeTimeH": "264",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "21500000",
+        "upgradeTimeSeconds": 950400
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "288",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "24000000",
+        "upgradeTimeSeconds": 1036800
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "25000000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
         "UpgradeTimeH": "312",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
+        "UpgradeCost": "26000000",
         "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "27000000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1209600
       },
       {
         "level": 5,
@@ -8268,7 +8961,7 @@
       {
         "level": 1,
         "TID": "TID_PUMPKIN_BARBARIAN",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -8568,7 +9261,7 @@
       {
         "level": 1,
         "TID": "TID_GIANT_SKELETON",
-        "BarrackLevel": "3",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -8718,7 +9411,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_SKELETON_BARREL",
-        "BarrackLevel": "6",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -9318,7 +10011,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_BARCHER",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -9468,7 +10161,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_GRAVE_GOLEM",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -9786,7 +10479,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_HOG_WIZARD",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -9936,7 +10629,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_LAVALOON",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -11286,7 +11979,7 @@
       {
         "level": 1,
         "TID": "TID_ICEMINION",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -11586,7 +12279,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_SNAKE_BARREL",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -12120,7 +12813,7 @@
       {
         "level": 1,
         "TID": "TID_CHARACTER_APRIL25TBRM",
-        "BarrackLevel": "1",
+        "BarrackLevel": "",
         "LaboratoryLevel": "1",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
@@ -13798,6 +14491,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "",
@@ -13987,6 +14691,17 @@
         "UpgradeResource": "Elixir",
         "UpgradeCost": "50000",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_BAT",
@@ -14048,6 +14763,17 @@
       },
       {
         "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -14642,17 +15368,28 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "372",
+        "UpgradeTimeH": "312",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "380000",
-        "upgradeTimeSeconds": 1339200
+        "UpgradeCost": "355000",
+        "upgradeTimeSeconds": 1123200
       },
       {
         "level": 4,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "435000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
         "UpgradeTimeH": "",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
@@ -14773,6 +15510,17 @@
       },
       {
         "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "",
@@ -18080,22 +18828,22 @@
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "15",
-        "UpgradeTimeH": "324",
+        "UpgradeTimeH": "312",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "26000000",
-        "upgradeTimeSeconds": 1166400
+        "UpgradeCost": "25000000",
+        "upgradeTimeSeconds": 1123200
       },
       {
         "level": 3,
         "TID": "",
         "BarrackLevel": "",
         "LaboratoryLevel": "16",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "324",
         "UpgradeTimeM": "",
         "UpgradeResource": "",
-        "UpgradeCost": "29000000",
-        "upgradeTimeSeconds": 1382400
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1166400
       },
       {
         "level": 4,
@@ -18586,6 +19334,17 @@
         "UpgradeResource": "",
         "UpgradeCost": "",
         "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
     "tid": "TID_CHARACTER_RUIN_WITCH",
@@ -19051,5 +19810,1682 @@
     ],
     "tid": "TID_CHARACTER_TOTEM_THROWER",
     "id": 4000194
+  },
+  {
+    "internalName": "Barcher Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_BARCHER_SQUAD",
+        "BarrackLevel": "1",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "264",
+        "UpgradeTimeM": "0",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "23500000",
+        "upgradeTimeSeconds": 950400
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "372",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32500000",
+        "upgradeTimeSeconds": 1339200
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_BARCHER_SQUAD",
+    "id": 4000195
+  },
+  {
+    "internalName": "Giant Wizard Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_GIANT_WIZARD_SQUAD",
+        "BarrackLevel": "2",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "288",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "25000000",
+        "upgradeTimeSeconds": 1036800
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "384",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32500000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_GIANT_WIZARD_SQUAD",
+    "id": 4000196
+  },
+  {
+    "internalName": "Wall Breaker Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_WALL_BREAKER_SQUAD",
+        "BarrackLevel": "3",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "252",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "23000000",
+        "upgradeTimeSeconds": 907200
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "30500000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_WALL_BREAKER_SQUAD",
+    "id": 4000197
+  },
+  {
+    "internalName": "Minion Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_MINION_SQUAD",
+        "BarrackLevel": "4",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "276",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "DarkElixir",
+        "UpgradeCost": "370000",
+        "upgradeTimeSeconds": 993600
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "465000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_MINION_SQUAD",
+    "id": 4000198
+  },
+  {
+    "internalName": "Balloon Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_BALLOON_SQUAD",
+        "BarrackLevel": "5",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "28500000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "372",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1339200
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_BALLOON_SQUAD",
+    "id": 4000199
+  },
+  {
+    "internalName": "Golemwitch Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_GOLEMWITCH_SQUAD",
+        "BarrackLevel": "6",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "DarkElixir",
+        "UpgradeCost": "420000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "384",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_GOLEMWITCH_SQUAD",
+    "id": 4000200
+  },
+  {
+    "internalName": "Hog Rider Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_HOG_RIDER_SQUAD",
+        "BarrackLevel": "7",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "300",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "DarkElixir",
+        "UpgradeCost": "415000",
+        "upgradeTimeSeconds": 1080000
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "360",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "480000",
+        "upgradeTimeSeconds": 1296000
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_HOG_RIDER_SQUAD",
+    "id": 4000201
+  },
+  {
+    "internalName": "Miner Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_MINER_SQUAD",
+        "BarrackLevel": "8",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "240",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "21000000",
+        "upgradeTimeSeconds": 864000
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "324",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "30500000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_MINER_SQUAD",
+    "id": 4000202
+  },
+  {
+    "internalName": "Healer Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_HEALER_SQUAD",
+        "BarrackLevel": "9",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "330",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "29000000",
+        "upgradeTimeSeconds": 1188000
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "378",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1360800
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_HEALER_SQUAD",
+    "id": 4000203
+  },
+  {
+    "internalName": "PEKKA Etitan Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_PEKKA_ETITAN_SQUAD",
+        "BarrackLevel": "10",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "318",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1144800
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "366",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1317600
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_PEKKA_ETITAN_SQUAD",
+    "id": 4000204
+  },
+  {
+    "internalName": "Dragon Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_DRAGON_SQUAD",
+        "BarrackLevel": "11",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "336",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "29500000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "384",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_DRAGON_SQUAD",
+    "id": 4000205
+  },
+  {
+    "internalName": "Baby Dragon Squad",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_BABY_DRAGON_SQUAD",
+        "BarrackLevel": "12",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "312",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "27500000",
+        "upgradeTimeSeconds": 1123200
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "360",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "upgradeTimeSeconds": 1296000
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "17",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_BABY_DRAGON_SQUAD",
+    "id": 4000206
+  },
+  {
+    "internalName": "Seasonal Defense Spear Goblin",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_SPEAR_GOBLIN",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_SPEAR_GOBLIN",
+    "id": 4000207
+  },
+  {
+    "internalName": "Christmas Yeti",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_CHRISTMAS_YETI",
+        "BarrackLevel": "0",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 19,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_CHRISTMAS_YETI",
+    "id": 4000208
+  },
+  {
+    "internalName": "ChristmasYetiMite",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_CHRISTMAS_YETI_MITE",
+        "BarrackLevel": "1",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 19,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_CHRISTMAS_YETI_MITE",
+    "id": 4000209
+  },
+  {
+    "internalName": "FireGoat",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_FIRE_GOAT",
+        "BarrackLevel": "0",
+        "LaboratoryLevel": "1",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 19,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_FIRE_GOAT",
+    "id": 4000210
+  },
+  {
+    "internalName": "FireGoatMini",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_FIRE_GOAT_MINI",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 19,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_FIRE_GOAT_MINI",
+    "id": 4000211
+  },
+  {
+    "internalName": "FireGoatAdult",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "TID_CHARACTER_FIRE_GOAT",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 19,
+        "TID": "",
+        "BarrackLevel": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeTimeM": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "TID_CHARACTER_FIRE_GOAT",
+    "id": 4000212
   }
 ]

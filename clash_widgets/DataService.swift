@@ -215,9 +215,18 @@ class DataService: ObservableObject {
         let buildResource: String
     }
 
-    private static let highestWallLevelUnlockedCountsByWallLevel: [Int: Int] = [
-        19: 325
-    ]
+    private static let highestWallLevelUnlockedCountsByWallLevel: [Int: Int] = {
+        for folder in candidateFolderURLs(named: "json") {
+            let url = folder.appendingPathComponent("game_constants.json")
+            guard let data = try? Data(contentsOf: url),
+                  let json = try? JSONSerialization.jsonObject(with: data) as? [String: Any],
+                  let caps = json["highest_wall_level_unlock_caps"] as? [String: Int] else { continue }
+            return Dictionary(uniqueKeysWithValues: caps.compactMap { key, value in
+                Int(key).map { ($0, value) }
+            })
+        }
+        return [:]
+    }()
 
     var currentProfile: PlayerAccount? {
         if let id = selectedProfileID,
@@ -351,9 +360,18 @@ class DataService: ObservableObject {
         scheduleHelperNotifications()
     }
 
+    // One-entry cache: changing profiles/import content cannot reuse stale data.
+    private var lastDecodedExportInput: String?
+    private var lastDecodedExport: CoCExport?
+
     func decodeExport(from rawJSON: String) -> CoCExport? {
-        guard let data = sanitizedClipboardData(from: rawJSON) else { return nil }
-        return try? JSONDecoder().decode(CoCExport.self, from: data)
+        if lastDecodedExportInput == rawJSON { return lastDecodedExport }
+        let decoded = sanitizedClipboardData(from: rawJSON).flatMap {
+            try? JSONDecoder().decode(CoCExport.self, from: $0)
+        }
+        lastDecodedExportInput = rawJSON
+        lastDecodedExport = decoded
+        return decoded
     }
 
     enum ClipboardImportResult {
@@ -673,7 +691,9 @@ class DataService: ObservableObject {
 
                 let display = (entry["displayName"] as? String)?.lowercased()
                 let internalName = (entry["internalName"] as? String)?.lowercased()
-                if let display, !display.isEmpty { output[display] = resolvedId }
+                // Exact CSV/internal names take precedence over display aliases
+                // shared by Home Village and Builder Base (e.g. Cannon).
+                if let display, !display.isEmpty, output[display] == nil { output[display] = resolvedId }
                 if let internalName, !internalName.isEmpty { output[internalName] = resolvedId }
             }
             if !output.isEmpty {
@@ -1614,9 +1634,9 @@ class DataService: ObservableObject {
     }
 
     private func loadUpgradeDurations() {
-        if let parsed = Self.loadDurationsFromParsedJSON(), !parsed.isEmpty {
-            upgradeDurations = parsed
-            upgradeDurationIndexing = Self.loadDurationIndexingFromParsedJSON() ?? [:]
+        if let parsed = Self.loadDurationsFromParsedJSON(), !parsed.durations.isEmpty {
+            upgradeDurations = parsed.durations
+            upgradeDurationIndexing = parsed.indexing
             return
         }
 
@@ -1660,7 +1680,7 @@ class DataService: ObservableObject {
         return urls
     }
 
-    private static func loadDurationsFromParsedJSON() -> [Int: [Double]]? {
+    private static func loadDurationsFromParsedJSON() -> (durations: [Int: [Double]], indexing: [Int: DurationIndexing])? {
         let files: [(String, String)] = [
             ("buildings.json", "buildTimeSeconds"),
             ("characters.json", "upgradeTimeSeconds"),
@@ -1674,44 +1694,14 @@ class DataService: ObservableObject {
         ]
 
         var output: [Int: [Double]] = [:]
+        var indexingByID: [Int: DurationIndexing] = [:]
         let folders = candidateFolderURLs(named: "parsed_json_files")
 
         for folder in folders {
             for (fileName, durationKey) in files {
                 let fileURL = folder.appendingPathComponent(fileName)
                 guard let data = try? Data(contentsOf: fileURL) else { continue }
-                if let parsed = parseParsedDurationData(data: data, durationKey: durationKey) {
-                    for (id, durations) in parsed where !durations.isEmpty {
-                        output[id] = durations
-                    }
-                }
-            }
-        }
-
-        return output.isEmpty ? nil : output
-    }
-
-    private static func loadDurationIndexingFromParsedJSON() -> [Int: DurationIndexing]? {
-        let files: [String] = [
-            "buildings.json",
-            "characters.json",
-            "heroes.json",
-            "pets.json",
-            "spells.json",
-            "traps.json",
-            "weapons.json",
-            "mini_levels.json",
-            "seasonal_defense_modules.json"
-        ]
-
-        var output: [Int: DurationIndexing] = [:]
-        let folders = candidateFolderURLs(named: "parsed_json_files")
-
-        for folder in folders {
-            for fileName in files {
-                let fileURL = folder.appendingPathComponent(fileName)
-                guard let data = try? Data(contentsOf: fileURL) else { continue }
-                guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { continue }
+                guard let raw = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { continue }
                 let indexing: DurationIndexing = currentLevelDurationFiles.contains(fileName) ? .currentLevel : .targetLevel
                 for entry in raw {
                     guard let idValue = entry["id"] else { continue }
@@ -1720,22 +1710,23 @@ class DataService: ObservableObject {
                     else if let n = idValue as? Double { id = Int(n) }
                     else if let s = idValue as? String { id = Int(s) }
                     else { id = nil }
-                    guard let resolvedId = id else { continue }
-                    if output[resolvedId] == nil {
-                        output[resolvedId] = indexing
+                    if let id, indexingByID[id] == nil { indexingByID[id] = indexing }
+                }
+                if let parsed = parseParsedDurationData(raw: raw, durationKey: durationKey) {
+                    for (id, durations) in parsed where !durations.isEmpty {
+                        output[id] = durations
                     }
                 }
             }
         }
 
-        return output.isEmpty ? nil : output
+        return output.isEmpty ? nil : (output, indexingByID)
     }
 
     private static func parseParsedDurationData(
-        data: Data,
+        raw: [[String: Any]],
         durationKey: String
     ) -> [Int: [Double]]? {
-        guard let raw = try? JSONSerialization.jsonObject(with: data, options: []) as? [[String: Any]] else { return nil }
         var parsed: [Int: [Double]] = [:]
 
         for entry in raw {
@@ -2315,6 +2306,7 @@ class DataService: ObservableObject {
             }
         }
 
+        output.merge(UpgradePresentationCatalog.shared.namesByID) { _, canonical in canonical }
         return output
     }
 

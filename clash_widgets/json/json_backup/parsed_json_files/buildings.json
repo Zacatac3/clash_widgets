@@ -144,7 +144,7 @@
       {
         "level": 18,
         "exportName": "town_hall_lvl18_t1",
-        "buildTimeSeconds": 1209600,
+        "buildTimeSeconds": 1036800,
         "buildResource": "",
         "buildCost": 25000000,
         "townHallLevel": 17
@@ -256,7 +256,7 @@
       {
         "level": 13,
         "exportName": "alliance_castle_lvl13",
-        "buildTimeSeconds": 950400,
+        "buildTimeSeconds": 864000,
         "buildResource": "",
         "buildCost": 19000000,
         "townHallLevel": 17
@@ -376,7 +376,7 @@
       {
         "level": 13,
         "exportName": "gold_storage_lvl13",
-        "buildTimeSeconds": 86400,
+        "buildTimeSeconds": 64800,
         "buildResource": "",
         "buildCost": 1800000,
         "townHallLevel": 12
@@ -384,7 +384,7 @@
       {
         "level": 14,
         "exportName": "gold_storage_lvl14",
-        "buildTimeSeconds": 172800,
+        "buildTimeSeconds": 86400,
         "buildResource": "",
         "buildCost": 2800000,
         "townHallLevel": 13
@@ -392,7 +392,7 @@
       {
         "level": 15,
         "exportName": "gold_storage_lvl15",
-        "buildTimeSeconds": 259200,
+        "buildTimeSeconds": 172800,
         "buildResource": "",
         "buildCost": 3000000,
         "townHallLevel": 14
@@ -400,7 +400,7 @@
       {
         "level": 16,
         "exportName": "gold_storage_lvl16",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 259200,
         "buildResource": "",
         "buildCost": 4000000,
         "townHallLevel": 15
@@ -408,7 +408,7 @@
       {
         "level": 17,
         "exportName": "gold_storage_lvl17",
-        "buildTimeSeconds": 432000,
+        "buildTimeSeconds": 345600,
         "buildResource": "",
         "buildCost": 5500000,
         "townHallLevel": 16
@@ -416,7 +416,7 @@
       {
         "level": 18,
         "exportName": "gold_storage_lvl18",
-        "buildTimeSeconds": 604800,
+        "buildTimeSeconds": 432000,
         "buildResource": "",
         "buildCost": 10000000,
         "townHallLevel": 17
@@ -536,7 +536,7 @@
       {
         "level": 13,
         "exportName": "elixir_storage_level13",
-        "buildTimeSeconds": 86400,
+        "buildTimeSeconds": 64800,
         "buildResource": "",
         "buildCost": 1800000,
         "townHallLevel": 12
@@ -544,7 +544,7 @@
       {
         "level": 14,
         "exportName": "elixir_storage_level14",
-        "buildTimeSeconds": 172800,
+        "buildTimeSeconds": 86400,
         "buildResource": "",
         "buildCost": 2800000,
         "townHallLevel": 13
@@ -552,7 +552,7 @@
       {
         "level": 15,
         "exportName": "elixir_storage_level15",
-        "buildTimeSeconds": 259200,
+        "buildTimeSeconds": 172800,
         "buildResource": "",
         "buildCost": 3000000,
         "townHallLevel": 14
@@ -560,7 +560,7 @@
       {
         "level": 16,
         "exportName": "elixir_storage_level16",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 259200,
         "buildResource": "",
         "buildCost": 4000000,
         "townHallLevel": 15
@@ -568,7 +568,7 @@
       {
         "level": 17,
         "exportName": "elixir_storage_level17",
-        "buildTimeSeconds": 432000,
+        "buildTimeSeconds": 345600,
         "buildResource": "",
         "buildCost": 5500000,
         "townHallLevel": 16
@@ -576,7 +576,7 @@
       {
         "level": 18,
         "exportName": "elixir_storage_level18",
-        "buildTimeSeconds": 604800,
+        "buildTimeSeconds": 432000,
         "buildResource": "",
         "buildCost": 10000000,
         "townHallLevel": 17
@@ -688,7 +688,7 @@
       {
         "level": 12,
         "exportName": "darkelixir_storage_level12",
-        "buildTimeSeconds": 777600,
+        "buildTimeSeconds": 604800,
         "buildResource": "",
         "buildCost": 16000000,
         "townHallLevel": 17
@@ -776,7 +776,7 @@
       {
         "level": 9,
         "exportName": "goldmine_lvl9",
-        "buildTimeSeconds": 7200,
+        "buildTimeSeconds": 5400,
         "buildResource": "",
         "buildCost": 56000,
         "townHallLevel": 5
@@ -784,7 +784,7 @@
       {
         "level": 10,
         "exportName": "goldmine_lvl10",
-        "buildTimeSeconds": 10800,
+        "buildTimeSeconds": 7200,
         "buildResource": "",
         "buildCost": 75000,
         "townHallLevel": 5
@@ -792,7 +792,7 @@
       {
         "level": 11,
         "exportName": "goldmine_lvl11",
-        "buildTimeSeconds": 14400,
+        "buildTimeSeconds": 10800,
         "buildResource": "",
         "buildCost": 85000,
         "townHallLevel": 7
@@ -800,7 +800,7 @@
       {
         "level": 12,
         "exportName": "goldmine_lvl12",
-        "buildTimeSeconds": 21600,
+        "buildTimeSeconds": 14400,
         "buildResource": "",
         "buildCost": 170000,
         "townHallLevel": 8
@@ -808,7 +808,7 @@
       {
         "level": 13,
         "exportName": "goldmine_lvl13",
-        "buildTimeSeconds": 28800,
+        "buildTimeSeconds": 18000,
         "buildResource": "",
         "buildCost": 400000,
         "townHallLevel": 10
@@ -816,7 +816,7 @@
       {
         "level": 14,
         "exportName": "goldmine_lvl14",
-        "buildTimeSeconds": 36000,
+        "buildTimeSeconds": 21600,
         "buildResource": "",
         "buildCost": 800000,
         "townHallLevel": 11
@@ -824,7 +824,7 @@
       {
         "level": 15,
         "exportName": "goldmine_lvl15",
-        "buildTimeSeconds": 64800,
+        "buildTimeSeconds": 36000,
         "buildResource": "",
         "buildCost": 1200000,
         "townHallLevel": 12
@@ -832,7 +832,7 @@
       {
         "level": 16,
         "exportName": "goldmine_lvl16",
-        "buildTimeSeconds": 172800,
+        "buildTimeSeconds": 86400,
         "buildResource": "",
         "buildCost": 2000000,
         "townHallLevel": 14
@@ -840,7 +840,7 @@
       {
         "level": 17,
         "exportName": "goldmine_lvl17",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 172800,
         "buildResource": "",
         "buildCost": 8000000,
         "townHallLevel": 16
@@ -920,7 +920,7 @@
       {
         "level": 9,
         "exportName": "elixir_pump_lvl9",
-        "buildTimeSeconds": 7200,
+        "buildTimeSeconds": 5400,
         "buildResource": "",
         "buildCost": 56000,
         "townHallLevel": 5
@@ -928,7 +928,7 @@
       {
         "level": 10,
         "exportName": "elixir_pump_lvl10",
-        "buildTimeSeconds": 10800,
+        "buildTimeSeconds": 7200,
         "buildResource": "",
         "buildCost": 75000,
         "townHallLevel": 5
@@ -936,7 +936,7 @@
       {
         "level": 11,
         "exportName": "elixir_pump_lvl11",
-        "buildTimeSeconds": 14400,
+        "buildTimeSeconds": 10800,
         "buildResource": "",
         "buildCost": 85000,
         "townHallLevel": 7
@@ -944,7 +944,7 @@
       {
         "level": 12,
         "exportName": "elixir_pump_lvl12",
-        "buildTimeSeconds": 21600,
+        "buildTimeSeconds": 14400,
         "buildResource": "",
         "buildCost": 170000,
         "townHallLevel": 8
@@ -952,7 +952,7 @@
       {
         "level": 13,
         "exportName": "elixir_pump_lvl13",
-        "buildTimeSeconds": 28800,
+        "buildTimeSeconds": 18000,
         "buildResource": "",
         "buildCost": 400000,
         "townHallLevel": 10
@@ -960,7 +960,7 @@
       {
         "level": 14,
         "exportName": "elixir_pump_lvl14",
-        "buildTimeSeconds": 36000,
+        "buildTimeSeconds": 21600,
         "buildResource": "",
         "buildCost": 800000,
         "townHallLevel": 11
@@ -968,7 +968,7 @@
       {
         "level": 15,
         "exportName": "elixir_pump_lvl15",
-        "buildTimeSeconds": 64800,
+        "buildTimeSeconds": 36000,
         "buildResource": "",
         "buildCost": 1200000,
         "townHallLevel": 12
@@ -976,7 +976,7 @@
       {
         "level": 16,
         "exportName": "elixir_pump_lvl16",
-        "buildTimeSeconds": 172800,
+        "buildTimeSeconds": 86400,
         "buildResource": "",
         "buildCost": 2000000,
         "townHallLevel": 14
@@ -984,7 +984,7 @@
       {
         "level": 17,
         "exportName": "elixir_pump_lvl17",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 172800,
         "buildResource": "",
         "buildCost": 8000000,
         "townHallLevel": 16
@@ -1192,10 +1192,18 @@
       {
         "level": 13,
         "exportName": "fireplace_lvl13",
-        "buildTimeSeconds": 864000,
+        "buildTimeSeconds": 648000,
         "buildResource": "",
         "buildCost": 17000000,
         "townHallLevel": 17
+      },
+      {
+        "level": 14,
+        "exportName": "fireplace_lvl14",
+        "buildTimeSeconds": 1296000,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 18
       }
     ]
   },
@@ -1488,7 +1496,7 @@
       {
         "level": 19,
         "exportName": "barracks_lvl19",
-        "buildTimeSeconds": 1209600,
+        "buildTimeSeconds": 907200,
         "buildResource": "",
         "buildCost": 26000000,
         "townHallLevel": 17
@@ -1592,10 +1600,18 @@
       {
         "level": 12,
         "exportName": "darkBarracks_lvl12",
-        "buildTimeSeconds": 1036800,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 20000000,
         "townHallLevel": 15
+      },
+      {
+        "level": 13,
+        "exportName": "darkBarracks_lvl13",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 23000000,
+        "townHallLevel": 16
       }
     ]
   },
@@ -1672,7 +1688,7 @@
       {
         "level": 9,
         "exportName": "spell_factory_lvl9",
-        "buildTimeSeconds": 1123200,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 24000000,
         "townHallLevel": 16
@@ -1740,6 +1756,14 @@
         "buildResource": "",
         "buildCost": 11000000,
         "townHallLevel": 14
+      },
+      {
+        "level": 8,
+        "exportName": "mini_spell_distillery_lvl8",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 15
       }
     ]
   },
@@ -1812,6 +1836,14 @@
         "buildResource": "",
         "buildCost": 13000000,
         "townHallLevel": 16
+      },
+      {
+        "level": 9,
+        "exportName": "siegeWorkshop_lvl9",
+        "buildTimeSeconds": 1166400,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 17
       }
     ]
   },
@@ -1824,10 +1856,10 @@
       {
         "level": 1,
         "exportName": "hero_inn_lvl1",
-        "buildTimeSeconds": 86400,
+        "buildTimeSeconds": 3600,
         "buildResource": "Elixir",
-        "buildCost": 800000,
-        "townHallLevel": 7
+        "buildCost": 30000,
+        "townHallLevel": 4
       },
       {
         "level": 2,
@@ -1904,7 +1936,7 @@
       {
         "level": 11,
         "exportName": "hero_inn_lvl11",
-        "buildTimeSeconds": 820800,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 17000000,
         "townHallLevel": 17
@@ -2008,7 +2040,7 @@
       {
         "level": 11,
         "exportName": "pet_house_lvl11",
-        "buildTimeSeconds": 777600,
+        "buildTimeSeconds": 691200,
         "buildResource": "",
         "buildCost": 16500000,
         "townHallLevel": 17
@@ -2100,6 +2132,14 @@
         "buildResource": "",
         "buildCost": 11000000,
         "townHallLevel": 16
+      },
+      {
+        "level": 10,
+        "exportName": "",
+        "buildTimeSeconds": 864000,
+        "buildResource": "",
+        "buildCost": 18000000,
+        "townHallLevel": 17
       }
     ]
   },
@@ -2160,10 +2200,18 @@
       {
         "level": 7,
         "exportName": "worker_building_armed_lvl6",
-        "buildTimeSeconds": 820800,
+        "buildTimeSeconds": 604800,
         "buildResource": "",
         "buildCost": 15500000,
         "townHallLevel": 17
+      },
+      {
+        "level": 8,
+        "exportName": "worker_building_armed_lvl7",
+        "buildTimeSeconds": 1123200,
+        "buildResource": "",
+        "buildCost": 24000000,
+        "townHallLevel": 18
       }
     ]
   },
@@ -2848,7 +2896,7 @@
       {
         "level": 17,
         "exportName": "mortar_lvl17",
-        "buildTimeSeconds": 691200,
+        "buildTimeSeconds": 432000,
         "buildResource": "",
         "buildCost": 13000000,
         "townHallLevel": 17
@@ -2984,7 +3032,7 @@
       {
         "level": 15,
         "exportName": "fireworks_tower_lvl15",
-        "buildTimeSeconds": 820800,
+        "buildTimeSeconds": 604800,
         "buildResource": "",
         "buildCost": 15000000,
         "townHallLevel": 17
@@ -3136,7 +3184,7 @@
       {
         "level": 17,
         "exportName": "wizard_tower_lvl21",
-        "buildTimeSeconds": 734400,
+        "buildTimeSeconds": 475200,
         "buildResource": "",
         "buildCost": 14000000,
         "townHallLevel": 17
@@ -3272,7 +3320,7 @@
       {
         "level": 16,
         "exportName": "teslatower_lvl16_setup",
-        "buildTimeSeconds": 777600,
+        "buildTimeSeconds": 604800,
         "buildResource": "",
         "buildCost": 15000000,
         "townHallLevel": 17
@@ -3416,7 +3464,7 @@
       {
         "level": 8,
         "exportName": "bomb_tower_lvl8",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 302400,
         "buildResource": "",
         "buildCost": 5000000,
         "townHallLevel": 13
@@ -3424,7 +3472,7 @@
       {
         "level": 9,
         "exportName": "bomb_tower_lvl9",
-        "buildTimeSeconds": 388800,
+        "buildTimeSeconds": 345600,
         "buildResource": "",
         "buildCost": 6000000,
         "townHallLevel": 14
@@ -3432,7 +3480,7 @@
       {
         "level": 10,
         "exportName": "bomb_tower_lvl10",
-        "buildTimeSeconds": 410400,
+        "buildTimeSeconds": 388800,
         "buildResource": "",
         "buildCost": 7000000,
         "townHallLevel": 15
@@ -3448,7 +3496,7 @@
       {
         "level": 12,
         "exportName": "bomb_tower_lvl12",
-        "buildTimeSeconds": 777600,
+        "buildTimeSeconds": 604800,
         "buildResource": "",
         "buildCost": 14500000,
         "townHallLevel": 17
@@ -3496,7 +3544,7 @@
       {
         "level": 4,
         "exportName": "rapidfire_turret_lvl4",
-        "buildTimeSeconds": 259200,
+        "buildTimeSeconds": 216000,
         "buildResource": "",
         "buildCost": 2500000,
         "townHallLevel": 10
@@ -3504,7 +3552,7 @@
       {
         "level": 5,
         "exportName": "rapidfire_turret_lvl5",
-        "buildTimeSeconds": 302400,
+        "buildTimeSeconds": 259200,
         "buildResource": "",
         "buildCost": 3900000,
         "townHallLevel": 11
@@ -3512,7 +3560,7 @@
       {
         "level": 6,
         "exportName": "rapidfire_turret_lvl6",
-        "buildTimeSeconds": 345600,
+        "buildTimeSeconds": 302400,
         "buildResource": "",
         "buildCost": 5000000,
         "townHallLevel": 12
@@ -3520,7 +3568,7 @@
       {
         "level": 7,
         "exportName": "rapidfire_turret_lvl7",
-        "buildTimeSeconds": 367200,
+        "buildTimeSeconds": 345600,
         "buildResource": "",
         "buildCost": 6000000,
         "townHallLevel": 13
@@ -3560,10 +3608,18 @@
       {
         "level": 12,
         "exportName": "rapidfire_turret_lvl12",
-        "buildTimeSeconds": 907200,
+        "buildTimeSeconds": 691200,
         "buildResource": "",
         "buildCost": 16000000,
         "townHallLevel": 17
+      },
+      {
+        "level": 13,
+        "exportName": "rapidfire_turret_lvl13",
+        "buildTimeSeconds": 1166400,
+        "buildResource": "",
+        "buildCost": 26000000,
+        "townHallLevel": 18
       }
     ]
   },
@@ -3656,7 +3712,7 @@
       {
         "level": 11,
         "exportName": "dark_tower_lvl11",
-        "buildTimeSeconds": 1036800,
+        "buildTimeSeconds": 691200,
         "buildResource": "",
         "buildCost": 16000000,
         "townHallLevel": 17
@@ -3744,7 +3800,7 @@
       {
         "level": 1,
         "exportName": "ice_breaker_lvl1",
-        "buildTimeSeconds": 518400,
+        "buildTimeSeconds": 432000,
         "buildResource": "Gold",
         "buildCost": 8000000,
         "townHallLevel": 13
@@ -3784,10 +3840,18 @@
       {
         "level": 6,
         "exportName": "ice_breaker_lvl6",
-        "buildTimeSeconds": 907200,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 16500000,
         "townHallLevel": 17
+      },
+      {
+        "level": 7,
+        "exportName": "ice_breaker_lvl7",
+        "buildTimeSeconds": 1296000,
+        "buildResource": "",
+        "buildCost": 26500000,
+        "townHallLevel": 18
       }
     ]
   },
@@ -3824,7 +3888,7 @@
       {
         "level": 4,
         "exportName": "spell_tower_lvl4_earthquake",
-        "buildTimeSeconds": 1209600,
+        "buildTimeSeconds": 864000,
         "buildResource": "",
         "buildCost": 27000000,
         "townHallLevel": 17
@@ -3864,10 +3928,18 @@
       {
         "level": 4,
         "exportName": "monolith_lvl_4",
-        "buildTimeSeconds": 1036800,
+        "buildTimeSeconds": 950400,
         "buildResource": "",
         "buildCost": 300000,
         "townHallLevel": 17
+      },
+      {
+        "level": 5,
+        "exportName": "monolith_lvl_5",
+        "buildTimeSeconds": 1296000,
+        "buildResource": "",
+        "buildCost": 470000,
+        "townHallLevel": 18
       }
     ]
   },
@@ -3896,7 +3968,7 @@
       {
         "level": 3,
         "exportName": "merged_archer_tower_lvl3",
-        "buildTimeSeconds": 928800,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 17500000,
         "townHallLevel": 17
@@ -3936,7 +4008,7 @@
       {
         "level": 3,
         "exportName": "merged_cannon_lvl3",
-        "buildTimeSeconds": 928800,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 17500000,
         "townHallLevel": 17
@@ -3960,7 +4032,7 @@
       {
         "level": 1,
         "exportName": "merged_cat_archer_lvl1",
-        "buildTimeSeconds": 864000,
+        "buildTimeSeconds": 691200,
         "buildResource": "Gold",
         "buildCost": 17000000,
         "townHallLevel": 17
@@ -3968,7 +4040,7 @@
       {
         "level": 2,
         "exportName": "merged_cat_archer_lvl2",
-        "buildTimeSeconds": 928800,
+        "buildTimeSeconds": 777600,
         "buildResource": "",
         "buildCost": 18000000,
         "townHallLevel": 17
@@ -3992,7 +4064,7 @@
       {
         "level": 1,
         "exportName": "firespitter_lvl1",
-        "buildTimeSeconds": 950400,
+        "buildTimeSeconds": 734400,
         "buildResource": "Gold",
         "buildCost": 17000000,
         "townHallLevel": 17
@@ -4000,7 +4072,7 @@
       {
         "level": 2,
         "exportName": "firespitter_lvl2",
-        "buildTimeSeconds": 993600,
+        "buildTimeSeconds": 864000,
         "buildResource": "",
         "buildCost": 18000000,
         "townHallLevel": 17
@@ -4313,7 +4385,7 @@
   },
   {
     "id": 1000076,
-    "internalName": "PEKKA's Playhouse",
+    "internalName": "PEKKAs Playhouse",
     "tid": "TID_BUILDING_DRAGON_CAVE",
     "buildingClass": "Npc",
     "levels": [
@@ -6913,17 +6985,17 @@
   },
   {
     "id": 1000047,
-    "internalName": "BB UNUSED",
+    "internalName": "BB Builders Hut",
     "tid": "TID_WORKER2_BUILDING",
-    "buildingClass": "Worker2",
+    "buildingClass": "Worker",
     "levels": [
       {
         "level": 1,
-        "exportName": "new_builders_hut",
+        "exportName": "new_builders_hut_boto",
         "buildTimeSeconds": 0,
         "buildResource": "Diamonds",
-        "buildCost": 20000,
-        "townHallLevel": 1000
+        "buildCost": 1000,
+        "townHallLevel": 2
       }
     ]
   }

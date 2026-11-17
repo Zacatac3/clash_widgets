@@ -4450,5 +4450,959 @@
       }
     ],
     "id": 102000041
+  },
+  {
+    "internalName": "RocketArtilleryTowerHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5500000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 64800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "43",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8500000",
+        "buildTimeSeconds": 154800
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "80",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 288000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "138",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 496800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "228",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13000000",
+        "buildTimeSeconds": 820800
+      }
+    ],
+    "id": 102000042
+  },
+  {
+    "internalName": "RocketArtilleryTowerAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "11",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 39600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "13",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 46800
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "19",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 68400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "46",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 165600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "83",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 298800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "148",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13500000",
+        "buildTimeSeconds": 532800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "240",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "15000000",
+        "buildTimeSeconds": 864000
+      }
+    ],
+    "id": 102000043
+  },
+  {
+    "internalName": "RocketArtilleryTowerEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "4",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 14400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "50000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "60000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "40",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "80000",
+        "buildTimeSeconds": 144000
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "74",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "90000",
+        "buildTimeSeconds": 266400
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "126",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 453600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "216",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "110000",
+        "buildTimeSeconds": 777600
+      }
+    ],
+    "id": 102000044
+  },
+  {
+    "internalName": "MinionHiveLauncherHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "11",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 39600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "13",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 46800
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "19",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 68400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "46",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 165600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "83",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 298800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "148",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13500000",
+        "buildTimeSeconds": 532800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "240",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "15000000",
+        "buildTimeSeconds": 864000
+      }
+    ],
+    "id": 102000045
+  },
+  {
+    "internalName": "MinionHiveLauncherAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "4",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 14400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "50000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "60000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "40",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "80000",
+        "buildTimeSeconds": 144000
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "74",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "90000",
+        "buildTimeSeconds": 266400
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "126",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 453600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "216",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "110000",
+        "buildTimeSeconds": 777600
+      }
+    ],
+    "id": 102000046
+  },
+  {
+    "internalName": "MinionHiveLauncherEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5500000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 64800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "43",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8500000",
+        "buildTimeSeconds": 154800
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "80",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 288000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "138",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 496800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "228",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13000000",
+        "buildTimeSeconds": 820800
+      }
+    ],
+    "id": 102000047
+  },
+  {
+    "internalName": "GoblinThrowerTowerHPModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "4",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "30000",
+        "buildTimeSeconds": 14400
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "40000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "50000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "60000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "16",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "70000",
+        "buildTimeSeconds": 57600
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "40",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "80000",
+        "buildTimeSeconds": 144000
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "74",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "90000",
+        "buildTimeSeconds": 266400
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "126",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "100000",
+        "buildTimeSeconds": 453600
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "216",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "110000",
+        "buildTimeSeconds": 777600
+      }
+    ],
+    "id": 102000048
+  },
+  {
+    "internalName": "GoblinThrowerTowerAttackModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Elixir",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "6",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "3500000",
+        "buildTimeSeconds": 21600
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4500000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5500000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6500000",
+        "buildTimeSeconds": 43200
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "18",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 64800
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "43",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "8500000",
+        "buildTimeSeconds": 154800
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "80",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10000000",
+        "buildTimeSeconds": 288000
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "138",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "11500000",
+        "buildTimeSeconds": 496800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "228",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13000000",
+        "buildTimeSeconds": 820800
+      }
+    ],
+    "id": 102000049
+  },
+  {
+    "internalName": "GoblinThrowerTowerEffectModule",
+    "levels": [
+      {
+        "level": 1,
+        "BuildTimeD": "0",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "Gold",
+        "BuildCost": "0",
+        "buildTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "BuildTimeD": "0",
+        "BuildTimeH": "8",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "4000000",
+        "buildTimeSeconds": 28800
+      },
+      {
+        "level": 3,
+        "BuildTimeD": "0",
+        "BuildTimeH": "10",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "5000000",
+        "buildTimeSeconds": 36000
+      },
+      {
+        "level": 4,
+        "BuildTimeD": "0",
+        "BuildTimeH": "11",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "6000000",
+        "buildTimeSeconds": 39600
+      },
+      {
+        "level": 5,
+        "BuildTimeD": "0",
+        "BuildTimeH": "13",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "7500000",
+        "buildTimeSeconds": 46800
+      },
+      {
+        "level": 6,
+        "BuildTimeD": "0",
+        "BuildTimeH": "19",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 68400
+      },
+      {
+        "level": 7,
+        "BuildTimeD": "0",
+        "BuildTimeH": "46",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "buildTimeSeconds": 165600
+      },
+      {
+        "level": 8,
+        "BuildTimeD": "0",
+        "BuildTimeH": "83",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "12000000",
+        "buildTimeSeconds": 298800
+      },
+      {
+        "level": 9,
+        "BuildTimeD": "0",
+        "BuildTimeH": "148",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "13500000",
+        "buildTimeSeconds": 532800
+      },
+      {
+        "level": 10,
+        "BuildTimeD": "0",
+        "BuildTimeH": "240",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "15000000",
+        "buildTimeSeconds": 864000
+      }
+    ],
+    "id": 102000050
   }
 ]

@@ -2,78 +2,13 @@ import SwiftUI
 import UIKit
 import Foundation
 
-private final class AppAssetResolver {
-    static let shared = AppAssetResolver()
-    private let namesByID: [Int: String]
-    private let slugsByName: [String: String]
-
-    private init() {
-        namesByID = Self.loadNames()
-        slugsByName = Self.loadSlugs()
-    }
-
-    func displayName(for upgrade: BuildingUpgrade) -> String {
-        guard let id = upgrade.dataId,
-              (upgrade.isSeasonalDefense == true || (103_000_000..<104_000_000).contains(id)),
-              let name = namesByID[id] else { return upgrade.name }
-        return name
-    }
-
-    func assetSlug(for upgrade: BuildingUpgrade) -> String {
-        let name = displayName(for: upgrade)
-        return slugsByName[Self.sanitize(name)] ?? Self.sanitize(name)
-    }
-
-    private static func loadNames() -> [Int: String] {
-        let urls: [URL?] = DataService.candidateFolderURLs(named: "json").map {
-            $0.appendingPathComponent("mapping.json")
-        } + [
-            Bundle.main.url(forResource: "mapping", withExtension: "json", subdirectory: "json"),
-            Bundle.main.url(forResource: "mapping", withExtension: "json")
-        ]
-        for url in urls {
-            guard let url,
-                  let data = try? Data(contentsOf: url),
-                  let raw = try? JSONDecoder().decode([String: String].self, from: data) else { continue }
-            return Dictionary(uniqueKeysWithValues: raw.compactMap { key, value in
-                Int(key).map { ($0, value) }
-            })
-        }
-        return [:]
-    }
-
-    private static func loadSlugs() -> [String: String] {
-        let container = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: DataService.appGroup)
-        let urls: [URL?] = [
-            Bundle.main.url(forResource: "asset_map", withExtension: "json", subdirectory: "json"),
-            Bundle.main.url(forResource: "asset_map", withExtension: "json"),
-            container?.appendingPathComponent("asset_map.json")
-        ]
-        var slugs: [String: String] = [:]
-        for url in urls {
-            guard let url,
-                  let data = try? Data(contentsOf: url),
-                  let raw = try? JSONDecoder().decode([String: String].self, from: data) else { continue }
-            for (name, slug) in raw {
-                let key = Self.sanitize(name)
-                if slugs[key] == nil {
-                    slugs[key] = slug
-                }
-            }
-        }
-        return slugs
-    }
-
-    private static func sanitize(_ s: String) -> String {
-        s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-            .joined(separator: "_")
-            .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-            .lowercased()
-    }
-}
-
-
 struct BuilderRow: View {
+    private static let iconCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.totalCostLimit = 12 * 1024 * 1024
+        cache.countLimit = 80
+        return cache
+    }()
     @EnvironmentObject private var dataService: DataService
     @AppStorage("globalShowFullTimerPrecision") private var globalShowFullTimerPrecision = false
     let upgrade: BuildingUpgrade
@@ -131,7 +66,7 @@ struct BuilderRow: View {
 
             VStack(alignment: .leading, spacing: 6) {
                 HStack(spacing: 6) {
-                    Text(AppAssetResolver.shared.displayName(for: upgrade))
+                    Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
                         .font(.headline)
                         .lineLimit(1)
                     if upgrade.showsSuperchargeIcon {
@@ -164,8 +99,8 @@ struct BuilderRow: View {
     private var upgradeIconView: some View {
         #if canImport(UIKit)
         let resolvedName = iconName(for: upgrade)
-        if let uiImage = UIImage(named: resolvedName) {
-            Image(uiImage: trimTransparentEdges(from: uiImage))
+        if let uiImage = trimmedIcon(named: resolvedName) {
+            Image(uiImage: uiImage)
                 .interpolation(.none)
                 .resizable()
                 .scaledToFit()
@@ -184,6 +119,16 @@ struct BuilderRow: View {
     }
 
     #if canImport(UIKit)
+    private func trimmedIcon(named name: String) -> UIImage? {
+        let key = name as NSString
+        if let cached = Self.iconCache.object(forKey: key) { return cached }
+        guard let source = UIImage(named: name) else { return nil }
+        let trimmed = trimTransparentEdges(from: source)
+        let cost = trimmed.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        Self.iconCache.setObject(trimmed, forKey: key, cost: cost)
+        return trimmed
+    }
+
     private func trimTransparentEdges(from image: UIImage) -> UIImage {
         guard let cgImage = image.cgImage,
               let dataProvider = cgImage.dataProvider,
@@ -348,38 +293,9 @@ struct BuilderRow: View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        let folder: String
-        switch upgrade.category {
-        case .builderVillage: folder = "buildings_home"
-        case .lab: folder = "lab"
-        case .starLab: folder = "builder_base"
-        case .pets: folder = "pets"
-        case .builderBase: folder = "builder_base"
-        }
-
-        let assetSlug = AppAssetResolver.shared.assetSlug(for: upgrade)
-        
-        var variations: [String] = []
-        
-        // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
-        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(assetSlug)")
-        }
-        
-        // Try category-specific folder
-        variations.append("\(folder)/\(assetSlug)")
-        
-        // Try direct sanitized name
-        variations.append(assetSlug)
-
-        for variant in variations {
-            if UIImage(named: variant) != nil {
-                return variant
-            }
-        }
-        
-        return "\(folder)/\(assetSlug)" // Default fallback
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
     }
+
 }
 
 struct IdleBuilderRow: View {

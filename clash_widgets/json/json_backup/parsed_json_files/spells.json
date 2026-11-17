@@ -290,6 +290,15 @@
         "level": 6,
         "TID": "",
         "LaboratoryLevel": "10",
+        "UpgradeTimeH": "336",
+        "UpgradeResource": "",
+        "UpgradeCost": "26000000",
+        "upgradeTimeSeconds": 1209600
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -333,10 +342,10 @@
         "level": 4,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "156",
+        "UpgradeTimeH": "120",
         "UpgradeResource": "",
         "UpgradeCost": "8000000",
-        "upgradeTimeSeconds": 561600
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 5,
@@ -412,6 +421,15 @@
         "level": 7,
         "TID": "",
         "LaboratoryLevel": "10",
+        "UpgradeTimeH": "372",
+        "UpgradeResource": "",
+        "UpgradeCost": "28000000",
+        "upgradeTimeSeconds": 1339200
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -491,6 +509,15 @@
         "level": 8,
         "TID": "",
         "LaboratoryLevel": "13",
+        "UpgradeTimeH": "324",
+        "UpgradeResource": "",
+        "UpgradeCost": "26000000",
+        "upgradeTimeSeconds": 1166400
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -559,42 +586,51 @@
         "level": 2,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "204",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "8000000",
-        "upgradeTimeSeconds": 734400
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 3,
         "TID": "",
         "LaboratoryLevel": "12",
-        "UpgradeTimeH": "228",
+        "UpgradeTimeH": "192",
         "UpgradeResource": "",
         "UpgradeCost": "9000000",
-        "upgradeTimeSeconds": 820800
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 4,
         "TID": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "276",
+        "UpgradeTimeH": "216",
         "UpgradeResource": "",
         "UpgradeCost": "13000000",
-        "upgradeTimeSeconds": 993600
+        "upgradeTimeSeconds": 777600
       },
       {
         "level": 5,
         "TID": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "300",
+        "UpgradeTimeH": "264",
         "UpgradeResource": "",
         "UpgradeCost": "19000000",
-        "upgradeTimeSeconds": 1080000
+        "upgradeTimeSeconds": 950400
       },
       {
         "level": 6,
         "TID": "",
         "LaboratoryLevel": "15",
+        "UpgradeTimeH": "384",
+        "UpgradeResource": "",
+        "UpgradeCost": "29000000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -611,19 +647,19 @@
         "level": 1,
         "TID": "TID_SPELL_REVIVE",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "Elixir",
         "UpgradeCost": "18000000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 2,
         "TID": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "252",
+        "UpgradeTimeH": "192",
         "UpgradeResource": "",
         "UpgradeCost": "19000000",
-        "upgradeTimeSeconds": 907200
+        "upgradeTimeSeconds": 691200
       },
       {
         "level": 3,
@@ -657,7 +693,7 @@
     "id": 26000098
   },
   {
-    "internalName": "Totem",
+    "internalName": "Totem Spell",
     "levels": [
       {
         "level": 1,
@@ -970,19 +1006,19 @@
         "level": 1,
         "TID": "TID_CREATE_SKELETONS_SPELL",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "24",
+        "UpgradeTimeH": "12",
         "UpgradeResource": "DarkElixir",
         "UpgradeCost": "11000",
-        "upgradeTimeSeconds": 86400
+        "upgradeTimeSeconds": 43200
       },
       {
         "level": 2,
         "TID": "",
         "LaboratoryLevel": "8",
-        "UpgradeTimeH": "36",
+        "UpgradeTimeH": "24",
         "UpgradeResource": "",
         "UpgradeCost": "17000",
-        "upgradeTimeSeconds": 129600
+        "upgradeTimeSeconds": 86400
       },
       {
         "level": 3,
@@ -1015,19 +1051,19 @@
         "level": 6,
         "TID": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "102",
+        "UpgradeTimeH": "96",
         "UpgradeResource": "",
         "UpgradeCost": "75000",
-        "upgradeTimeSeconds": 367200
+        "upgradeTimeSeconds": 345600
       },
       {
         "level": 7,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "156",
+        "UpgradeTimeH": "144",
         "UpgradeResource": "",
         "UpgradeCost": "135000",
-        "upgradeTimeSeconds": 561600
+        "upgradeTimeSeconds": 518400
       },
       {
         "level": 8,
@@ -1049,19 +1085,19 @@
         "level": 1,
         "TID": "TID_SPELL_BATS",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "24",
+        "UpgradeTimeH": "18",
         "UpgradeResource": "DarkElixir",
         "UpgradeCost": "13000",
-        "upgradeTimeSeconds": 86400
+        "upgradeTimeSeconds": 64800
       },
       {
         "level": 2,
         "TID": "",
         "LaboratoryLevel": "8",
-        "UpgradeTimeH": "48",
+        "UpgradeTimeH": "36",
         "UpgradeResource": "",
         "UpgradeCost": "25500",
-        "upgradeTimeSeconds": 172800
+        "upgradeTimeSeconds": 129600
       },
       {
         "level": 3,
@@ -1128,10 +1164,10 @@
         "level": 1,
         "TID": "TID_SPELL_OVERGROWTH",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "132",
+        "UpgradeTimeH": "120",
         "UpgradeResource": "DarkElixir",
         "UpgradeCost": "62500",
-        "upgradeTimeSeconds": 475200
+        "upgradeTimeSeconds": 432000
       },
       {
         "level": 2,
@@ -1155,6 +1191,15 @@
         "level": 4,
         "TID": "",
         "LaboratoryLevel": "14",
+        "UpgradeTimeH": "384",
+        "UpgradeResource": "",
+        "UpgradeCost": "360000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -1189,24 +1234,33 @@
         "level": 3,
         "TID": "",
         "LaboratoryLevel": "13",
-        "UpgradeTimeH": "336",
+        "UpgradeTimeH": "288",
         "UpgradeResource": "",
         "UpgradeCost": "280000",
-        "upgradeTimeSeconds": 1209600
+        "upgradeTimeSeconds": 1036800
       },
       {
         "level": 4,
         "TID": "",
         "LaboratoryLevel": "14",
-        "UpgradeTimeH": "384",
+        "UpgradeTimeH": "336",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
-        "upgradeTimeSeconds": 1382400
+        "upgradeTimeSeconds": 1209600
       },
       {
         "level": 5,
         "TID": "",
         "LaboratoryLevel": "15",
+        "UpgradeTimeH": "384",
+        "UpgradeResource": "",
+        "UpgradeCost": "380000",
+        "upgradeTimeSeconds": 1382400
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "16",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -2380,6 +2434,15 @@
       },
       {
         "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
         "TID": "",
         "LaboratoryLevel": "",
         "UpgradeTimeH": "",
@@ -3741,15 +3804,6 @@
       },
       {
         "level": 4,
-        "TID": "",
-        "LaboratoryLevel": "",
-        "UpgradeTimeH": "",
-        "UpgradeResource": "",
-        "UpgradeCost": "",
-        "upgradeTimeSeconds": 0
-      },
-      {
-        "level": 5,
         "TID": "",
         "LaboratoryLevel": "",
         "UpgradeTimeH": "",
@@ -6490,15 +6544,42 @@
     "levels": [
       {
         "level": 1,
-        "TID": "TID_SPEEDUP",
+        "TID": "TID_ANGRY_SPELL_ANGER",
         "LaboratoryLevel": "1",
-        "UpgradeTimeH": "3",
-        "UpgradeResource": "Elixir",
-        "UpgradeCost": "75000",
-        "upgradeTimeSeconds": 10800
+        "UpgradeTimeH": "224",
+        "UpgradeResource": "DarkElixir",
+        "UpgradeCost": "150000",
+        "upgradeTimeSeconds": 806400
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "14",
+        "UpgradeTimeH": "288",
+        "UpgradeResource": "",
+        "UpgradeCost": "250000",
+        "upgradeTimeSeconds": 1036800
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "15",
+        "UpgradeTimeH": "360",
+        "UpgradeResource": "",
+        "UpgradeCost": "400000",
+        "upgradeTimeSeconds": 1296000
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "16",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
       }
     ],
-    "tid": "TID_SPEEDUP",
+    "tid": "TID_ANGRY_SPELL_ANGER",
     "id": 26000123
   },
   {
@@ -7491,5 +7572,1045 @@
     ],
     "tid": "",
     "id": 26000136
+  },
+  {
+    "internalName": "GuardianBuilderRageSpell",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000137
+  },
+  {
+    "internalName": "ElephantRiderSummonElephant",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000138
+  },
+  {
+    "internalName": "ElephantRiderSummonRider",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000139
+  },
+  {
+    "internalName": "AirTroopSummon",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000141
+  },
+  {
+    "internalName": "CakeThrowerExplosion",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000142
+  },
+  {
+    "internalName": "UndeadWrestlerDeathSpawn",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 16,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 17,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 18,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000140
+  },
+  {
+    "internalName": "TinyTotemImpact",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000143
+  },
+  {
+    "internalName": "TinyTotemSummon",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "Elixir",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000144
+  },
+  {
+    "internalName": "CakeThrowerExplosion2",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000145
+  },
+  {
+    "internalName": "CakeThrowerExplosion3",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000146
+  },
+  {
+    "internalName": "CakeThrowerExplosion4",
+    "levels": [
+      {
+        "level": 1,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 2,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 3,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 4,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 5,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 7,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 8,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 9,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      },
+      {
+        "level": 10,
+        "TID": "",
+        "LaboratoryLevel": "",
+        "UpgradeTimeH": "",
+        "UpgradeResource": "",
+        "UpgradeCost": "",
+        "upgradeTimeSeconds": 0
+      }
+    ],
+    "tid": "",
+    "id": 26000147
   }
 ]

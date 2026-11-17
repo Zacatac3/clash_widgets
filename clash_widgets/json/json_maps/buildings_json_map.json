@@ -192,7 +192,7 @@
   "Multi Gear Tower": {
     "internalName": "Multi Gear Tower",
     "id": 1000079,
-    "displayName": "Multi Gear Tower"
+    "displayName": "Multi-Gear Tower"
   },
   "Firespitter": {
     "internalName": "Firespitter",
@@ -367,77 +367,77 @@
   "BB Builder Hall": {
     "internalName": "BB Builder Hall",
     "id": 1000034,
-    "displayName": "bb_Builder Hall"
+    "displayName": "Builder Hall"
   },
   "BB Gold Storage": {
     "internalName": "BB Gold Storage",
     "id": 1000038,
-    "displayName": "bb_Gold Storage"
+    "displayName": "Gold Storage"
   },
   "BB Elixir Storage": {
     "internalName": "BB Elixir Storage",
     "id": 1000036,
-    "displayName": "bb_Elixir Storage"
+    "displayName": "Elixir Storage"
   },
   "BB Gold Mine": {
     "internalName": "BB Gold Mine",
     "id": 1000037,
-    "displayName": "bb_Gold Mine"
+    "displayName": "Gold Mine"
   },
   "BB Elixir Collector": {
     "internalName": "BB Elixir Collector",
     "id": 1000035,
-    "displayName": "bb_Elixir Collector"
+    "displayName": "Elixir Collector"
   },
   "BB Army Camp": {
     "internalName": "BB Army Camp",
     "id": 1000042,
-    "displayName": "bb_Army Camp"
+    "displayName": "Army Camp"
   },
   "BB Reinforcement Camp": {
     "internalName": "BB Reinforcement Camp",
     "id": 1000049,
-    "displayName": "bb_Reinforcement Camp"
+    "displayName": "Reinforcement Camp"
   },
   "BB Star Laboratory": {
     "internalName": "BB Star Laboratory",
     "id": 1000046,
-    "displayName": "bb_Star Laboratory"
+    "displayName": "Star Laboratory"
   },
   "BB Barracks": {
     "internalName": "BB Barracks",
     "id": 1000040,
-    "displayName": "bb_Builder BBarracks"
+    "displayName": "Builder Barracks"
   },
   "BB OTTOs Outpost": {
     "internalName": "BB OTTOs Outpost",
     "id": 1000078,
-    "displayName": "bb_O.T.T.O's Outpost"
+    "displayName": "O.T.T.O's Outpost"
   },
   "BB Healing Hut": {
     "internalName": "BB Healing Hut",
     "id": 1000082,
-    "displayName": "bb_Healing Hut"
+    "displayName": "Healing Hut"
   },
   "BB BOB Control": {
     "internalName": "BB BOB Control",
     "id": 1000065,
-    "displayName": "bb_B.O.B Control"
+    "displayName": "B.O.B Control"
   },
   "BB Gem Mine": {
     "internalName": "BB Gem Mine",
     "id": 1000058,
-    "displayName": "bb_Gem Mine"
+    "displayName": "Gem Mine"
   },
   "BB Clock Tower": {
     "internalName": "BB Clock Tower",
     "id": 1000039,
-    "displayName": "bb_Clock Tower"
+    "displayName": "Clock Tower"
   },
   "BB Battle Machine Altar": {
     "internalName": "BB Battle Machine Altar",
     "id": 1000053,
-    "displayName": "Hero Altar Warmachine"
+    "displayName": "Battle Machine Altar"
   },
   "BB Battle Copter Altar": {
     "internalName": "BB Battle Copter Altar",
@@ -452,76 +452,96 @@
   "BB Cannon": {
     "internalName": "BB Cannon",
     "id": 1000044,
-    "displayName": "bb_Cannon"
+    "displayName": "Cannon"
   },
   "BB Archer Tower": {
     "internalName": "BB Archer Tower",
     "id": 1000048,
-    "displayName": "bb_Archer Tower"
+    "displayName": "Archer Tower"
   },
   "BB Double Cannon": {
     "internalName": "BB Double Cannon",
     "id": 1000041,
-    "displayName": "bb_Double Cannon"
+    "displayName": "Double Cannon"
   },
   "BB Firecrackers": {
     "internalName": "BB Firecrackers",
     "id": 1000050,
-    "displayName": "bb_Firecrackers"
+    "displayName": "Firecrackers"
   },
   "BB Crusher": {
     "internalName": "BB Crusher",
     "id": 1000055,
-    "displayName": "bb_Crusher"
+    "displayName": "Crusher"
   },
   "BB Hidden Tesla": {
     "internalName": "BB Hidden Tesla",
     "id": 1000043,
-    "displayName": "bb_Hidden Tesla"
+    "displayName": "Hidden Tesla"
   },
   "BB Guard Post": {
     "internalName": "BB Guard Post",
     "id": 1000051,
-    "displayName": "bb_Guard Post"
+    "displayName": "Guard Post"
   },
   "BB Air Bombs": {
     "internalName": "BB Air Bombs",
     "id": 1000054,
-    "displayName": "bb_Air Bombs"
+    "displayName": "Air Bombs"
   },
   "BB Multi Mortar": {
     "internalName": "BB Multi Mortar",
     "id": 1000045,
-    "displayName": "bb_Multi Mortar"
+    "displayName": "Multi Mortar"
   },
   "BB Roaster": {
     "internalName": "BB Roaster",
     "id": 1000056,
-    "displayName": "bb_Roaster"
+    "displayName": "Roaster"
   },
   "BB Giant Cannon": {
     "internalName": "BB Giant Cannon",
     "id": 1000057,
-    "displayName": "bb_Giant Cannon"
+    "displayName": "Giant Cannon"
   },
   "BB Mega Tesla": {
     "internalName": "BB Mega Tesla",
     "id": 1000052,
-    "displayName": "bb_Mega Tesla"
+    "displayName": "Mega Tesla"
   },
   "BB Lava Launcher": {
     "internalName": "BB Lava Launcher",
     "id": 1000063,
-    "displayName": "bb_Lava Launcher"
+    "displayName": "Lava Launcher"
   },
   "BB X-Bow": {
     "internalName": "BB X-Bow",
     "id": 1000081,
-    "displayName": "bb_X-Bow"
+    "displayName": "X-Bow"
   },
   "BB Builders Hut": {
     "internalName": "BB Builders Hut",
     "id": 1000047,
     "displayName": "bb_Master Builder's Hut"
+  },
+  "Guardian Building": {
+    "displayName": "Guardian Shrine",
+    "internalName": "Guardian Building",
+    "id": 1000105
+  },
+  "Squad Barracks": {
+    "displayName": "Squad Barracks",
+    "internalName": "Squad Barracks",
+    "id": 1000106
+  },
+  "Spiky Tower": {
+    "displayName": "Spiky Tower",
+    "internalName": "Spiky Tower",
+    "id": 1000107
+  },
+  "Firecracker Tower": {
+    "displayName": "Firecracker Tower",
+    "internalName": "Firecracker Tower",
+    "id": 1000108
   }
 }

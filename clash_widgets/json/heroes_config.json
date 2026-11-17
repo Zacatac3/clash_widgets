@@ -3,21 +3,21 @@
     "id": 28000000,
     "displayName": "Barbarian King",
     "internalName": "Barbarian King",
-    "unlockTownHall": 7,
+    "unlockTownHall": 4,
     "assetName": "heroes/Barbarian_King"
   },
   {
     "id": 28000001,
     "displayName": "Archer Queen",
     "internalName": "Archer Queen",
-    "unlockTownHall": 9,
+    "unlockTownHall": 8,
     "assetName": "heroes/Archer_Queen"
   },
   {
     "id": 28000006,
     "displayName": "Minion Prince",
-    "internalName": "Minion Hero",
-    "unlockTownHall": 14,
+    "internalName": "Minion Prince",
+    "unlockTownHall": 9,
     "assetName": "heroes/minion_prince"
   },
   {
@@ -30,7 +30,7 @@
   {
     "id": 28000004,
     "displayName": "Royal Champion",
-    "internalName": "Warrior Princess",
+    "internalName": "Royal Champion",
     "unlockTownHall": 13,
     "assetName": "heroes/Royal_Champion"
   },

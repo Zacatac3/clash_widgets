@@ -107,6 +107,12 @@ func loadWhatsNewItems() -> [WhatsNewItem] {
 
 internal func defaultWhatsNewSections() -> [WhatsNewSection] {
     return [
+        WhatsNewSection(dateLabel: "11/16/2026 - 1.4 - Town Hall 19 & Multi-Account Update", bullets: [
+            "New multi-account widgets: Track upgrades across your villages, with a larger 4x4 option for more details.",
+            "Choose which accounts and upgrade types appear, and prioritize up to six villages. Reorder and prioritize profiles in Settings.",
+            "Added Town Hall 19 content, including squads, Squad Barracks, Spike Tower, Firecracker Tower, and the Heroic Spell.",
+            "Improved performance and fixed sources of lag and scrolling delays."
+        ]),
         WhatsNewSection(dateLabel: "11/01/2026 - 1.3.2 - Events & Widget Fixes", bullets: [
             "Events now support Supercharge upgrade-time reductions, including different reductions for individual Supercharge levels.",
             "Updated the main builder widget layout to fix visual issues on iPhone Duo.",

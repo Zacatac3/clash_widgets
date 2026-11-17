@@ -172,25 +172,25 @@
     "levels": [
       {
         "level": 1,
-        "RequiredTownHallLevel": "17",
-        "BuildTimeD": "2",
-        "BuildTimeH": "12",
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "5",
+        "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "Gold",
-        "BuildCost": "6000000",
-        "buildTimeSeconds": 216000
+        "BuildCost": "14500000",
+        "buildTimeSeconds": 432000
       },
       {
         "level": 2,
         "RequiredTownHallLevel": "",
-        "BuildTimeD": "4",
+        "BuildTimeD": "7",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "",
-        "BuildCost": "3500000",
-        "buildTimeSeconds": 345600
+        "BuildCost": "9500000",
+        "buildTimeSeconds": 604800
       }
     ]
   },
@@ -216,7 +216,7 @@
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "",
-        "BuildCost": "5000000",
+        "BuildCost": "8000000",
         "buildTimeSeconds": 518400
       }
     ]
@@ -226,25 +226,25 @@
     "levels": [
       {
         "level": 1,
-        "RequiredTownHallLevel": "17",
-        "BuildTimeD": "3",
-        "BuildTimeH": "0",
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "5",
+        "BuildTimeH": "12",
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "Gold",
-        "BuildCost": "7000000",
-        "buildTimeSeconds": 259200
+        "BuildCost": "14000000",
+        "buildTimeSeconds": 475200
       },
       {
         "level": 2,
         "RequiredTownHallLevel": "",
-        "BuildTimeD": "4",
+        "BuildTimeD": "7",
         "BuildTimeH": "12",
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "",
-        "BuildCost": "4000000",
-        "buildTimeSeconds": 388800
+        "BuildCost": "9000000",
+        "buildTimeSeconds": 648000
       }
     ]
   },
@@ -475,7 +475,7 @@
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "DarkElixir",
-        "BuildCost": "150000",
+        "BuildCost": "220000",
         "buildTimeSeconds": 432000
       },
       {
@@ -486,7 +486,7 @@
         "BuildTimeM": "0",
         "BuildTimeS": "0",
         "BuildResource": "",
-        "BuildCost": "130000",
+        "BuildCost": "200000",
         "buildTimeSeconds": 604800
       }
     ]
@@ -515,6 +515,33 @@
         "BuildResource": "",
         "BuildCost": "14000000",
         "buildTimeSeconds": 604800
+      }
+    ]
+  },
+  {
+    "internalName": "Revenge Tower Mini Levels",
+    "levels": [
+      {
+        "level": 1,
+        "RequiredTownHallLevel": "18",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "DarkElixir",
+        "BuildCost": "220000",
+        "buildTimeSeconds": 604800
+      },
+      {
+        "level": 2,
+        "RequiredTownHallLevel": "",
+        "BuildTimeD": "8",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildTimeS": "0",
+        "BuildResource": "",
+        "BuildCost": "200000",
+        "buildTimeSeconds": 691200
       }
     ]
   }

@@ -1,0 +1,118 @@
+{
+  "townHall": 19,
+  "note": "Content IDs and internal names verified against the supplied November CSVs. Public names and icons are curated in progress_sections.json; run tools/sync_game_catalog.py after edits. This manifest is not bundled.",
+  "items": [
+    {
+      "name": "Guardian Shrine",
+      "asset": "buildings_home/guardian_shrine",
+      "dataFile": "buildings",
+      "id": 1000105
+    },
+    {
+      "name": "Squad Barracks",
+      "asset": "buildings_home/squad_barracks",
+      "dataFile": "buildings",
+      "id": 1000106
+    },
+    {
+      "name": "Spiky Tower",
+      "asset": "buildings_home/spiky_tower",
+      "dataFile": "buildings",
+      "id": 1000107
+    },
+    {
+      "name": "Firecracker Tower",
+      "asset": "buildings_home/firecracker_tower",
+      "dataFile": "buildings",
+      "id": 1000108
+    },
+    {
+      "name": "Heroic Spell",
+      "asset": "lab/heroic_spell",
+      "dataFile": "spells",
+      "id": 26000153
+    },
+    {
+      "name": "Baby Dragon Squad",
+      "asset": "lab/baby_dragon_squad",
+      "dataFile": "characters",
+      "id": 4000206
+    },
+    {
+      "name": "Balloon Squad",
+      "asset": "lab/balloon_squad",
+      "dataFile": "characters",
+      "id": 4000199
+    },
+    {
+      "name": "Barch Squad",
+      "asset": "lab/barch_squad",
+      "dataFile": "characters",
+      "id": 4000195
+    },
+    {
+      "name": "Dragons Squad",
+      "asset": "lab/dragons_squad",
+      "dataFile": "characters",
+      "id": 4000205
+    },
+    {
+      "name": "Giant Wizard Squad",
+      "asset": "lab/giant_wizard_squad",
+      "dataFile": "characters",
+      "id": 4000196
+    },
+    {
+      "name": "Golem Witch Squad",
+      "asset": "lab/golem_witch_squad",
+      "dataFile": "characters",
+      "id": 4000200
+    },
+    {
+      "name": "Healer Squad",
+      "asset": "lab/healer_squad",
+      "dataFile": "characters",
+      "id": 4000203
+    },
+    {
+      "name": "Hog Rider Squad",
+      "asset": "lab/hog_rider_squad",
+      "dataFile": "characters",
+      "id": 4000201
+    },
+    {
+      "name": "Miner Squad",
+      "asset": "lab/miner_squad",
+      "dataFile": "characters",
+      "id": 4000202
+    },
+    {
+      "name": "Minion Squad",
+      "asset": "lab/minion_squad",
+      "dataFile": "characters",
+      "id": 4000198
+    },
+    {
+      "name": "P.E.K.K.A Titan Squad",
+      "asset": "lab/p_e_k_k_a_titan_squad",
+      "dataFile": "characters",
+      "id": 4000204
+    },
+    {
+      "name": "Wall Breaker Squad",
+      "asset": "lab/wall_breaker_squad",
+      "dataFile": "characters",
+      "id": 4000197
+    },
+    {
+      "name": "Level 20 Wall",
+      "asset": "resources/wall_20",
+      "dataFile": "buildings",
+      "id": 1000010,
+      "minimumLevel": 20
+    }
+  ],
+  "requiredAssets": [
+    "town_hall/th19"
+  ]
+}

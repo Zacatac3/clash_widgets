@@ -138,5 +138,35 @@
       "CakeThrowerAttackModule",
       "CakeThrowerEffectModule"
     ]
+  },
+  {
+    "id": 103000014,
+    "internalName": "Rocket Artillery Tower",
+    "specialAbility": "SeasonalDefenseRocketArtilleryTower",
+    "modules": [
+      "RocketArtilleryTowerHPModule",
+      "RocketArtilleryTowerAttackModule",
+      "RocketArtilleryTowerEffectModule"
+    ]
+  },
+  {
+    "id": 103000015,
+    "internalName": "Minion Hive Launcher",
+    "specialAbility": "SeasonalDefenseMinionHiveLauncher",
+    "modules": [
+      "MinionHiveLauncherHPModule",
+      "MinionHiveLauncherAttackModule",
+      "MinionHiveLauncherEffectModule"
+    ]
+  },
+  {
+    "id": 103000016,
+    "internalName": "Goblin Thrower Tower",
+    "specialAbility": "SeasonalDefenseGoblinThrowerTower",
+    "modules": [
+      "GoblinThrowerTowerHPModule",
+      "GoblinThrowerTowerAttackModule",
+      "GoblinThrowerTowerEffectModule"
+    ]
   }
 ]

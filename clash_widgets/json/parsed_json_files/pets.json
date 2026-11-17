@@ -380,37 +380,37 @@
         "level": 11,
         "TID": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "180000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 12,
         "TID": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "195000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 13,
         "TID": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "210000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 14,
         "TID": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "225000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 15,
@@ -522,37 +522,37 @@
         "level": 11,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "230000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 12,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 13,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "290000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 14,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 15,
@@ -883,28 +883,28 @@
         "level": 12,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "220000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 13,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "240000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 14,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 15,
@@ -1158,37 +1158,37 @@
         "level": 11,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "230000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 12,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 13,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "290000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 14,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 15,
@@ -1282,10 +1282,10 @@
         "level": 9,
         "TID": "",
         "LaboratoryLevel": "9",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "230000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 10,
@@ -1352,42 +1352,87 @@
         "level": 6,
         "TID": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "200000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 7,
         "TID": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "210000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 8,
         "TID": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "220000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 9,
         "TID": "",
         "LaboratoryLevel": "10",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "230000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 10,
         "TID": "",
         "LaboratoryLevel": "10",
+        "UpgradeTimeH": "180",
+        "UpgradeResource": "",
+        "UpgradeCost": "260000",
+        "upgradeTimeSeconds": 648000
+      },
+      {
+        "level": 11,
+        "TID": "",
+        "LaboratoryLevel": "12",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "290000",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 12,
+        "TID": "",
+        "LaboratoryLevel": "12",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "320000",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 13,
+        "TID": "",
+        "LaboratoryLevel": "12",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "350000",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "LaboratoryLevel": "12",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "380000",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 15,
+        "TID": "",
+        "LaboratoryLevel": "12",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
@@ -1468,82 +1513,82 @@
         "level": 1,
         "TID": "TID_PET_SNEEZY",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "DarkElixir",
         "UpgradeCost": "200000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 2,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "220000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 3,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "240000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 4,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "260000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 5,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "280000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 6,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "300000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 7,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 8,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "340000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 9,
         "TID": "",
         "LaboratoryLevel": "11",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "180",
         "UpgradeResource": "",
         "UpgradeCost": "360000",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 648000
       },
       {
         "level": 10,

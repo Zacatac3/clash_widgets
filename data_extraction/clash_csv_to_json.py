@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
+import argparse
 import csv
 import json
 import os
+import shutil
+import tempfile
 from typing import Any, Dict, List, Optional
 
 
@@ -18,6 +21,13 @@ MAPS_DIR = os.path.join(
 DEFAULT_INPUT_CSV = os.path.join(EXTRACTED_DIR, "buildings.csv")
 DEFAULT_OUTPUT_JSON = os.path.join(PARSED_DIR, "buildings.json")
 DEFAULT_MAP_JSON = os.path.join(MAPS_DIR, "buildings_json_map.json")
+
+EXPECTED_CSV_FILES = (
+    "buildings.csv", "characters.csv", "pets.csv", "spells.csv", "heroes.csv",
+    "traps.csv", "mini_levels.csv", "seasonal_defense_modules.csv",
+    "seasonal_defense_archetypes.csv", "villager_apprentices.csv",
+    "guardians.csv", "weapons.csv", "townhall_levels.csv",
+)
 
 
 def safe_int(value: str) -> int:
@@ -77,10 +87,12 @@ def build_buildings_json(rows: List[Dict[str, str]]) -> List[Dict[str, Any]]:
     buildings: List[Dict[str, Any]] = []
     current: Optional[Dict[str, Any]] = None
     non_blank_index = -1
+    inherited: Dict[str, str] = {}
 
     for row in rows:
         name = row.get("Name", "").strip()
         if name:
+            inherited = {}
             non_blank_index += 1
             raw_global_id = row.get("GlobalID", "").strip()
             building_id = safe_int(raw_global_id) if raw_global_id else 1_000_000 + non_blank_index
@@ -89,6 +101,7 @@ def build_buildings_json(rows: List[Dict[str, str]]) -> List[Dict[str, Any]]:
                 "internalName": name,
                 "tid": row.get("TID", "").strip(),
                 "buildingClass": row.get("BuildingClass", "").strip(),
+                "miniLevels": row.get("MiniLevels", "").strip(),
                 "levels": [],
             }
             buildings.append(current)
@@ -96,13 +109,16 @@ def build_buildings_json(rows: List[Dict[str, str]]) -> List[Dict[str, Any]]:
         if current is None:
             continue
 
+        for field in ("TownHallLevel", "BuildResource"):
+            if row.get(field, "").strip():
+                inherited[field] = row[field].strip()
         level_entry = {
             "level": safe_int(row.get("BuildingLevel", "")),
             "exportName": row.get("ExportName", "").strip(),
             "buildTimeSeconds": parse_build_time_seconds(row),
-            "buildResource": row.get("BuildResource", "").strip(),
+            "buildResource": inherited.get("BuildResource", ""),
             "buildCost": safe_int(row.get("BuildCost", "")),
-            "townHallLevel": safe_int(row.get("TownHallLevel", "")),
+            "townHallLevel": safe_int(inherited.get("TownHallLevel", "")),
         }
         current["levels"].append(level_entry)
 
@@ -320,11 +336,17 @@ def write_buildings_json(output_path: str, buildings: List[Dict[str, Any]]) -> N
         out_file.write("\n")
 
 
-def build_townhall_levels(rows: List[Dict[str, str]], headers: List[str]) -> List[Dict[str, Any]]:
-    if "Troop Housing" not in headers:
-        return []
-    start_index = headers.index("Troop Housing")
-    count_columns = headers[start_index:]
+def build_townhall_levels(rows: List[Dict[str, str]], headers: List[str],
+                         count_names: Optional[set[str]] = None) -> List[Dict[str, Any]]:
+    # Match actual building/trap names instead of a removed CSV marker column.
+    # Economy/reward columns can be interleaved with counts in newer versions.
+    if count_names is None:
+        marker = next((name for name in ("Troop Housing", "Army Camp") if name in headers), None)
+        count_columns = headers[headers.index(marker):] if marker else []
+    else:
+        count_columns = [name for name in headers if name in count_names]
+    if "Name" not in headers or "Wall" not in count_columns:
+        raise ValueError("townhall_levels.csv: missing Town Hall names or wall count columns")
 
     levels: List[Dict[str, Any]] = []
     previous_counts: Dict[str, int] = {}
@@ -349,6 +371,8 @@ def build_townhall_levels(rows: List[Dict[str, str]], headers: List[str]) -> Lis
             "counts": counts
         })
 
+    if not levels:
+        raise ValueError("townhall_levels.csv: no numeric Town Hall rows found")
     return levels
 
 
@@ -380,7 +404,7 @@ def _print_diff_report(diffs: List[tuple]) -> None:
     print("=" * 56 + "\n")
 
 
-def main() -> None:
+def convert_all() -> None:
     map_diffs: List[tuple] = []
 
     buildings_rows = read_csv_rows(DEFAULT_INPUT_CSV)
@@ -437,6 +461,8 @@ def main() -> None:
         global_id_field="GlobalID",
         level_fields=[
             "TID",
+            "SpellForgeLevel",
+            "ProductionBuilding",
             "LaboratoryLevel",
             "UpgradeTimeH",
             "UpgradeResource",
@@ -639,12 +665,63 @@ def main() -> None:
     townhall_rows, townhall_headers = read_csv_rows_with_headers(
         os.path.join(EXTRACTED_DIR, "townhall_levels.csv")
     )
-    townhall_levels = build_townhall_levels(townhall_rows, townhall_headers)
+    count_names = {entry["internalName"] for entry in buildings + traps}
+    townhall_levels = build_townhall_levels(townhall_rows, townhall_headers, count_names)
     write_buildings_json(
         os.path.join(PARSED_DIR, "townhall_levels.json"), townhall_levels
     )
+    print(f"Parsed {len(townhall_levels)} Town Hall rows (through TH{max(entry['townHallLevel'] for entry in townhall_levels)}).")
 
     _print_diff_report(map_diffs)
+
+
+def validate_inputs(input_dir: str) -> None:
+    """Catch incomplete/encrypted inputs before replacing any bundled files."""
+    problems = []
+    for filename in EXPECTED_CSV_FILES:
+        path = os.path.join(input_dir, filename)
+        try:
+            rows, headers = read_csv_rows_with_headers(path)
+            if "Name" not in headers or not any(row.get("Name") for row in rows):
+                problems.append(f"{filename}: expected decrypted CSV with named data rows")
+        except (OSError, UnicodeError, csv.Error) as error:
+            problems.append(f"{filename}: {error}")
+    if problems:
+        raise ValueError("Input validation failed; no outputs written:\n  " + "\n  ".join(problems))
+    rows, headers = read_csv_rows_with_headers(os.path.join(input_dir, "townhall_levels.csv"))
+    count_names = {row["Name"] for filename in ("buildings.csv", "traps.csv")
+                   for row in read_csv_rows(os.path.join(input_dir, filename)) if row.get("Name")}
+    build_townhall_levels(rows, headers, count_names)
+
+
+def main() -> None:
+    global EXTRACTED_DIR, PARSED_DIR, MAPS_DIR
+    global DEFAULT_INPUT_CSV, DEFAULT_OUTPUT_JSON, DEFAULT_MAP_JSON
+    parser = argparse.ArgumentParser(description="Convert decrypted Clash CSVs and report map changes.")
+    parser.add_argument("--input-dir", default=EXTRACTED_DIR,
+                        help="Folder containing the complete decrypted CSV set")
+    parser.add_argument("--dry-run", action="store_true",
+                        help="Parse and diff in temporary storage; leave bundled JSON/maps unchanged")
+    args = parser.parse_args()
+    EXTRACTED_DIR = os.path.abspath(args.input_dir)
+    DEFAULT_INPUT_CSV = os.path.join(EXTRACTED_DIR, "buildings.csv")
+    try:
+        validate_inputs(EXTRACTED_DIR)
+    except ValueError as error:
+        parser.exit(1, str(error) + "\n")
+
+    if args.dry_run:
+        with tempfile.TemporaryDirectory(prefix="clashboard-game-data-") as temporary:
+            preview_maps = os.path.join(temporary, "json_maps")
+            shutil.copytree(MAPS_DIR, preview_maps)
+            PARSED_DIR = os.path.join(temporary, "parsed_json_files")
+            MAPS_DIR = preview_maps
+            DEFAULT_OUTPUT_JSON = os.path.join(PARSED_DIR, "buildings.json")
+            DEFAULT_MAP_JSON = os.path.join(MAPS_DIR, "buildings_json_map.json")
+            convert_all()
+        print("Dry run complete. Bundled JSON and display-name maps were not changed.")
+    else:
+        convert_all()
 
 
 if __name__ == "__main__":

@@ -11,22 +11,30 @@ import CryptoKit
 final class RemoteContentService: ObservableObject {
     static let shared = RemoteContentService()
     @Published private(set) var environment: RemoteContentEnvironment = .live
-    @Published private(set) var remoteEvents: [RemoteEvent] = []
-    @Published private(set) var testEvent: RemoteEvent?
+    @Published private(set) var remoteEvents: [RemoteEvent] = [] {
+        didSet { scheduleClockUpdate() }
+    }
+    @Published private(set) var testEvent: RemoteEvent? {
+        didSet { scheduleClockUpdate() }
+    }
     @Published private(set) var localTestEnabled = true
     @Published private(set) var testProfileID: UUID?
     private(set) var profileBeforeTest: UUID?
     var events: [RemoteEvent] { remoteEvents.map { environment.scopedEvent($0) } + (environment == .live && localTestEnabled ? (testEvent.map { [$0] } ?? []) : []) }
-    @Published private(set) var news: [RemoteNews] = []
+    @Published private(set) var news: [RemoteNews] = [] {
+        didSet { scheduleClockUpdate() }
+    }
     @Published private(set) var lastError: String?
     @Published private(set) var isRefreshing = false
     @Published private(set) var launchRefreshResolved = false
     @Published private(set) var eventsUpdatedInLastRefresh = false
-    @Published private(set) var now = Date()
+    @Published private(set) var now = Date() {
+        didSet { scheduleClockUpdate() }
+    }
     private let defaults: UserDefaults
     private let session: URLSession
     private let configuredBaseURL: URL?
-    private var timer: AnyCancellable?
+    private var clockUpdate: Task<Void, Never>?
     // In-memory only: a fresh process gets one immediate fetch per environment.
     private var launchAttemptedEnvironments: Set<RemoteContentEnvironment> = []
     private let decoder: JSONDecoder
@@ -72,7 +80,24 @@ final class RemoteContentService: ObservableObject {
             testProfileID = profileID
             profileBeforeTest = defaults.string(forKey: "remoteContent.profileBeforeTest").flatMap(UUID.init(uuidString:))
         }
-        timer = Timer.publish(every: 1, on: .main, in: .common).autoconnect().sink { [weak self] in self?.now = $0 }
+        scheduleClockUpdate()
+    }
+
+    // Publish only when content actually changes availability. Countdown labels
+    // own their TimelineViews; a clock tick must not redraw every tab or decode
+    // every profile's export again.
+    private func scheduleClockUpdate() {
+        clockUpdate?.cancel()
+        clockUpdate = nil
+        guard let next = RemoteContentClockSchedule.nextUpdate(events: events, news: news, after: now) else { return }
+        let delay = max(0.01, next.timeIntervalSinceNow)
+        clockUpdate = Task { @MainActor [weak self] in
+            do {
+                try await Task.sleep(for: .seconds(delay))
+            } catch { return }
+            guard !Task.isCancelled else { return }
+            self?.now = Date()
+        }
     }
 
     private func loadEnvironmentCache() {

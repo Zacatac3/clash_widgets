@@ -154,7 +154,7 @@
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "8500000",
+        "BuildCost": "6500000",
         "TownHallLevel": "17",
         "buildTimeSeconds": 172800
       },
@@ -162,13 +162,13 @@
         "level": 14,
         "TID": "",
         "ExportName": "bomp_trap_lvl11_setup",
-        "BuildTimeD": "8",
+        "BuildTimeD": "5",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "14000000",
+        "BuildCost": "9000000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 691200
+        "buildTimeSeconds": 432000
       }
     ],
     "tid": "TID_TRAP_MINE",
@@ -313,25 +313,37 @@
         "level": 12,
         "TID": "",
         "ExportName": "eject_trap_lvl11_12_setup",
-        "BuildTimeD": "3",
-        "BuildTimeH": "0",
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "13000000",
+        "BuildCost": "7000000",
         "TownHallLevel": "17",
-        "buildTimeSeconds": 259200
+        "buildTimeSeconds": 216000
       },
       {
         "level": 13,
         "TID": "",
         "ExportName": "eject_trap_lvl13_14_setup",
-        "BuildTimeD": "11",
+        "BuildTimeD": "5",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "16000000",
+        "BuildCost": "9500000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 950400
+        "buildTimeSeconds": 432000
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "ExportName": "eject_trap_lvl15_setup",
+        "BuildTimeD": "8",
+        "BuildTimeH": "0",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "17000000",
+        "TownHallLevel": "19",
+        "buildTimeSeconds": 691200
       }
     ],
     "tid": "TID_TRAP_EJECTOR",
@@ -476,25 +488,37 @@
         "level": 12,
         "TID": "",
         "ExportName": "air_trap_setup_lvl11",
-        "BuildTimeD": "3",
-        "BuildTimeH": "0",
+        "BuildTimeD": "2",
+        "BuildTimeH": "12",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "9500000",
+        "BuildCost": "6500000",
         "TownHallLevel": "17",
-        "buildTimeSeconds": 259200
+        "buildTimeSeconds": 216000
       },
       {
         "level": 13,
         "TID": "",
         "ExportName": "air_trap_setup_lvl13",
-        "BuildTimeD": "9",
+        "BuildTimeD": "5",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "15000000",
+        "BuildCost": "9000000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 777600
+        "buildTimeSeconds": 432000
+      },
+      {
+        "level": 14,
+        "TID": "",
+        "ExportName": "air_trap_setup_lvl14",
+        "BuildTimeD": "8",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "17500000",
+        "TownHallLevel": "19",
+        "buildTimeSeconds": 734400
       }
     ],
     "tid": "TID_TRAP_AIR",
@@ -627,25 +651,25 @@
         "level": 11,
         "TID": "",
         "ExportName": "giant_bomb_setup_lvl8",
-        "BuildTimeD": "4",
+        "BuildTimeD": "3",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "10000000",
+        "BuildCost": "7000000",
         "TownHallLevel": "17",
-        "buildTimeSeconds": 345600
+        "buildTimeSeconds": 259200
       },
       {
         "level": 12,
         "TID": "",
         "ExportName": "giant_bomb_setup_lvl8",
-        "BuildTimeD": "10",
-        "BuildTimeH": "12",
+        "BuildTimeD": "5",
+        "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "17000000",
+        "BuildCost": "9000000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 907200
+        "buildTimeSeconds": 432000
       }
     ],
     "tid": "TID_TRAP_SUPERBOMB",
@@ -730,25 +754,25 @@
         "level": 7,
         "TID": "",
         "ExportName": "evil_airTrap_setup_lvl7",
-        "BuildTimeD": "5",
+        "BuildTimeD": "4",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "12000000",
+        "BuildCost": "7500000",
         "TownHallLevel": "17",
-        "buildTimeSeconds": 432000
+        "buildTimeSeconds": 345600
       },
       {
         "level": 8,
         "TID": "",
         "ExportName": "evil_airTrap_setup_lvl7",
-        "BuildTimeD": "11",
-        "BuildTimeH": "12",
+        "BuildTimeD": "7",
+        "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "19000000",
+        "BuildCost": "11500000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 993600
+        "buildTimeSeconds": 604800
       }
     ],
     "tid": "TID_TRAP_AIR_MEGA",
@@ -809,13 +833,25 @@
         "level": 5,
         "TID": "",
         "ExportName": "troop_trap_land_lvl4_setup",
-        "BuildTimeD": "7",
+        "BuildTimeD": "5",
+        "BuildTimeH": "12",
+        "BuildTimeM": "0",
+        "BuildResource": "",
+        "BuildCost": "10500000",
+        "TownHallLevel": "18",
+        "buildTimeSeconds": 475200
+      },
+      {
+        "level": 6,
+        "TID": "",
+        "ExportName": "troop_trap_land_lvl5_setup",
+        "BuildTimeD": "9",
         "BuildTimeH": "0",
         "BuildTimeM": "0",
         "BuildResource": "",
         "BuildCost": "18000000",
-        "TownHallLevel": "18",
-        "buildTimeSeconds": 604800
+        "TownHallLevel": "19",
+        "buildTimeSeconds": 777600
       }
     ],
     "tid": "TID_TRAP_HALLOWEEN_SKEL",
@@ -907,13 +943,13 @@
         "level": 4,
         "TID": "",
         "ExportName": "giga_bomb_lvl4_setup",
-        "BuildTimeD": "13",
-        "BuildTimeH": "0",
+        "BuildTimeD": "7",
+        "BuildTimeH": "12",
         "BuildTimeM": "0",
         "BuildResource": "",
-        "BuildCost": "20000000",
+        "BuildCost": "14000000",
         "TownHallLevel": "18",
-        "buildTimeSeconds": 1123200
+        "buildTimeSeconds": 648000
       }
     ],
     "tid": "TID_TRAP_GIGA_BOMB",

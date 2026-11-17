@@ -224,8 +224,8 @@ struct ContentView: View {
             }
         }
         .task { await remoteContent.refreshIfNeeded() }
-        .onReceive(remoteContent.$now) { now in
-            if scenePhase == .active { dataService.reconcileRemoteEvents(remoteContent.events, at: now) }
+        .onReceive(remoteContent.objectWillChange.debounce(for: .milliseconds(50), scheduler: RunLoop.main)) { _ in
+            if scenePhase == .active { dataService.reconcileRemoteEvents(remoteContent.events, at: remoteContent.now) }
         }
     }
 
@@ -501,44 +501,67 @@ private struct GoldPassResetPrompt: View {
 
 struct TownHallBadgeView: View {
     let level: Int
+    @Environment(\.displayScale) private var displayScale
+    @State private var loadedImage: UIImage?
+    @State private var loadedRequest = ""
+
+    private var request: String { "\(level)-\(displayScale)" }
 
     var body: some View {
         Group {
-            if let image = badgeImage {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
+            if loadedRequest == request, let image = loadedImage {
+                Image(uiImage: image).resizable().scaledToFit()
             } else {
                 Image(systemName: "person.crop.circle.fill")
-                    .resizable()
-                    .scaledToFit()
-                    .foregroundColor(.accentColor)
+                    .resizable().scaledToFit().foregroundColor(.accentColor)
             }
         }
         .frame(width: 48, height: 48)
         .padding(6)
         .background(RoundedRectangle(cornerRadius: 12).fill(Color(.tertiarySystemBackground)))
+        .task(id: request) {
+            let requested = request
+            let image = await TownHallBadgeCache.shared.image(level: level, scale: displayScale)
+            guard !Task.isCancelled else { return }
+            loadedImage = image
+            loadedRequest = requested
+        }
     }
+}
 
-    private var badgeImage: UIImage? {
-        #if canImport(UIKit)
-        guard level > 0 else { return nil }
-        let padded = String(format: "%02d", level)
-        let candidates = [
-            "town_hall/th\(level)",
-            "town_hall/\(level)",
-            "town_hall/th_\(padded)",
-            "town_hall/\(padded)"
-        ]
-        for name in candidates {
-            if let image = UIImage(named: name) {
-                return image
+// Preserve original artwork for exports; keep only display-sized badge thumbnails here.
+nonisolated private final class TownHallBadgeCache: @unchecked Sendable {
+    static let shared = TownHallBadgeCache()
+    private let images = NSCache<NSString, UIImage>()
+    private let queue = DispatchQueue(label: "com.clashboard.badge-images", qos: .userInitiated)
+
+    private init() { images.totalCostLimit = 2 * 1024 * 1024 }
+
+    func image(level: Int, scale: CGFloat) async -> UIImage? {
+        await withCheckedContinuation { continuation in
+            queue.async {
+                let image = autoreleasepool { self.thumbnail(level: level, scale: scale) }
+                continuation.resume(returning: image)
             }
         }
+    }
+
+    private func thumbnail(level: Int, scale: CGFloat) -> UIImage? {
+        guard level > 0 else { return nil }
+        let key = "\(level)-\(scale)" as NSString
+        if let cached = images.object(forKey: key) { return cached }
+        let padded = String(format: "%02d", level)
+        let candidates = ["town_hall/th\(level)", "town_hall/\(level)",
+                          "town_hall/th_\(padded)", "town_hall/\(padded)"]
+        for name in candidates {
+            guard let source = UIImage(named: name) else { continue }
+            let pixels = max(1, 48 * scale)
+            let result = source.preparingThumbnail(of: CGSize(width: pixels, height: pixels)) ?? source
+            let cost = result.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+            images.setObject(result, forKey: key, cost: cost)
+            return result
+        }
         return nil
-        #else
-        return nil
-        #endif
     }
 }
 

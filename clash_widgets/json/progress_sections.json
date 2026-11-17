@@ -193,6 +193,81 @@
       ]
     },
     {
+      "id": "squads",
+      "title": "Squads",
+      "export": "units",
+      "levels": "characters",
+      "groups": [
+        {
+          "id": "squads",
+          "title": "Squads",
+          "assetFolder": "lab",
+          "items": [
+            {
+              "id": 4000195,
+              "name": "Barch Squad",
+              "image": "barch_squad"
+            },
+            {
+              "id": 4000196,
+              "name": "Giant Wizard Squad",
+              "image": "giant_wizard_squad"
+            },
+            {
+              "id": 4000197,
+              "name": "Wall Breaker Squad",
+              "image": "wall_breaker_squad"
+            },
+            {
+              "id": 4000198,
+              "name": "Minion Squad",
+              "image": "minion_squad"
+            },
+            {
+              "id": 4000199,
+              "name": "Balloon Squad",
+              "image": "balloon_squad"
+            },
+            {
+              "id": 4000200,
+              "name": "Golem Witch Squad",
+              "image": "golem_witch_squad"
+            },
+            {
+              "id": 4000201,
+              "name": "Hog Rider Squad",
+              "image": "hog_rider_squad"
+            },
+            {
+              "id": 4000202,
+              "name": "Miner Squad",
+              "image": "miner_squad"
+            },
+            {
+              "id": 4000203,
+              "name": "Healer Squad",
+              "image": "healer_squad"
+            },
+            {
+              "id": 4000204,
+              "name": "P.E.K.K.A Titan Squad",
+              "image": "p_e_k_k_a_titan_squad"
+            },
+            {
+              "id": 4000205,
+              "name": "Dragons Squad",
+              "image": "dragons_squad"
+            },
+            {
+              "id": 4000206,
+              "name": "Baby Dragon Squad",
+              "image": "baby_dragon_squad"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "id": "siege_machines",
       "title": "Siege Machines",
       "export": "siege_machines",
@@ -311,6 +386,11 @@
               "id": 26000120,
               "name": "Totem Spell",
               "image": "totem_spell"
+            },
+            {
+              "id": 26000153,
+              "name": "Heroic Spell",
+              "image": "heroic_spell"
             },
             {
               "id": 26000009,
@@ -621,6 +701,16 @@
               "id": 1000086,
               "name": "Revenge Tower",
               "image": "revenge_tower"
+            },
+            {
+              "id": 1000107,
+              "name": "Spiky Tower",
+              "image": "spiky_tower"
+            },
+            {
+              "id": 1000108,
+              "name": "Firecracker Tower",
+              "image": "firecracker_tower"
             }
           ],
           "assetFolder": "buildings_home"
@@ -692,6 +782,11 @@
               "image": "barracks"
             },
             {
+              "id": 1000106,
+              "name": "Squad Barracks",
+              "image": "squad_barracks"
+            },
+            {
               "id": 1000007,
               "name": "Laboratory",
               "image": "laboratory"
@@ -710,6 +805,11 @@
               "id": 1000071,
               "name": "Hero Hall",
               "image": "hero_hall"
+            },
+            {
+              "id": 1000105,
+              "name": "Guardian Shrine",
+              "image": "guardian_shrine"
             },
             {
               "id": 1000026,

@@ -85,22 +85,22 @@
     "id": 12000019
   },
   "BB Push Trap": {
-    "displayName": "bb_Push Trap",
+    "displayName": "Push Trap",
     "internalName": "BB Push Trap",
     "id": 12000011
   },
   "BB Mine": {
-    "displayName": "bb_Mine",
+    "displayName": "Mine",
     "internalName": "BB Mine",
     "id": 12000013
   },
   "BB Spring Trap": {
-    "displayName": "bb_Spring Trap",
+    "displayName": "Spring Trap",
     "internalName": "BB Spring Trap",
     "id": 12000010
   },
   "BB Mega Mine": {
-    "displayName": "bb_Mega Mine",
+    "displayName": "Mega Mine",
     "internalName": "BB Mega Mine",
     "id": 12000014
   }

@@ -120,48 +120,93 @@
     "id": 102000023
   },
   "RoasterHPModule": {
-    "displayName": "RoasterHPModule",
+    "displayName": "Roaster HP Upgrade",
     "internalName": "RoasterHPModule",
     "id": 102000024
   },
   "RoasterAttackModule": {
-    "displayName": "RoasterAttackModule",
+    "displayName": "Roaster DPS Upgrade",
     "internalName": "RoasterAttackModule",
     "id": 102000025
   },
   "RoasterEffectModule": {
-    "displayName": "RoasterEffectModule",
+    "displayName": "Roaster Special Upgrade",
     "internalName": "RoasterEffectModule",
     "id": 102000026
   },
   "AirBombsHPModule": {
-    "displayName": "AirBombsHPModule",
+    "displayName": "Air Bombs HP Upgrade",
     "internalName": "AirBombsHPModule",
     "id": 102000027
   },
   "AirBombsAttackModule": {
-    "displayName": "AirBombsAttackModule",
+    "displayName": "Air Bombs DPS Upgrade",
     "internalName": "AirBombsAttackModule",
     "id": 102000028
   },
   "AirBombsEffectModule": {
-    "displayName": "AirBombsEffectModule",
+    "displayName": "Air Bombs Special Upgrade",
     "internalName": "AirBombsEffectModule",
     "id": 102000029
   },
   "LavaLauncherHPModule": {
-    "displayName": "LavaLauncherHPModule",
+    "displayName": "Lava Launcher HP Upgrade",
     "internalName": "LavaLauncherHPModule",
     "id": 102000030
   },
   "LavaLauncherAttackModule": {
-    "displayName": "LavaLauncherAttackModule",
+    "displayName": "Lava Launcher DPS Upgrade",
     "internalName": "LavaLauncherAttackModule",
     "id": 102000031
   },
   "LavaLauncherEffectModule": {
-    "displayName": "LavaLauncherEffectModule",
+    "displayName": "Lava Launcher Special Upgrade",
     "internalName": "LavaLauncherEffectModule",
     "id": 102000032
+  },
+  "InfernoCandleHPModule": {
+    "displayName": "Inferno Candle HP Upgrade",
+    "internalName": "InfernoCandleHPModule",
+    "id": 102000033
+  },
+  "InfernoCandleAttackModule": {
+    "displayName": "Hot Candle DPS Upgrade",
+    "internalName": "InfernoCandleAttackModule",
+    "id": 102000034
+  },
+  "InfernoCandleEffectModule": {
+    "displayName": "Hot Candle Special Upgrade",
+    "internalName": "InfernoCandleEffectModule",
+    "id": 102000035
+  },
+  "HeadhunterTowerHPModule": {
+    "displayName": "Hero Hunter HP Upgrade",
+    "internalName": "HeadhunterTowerHPModule",
+    "id": 102000036
+  },
+  "HeadhunterTowerAttackModule": {
+    "displayName": "Hero Hunter DPS Upgrade",
+    "internalName": "HeadhunterTowerAttackModule",
+    "id": 102000037
+  },
+  "HeadhunterTowerEffectModule": {
+    "displayName": "Hero Hunter Special Upgrade",
+    "internalName": "HeadhunterTowerEffectModule",
+    "id": 102000038
+  },
+  "CakeThrowerHPModule": {
+    "displayName": "Cake A Pult HP Upgrade",
+    "internalName": "CakeThrowerHPModule",
+    "id": 102000039
+  },
+  "CakeThrowerAttackModule": {
+    "displayName": "Cake A Pult DPS Upgrade",
+    "internalName": "CakeThrowerAttackModule",
+    "id": 102000040
+  },
+  "CakeThrowerEffectModule": {
+    "displayName": "Cake A Pult Special Upgrade",
+    "internalName": "CakeThrowerEffectModule",
+    "id": 102000041
   }
 }

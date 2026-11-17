@@ -6,10 +6,13 @@ import UIKit
 struct ProgressTabView: View {
     @ObservedObject private var remoteContent = RemoteContentService.shared
     @EnvironmentObject private var dataService: DataService
+    @EnvironmentObject private var iapManager: IAPManager
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @AppStorage("progressSectionOrder") private var storedOrder = ""
     @AppStorage("hiddenProgressSections") private var storedHidden = ""
+    @AppStorage("adsPreference") private var adsPreference: AdsPreference = .fullScreen
+    @AppStorage("hasCompletedInitialSetup") private var hasCompletedInitialSetup = false
     @State private var showCraftedDefenses = false
     @State private var showSupercharges = false
     @State private var order: [String] = []
@@ -47,6 +50,10 @@ struct ProgressTabView: View {
                         categorySelector
                             .frame(maxWidth: .infinity, alignment: .leading)
                             .padding(.vertical, 4)
+                        if adsPreference == .banner && !iapManager.isAdsRemoved && hasCompletedInitialSetup {
+                            BannerAdPlaceholder()
+                                .progressCardStyle()
+                        }
                         ForEach(visibleSectionIDs, id: \.self) { id in
                             if let section = ProgressCatalog.sections.first(where: { $0.id == id }) {
                                 sectionCard(section).id(id)
@@ -496,17 +503,8 @@ struct ProgressTabView: View {
     }
 
     private func superchargeCounts(for item: ProgressCatalog.Item) -> [Int: Int] {
-        guard let definition = ProgressCatalog.superchargeDefinition(for: item),
-              let export else { return [:] }
-        let cap = item.maxLevel(at: townHall)
-        var counts: [Int: Int] = [:]
-        for building in export.buildings ?? [] where building.data == item.id {
-            let charge = building.supercharge ?? 0
-            if charge > 0 || (townHall >= definition.unlockTownHall && cap > 0 && (building.lvl ?? 0) >= cap) {
-                counts[charge, default: 0] += building.cnt ?? 1
-            }
-        }
-        return counts
+        guard let export else { return [:] }
+        return ProgressCatalog.superchargeCounts(for: item, in: export, townHall: townHall)
     }
 
     private var superchargesCard: some View {
@@ -569,39 +567,10 @@ struct ProgressTabView: View {
                         }
                     }
                 }
-                if let definition, townHall >= definition.unlockTownHall {
-                    DisclosureGroup("Upgrade costs and times") {
-                        ForEach(ProgressCatalog.superchargeUpgradeDetails(for: item)) { detail in
-                            superchargeUpgradeDetail(detail, item: item)
-                        }
-                    }
-                    .font(.caption)
-                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 6)
-    }
-
-    private func superchargeUpgradeDetail(_ detail: ProgressCatalog.SuperchargeUpgradeDetail,
-                                          item: ProgressCatalog.Item) -> some View {
-        let profileID = dataService.currentProfile?.id
-        let gold = 1 - Double(max(0, min(100, dataService.goldPassBoost))) / 100
-        let timeFactor = remoteContent.upgradeFactor(category: "builderVillage", dataID: item.id,
-            townHall: townHall, superchargeLevel: detail.level, profileID: profileID)
-        let costFactor = remoteContent.upgradeFactor(category: "builderVillage", dataID: item.id,
-            townHall: townHall, superchargeLevel: detail.level, cost: true, profileID: profileID)
-        let seconds = Int((Double(detail.seconds) * gold * timeFactor).rounded())
-        let minutes = seconds / 60
-        let duration = "\(minutes / 1440)d \((minutes % 1440) / 60)h \(minutes % 60)m"
-        let cost = Int((Double(detail.cost) * gold * costFactor).rounded())
-        return VStack(alignment: .leading, spacing: 2) {
-            Text("Supercharge \(detail.level)").fontWeight(.medium)
-            Text("\(cost.formatted()) \(detail.resource) · \(duration)")
-                .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 3)
     }
 
     private func craftedDefenseRow(_ item: ProgressCatalog.Item) -> some View {
@@ -812,9 +781,8 @@ private struct ProgressStructureImage: View {
         }
         .task(id: name) {
             let requestedName = name
-            let image = await Task.detached(priority: .userInitiated) {
-                ProgressStructureImageCache.trimmedImage(named: requestedName)
-            }.value
+            guard !Task.isCancelled else { return }
+            let image = await ProgressStructureImageCache.loadImage(named: requestedName)
             guard !Task.isCancelled else { return }
             loadedImage = image
             loadedName = requestedName
@@ -845,6 +813,36 @@ nonisolated final class ProgressImageCache: @unchecked Sendable {
 private enum ProgressStructureImageCache {
     #if canImport(UIKit)
     nonisolated private static let images = ProgressImageCache(totalCostLimit: 24 * 1024 * 1024)
+
+    // Serial processing bounds decoded-image memory and CPU during a cold screen load.
+    // Cache lookup happens on the same queue, so duplicate requests share one result.
+    nonisolated private static let processingQueue = DispatchQueue(
+        label: "com.clashboard.progress-images", qos: .userInitiated)
+
+    nonisolated private final class Request: @unchecked Sendable {
+        private let lock = NSLock()
+        private var cancelled = false
+        var isCancelled: Bool { lock.withLock { cancelled } }
+        func cancel() { lock.withLock { cancelled = true } }
+    }
+
+    nonisolated static func loadImage(named name: String) async -> UIImage? {
+        let request = Request()
+        return await withTaskCancellationHandler {
+            await withCheckedContinuation { continuation in
+                processingQueue.async {
+                    guard !request.isCancelled else {
+                        continuation.resume(returning: nil)
+                        return
+                    }
+                    let result = autoreleasepool { trimmedImage(named: name) }
+                    continuation.resume(returning: result)
+                }
+            }
+        } onCancel: {
+            request.cancel()
+        }
+    }
 
     nonisolated static func trimmedImage(named name: String) -> UIImage? {
         let key = NSString(string: name)
@@ -991,6 +989,7 @@ enum ProgressCatalog {
     struct SuperchargeDefinition {
         let maxLevel: Int
         let unlockTownHall: Int
+        let requiredBuildingLevel: Int
     }
     struct CatalogFile: Decodable {
         let schemaVersion: Int
@@ -1047,7 +1046,7 @@ enum ProgressCatalog {
 
         func assetName(for level: Int) -> String {
             if let imagePattern {
-                let image = imagePattern.replacingOccurrences(of: "{level}", with: String(max(1, min(level, 19))))
+                let image = imagePattern.replacingOccurrences(of: "{level}", with: String(max(1, level)))
                 return "\(folder)/\(image)"
             }
             return "\(folder)/\(image ?? "town_hall")"
@@ -1100,6 +1099,19 @@ enum ProgressCatalog {
             let groups = definition.groups.map { group in
                 Group(id: group.id, title: group.title, items: group.items.map { entry in
                     let rawLevels = parsed[entry.id]?["levels"] as? [[String: Any]] ?? []
+                    let unlockTownHall: Int
+                    if definition.id == "squads" || definition.id == "spells" {
+                        let isSquad = definition.id == "squads"
+                        let requiredLevel = rawLevels.compactMap { integer($0[isSquad ? "BarrackLevel" : "SpellForgeLevel"]) }.min() ?? 0
+                        let productionBuilding = rawLevels.compactMap { $0["ProductionBuilding"] as? String }
+                            .first { !$0.isEmpty } ?? "Spell Factory"
+                        let facilityID = isSquad ? 1000106 : productionBuilding == "Dark Spell Factory" ? 1000029 : 1000020
+                        unlockTownHall = (buildingFacilities[facilityID] ?? [])
+                            .filter { (integer($0["level"]) ?? 0) >= requiredLevel }
+                            .compactMap { integer($0["townHallLevel"]) }.min() ?? Int.max
+                    } else {
+                        unlockTownHall = 0
+                    }
                     let levels = rawLevels.compactMap { raw -> Level? in
                         guard let number = integer(raw["level"]) else { return nil }
                         let required: Int
@@ -1112,7 +1124,8 @@ enum ProgressCatalog {
                         } else {
                             required = integer(raw["LaboratoryLevel"]) ?? 0
                         }
-                        let requiredTH = definition.id == "heroes" ? (integer(raw["RequiredTownHallLevel"]) ?? 0) : 0
+                        let requiredTH = definition.id == "heroes"
+                            ? (integer(raw["RequiredTownHallLevel"]) ?? 0) : unlockTownHall
                         return Level(level: number, required: required, requiredTownHall: requiredTH)
                     }
                     let moduleIds = entry.moduleIds ?? []
@@ -1140,24 +1153,46 @@ enum ProgressCatalog {
         return sections
     }()
 
+    static var heroItems: [Item] {
+        sections.first { $0.id == "heroes" }?.groups.flatMap(\.items) ?? []
+    }
+
+    static func heroes(in export: CoCExport?, fallback: [HeroProfile], townHall: Int) -> [HeroProfile] {
+        let section = sections.first { $0.id == "heroes" }
+        let inventory = export.map { section?.inventory(in: $0) ?? [:] } ?? [:]
+        return heroItems.compactMap { item in
+            let apiHero = fallback.first { $0.name.caseInsensitiveCompare(item.name) == .orderedSame }
+            let level = inventory[item.id]?.keys.max() ?? apiHero?.level ?? 0
+            let cap = item.maxLevel(at: townHall)
+            guard cap > 0 || level > 0 else { return nil }
+            return HeroProfile(name: item.name, level: level, maxLevel: cap,
+                               village: "home", equipment: apiHero?.equipment)
+        }
+    }
+
     private static let buildingFacilities: [Int: [[String: Any]]] = {
         let parsed = parsedEntries(file: "buildings")
-        return [1000007, 1000068, 1000071].reduce(into: [:]) { result, id in
+        return [1000007, 1000020, 1000029, 1000068, 1000071, 1000106].reduce(into: [:]) { result, id in
             result[id] = parsed[id]?["levels"] as? [[String: Any]] ?? []
         }
     }()
 
-    private static let miniLevelsByBuilding: [String: [[String: Any]]] = {
+    private static let activeMiniLevelsByBuilding: [Int: [[String: Any]]] = {
         guard let data = load("mini_levels", folder: "parsed_json_files"),
               let entries = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]] else { return [:] }
-        var result: [String: [[String: Any]]] = [:]
+        var levelsByName: [String: [[String: Any]]] = [:]
         for entry in entries {
             guard let internalName = entry["internalName"] as? String,
                   let levels = entry["levels"] as? [[String: Any]] else { continue }
-            let buildingName = internalName.replacingOccurrences(of: " Mini Levels", with: "")
-            result[normalized(buildingName)] = levels
+            levelsByName[normalized(internalName)] = levels
         }
-        return result
+        // Orphan mini-level definitions remain in the CSV after supercharges
+        // are removed. Only an explicit building link makes them available.
+        return parsedEntries(file: "buildings").reduce(into: [:]) { result, pair in
+            guard let name = pair.value["miniLevels"] as? String, !name.isEmpty,
+                  let levels = levelsByName[normalized(name)] else { return }
+            result[pair.key] = levels
+        }
     }()
 
     static let maximumTownHallLevel: Int = {
@@ -1167,35 +1202,26 @@ enum ProgressCatalog {
         return level
     }()
 
-    struct SuperchargeUpgradeDetail: Identifiable {
-        var id: Int { level }
-        let level: Int
-        let seconds: Int
-        let cost: Int
-        let resource: String
-    }
-
-    static func superchargeUpgradeDetails(for item: Item) -> [SuperchargeUpgradeDetail] {
-        var resource = ""
-        return (miniLevelsByBuilding[normalized(item.name)] ?? []).compactMap { entry in
-            if let value = entry["BuildResource"] as? String, !value.isEmpty { resource = value }
-            guard let level = integer(entry["level"]),
-                  let seconds = integer(entry["buildTimeSeconds"]),
-                  let cost = integer(entry["BuildCost"]) else { return nil }
-            return SuperchargeUpgradeDetail(level: level, seconds: seconds, cost: cost, resource: resource)
-        }
-    }
-
     static func superchargeDefinition(for item: Item) -> SuperchargeDefinition? {
-        guard let miniLevels = miniLevelsByBuilding[normalized(item.name)],
-              let maxLevel = miniLevels.compactMap({ integer($0["level"]) }).max() else { return nil }
+        guard let miniLevels = activeMiniLevelsByBuilding[item.id],
+              let maxLevel = miniLevels.compactMap({ integer($0["level"]) }).max(), maxLevel > 0,
+              let overall = item.levels.map(\.level).max(), overall > 0,
+              let baseUnlock = item.levels.filter({ $0.level == overall }).map(\.required).min() else { return nil }
         let statedUnlock = miniLevels.compactMap { integer($0["RequiredTownHallLevel"]) }.first
-        if let statedUnlock, statedUnlock > maximumTownHallLevel { return nil }
-        let overall = item.levels.map(\.level).max() ?? 0
-        let baseUnlock = item.levels.filter { $0.level == overall }.map(\.required).min() ?? 18
-        let unlockTownHall = statedUnlock ?? baseUnlock
+        let unlockTownHall = max(statedUnlock ?? 0, baseUnlock)
         guard maximumTownHallLevel > 0, unlockTownHall <= maximumTownHallLevel else { return nil }
-        return SuperchargeDefinition(maxLevel: maxLevel, unlockTownHall: unlockTownHall)
+        return SuperchargeDefinition(maxLevel: maxLevel, unlockTownHall: unlockTownHall, requiredBuildingLevel: overall)
+    }
+
+    static func superchargeCounts(for item: Item, in export: CoCExport, townHall: Int) -> [Int: Int] {
+        guard let definition = superchargeDefinition(for: item),
+              townHall >= definition.unlockTownHall else { return [:] }
+        var counts: [Int: Int] = [:]
+        for building in export.buildings ?? [] where building.data == item.id {
+            guard (building.lvl ?? 0) >= definition.requiredBuildingLevel else { continue }
+            counts[building.supercharge ?? 0, default: 0] += building.cnt ?? 1
+        }
+        return counts
     }
 
     private static func normalized(_ value: String) -> String {

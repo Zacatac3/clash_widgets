@@ -108,5 +108,35 @@
       "LavaLauncherAttackModule",
       "LavaLauncherEffectModule"
     ]
+  },
+  {
+    "id": 103000011,
+    "internalName": "Inferno Candle",
+    "specialAbility": "SeasonalDefenseInfernoCandle",
+    "modules": [
+      "InfernoCandleHPModule",
+      "InfernoCandleAttackModule",
+      "InfernoCandleEffectModule"
+    ]
+  },
+  {
+    "id": 103000012,
+    "internalName": "Headhunter Tower",
+    "specialAbility": "SeasonalDefenseHeadhunterTower",
+    "modules": [
+      "HeadhunterTowerHPModule",
+      "HeadhunterTowerAttackModule",
+      "HeadhunterTowerEffectModule"
+    ]
+  },
+  {
+    "id": 103000013,
+    "internalName": "Cake Thrower",
+    "specialAbility": "SeasonalDefenseCakeThrower",
+    "modules": [
+      "CakeThrowerHPModule",
+      "CakeThrowerAttackModule",
+      "CakeThrowerEffectModule"
+    ]
   }
 ]

@@ -1,6 +1,19 @@
 import Foundation
+import SwiftUI
 
 extension DataService {
+    func moveProfiles(from offsets: IndexSet, to destination: Int) {
+        profiles.move(fromOffsets: offsets, toOffset: destination)
+        persistChanges(reloadWidgets: true)
+    }
+
+    func toggleWidgetPriority(_ id: UUID) {
+        guard let index = profiles.firstIndex(where: { $0.id == id }) else { return }
+        guard profiles[index].isWidgetPriority || profiles.filter(\.isWidgetPriority).count < 6 else { return }
+        profiles[index].isWidgetPriority.toggle()
+        persistChanges(reloadWidgets: true)
+    }
+
     func selectProfile(_ id: UUID) {
         guard profiles.contains(where: { $0.id == id }) else { return }
         if selectedProfileID != id {

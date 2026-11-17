@@ -1903,7 +1903,7 @@ struct ProgressOverviewView: View {
 }
 
 struct TownHallPaletteView: View {
-    private let maxTownHallLevel = 18
+    private let maxTownHallLevel = max(1, ProgressCatalog.maximumTownHallLevel)
     @AppStorage("townHallGradientConfig") private var townHallGradientConfigJSON: String = "{}"
 
     var body: some View {

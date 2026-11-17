@@ -58,8 +58,7 @@ struct DebugSettingsPage: View {
                 if let event = remoteContent.testEvent {
                     Text(remoteContent.environment == .development || !remoteContent.localTestEnabled ? "Local test paused — using downloaded events" : (remoteContent.now < event.start ? "Waiting to start" : (event.isActive(at: remoteContent.now) ? "Active" : "Ended")))
                         .font(.headline)
-                    Text(remoteEventCountdown(until: remoteContent.now < event.start ? event.start : event.end, at: remoteContent.now))
-                        .monospacedDigit()
+                    RemoteEventCountdownView(event: event)
                     Button("Switch to Test Profile") {
                         if let id = remoteContent.testProfileID { dataService.selectedProfileID = id }
                     }

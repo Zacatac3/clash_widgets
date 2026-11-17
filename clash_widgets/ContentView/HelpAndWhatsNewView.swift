@@ -112,6 +112,9 @@ private struct WhatsNewContent: View {
     }
 
     private func whatsNewInlineImageName(for bullet: String, in section: WhatsNewSection) -> String? {
+        if section.dateLabel.contains("1.4"), bullet.lowercased().contains("multi-account widgets") {
+            return "new_account_widgets"
+        }
         if section.dateLabel.contains("1.3.1"), bullet.lowercased().contains("2x2 builder widget") {
             return "2x2builder"
         }

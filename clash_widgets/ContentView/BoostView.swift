@@ -6,8 +6,8 @@ import UIKit
 #endif
 
 private class BoostManager: ObservableObject {
-    @Published var activeBoosts: [ActiveBoost] = []
-    @Published var instantUndoActions: [InstantBoostUndoAction] = []
+    @Published var activeBoosts: [ActiveBoost] = [] { didSet { updateTimer() } }
+    @Published var instantUndoActions: [InstantBoostUndoAction] = [] { didSet { updateTimer() } }
     
     private weak var dataService: DataService?
     private var timer: Timer?
@@ -16,7 +16,7 @@ private class BoostManager: ObservableObject {
     init(dataService: DataService) {
         self.dataService = dataService
         loadActiveBoosts()
-        startTimer()
+        updateTimer()
         
         dataService.$selectedProfileID
             .sink { [weak self] _ in
@@ -247,7 +247,13 @@ private class BoostManager: ObservableObject {
         }
     }
     
-    private func startTimer() {
+    private func updateTimer() {
+        guard !activeBoosts.isEmpty || !instantUndoActions.isEmpty else {
+            timer?.invalidate()
+            timer = nil
+            return
+        }
+        guard timer == nil else { return }
         timer = Timer.scheduledTimer(withTimeInterval: 1.0, repeats: true) { [weak self] _ in
             self?.checkExpiredBoosts()
             self?.trimExpiredUndoActions(referenceDate: Date())
@@ -257,6 +263,7 @@ private class BoostManager: ObservableObject {
     
     private func checkExpiredBoosts() {
         let now = Date()
+        guard activeBoosts.contains(where: { $0.endTime <= now }) else { return }
         let originalCount = activeBoosts.count
         activeBoosts.removeAll { $0.endTime <= now }
         
@@ -266,6 +273,7 @@ private class BoostManager: ObservableObject {
     }
 
     private func trimExpiredUndoActions(referenceDate: Date) {
+        guard instantUndoActions.contains(where: { $0.expiresAt <= referenceDate }) else { return }
         let originalCount = instantUndoActions.count
         instantUndoActions.removeAll { $0.expiresAt <= referenceDate }
         if instantUndoActions.count != originalCount {
@@ -359,7 +367,7 @@ struct BoostView: View {
                         HStack {
                             if let uiImage = UIImage(named: boostType.assetPath),
                                boostType == .builderApprentice || boostType == .labAssistant {
-                                let trimmedImage = trimTransparentEdges(from: uiImage)
+                                let trimmedImage = cachedTrimmedImage(uiImage, named: boostType.assetPath)
                                 Image(uiImage: trimmedImage)
                                     .resizable()
                                     .scaledToFit()
@@ -426,7 +434,7 @@ struct BoostView: View {
                             HStack {
                                 if let uiImage = UIImage(named: boostType.assetPath),
                                    boostType == .builderApprentice || boostType == .labAssistant {
-                                    let trimmedImage = trimTransparentEdges(from: uiImage)
+                                    let trimmedImage = cachedTrimmedImage(uiImage, named: boostType.assetPath)
                                     Image(uiImage: trimmedImage)
                                         .resizable()
                                         .scaledToFit()
@@ -521,7 +529,7 @@ struct BoostView: View {
             VStack(spacing: 12) {
                 if let uiImage = UIImage(named: boostType.assetPath),
                    boostType == .builderApprentice || boostType == .labAssistant {
-                    let trimmedImage = trimTransparentEdges(from: uiImage)
+                    let trimmedImage = cachedTrimmedImage(uiImage, named: boostType.assetPath)
                     Image(uiImage: trimmedImage)
                         .resizable()
                         .scaledToFit()
@@ -693,6 +701,21 @@ struct BoostView: View {
         }
     }
     
+    private static let trimmedImageCache: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.totalCostLimit = 4 * 1024 * 1024
+        return cache
+    }()
+
+    private func cachedTrimmedImage(_ image: UIImage, named name: String) -> UIImage {
+        let key = name as NSString
+        if let cached = Self.trimmedImageCache.object(forKey: key) { return cached }
+        let result = trimTransparentEdges(from: image)
+        let cost = result.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        Self.trimmedImageCache.setObject(result, forKey: key, cost: cost)
+        return result
+    }
+
     private func trimTransparentEdges(from image: UIImage) -> UIImage {
         guard let cgImage = image.cgImage,
               let dataProvider = cgImage.dataProvider,

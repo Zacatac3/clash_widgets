@@ -284,8 +284,8 @@
     "id": 1000075,
     "displayName": "SpellCage"
   },
-  "PEKKA's Playhouse": {
-    "internalName": "PEKKA's Playhouse",
+  "PEKKAs Playhouse": {
+    "internalName": "PEKKAs Playhouse",
     "id": 1000076,
     "displayName": "PEKKA's Playhouse"
   },
@@ -519,8 +519,8 @@
     "id": 1000081,
     "displayName": "bb_X-Bow"
   },
-  "BB UNUSED": {
-    "internalName": "BB UNUSED",
+  "BB Builders Hut": {
+    "internalName": "BB Builders Hut",
     "id": 1000047,
     "displayName": "bb_Master Builder's Hut"
   }

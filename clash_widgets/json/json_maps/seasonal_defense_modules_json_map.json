@@ -208,5 +208,50 @@
     "displayName": "Cake A Pult Special Upgrade",
     "internalName": "CakeThrowerEffectModule",
     "id": 102000041
+  },
+  "RocketArtilleryTowerHPModule": {
+    "displayName": "RocketArtilleryTowerHPModule",
+    "internalName": "RocketArtilleryTowerHPModule",
+    "id": 102000042
+  },
+  "RocketArtilleryTowerAttackModule": {
+    "displayName": "RocketArtilleryTowerAttackModule",
+    "internalName": "RocketArtilleryTowerAttackModule",
+    "id": 102000043
+  },
+  "RocketArtilleryTowerEffectModule": {
+    "displayName": "RocketArtilleryTowerEffectModule",
+    "internalName": "RocketArtilleryTowerEffectModule",
+    "id": 102000044
+  },
+  "MinionHiveLauncherHPModule": {
+    "displayName": "MinionHiveLauncherHPModule",
+    "internalName": "MinionHiveLauncherHPModule",
+    "id": 102000045
+  },
+  "MinionHiveLauncherAttackModule": {
+    "displayName": "MinionHiveLauncherAttackModule",
+    "internalName": "MinionHiveLauncherAttackModule",
+    "id": 102000046
+  },
+  "MinionHiveLauncherEffectModule": {
+    "displayName": "MinionHiveLauncherEffectModule",
+    "internalName": "MinionHiveLauncherEffectModule",
+    "id": 102000047
+  },
+  "GoblinThrowerTowerHPModule": {
+    "displayName": "GoblinThrowerTowerHPModule",
+    "internalName": "GoblinThrowerTowerHPModule",
+    "id": 102000048
+  },
+  "GoblinThrowerTowerAttackModule": {
+    "displayName": "GoblinThrowerTowerAttackModule",
+    "internalName": "GoblinThrowerTowerAttackModule",
+    "id": 102000049
+  },
+  "GoblinThrowerTowerEffectModule": {
+    "displayName": "GoblinThrowerTowerEffectModule",
+    "internalName": "GoblinThrowerTowerEffectModule",
+    "id": 102000050
   }
 }

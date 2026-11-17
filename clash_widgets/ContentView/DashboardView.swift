@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 #if canImport(UIKit)
 import UIKit
 #endif
@@ -40,7 +41,7 @@ struct DashboardView: View {
             .sheet(item: $presentedNews) { item in
                 RemoteNewsSheet(item: item).adaptivePanelPresentation()
             }
-            .onReceive(remoteContent.$now) { _ in presentLatestNewsIfEligible() }
+            .onReceive(remoteContent.objectWillChange.receive(on: RunLoop.main)) { _ in presentLatestNewsIfEligible() }
             .sheet(isPresented: $showInfoSheet) {
                 InfoSheetView(selectedPage: $infoSheetPage, sections: defaultWhatsNewSections())
                     .adaptivePanelPresentation()
@@ -170,10 +171,8 @@ struct DashboardView: View {
                                         Text("Local debug test — not from the remote feed")
                                             .font(.caption2).foregroundStyle(.orange)
                                     }
-                                    HStack {
-                                        Text(remoteContent.now < event.start ? "Starts in" : "Ends in")
-                                        Text(remoteEventCountdown(until: remoteContent.now < event.start ? event.start : event.end, at: remoteContent.now)).monospacedDigit()
-                                    }.font(.caption).foregroundStyle(.secondary)
+                                    RemoteEventCountdownView(event: event)
+                                        .font(.caption).foregroundStyle(.secondary)
                                 }
                             }
                         }
@@ -1451,7 +1450,7 @@ struct DashboardView: View {
         }
     }
 
-    private func parsedJSONURL(forResource name: String) -> URL? {
+    private static func parsedJSONURL(forResource name: String) -> URL? {
         let bundle = Bundle.main
         let subdirectories: [String?] = [
             "json/parsed_json_files",
@@ -1468,7 +1467,11 @@ struct DashboardView: View {
         return bundle.url(forResource: name, withExtension: "json")
     }
 
-    private func loadTownHallLimits() -> [Int: [String: Any]]? {
+    private static let loadTownHallLimitsCache: [Int: [String: Any]]? = readTownHallLimits()
+
+    private func loadTownHallLimits() -> [Int: [String: Any]]? { Self.loadTownHallLimitsCache }
+
+    private static func readTownHallLimits() -> [Int: [String: Any]]? {
         if let url = parsedJSONURL(forResource: "townhall_levels"),
            let data = try? Data(contentsOf: url),
            let json = try? JSONSerialization.jsonObject(with: data) as? [[String: Any]],
@@ -1485,7 +1488,7 @@ struct DashboardView: View {
             }
         }
 
-        guard let wallCounts = loadWallCountsFromGameConstants() else {
+        guard let wallCounts = loadWallCountsFromGameConstantsCache else {
             return nil
         }
         var result: [Int: [String: Any]] = [:]
@@ -1495,7 +1498,11 @@ struct DashboardView: View {
         return result.isEmpty ? nil : result
     }
 
-    private func loadWallCountsFromGameConstants() -> [Int: (maxWallLevel: Int, totalWalls: Int)]? {
+    private static let loadWallCountsFromGameConstantsCache: [Int: (maxWallLevel: Int, totalWalls: Int)]? = readWallCountsFromGameConstants()
+
+    private func loadWallCountsFromGameConstants() -> [Int: (maxWallLevel: Int, totalWalls: Int)]? { Self.loadWallCountsFromGameConstantsCache }
+
+    private static func readWallCountsFromGameConstants() -> [Int: (maxWallLevel: Int, totalWalls: Int)]? {
         guard let url = parsedJSONURL(forResource: "game_constants") else {
             return nil
         }
@@ -1523,7 +1530,11 @@ struct DashboardView: View {
         return result.isEmpty ? nil : result
     }
 
-    private func loadBuildingCosts() -> [Int: (cost: Int, thRequirement: Int)]? {
+    private static let loadBuildingCostsCache: [Int: (cost: Int, thRequirement: Int)]? = readBuildingCosts()
+
+    private func loadBuildingCosts() -> [Int: (cost: Int, thRequirement: Int)]? { Self.loadBuildingCostsCache }
+
+    private static func readBuildingCosts() -> [Int: (cost: Int, thRequirement: Int)]? {
         guard let url = parsedJSONURL(forResource: "buildings") else {
             return nil
         }

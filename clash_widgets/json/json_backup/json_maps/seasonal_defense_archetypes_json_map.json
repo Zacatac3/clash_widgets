@@ -40,18 +40,33 @@
     "id": 103000007
   },
   "SDRoaster": {
-    "displayName": "SDRoaster",
+    "displayName": "Roaster",
     "internalName": "SDRoaster",
     "id": 103000008
   },
   "SDAirBombs": {
-    "displayName": "SDAirBombs",
+    "displayName": "Air Bombs",
     "internalName": "SDAirBombs",
     "id": 103000009
   },
   "SDLavaLauncher": {
-    "displayName": "SDLavaLauncher",
+    "displayName": "Lava Launcher",
     "internalName": "SDLavaLauncher",
     "id": 103000010
+  },
+  "Inferno Candle": {
+    "displayName": "Hot Candle",
+    "internalName": "Inferno Candle",
+    "id": 103000011
+  },
+  "Headhunter Tower": {
+    "displayName": "Hero Hunter",
+    "internalName": "Headhunter Tower",
+    "id": 103000012
+  },
+  "Cake Thrower": {
+    "displayName": "Cake A Pult",
+    "internalName": "Cake Thrower",
+    "id": 103000013
   }
 }

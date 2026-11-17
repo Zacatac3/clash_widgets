@@ -714,6 +714,11 @@
     "internalName": "UndeadWrestlerDeathSpawn",
     "id": 26000140
   },
+  "Blizzard Axe Aura": {
+    "displayName": "Blizzard Axe Aura",
+    "internalName": "Blizzard Axe Aura",
+    "id": 26000148
+  },
   "TinyTotemImpact": {
     "displayName": "TinyTotemImpact",
     "internalName": "TinyTotemImpact",
@@ -738,5 +743,35 @@
     "displayName": "CakeThrowerExplosion4",
     "internalName": "CakeThrowerExplosion4",
     "id": 26000147
+  },
+  "GoblinThrowerTowerSummon": {
+    "displayName": "GoblinThrowerTowerSummon",
+    "internalName": "GoblinThrowerTowerSummon",
+    "id": 26000149
+  },
+  "Firecracker Tower Hit Spell": {
+    "displayName": "Firecracker Tower Hit Spell",
+    "internalName": "Firecracker Tower Hit Spell",
+    "id": 26000150
+  },
+  "ShieldBroochBurst": {
+    "displayName": "ShieldBroochBurst",
+    "internalName": "ShieldBroochBurst",
+    "id": 26000151
+  },
+  "ChristmasYetiMiteFreeze": {
+    "displayName": "ChristmasYetiMiteFreeze",
+    "internalName": "ChristmasYetiMiteFreeze",
+    "id": 26000152
+  },
+  "Heroic Spell": {
+    "displayName": "Heroic Spell",
+    "internalName": "Heroic Spell",
+    "id": 26000153
+  },
+  "FireGoatSummonLamb": {
+    "displayName": "FireGoatSummonLamb",
+    "internalName": "FireGoatSummonLamb",
+    "id": 26000154
   }
 }

@@ -6,6 +6,7 @@ struct SettingsView: View {
     @EnvironmentObject var iapManager: IAPManager
     @State private var showAddProfile = false
     @State private var profileToEdit: PlayerAccount?
+    @State private var editingProfiles = false
     @State private var showFeedbackForm = false
     @State private var isPurchasing = false
     @State private var isRestoringPurchases = false
@@ -91,6 +92,38 @@ struct SettingsView: View {
             .trackTabBarScrollDirection()
             .animation(.easeInOut(duration: 0.2), value: profilesSectionExpanded)
             .navigationTitle("Settings")
+            .sheet(isPresented: $editingProfiles) {
+                NavigationStack {
+                    List {
+                        Section {
+                            ForEach(dataService.profiles) { profile in
+                                HStack {
+                                    Button {
+                                        dataService.toggleWidgetPriority(profile.id)
+                                    } label: {
+                                        Image(systemName: profile.isWidgetPriority ? "star.fill" : "star")
+                                            .foregroundStyle(profile.isWidgetPriority ? .yellow : .secondary)
+                                    }
+                                    .buttonStyle(.borderless)
+                                    .disabled(!profile.isWidgetPriority && priorityProfileCount >= 6)
+                                    .accessibilityLabel(profile.isWidgetPriority ? "Remove \(dataService.displayName(for: profile)) from priority" : "Prioritize \(dataService.displayName(for: profile))")
+                                    Text(dataService.displayName(for: profile))
+                                }
+                            }
+                            .onMove(perform: dataService.moveProfiles)
+                        } footer: {
+                            Text("Drag to reorder profiles. Star up to 6 priority accounts to always include them in multi-account widgets. Profile order breaks ties for free-builder alerts.")
+                        }
+                    }
+                    .environment(\.editMode, .constant(.active))
+                    .navigationTitle("Manage Profiles")
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("Done") { editingProfiles = false }
+                        }
+                    }
+                }
+            }
             .sheet(isPresented: $showAddProfile) {
                 AddProfileSheet()
             }
@@ -142,6 +175,12 @@ struct SettingsView: View {
     @ViewBuilder
     private var profilesSection: some View {
         Section("Profiles") {
+            Button {
+                editingProfiles = true
+            } label: {
+                Label("Reorder & Prioritize Profiles", systemImage: "arrow.up.arrow.down")
+            }
+
             if canCollapseProfiles {
                 Button {
                     withAnimation(.easeInOut(duration: 0.2)) {
@@ -335,15 +374,11 @@ struct SettingsView: View {
     }
 
     private var sortedProfiles: [PlayerAccount] {
-        let currentID = dataService.selectedProfileID
-        return dataService.profiles.sorted { lhs, rhs in
-            let lhsPriority = lhs.id == currentID ? 0 : 1
-            let rhsPriority = rhs.id == currentID ? 0 : 1
-            if lhsPriority != rhsPriority {
-                return lhsPriority < rhsPriority
-            }
-            return dataService.displayName(for: lhs).localizedCaseInsensitiveCompare(dataService.displayName(for: rhs)) == .orderedAscending
-        }
+        dataService.profiles
+    }
+
+    private var priorityProfileCount: Int {
+        dataService.profiles.filter(\.isWidgetPriority).count
     }
 
     private func getProfileNumber(_ profile: PlayerAccount) -> Int? {
@@ -387,6 +422,16 @@ struct SettingsView: View {
                     }
                 }
                 Spacer()
+
+                Button {
+                    dataService.toggleWidgetPriority(profile.id)
+                } label: {
+                    Image(systemName: profile.isWidgetPriority ? "star.fill" : "star")
+                        .foregroundStyle(profile.isWidgetPriority ? .yellow : .secondary)
+                }
+                .buttonStyle(.borderless)
+                .disabled(!profile.isWidgetPriority && priorityProfileCount >= 6)
+                .accessibilityLabel(profile.isWidgetPriority ? "Remove from widget priority" : "Prioritize in multi-account widgets")
 
                 if isCurrent {
                     Image(systemName: "checkmark.circle.fill")

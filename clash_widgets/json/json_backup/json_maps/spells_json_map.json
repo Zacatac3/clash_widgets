@@ -44,9 +44,9 @@
     "internalName": "Revive",
     "id": 26000098
   },
-  "Totem": {
+  "Totem Spell": {
     "displayName": "Totem Spell",
-    "internalName": "Totem",
+    "internalName": "Totem Spell",
     "id": 26000120
   },
   "Poison": {
@@ -615,7 +615,7 @@
     "id": 26000122
   },
   "AngrySpell": {
-    "displayName": "AngrySpell",
+    "displayName": "Angry Spell",
     "internalName": "AngrySpell",
     "id": 26000123
   },
@@ -683,5 +683,60 @@
     "displayName": "DragonDukeFireBlastMini",
     "internalName": "DragonDukeFireBlastMini",
     "id": 26000136
+  },
+  "GuardianBuilderRageSpell": {
+    "displayName": "GuardianBuilderRageSpell",
+    "internalName": "GuardianBuilderRageSpell",
+    "id": 26000137
+  },
+  "ElephantRiderSummonElephant": {
+    "displayName": "Unused6",
+    "internalName": "ElephantRiderSummonElephant",
+    "id": 26000138
+  },
+  "ElephantRiderSummonRider": {
+    "displayName": "Unused7",
+    "internalName": "ElephantRiderSummonRider",
+    "id": 26000139
+  },
+  "AirTroopSummon": {
+    "displayName": "AirTroopSummon",
+    "internalName": "AirTroopSummon",
+    "id": 26000141
+  },
+  "CakeThrowerExplosion": {
+    "displayName": "Unused8",
+    "internalName": "CakeThrowerExplosion",
+    "id": 26000142
+  },
+  "UndeadWrestlerDeathSpawn": {
+    "displayName": "Unused9",
+    "internalName": "UndeadWrestlerDeathSpawn",
+    "id": 26000140
+  },
+  "TinyTotemImpact": {
+    "displayName": "TinyTotemImpact",
+    "internalName": "TinyTotemImpact",
+    "id": 26000143
+  },
+  "TinyTotemSummon": {
+    "displayName": "TinyTotemSummon",
+    "internalName": "TinyTotemSummon",
+    "id": 26000144
+  },
+  "CakeThrowerExplosion2": {
+    "displayName": "CakeThrowerExplosion2",
+    "internalName": "CakeThrowerExplosion2",
+    "id": 26000145
+  },
+  "CakeThrowerExplosion3": {
+    "displayName": "CakeThrowerExplosion3",
+    "internalName": "CakeThrowerExplosion3",
+    "id": 26000146
+  },
+  "CakeThrowerExplosion4": {
+    "displayName": "CakeThrowerExplosion4",
+    "internalName": "CakeThrowerExplosion4",
+    "id": 26000147
   }
 }

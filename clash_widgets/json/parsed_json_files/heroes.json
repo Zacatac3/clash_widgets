@@ -945,52 +945,52 @@
       {
         "level": 95,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "340000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 96,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "350000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 97,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "360000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 98,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "370000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 99,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "380000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 100,
@@ -1037,7 +1037,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "450000",
+        "UpgradeCost": "440000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1047,7 +1047,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "460000",
+        "UpgradeCost": "445000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1057,7 +1057,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "470000",
+        "UpgradeCost": "450000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1067,7 +1067,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "475000",
+        "UpgradeCost": "455000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1077,7 +1077,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "485000",
+        "UpgradeCost": "460000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1087,7 +1087,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "490000",
+        "UpgradeCost": "465000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -1095,11 +1095,61 @@
       {
         "level": 110,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 111,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "505000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 112,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "510000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 113,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "515000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 114,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "520000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 115,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],
@@ -2052,52 +2102,52 @@
       {
         "level": 95,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "340000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 96,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "350000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 97,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "360000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 98,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "370000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 99,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "380000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 100,
@@ -2144,7 +2194,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "450000",
+        "UpgradeCost": "440000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2154,7 +2204,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "460000",
+        "UpgradeCost": "445000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2164,7 +2214,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "470000",
+        "UpgradeCost": "450000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2174,7 +2224,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "475000",
+        "UpgradeCost": "455000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2184,7 +2234,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "485000",
+        "UpgradeCost": "460000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2194,7 +2244,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "490000",
+        "UpgradeCost": "465000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2202,11 +2252,61 @@
       {
         "level": 110,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 111,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "505000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 112,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "510000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 113,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "515000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 114,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "520000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 115,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],
@@ -2899,69 +2999,69 @@
       {
         "level": 69,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "20000000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 70,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "20500000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 71,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "21000000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 72,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "21500000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 73,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "22000000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 74,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "22500000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 75,
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "24000000",
+        "UpgradeCost": "23000000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
         "upgradeTimeSeconds": 691200
@@ -2971,7 +3071,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "25500000",
+        "UpgradeCost": "23500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2981,7 +3081,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "27000000",
+        "UpgradeCost": "24000000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -2991,7 +3091,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "27500000",
+        "UpgradeCost": "24500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3001,7 +3101,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "28000000",
+        "UpgradeCost": "25500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3011,7 +3111,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "28500000",
+        "UpgradeCost": "26500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3021,7 +3121,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "29000000",
+        "UpgradeCost": "27500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3031,7 +3131,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "29500000",
+        "UpgradeCost": "28500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3041,7 +3141,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "30000000",
+        "UpgradeCost": "29000000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3051,7 +3151,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "30500000",
+        "UpgradeCost": "29500000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -3059,11 +3159,61 @@
       {
         "level": 85,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "31000000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 86,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "31250000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 87,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "31500000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 88,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "31750000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 89,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "32000000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 90,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],
@@ -3863,62 +4013,62 @@
       {
         "level": 44,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 45,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "340000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 46,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "350000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 47,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "360000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 48,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "370000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 49,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "380000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 50,
@@ -3973,11 +4123,61 @@
       {
         "level": 55,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 56,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "505000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 57,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "510000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 58,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "515000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 59,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "520000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 60,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],
@@ -4947,152 +5147,152 @@
       {
         "level": 75,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "240000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 76,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "250000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 77,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "260000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 78,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "270000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 79,
         "TID": "",
-        "UpgradeTimeH": "180",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "280000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 648000
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 80,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "290000",
         "RequiredTownHallLevel": "16",
         "RequiredHeroTavernLevel": "10",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 81,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "300000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 82,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "310000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 83,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "320000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 84,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "330000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 85,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "340000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 86,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "350000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 87,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "360000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 88,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "370000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 89,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "380000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 90,
@@ -5147,11 +5347,61 @@
       {
         "level": 95,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 96,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "505000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 97,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "510000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 98,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "515000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 99,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "520000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 100,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],
@@ -5324,32 +5574,32 @@
       {
         "level": 17,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "325000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 18,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "350000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 19,
         "TID": "",
-        "UpgradeTimeH": "192",
+        "UpgradeTimeH": "168",
         "UpgradeResource": "",
         "UpgradeCost": "375000",
         "RequiredTownHallLevel": "17",
         "RequiredHeroTavernLevel": "11",
-        "upgradeTimeSeconds": 691200
+        "upgradeTimeSeconds": 604800
       },
       {
         "level": 20,
@@ -5366,7 +5616,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "420000",
+        "UpgradeCost": "415000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -5376,7 +5626,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "440000",
+        "UpgradeCost": "430000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -5386,7 +5636,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "460000",
+        "UpgradeCost": "445000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -5396,7 +5646,7 @@
         "TID": "",
         "UpgradeTimeH": "192",
         "UpgradeResource": "",
-        "UpgradeCost": "480000",
+        "UpgradeCost": "460000",
         "RequiredTownHallLevel": "18",
         "RequiredHeroTavernLevel": "12",
         "upgradeTimeSeconds": 691200
@@ -5404,11 +5654,61 @@
       {
         "level": 25,
         "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "500000",
+        "RequiredTownHallLevel": "18",
+        "RequiredHeroTavernLevel": "12",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 26,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "505000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 27,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "510000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 28,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "515000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 29,
+        "TID": "",
+        "UpgradeTimeH": "192",
+        "UpgradeResource": "",
+        "UpgradeCost": "520000",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
+        "upgradeTimeSeconds": 691200
+      },
+      {
+        "level": 30,
+        "TID": "",
         "UpgradeTimeH": "",
         "UpgradeResource": "",
         "UpgradeCost": "",
-        "RequiredTownHallLevel": "18",
-        "RequiredHeroTavernLevel": "12",
+        "RequiredTownHallLevel": "19",
+        "RequiredHeroTavernLevel": "13",
         "upgradeTimeSeconds": 0
       }
     ],

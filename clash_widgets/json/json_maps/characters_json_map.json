@@ -815,42 +815,42 @@
     "id": 4000025
   },
   "BB Raged Barbarian": {
-    "displayName": "bb_Raged Barbarian",
+    "displayName": "Raged Barbarian",
     "internalName": "BB Raged Barbarian",
     "id": 4000031
   },
   "BB Sneaky Archer": {
-    "displayName": "bb_Sneaky Archer",
+    "displayName": "Sneaky Archer",
     "internalName": "BB Sneaky Archer",
     "id": 4000032
   },
   "BB Boxer Giant": {
-    "displayName": "bb_Boxer Giant",
+    "displayName": "Boxer Giant",
     "internalName": "BB Boxer Giant",
     "id": 4000034
   },
   "BB Beta Minion": {
-    "displayName": "bb_Beta Minion",
+    "displayName": "Beta Minion",
     "internalName": "BB Beta Minion",
     "id": 4000033
   },
   "BB Bomber": {
-    "displayName": "bb_Bomber",
+    "displayName": "Bomber",
     "internalName": "BB Bomber",
     "id": 4000035
   },
   "BB Baby Dragon": {
-    "displayName": "bb_Baby Dragon",
+    "displayName": "Baby Dragon",
     "internalName": "BB Baby Dragon",
     "id": 4000041
   },
   "BB Cannon Cart": {
-    "displayName": "bb_Cannon Cart",
+    "displayName": "Cannon Cart",
     "internalName": "BB Cannon Cart",
     "id": 4000037
   },
   "BB Night Witch": {
-    "displayName": "bb_Night Witch",
+    "displayName": "Night Witch",
     "internalName": "BB Night Witch",
     "id": 4000042
   },
@@ -865,7 +865,7 @@
     "id": 4000105
   },
   "BB Drop Ship": {
-    "displayName": "bb_Drop Ship",
+    "displayName": "Drop Ship",
     "internalName": "BB Drop Ship",
     "id": 4000038
   },
@@ -875,12 +875,12 @@
     "id": 4000040
   },
   "BB Power PEKKA": {
-    "displayName": "bb_Power P.E.K.K.A",
+    "displayName": "Power P.E.K.K.A",
     "internalName": "BB Power PEKKA",
     "id": 4000036
   },
   "BB Hog Glider": {
-    "displayName": "bb_Hog Glider",
+    "displayName": "Hog Glider",
     "internalName": "BB Hog Glider",
     "id": 4000070
   },
@@ -890,7 +890,7 @@
     "id": 4000071
   },
   "BB Electrofire Wizard": {
-    "displayName": "bb_Electrofire Wizard",
+    "displayName": "Electrofire Wizard",
     "internalName": "BB Electrofire Wizard",
     "id": 4000106
   },
@@ -973,5 +973,95 @@
     "displayName": "Totem Thrower",
     "internalName": "Totem Thrower",
     "id": 4000194
+  },
+  "Barcher Squad": {
+    "displayName": "Barch Squad",
+    "internalName": "Barcher Squad",
+    "id": 4000195
+  },
+  "Giant Wizard Squad": {
+    "displayName": "Giant Wizard Squad",
+    "internalName": "Giant Wizard Squad",
+    "id": 4000196
+  },
+  "Wall Breaker Squad": {
+    "displayName": "Wall Breaker Squad",
+    "internalName": "Wall Breaker Squad",
+    "id": 4000197
+  },
+  "Minion Squad": {
+    "displayName": "Minion Squad",
+    "internalName": "Minion Squad",
+    "id": 4000198
+  },
+  "Balloon Squad": {
+    "displayName": "Balloon Squad",
+    "internalName": "Balloon Squad",
+    "id": 4000199
+  },
+  "Golemwitch Squad": {
+    "displayName": "Golem Witch Squad",
+    "internalName": "Golemwitch Squad",
+    "id": 4000200
+  },
+  "Hog Rider Squad": {
+    "displayName": "Hog Rider Squad",
+    "internalName": "Hog Rider Squad",
+    "id": 4000201
+  },
+  "Miner Squad": {
+    "displayName": "Miner Squad",
+    "internalName": "Miner Squad",
+    "id": 4000202
+  },
+  "Healer Squad": {
+    "displayName": "Healer Squad",
+    "internalName": "Healer Squad",
+    "id": 4000203
+  },
+  "PEKKA Etitan Squad": {
+    "displayName": "P.E.K.K.A Titan Squad",
+    "internalName": "PEKKA Etitan Squad",
+    "id": 4000204
+  },
+  "Dragon Squad": {
+    "displayName": "Dragons Squad",
+    "internalName": "Dragon Squad",
+    "id": 4000205
+  },
+  "Baby Dragon Squad": {
+    "displayName": "Baby Dragon Squad",
+    "internalName": "Baby Dragon Squad",
+    "id": 4000206
+  },
+  "Seasonal Defense Spear Goblin": {
+    "displayName": "Seasonal Defense Spear Goblin",
+    "internalName": "Seasonal Defense Spear Goblin",
+    "id": 4000207
+  },
+  "Christmas Yeti": {
+    "displayName": "Christmas Yeti",
+    "internalName": "Christmas Yeti",
+    "id": 4000208
+  },
+  "ChristmasYetiMite": {
+    "displayName": "ChristmasYetiMite",
+    "internalName": "ChristmasYetiMite",
+    "id": 4000209
+  },
+  "FireGoat": {
+    "displayName": "FireGoat",
+    "internalName": "FireGoat",
+    "id": 4000210
+  },
+  "FireGoatMini": {
+    "displayName": "FireGoatMini",
+    "internalName": "FireGoatMini",
+    "id": 4000211
+  },
+  "FireGoatAdult": {
+    "displayName": "FireGoatAdult",
+    "internalName": "FireGoatAdult",
+    "id": 4000212
   }
 }

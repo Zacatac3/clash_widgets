@@ -3,9 +3,8 @@
   "village": "home",
   "description": "Curated seed list of valid Home Village upgrades for max-time calculations.",
   "generatedFrom": [
-    "upgrade_info/mapping.json",
-    "upgrade_info/json_maps/mini_levels_json_map.json",
-    "upgrade_info/json_maps/seasonal_defense_modules_json_map.json"
+    "json/progress_sections.json",
+    "json/parsed_json_files/mini_levels.json"
   ],
   "exclusions": {
     "excludeEquipment": true,
@@ -27,13 +26,14 @@
         "1000007": "Laboratory",
         "1000020": "Spell Factory",
         "1000029": "Dark Spell Factory",
-        "1000059": "Workshop"
+        "1000059": "Workshop",
+        "1000106": "Squad Barracks",
+        "1000105": "Guardian Shrine"
       },
       "utility": {
         "1000070": "Blacksmith",
         "1000093": "Helper Hut",
         "1000064": "B.O.B's Hut"
-
       },
       "hero": {
         "1000071": "Hero Hall"
@@ -67,7 +67,9 @@
         "1000085": "Ricochet Cannon",
         "1000086": "Revenge Tower",
         "1000089": "Firespitter",
-        "1000015": "Builder's Hut"
+        "1000015": "Builder's Hut",
+        "1000107": "Spiky Tower",
+        "1000108": "Firecracker Tower"
       },
       "traps": {
         "12000000": "Bomb",
@@ -98,25 +100,14 @@
         "103000012": "Hero Hunter"
       },
       "supercharges": {
-        "elixir_collector": "Elixir Collector Supercharge",
-        "gold_mine": "Gold Mine Supercharge",
-        "dark_elixir_drill": "Dark Elixir Drill Supercharge",
-        "hidden_tesla": "Hidden Tesla Supercharge",
+        "mortar": "Mortar Supercharge",
+        "bomb_tower": "Bomb Tower Supercharge",
         "inferno_tower": "Inferno Tower Supercharge",
         "scattershot": "Scattershot Supercharge",
-        "builder_hut": "Builder's Hut Supercharge",
-        "x_bow": "X-Bow Supercharge",
-        "mortar": "Mortar Supercharge",
-        "air_defense": "Air Defense Supercharge",
-        "bomb_tower": "Bomb Tower Supercharge",
-        "wizard_tower": "Wizard Tower Supercharge",
         "monolith": "Monolith Supercharge",
-        "super_wizard_tower": "Super Wizard Tower Supercharge",
-        "revenge_tower": "Revenge Tower Supercharge",
         "firespitter": "Firespitter Supercharge",
-        "multi_archer_tower": "Multi-Archer Tower Supercharge",
-        "ricochet_cannon": "Ricochet Cannon Supercharge",
-        "multi_gear_tower": "Multi-Gear Tower Supercharge"
+        "revenge_tower": "Revenge Tower Supercharge",
+        "super_wizard_tower": "Super Wizard Tower Supercharge"
       }
     },
     "lab": {
@@ -154,7 +145,7 @@
         "4000097": "Apprentice Warden",
         "4000123": "Druid",
         "4000150": "Furnace",
-		"4000109": "Ruin Witch"
+        "4000109": "Ruin Witch"
       },
       "spells": {
         "26000000": "Lightning Spell",
@@ -174,7 +165,8 @@
         "26000098": "Revive Spell",
         "26000109": "Ice Block Spell",
         "26000120": "Totem Spell",
-		"26000123": "Angry Spell"
+        "26000123": "Angry Spell",
+        "26000153": "Heroic Spell"
       },
       "siege_machines": {
         "4000051": "Wall Wrecker",
@@ -186,6 +178,20 @@
         "4000092": "Battle Drill",
         "4000135": "Troop Launcher",
         "4000188": "Sky Wagon"
+      },
+      "squads": {
+        "4000195": "Barch Squad",
+        "4000196": "Giant Wizard Squad",
+        "4000197": "Wall Breaker Squad",
+        "4000198": "Minion Squad",
+        "4000199": "Balloon Squad",
+        "4000200": "Golem Witch Squad",
+        "4000201": "Hog Rider Squad",
+        "4000202": "Miner Squad",
+        "4000203": "Healer Squad",
+        "4000204": "P.E.K.K.A Titan Squad",
+        "4000205": "Dragons Squad",
+        "4000206": "Baby Dragon Squad"
       }
     },
     "pets": {

@@ -4,6 +4,27 @@ The app bundles [clash_widgets/json](../clash_widgets/json) as an Xcode folder r
 
 Unless otherwise noted, game-data filenames and subfolders below are relative to `clash_widgets/json/`. Script paths are relative to the repository root; run the parser from that root.
 
+## Current update workflow
+
+For Home Village content, curate its ID, public name, section/order, and image **once in `progress_sections.json`**. After importing the new CSVs and adding the image assets, run:
+
+```sh
+python3 data_extraction/clash_csv_to_json.py --dry-run
+python3 data_extraction/clash_csv_to_json.py
+python3 tools/sync_game_catalog.py
+python3 tools/sync_game_catalog.py --check
+```
+
+The sync command validates all curated IDs and image files before writing. It updates `mapping.json`, the JSON-map display names, `asset_map.json`, the Home Village master list, hero config names/icons/unlock Town Halls, and Town Hall/wall counts. It derives hero unlocks from the parsed Hero Hall and hero requirements. It preserves `highest_wall_level_unlock_caps`: partial wall releases still require a confirmed manual cap. Builder Base public names remain curated in its master list; the sync command propagates those names too.
+
+The tables below describe the consumers and data relationships. For entries in Progress, the repeated mapping/master-list edits in those tables are now performed by the sync command. Equipment, deliberate aliases for older names, and content outside Progress can still need separate metadata. New hero equipment metadata remains in `equipment_data.json`; runtime upgrade levels/costs remain generated from CSVs.
+
+Both app rows and widgets use `UpgradePresentationCatalog` to read the same curated names/full icon paths, with the legacy name and asset maps as fallback. Profile hero levels and Progress both use `ProgressCatalog` for hero IDs, ordering, icons, imported levels, and Town Hall limits; there is no separate hardcoded Hero Hall table to update.
+
+`townhall_levels.json` is used by the debug Town Hall progress totals and the dashboard wall count calculation. The dashboard can fall back to `game_constants.json`, which previously masked an empty parsed file. The CSV parser now matches building/trap names instead of the removed `Troop Housing` marker, inherits blank count cells from the previous Town Hall, and rejects missing count columns before replacing any generated files.
+
+Supercharge availability comes from each building's explicit `miniLevels` link in `buildings.json` (the CSV `MiniLevels` column). Old rows in `mini_levels.json` alone do not enable supercharges. The Progress card and synchronized master list follow these active links; no per-update Swift allowlist is needed. Eligibility also requires the overall maximum building level and the mini-level Town Hall requirement. Hero maximum levels likewise come from generated hero/Hero Hall JSON; fixed expected values in regression tests are assertions, not runtime caps.
+
 ## What each file controls
 
 | File | Edit when | Effect |
@@ -12,6 +33,8 @@ Unless otherwise noted, game-data filenames and subfolders below are relative to
 | `json_maps/<type>_json_map.json` | A new or renamed CSV entry needs a human readable `displayName` | ID/internal name lookup. The parser creates new entries and preserves `displayName` for entries it matches by ID. Review its diff report after every run. |
 | `mapping.json` | A game ID needs a canonical display name | ID to name lookup for imported upgrades. For seasonal defenses, this takes precedence over the JSON map in the app dashboard. |
 | `asset_map.json` | A display name does not naturally match its image set name | Display name to image slug. The app builder rows and Asset Map debug screen read the bundled file. This file does not add an image by itself. |
+| `progress_sections.json` | A new item needs to appear in Progress or Share Progress | Add its confirmed ID, display name, image slug, and group. These screens use this curated catalog, not the master lists or `asset_map.json`. |
+| `game_constants.json` | The maximum Town Hall, wall count/level, or partial wall release changes | Update `max_town_hall_level`, `wall_counts_by_th`, and `highest_wall_level_unlock_caps` using confirmed data. The dashboard reads wall unlock caps from this file. |
 | `clash_widgets/Assets.xcassets/<folder>/<slug>.imageset/` (repository root) | A new icon is needed | Add the image and its `Contents.json`. The folder and slug must match the image name requested by the screen. |
 | `master_lists/home_village_master_upgrades.json` or `master_lists/builder_base_master_upgrades.json` | The curated list of available upgrades changes | Add/remove the ID and name in the matching village, section, and category. These lists power the Master List debug view; they do not supply dashboard icons. |
 | `equipment_data.json` | Hero equipment is added or its hero/rarity changes | Controls entries in the Equipment tab. Equipment is excluded from the village master lists. |
@@ -38,13 +61,25 @@ Start with decrypted UTF-8 CSVs in [data_extraction/extraxted_data/](../data_ext
 
 The current master list files use nested ID → name objects, for example `sections.buildings.seasonal_defense` contains `"103000011": "Hot Candle"`. `sections.buildings.supercharges` instead uses building slugs as keys. Use the existing entries as the format reference.
 
+New content also needs an entry in `progress_sections.json` to appear in Progress and Share Progress. Add it to the correct section/group with its confirmed game ID and image slug; review facility requirements in the parsed levels. Adding an asset or a master-list entry alone does not add a Progress tile.
+
+### Preview before replacing game data
+
+The parser validates that all expected files exist and contain named CSV rows before writing outputs. This catches missing files and common encrypted/empty inputs; it does not prove that an updated schema is compatible.
+
+```sh
+python3 data_extraction/clash_csv_to_json.py --input-dir /path/to/decrypted/csvs --dry-run
+```
+
+This performs conversion against temporary copies of the current JSON maps, prints the usual name/ID diff, and deletes its temporary outputs. Bundled JSON and curated display names stay unchanged. After reviewing the report and CSV columns, run the same command without `--dry-run` to replace the generated files. Back up the previous CSVs first.
+
 ### Seasonal defense example
 
 For `103000011`, the dashboard currently resolves `mapping.json` name `Hot Candle` → `asset_map.json` slug `hot_candle` → `Assets.xcassets/crafted_defenses/hot_candle.imageset`. The `seasonal_defense_archetypes_json_map.json` entry can still contain the game/internal name `Inferno Candle`; its `displayName` is also used by debug and fallback lookups, so keep it understandable, but the dashboard uses the mapped public name when the archetype ID exists in `mapping.json`.
 
 ### Widget and other screens
 
-The WidgetKit extension has its **own** `ClashDashWidget/Assets.xcassets` and currently derives builder icons from the stored upgrade name in `ClashDashWidget/ClashDashWidget.swift`; it does not use the app builder row's `asset_map.json` resolver. Add a widget image set and update widget name resolution when a new icon must appear there. A working icon in the app or Asset Map debug screen does not prove the widget has it. Profile hero art uses `heroes_config.json`; Equipment tab art uses `equipment_data.json` names; those are separate paths.
+The WidgetKit extension compiles **both** `clash_widgets/Assets.xcassets` and `ClashDashWidget/Assets.xcassets` in its Resources phase. New app image sets are therefore already available to widgets; do not duplicate them in the widget catalog. The widget bundles the same `progress_sections.json`, `mapping.json`, and `asset_map.json` used by `UpgradePresentationCatalog` in the app. Names and icons resolve by game ID first, so existing saved rows pick up corrected labels without reimporting. Verify the app screen and widget separately. Equipment tab art still uses `equipment_data.json` names.
 
 ## Quick checks
 
@@ -52,3 +87,13 @@ The WidgetKit extension has its **own** `ClashDashWidget/Assets.xcassets` and cu
 2. Confirm the matching `.imageset/Contents.json` names an existing image. With a namespaced catalog folder, the compiled asset name is `<folder>/<slug>`.
 3. Review the parser's diff report for unexpected removals or changed IDs, especially seasonal archetypes (their IDs are generated from CSV order).
 4. Build and run the app after changing bundled JSON or assets. Check the relevant app screen, Asset Map debug screen, and widget separately if the widget should show the item.
+
+For the staged Town Hall 19 artwork and remaining launch work, see [TH19_PREPARATION.md](TH19_PREPARATION.md).
+
+Regression checks for these paths:
+
+```sh
+python3 tools/game_update_tests.py
+python3 tools/catalog_tests/run.py
+python3 tools/check_th19_readiness.py --strict
+```

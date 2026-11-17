@@ -198,3 +198,18 @@ Major update with new progress tools
 - the main builder widget layout was updated for iPhone duo to fix visual issues
 - events are now checked for more regularly, and can be force checked on app refresh
 - deleted or modified events are now handled properly when the app fetches events
+
+1.4 - 11/16/26
+Town Hall 19 Update + better support for Multi Account Users
+
+*What's New*
+- Added new widgets to display upgrades for multiple accounts at once
+- includes a 4x4 variant for more details
+- Prioritize up to 6 villages to have them take priority on the multi-account widget
+- Customizable; can select which accounts show up, toggle lab pet and builder upgrades
+- New reorder and prioritize otpion for profiles in settings
+- Added TH19 game content, including squads, squad barracks, spike tower, firecracker tower, and the heroic spell
+
+*Changes and Fixes*
+- Major backend performance improvements
+- Fixed many areas that cause temporary lag spikes or scroll lag

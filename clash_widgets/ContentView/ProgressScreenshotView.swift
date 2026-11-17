@@ -276,7 +276,7 @@ struct ProgressExportPreviewView: View {
                         .appendingPathComponent("Clashboard-Export-\(UUID().uuidString)", isDirectory: true)
                     try FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
                     exportDirectory = directory
-                    let title = page.kind == .units ? "Progress" : "Equipment"
+                    let title = page.kind.title
                     let url = directory.appendingPathComponent("Clashboard-\(pageNumber)-\(title).jpg")
                     try jpeg.write(to: url, options: .atomic)
                     shareFiles = ShareFiles(urls: [url])
@@ -350,7 +350,7 @@ struct ProgressExportPreviewView: View {
                         .font(.system(size: 18, weight: .heavy, design: .rounded))
                         .tracking(2.2)
                         .foregroundStyle(.secondary)
-                    Text(page.kind == .units ? "PROGRESS" : "EQUIPMENT")
+                    Text(page.kind.title.uppercased())
                         .font(.system(size: 36, weight: .heavy, design: .rounded))
                         .tracking(0.5)
                         .minimumScaleFactor(0.65)
@@ -502,9 +502,8 @@ struct ProgressExportPreviewView: View {
         return pages
     }
 
-    private func makeUnitEntries() -> [Entry] {
-        let ids = ["troops", "dark_troops", "siege_machines", "spells", "heroes", "pets", "guardians"]
-        return ids.compactMap { id in ProgressCatalog.sections.first(where: { $0.id == id }) }
+    private func makeUnitEntries(sectionIDs: [String] = ["troops", "dark_troops", "siege_machines", "spells", "heroes", "pets", "guardians", "squads"]) -> [Entry] {
+        return sectionIDs.compactMap { id in ProgressCatalog.sections.first(where: { $0.id == id }) }
             .flatMap { section -> [Entry] in
                 let inventory = section.inventory(in: export)
                 return section.groups.flatMap(\.items).map { item in
@@ -560,7 +559,16 @@ struct ProgressExportPreviewView: View {
     }
 
     private struct Page {
-        enum Kind { case units, equipment }
+        enum Kind {
+            case units, equipment
+
+            var title: String {
+                switch self {
+                case .units: return "Progress"
+                case .equipment: return "Equipment"
+                }
+            }
+        }
         let kind: Kind
         let entries: [Entry]
         let grid: Grid

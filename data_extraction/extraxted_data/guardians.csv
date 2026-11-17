@@ -1,15 +1,20 @@
 "Name","Level","TID","InfoTID","ShortInfoTID","UpgradeData","isDefault","Deprecated","IconSWF","IconExportName","BannerSWF","BannerExportName","DisplaySkin","CharacterDatas","CharacterLevels","SpawnAmounts","ActivationRadius","LeapTimeMS","LeapDistance","PatrolRadius","Strength","PreviewScenario"
 "String","int","String","String","String","String","boolean","boolean","String","String","String","String","String","String","String","String","int","int","int","int","int","String"
-"InfernoArtillery",1,"TID_INFERNO_GUARDIAN","TID_INFERNO_GUARDIAN_INFO","TID_INFERNO_GUARDIAN_INFO_SHORT","GuardianGeneral","TRUE",,"sc/ui.sc","icon_unit_guardian_ranged","sc/ui.sc","longshot_portrait","RangedGuardian","Longshot","1","1",20,750,3,350,205000,"GuardianLongshot"
+"InfernoArtillery",1,"TID_INFERNO_GUARDIAN","TID_INFERNO_GUARDIAN_INFO","TID_INFERNO_GUARDIAN_INFO_SHORT","GuardianGeneral","TRUE",,"sc/ui.sc","icon_unit_guardian_ranged","sc/ui.sc","longshot_portrait","RangedGuardian","Longshot","1","1",20,750,3,350,205000,"GuardianLongshot1"
+,2,,,,,,,,,,,,,"2",,,,,,206000,"GuardianLongshot"
+,3,,,,,,,,,,,,,"3",,,,,,207000,
+,4,,,,,,,,,,,,,"4",,,,,,208000,
+,5,,,,,,,,,,,,,"5",,,,,,209000,
+"MeleeAreaaaa",1,"TID_MELEE_AREA_GUARDIAN","TID_MELEE_AREA_GUARDIAN_INFO","TID_MELEE_AREA_GUARDIAN_INFO_SHORT","GuardianSmasher",,,"sc/ui.sc","icon_unit_guardian_melee","sc/ui.sc","smasher_portrait","MeleeGuardian","Smasher","1","1",12,750,3,350,205000,"GuardianSmasher"
 ,2,,,,,,,,,,,,,"2",,,,,,206000,
 ,3,,,,,,,,,,,,,"3",,,,,,207000,
 ,4,,,,,,,,,,,,,"4",,,,,,208000,
 ,5,,,,,,,,,,,,,"5",,,,,,209000,
-"MeleeAreaaaa",1,"TID_MELEE_AREA_GUARDIAN","TID_MELEE_AREA_GUARDIAN_INFO","TID_MELEE_AREA_GUARDIAN_INFO_SHORT","GuardianGeneral",,,"sc/ui.sc","icon_unit_guardian_melee","sc/ui.sc","smasher_portrait","MeleeGuardian","Smasher","1","1",12,750,3,350,205000,"GuardianSmasher"
-,2,,,,,,,,,,,,,"2",,,,,,206000,
-,3,,,,,,,,,,,,,"3",,,,,,207000,
-,4,,,,,,,,,,,,,"4",,,,,,208000,
-,5,,,,,,,,,,,,,"5",,,,,,209000,
+,6,,,,,,,,,,,,,"6",,,,,,210000,"GuardianSmasherTH19"
+,7,,,,,,,,,,,,,"7",,,,,,211000,
+,8,,,,,,,,,,,,,"8",,,,,,212000,
+,9,,,,,,,,,,,,,"9",,,,,,213000,
+,10,,,,,,,,,,,,,"10",,,,,,214000,
 "Eagle",1,"TID_EAGLE_GUARDIAN",,,"GuardianGeneral",,"TRUE","sc/ui.sc","icon_unit_thrower","sc/ui.sc","icon_unit_thrower","MeleeGuardian","Guardian Eagle","1","1",12,750,3,500,100,"GuardianLongshot"
 "GigaInferno",1,"TID_GIGA_INFERNO_GUARDIAN",,,"GuardianGeneral",,"TRUE","sc/ui.sc","icon_unit_furnace","sc/ui.sc","icon_unit_furnace","MeleeGuardian","Guardian Giga Inferno","1","1",12,750,3,500,100,"GuardianLongshot"
 "Assassins",1,"TID_ASSASSINS_GUARDIAN",,,"GuardianGeneral",,"TRUE","sc/ui.sc","icon_unit_headhunter","sc/ui.sc","icon_unit_headhunter","MeleeGuardian","Guardian Assassins","1","1",11,750,3,500,100,"GuardianLongshot"

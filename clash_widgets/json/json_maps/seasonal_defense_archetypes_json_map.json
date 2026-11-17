@@ -68,5 +68,20 @@
     "displayName": "Cake A Pult",
     "internalName": "Cake Thrower",
     "id": 103000013
+  },
+  "Rocket Artillery Tower": {
+    "displayName": "Rocket Artillery",
+    "internalName": "Rocket Artillery Tower",
+    "id": 103000014
+  },
+  "Minion Hive Launcher": {
+    "displayName": "Minion Hive",
+    "internalName": "Minion Hive Launcher",
+    "id": 103000015
+  },
+  "Goblin Thrower Tower": {
+    "displayName": "Goblin Thrower",
+    "internalName": "Goblin Thrower Tower",
+    "id": 103000016
   }
 }

@@ -20,8 +20,7 @@ struct ProfileDetailView: View {
     @State private var townHallPalette: UIImageColors?
     @State private var townHallPaletteLevel: Int = 0
     #endif
-    @State private var cachedHeroesMapping: [String: HeroMapping]?
-    @State private var cachedHeroesJSON: [HeroJSON]?
+    @State private var heroExport: CoCExport?
     @State private var gradientConfigCache: [Int: [Int]]?
     @State private var cachedProfileGradientColors: [Color]?
     @State private var cachedGradientTownHallLevel: Int = 0
@@ -64,6 +63,13 @@ struct ProfileDetailView: View {
             }
             .onAppear {
                 handleOnAppear()
+            }
+            .task(id: dataService.currentProfile?.rawJSON) {
+                let rawJSON = dataService.currentProfile?.rawJSON ?? ""
+                heroExport = nil
+                await Task.yield()
+                guard !Task.isCancelled else { return }
+                heroExport = dataService.decodeExport(from: rawJSON)
             }
             .onChangeCompat(of: orderedProfileSections) { newValue in
                 persistProfileSectionOrder(newValue)
@@ -771,14 +777,20 @@ struct ProfileDetailView: View {
         )
     }
 
-    private func loadHelperGemCosts() -> [HelperGemCostInfo] {
-        guard townHallLevel >= 9 else { return [] }
-        
+    // Only bundled definitions are cached; profile levels and costs remain reactive.
+    private static let helperDefinitions: [HelperData] = {
         guard let jsonPath = Bundle.main.path(forResource: "villager_apprentices", ofType: "json", inDirectory: "json/parsed_json_files"),
               let jsonData = try? Data(contentsOf: URL(fileURLWithPath: jsonPath)),
               let helpers = try? JSONDecoder().decode([HelperData].self, from: jsonData) else {
             return []
         }
+        return helpers
+    }()
+
+    private func loadHelperGemCosts() -> [HelperGemCostInfo] {
+        guard townHallLevel >= 9 else { return [] }
+
+        let helpers = Self.helperDefinitions
 
         var result: [HelperGemCostInfo] = []
         
@@ -840,38 +852,12 @@ struct ProfileDetailView: View {
             return AnyView(EmptyView())
         }
         
-        let excludedHeroes: Set<String> = [
-            "battle machine",
-            "battle copter"
-        ]
-        let filteredHeroes = heroesToDisplay.filter { hero in
-            !excludedHeroes.contains(hero.name.trimmingCharacters(in: .whitespacesAndNewlines).lowercased())
-        }
-        guard !filteredHeroes.isEmpty else {
-            return AnyView(EmptyView())
-        }
-        // Derive sort order from heroes_config.json (sorted by unlockTownHall);
-        // falls back to a hardcoded list if the config hasn't loaded yet.
-        let configOrderedNames: [String] = HeroConfigStore.shared.configs
-            .sorted { $0.unlockTownHall < $1.unlockTownHall }
-            .map { $0.displayName }
-        let orderedNames = configOrderedNames.isEmpty
-            ? ["Barbarian King", "Archer Queen", "Grand Warden", "Royal Champion", "Minion Prince", "Dragon Duke"]
-            : configOrderedNames
-        let sortedHeroes = filteredHeroes.sorted { lhs, rhs in
-            let leftIndex = orderedNames.firstIndex(of: lhs.name) ?? orderedNames.count
-            let rightIndex = orderedNames.firstIndex(of: rhs.name) ?? orderedNames.count
-            if leftIndex == rightIndex {
-                return lhs.level > rhs.level
-            }
-            return leftIndex < rightIndex
-        }
         return AnyView(
             VStack(alignment: .leading, spacing: 12) {
                 Text("Hero Levels")
                     .font(.headline)
-                ForEach(sortedHeroes, id: \.name) { hero in
-                    let actualMaxLevel = getMaxHeroLevel(heroName: hero.name, townHallLevel: townHallLevel)
+                ForEach(heroesToDisplay, id: \.name) { hero in
+                    let actualMaxLevel = hero.maxLevel
                     HStack {
                         if let assetName = heroAssetName(hero.name) {
                             Image(assetName)
@@ -892,7 +878,7 @@ struct ProfileDetailView: View {
                                 .foregroundColor(.secondary)
                         }
                         Spacer()
-                        ProgressView(value: Double(hero.level), total: Double(actualMaxLevel))
+                        ProgressView(value: Double(min(hero.level, actualMaxLevel)), total: Double(max(1, actualMaxLevel)))
                             .progressViewStyle(.linear)
                             .frame(width: 120)
                     }
@@ -910,251 +896,12 @@ struct ProfileDetailView: View {
     }
 
     private func heroAssetName(_ heroName: String) -> String? {
-        let trimmed = heroName.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmed.isEmpty else { return nil }
-        // Primary: look up the asset name from heroes_config.json (data-driven).
-        if let entry = HeroConfigStore.shared.configs.first(where: { $0.displayName.lowercased() == trimmed.lowercased() }),
-           let assetName = entry.assetName {
-            return assetName
-        }
-        // Fallback: hardcoded map for safety if the config file hasn't loaded.
-        switch trimmed.lowercased() {
-        case "barbarian king":  return "heroes/Barbarian_King"
-        case "archer queen":    return "heroes/Archer_Queen"
-        case "grand warden":    return "heroes/Grand_Warden"
-        case "royal champion":  return "heroes/Royal_Champion"
-        case "minion prince":   return "heroes/minion_prince"
-        case "dragon duke":     return "heroes/dragon_duke"
-        default:                return nil
-        }
-    }
-
-    private func getMaxHeroLevel(heroName: String, townHallLevel: Int) -> Int {
-        // Load heroes.json and find max level for this hero at the given town hall level
-        guard let heroesData = loadHeroesJSON() else {
-            return 100 // Fallback default
-        }
-        
-        // Convert display name to internal name using the mapping
-        let internalName = getHeroInternalName(for: heroName) ?? heroName
-        
-        // Find the hero in the JSON using internal name
-        if let hero = heroesData.first(where: { $0.internalName.lowercased() == internalName.lowercased() }) {
-            // Get the Hero Tavern level for this town hall
-            let heroTavernLevel = getHeroTavernLevel(for: townHallLevel)
-            
-            // Find the max level available with this Hero Tavern level and town hall
-            var maxLevel = 1
-            for level in hero.levels {
-                if let tavernLevelRequired = Int(level.RequiredHeroTavernLevel),
-                   let thLevelRequired = Int(level.RequiredTownHallLevel),
-                   tavernLevelRequired <= heroTavernLevel && thLevelRequired <= townHallLevel {
-                    maxLevel = level.level
-                }
-            }
-            return maxLevel
-        }
-        
-        return 100 // Fallback default
-    }
-    
-    private func getHeroTavernLevel(for townHallLevel: Int) -> Int {
-        // Hero Tavern levels by town hall level
-        let heroTavernByTH: [Int: Int] = [
-            7: 1,
-            8: 2,
-            9: 3,
-            10: 4,
-            11: 5,
-            12: 6,
-            13: 7,
-            14: 8,
-            15: 9,
-            16: 10,
-            17: 11,
-            18: 12
-        ]
-        
-        return heroTavernByTH[townHallLevel] ?? 1
-    }
-    
-    private func loadHeroesJSON() -> [HeroJSON]? {
-        // Return cached data if available
-        if let cached = cachedHeroesJSON {
-            return cached
-        }
-        
-        // Try multiple possible paths for the heroes.json file
-        let possiblePaths = [
-            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "json/parsed_json_files"),
-            Bundle.main.url(forResource: "heroes", withExtension: "json", subdirectory: "json"),
-            Bundle.main.url(forResource: "heroes", withExtension: "json")
-        ]
-        
-        var url: URL?
-        for path in possiblePaths {
-            if let validPath = path, FileManager.default.fileExists(atPath: validPath.path) {
-                url = validPath
-                break
-            }
-        }
-        
-        guard let url = url else {
-            NSLog("❌ [HEROES_JSON] Could not find heroes.json in bundle")
-            return nil
-        }
-        
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            let heroes = try decoder.decode([HeroJSON].self, from: data)
-            NSLog("✅ [HEROES_JSON] Successfully loaded \(heroes.count) heroes from \(url.lastPathComponent)")
-            // Cache the result
-            cachedHeroesJSON = heroes
-            return heroes
-        } catch {
-            NSLog("❌ [HEROES_JSON] Error loading heroes.json: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
-    private func loadHeroesMapping() -> [String: HeroMapping]? {
-        // Return cached mapping if available
-        if let cached = cachedHeroesMapping {
-            return cached
-        }
-        
-        // Load the heroes_json_map.json file for display name to internal name mapping
-        let possiblePaths = [
-            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "json/json_maps"),
-            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json", subdirectory: "json"),
-            Bundle.main.url(forResource: "heroes_json_map", withExtension: "json")
-        ]
-        
-        var url: URL?
-        for path in possiblePaths {
-            if let validPath = path, FileManager.default.fileExists(atPath: validPath.path) {
-                url = validPath
-                break
-            }
-        }
-        
-        guard let url = url else {
-            NSLog("⚠️ [HEROES_MAP] Could not find heroes_json_map.json in bundle")
-            return nil
-        }
-        
-        do {
-            let data = try Data(contentsOf: url)
-            let decoder = JSONDecoder()
-            let mapping = try decoder.decode([String: HeroMapping].self, from: data)
-            NSLog("✅ [HEROES_MAP] Successfully loaded heroes mapping with \(mapping.count) entries")
-            // Cache the mapping
-            cachedHeroesMapping = mapping
-            return mapping
-        } catch {
-            NSLog("⚠️ [HEROES_MAP] Error loading heroes_json_map.json: \(error.localizedDescription)")
-            return nil
-        }
-    }
-    
-    private func getHeroInternalName(for displayName: String) -> String? {
-        // Use the mapping to convert display name to internal name
-        guard let mapping = loadHeroesMapping() else {
-            return nil
-        }
-        
-        // Search through the mapping to find the entry with matching display name
-        for (_, heroMap) in mapping {
-            if heroMap.displayName.lowercased() == displayName.lowercased() {
-                return heroMap.internalName
-            }
-        }
-        
-        return nil
+        ProgressCatalog.heroItems.first { $0.name.caseInsensitiveCompare(heroName) == .orderedSame }?
+            .assetName(for: 1)
     }
 
     private func getHeroesForDisplay() -> [HeroProfile] {
-        // Strategy: Default to JSON import (ID 28xxx), fallback to API if missing
-        var heroesFromJSON: [HeroProfile] = []
-        var apiHeroes: [HeroProfile] = []
-        
-        // Get heroes from export (JSON import) and convert ExportHero to HeroProfile
-        if let profile = dataService.currentProfile,
-           let export = dataService.decodeExport(from: profile.rawJSON),
-           let exportHeroes = export.heroes {
-            heroesFromJSON = convertExportHeroes(exportHeroes)
-        }
-        
-        // Get heroes from API
-        if let apiHeroes_ = resolvedProfile?.heroes {
-            apiHeroes = apiHeroes_
-        }
-        
-        // If no JSON heroes, return API heroes
-        if heroesFromJSON.isEmpty {
-            return apiHeroes
-        }
-        
-        // Build result: prefer JSON for heroes that exist, fill gaps with API
-        var result: [HeroProfile] = []
-        var processedNames: Set<String> = []
-        
-        // First pass: add heroes from JSON (primary source)
-        for jsonHero in heroesFromJSON {
-            processedNames.insert(jsonHero.name.lowercased())
-            result.append(jsonHero)
-        }
-        
-        // Second pass: add missing heroes from API
-        for apiHero in apiHeroes {
-            if !processedNames.contains(apiHero.name.lowercased()) {
-                result.append(apiHero)
-                processedNames.insert(apiHero.name.lowercased())
-            }
-        }
-
-        // Third pass: inject placeholder entries (level 0) for heroes the player
-        // qualifies for by TH but hasn't started yet. This ensures e.g. Dragon Duke
-        // always appears for TH15+ players even before they pick it up.
-        if townHallLevel > 0 {
-            for heroConfig in HeroConfigStore.shared.configs.sorted(by: { $0.unlockTownHall < $1.unlockTownHall }) {
-                guard heroConfig.unlockTownHall <= townHallLevel else { continue }
-                let alreadyPresent = processedNames.contains(heroConfig.displayName.lowercased())
-                    || processedNames.contains(heroConfig.internalName.lowercased())
-                guard !alreadyPresent else { continue }
-                result.append(HeroProfile(
-                    name: heroConfig.displayName,
-                    level: 0,
-                    maxLevel: 100,
-                    village: "home",
-                    equipment: nil
-                ))
-                processedNames.insert(heroConfig.displayName.lowercased())
-            }
-        }
-        
-        return result
-    }
-    
-    private func convertExportHeroes(_ exportHeroes: [ExportHero]) -> [HeroProfile] {
-        guard let mapping = loadHeroesMapping() else { return [] }
-        
-        var result: [HeroProfile] = []
-        for exportHero in exportHeroes {
-            // Find the hero mapping by ID
-            if let heroMapping = mapping.values.first(where: { $0.id == exportHero.data }) {
-                let hero = HeroProfile(
-                    name: heroMapping.displayName,
-                    level: exportHero.lvl,
-                    maxLevel: 100, // Default fallback, will be refined by getMaxHeroLevel
-                    village: "home",
-                    equipment: nil
-                )
-                result.append(hero)
-            }
-        }
-        return result
+        ProgressCatalog.heroes(in: heroExport, fallback: resolvedProfile?.heroes ?? [], townHall: townHallLevel)
     }
 
     private var clanStatsSection: some View {
@@ -1232,7 +979,7 @@ struct ProfileDetailView: View {
     }
 
     private var townHallLevel: Int {
-        resolvedProfile?.townHallLevel ?? 0
+        resolvedProfile?.townHallLevel ?? heroExport.map { dataService.inferTownHallLevel(from: $0) } ?? 0
     }
 
     private var maxBuilders: Int {

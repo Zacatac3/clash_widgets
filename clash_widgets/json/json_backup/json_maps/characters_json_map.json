@@ -694,9 +694,9 @@
     "internalName": "Prototype3",
     "id": 4000093
   },
-  "Artificer": {
-    "displayName": "Artificer",
-    "internalName": "Artificer",
+  "Ruin Witch": {
+    "displayName": "Ruin Witch",
+    "internalName": "Ruin Witch",
     "id": 4000109
   },
   "Prototype4": {
@@ -719,9 +719,9 @@
     "internalName": "Prototype7",
     "id": 4000115
   },
-  "Debris Golem": {
+  "Ruin Knight": {
     "displayName": "DebrisGolem",
-    "internalName": "Debris Golem",
+    "internalName": "Ruin Knight",
     "id": 4000127
   },
   "Prototype8": {
@@ -903,5 +903,75 @@
     "displayName": "MovingCannonSecondary",
     "internalName": "BB MovingCannonSecondary",
     "id": 4000044
+  },
+  "Guardian Sniffer": {
+    "displayName": "Guardian Sniffer",
+    "internalName": "Guardian Sniffer",
+    "id": 4000181
+  },
+  "Guardian Builder": {
+    "displayName": "Guardian Builder",
+    "internalName": "Guardian Builder",
+    "id": 4000182
+  },
+  "Guardian Logger": {
+    "displayName": "Guardian Logger",
+    "internalName": "Guardian Logger",
+    "id": 4000183
+  },
+  "Guardian Returner": {
+    "displayName": "Guardian Returner",
+    "internalName": "Guardian Returner",
+    "id": 4000184
+  },
+  "Elephant": {
+    "displayName": "Unused6",
+    "internalName": "Elephant",
+    "id": 4000186
+  },
+  "Rider": {
+    "displayName": "Unused7",
+    "internalName": "Rider",
+    "id": 4000187
+  },
+  "Air Troop Launcher": {
+    "displayName": "Sky Wagon",
+    "internalName": "Air Troop Launcher",
+    "id": 4000188
+  },
+  "UnusedSiegePrototype": {
+    "displayName": "UnusedSiegePrototype",
+    "internalName": "UnusedSiegePrototype",
+    "id": 4000189
+  },
+  "Elephant Rider": {
+    "displayName": "Unused5",
+    "internalName": "Elephant Rider",
+    "id": 4000185
+  },
+  "Undead Wrestler Big Boy": {
+    "displayName": "Unused9",
+    "internalName": "Undead Wrestler Big Boy",
+    "id": 4000191
+  },
+  "Ruin Witch_DEF": {
+    "displayName": "Ruin Witch_DEF",
+    "internalName": "Ruin Witch_DEF",
+    "id": 4000192
+  },
+  "UndeadWrestler": {
+    "displayName": "Unused8",
+    "internalName": "UndeadWrestler",
+    "id": 4000190
+  },
+  "Tiny Totem": {
+    "displayName": "Tiny Totem",
+    "internalName": "Tiny Totem",
+    "id": 4000193
+  },
+  "Totem Thrower": {
+    "displayName": "Totem Thrower",
+    "internalName": "Totem Thrower",
+    "id": 4000194
   }
 }

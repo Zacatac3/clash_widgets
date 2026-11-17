@@ -13,12 +13,26 @@ import AppIntents
 import ControlCenter
 #endif
 
+private enum WidgetImageCache {
+    static let images: NSCache<NSString, UIImage> = {
+        let cache = NSCache<NSString, UIImage>()
+        cache.totalCostLimit = 12 * 1024 * 1024
+        cache.countLimit = 80
+        return cache
+    }()
+}
+
 private func trimmedWidgetImage(named name: String) -> Image {
-    #if canImport(UIKit)
-    if let uiImage = UIImage(named: name) {
-        return Image(uiImage: trimWidgetTransparentEdges(uiImage))
+    let key = name as NSString
+    if let cached = WidgetImageCache.images.object(forKey: key) {
+        return Image(uiImage: cached)
     }
-    #endif
+    if let source = UIImage(named: name) {
+        let trimmed = trimWidgetTransparentEdges(source)
+        let cost = trimmed.cgImage.map { $0.bytesPerRow * $0.height } ?? 0
+        WidgetImageCache.images.setObject(trimmed, forKey: key, cost: cost)
+        return Image(uiImage: trimmed)
+    }
     return Image(name)
 }
 
@@ -34,31 +48,25 @@ private extension Image {
 }
 
 private func trimWidgetTransparentEdges(_ image: UIImage) -> UIImage {
-    guard let cgImage = image.cgImage else { return image }
-
-    let width = cgImage.width
-    let height = cgImage.height
-
-    guard let dataProvider = cgImage.dataProvider,
-          let data = dataProvider.data as Data? else {
-        return image
+    guard let cgImage = image.cgImage,
+          let providerData = cgImage.dataProvider?.data,
+          let pixels = CFDataGetBytePtr(providerData) else { return image }
+    let bytesPerPixel = cgImage.bitsPerPixel / 8
+    guard bytesPerPixel > 0 else { return image }
+    let alphaOffset: Int
+    switch cgImage.alphaInfo {
+    case .premultipliedFirst, .first, .alphaOnly: alphaOffset = 0
+    case .premultipliedLast, .last: alphaOffset = bytesPerPixel - 1
+    default: return image
     }
 
-    let bytesPerPixel = 4
-    let pixelData = [UInt8](data)
-
-    var minX = width
+    var minX = cgImage.width
     var maxX = -1
-    var minY = height
+    var minY = cgImage.height
     var maxY = -1
-
-    for y in 0..<height {
-        for x in 0..<width {
-            let pixelIndex = (y * width + x) * bytesPerPixel
-            guard pixelIndex + 3 < pixelData.count else { continue }
-
-            let alpha = pixelData[pixelIndex + 3]
-            if alpha > 5 {
+    for y in 0..<cgImage.height {
+        for x in 0..<cgImage.width {
+            if pixels[y * cgImage.bytesPerRow + x * bytesPerPixel + alphaOffset] > 5 {
                 minX = min(minX, x)
                 maxX = max(maxX, x)
                 minY = min(minY, y)
@@ -66,20 +74,10 @@ private func trimWidgetTransparentEdges(_ image: UIImage) -> UIImage {
             }
         }
     }
-
-    guard minX <= maxX && minY <= maxY && minX < width && minY < height else {
-        return image
-    }
-
-    let trimRect = CGRect(
-        x: CGFloat(minX),
-        y: CGFloat(minY),
-        width: CGFloat(maxX - minX + 1),
-        height: CGFloat(maxY - minY + 1)
-    )
-
-    guard let croppedCG = cgImage.cropping(to: trimRect) else { return image }
-    return UIImage(cgImage: croppedCG, scale: image.scale, orientation: image.imageOrientation)
+    guard minX <= maxX, minY <= maxY,
+          let cropped = cgImage.cropping(to: CGRect(x: minX, y: minY,
+                                                   width: maxX - minX + 1, height: maxY - minY + 1)) else { return image }
+    return UIImage(cgImage: cropped, scale: image.scale, orientation: image.imageOrientation)
 }
 
 // MARK: - Widget Configuration Intent
@@ -516,7 +514,7 @@ struct ClashDashWidgetEntryView : View {
                 let upgrade = entry.upgrades[index]
 
                 HStack(spacing: 2) {
-                    Text(upgrade.name)
+                    Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
                         .font(.system(size: 10, weight: .semibold))
                         .lineLimit(1)
                         .minimumScaleFactor(0.75)
@@ -582,44 +580,7 @@ struct ClashDashWidgetEntryView : View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        let folder: String
-        switch upgrade.category {
-        case .builderVillage: folder = "buildings_home"
-        case .lab: folder = "lab"
-        case .starLab: folder = "builder_base"
-        case .pets: folder = "pets"
-        case .builderBase: folder = "builder_base"
-        }
-
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-                .lowercased()
-        }
-
-        let sanitizedName = sanitize(upgrade.name)
-        
-        var variations: [String] = []
-        
-        // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
-        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(sanitizedName)")
-        }
-        
-        // Try category-specific folder
-        variations.append("\(folder)/\(sanitizedName)")
-        
-        // Try direct sanitized name
-        variations.append(sanitizedName)
-
-        for variant in variations {
-            if UIImage(named: variant) != nil {
-                return variant
-            }
-        }
-        
-        return "\(folder)/\(sanitizedName)" // Default fallback
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
     }
 }
 
@@ -782,7 +743,7 @@ struct ClosestUpgradeWidgetEntryView: View {
                     Text(entry.typeLabel)
                         .font(.caption2)
                         .foregroundColor(.secondary)
-                    Text(upgrade.name)
+                    Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
                         .font(.system(size: 12, weight: .semibold))
                         .lineLimit(1)
                     Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: entry.activeBoosts))
@@ -805,35 +766,7 @@ struct ClosestUpgradeWidgetEntryView: View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        let folder: String
-        switch upgrade.category {
-        case .builderVillage: folder = "buildings_home"
-        case .lab: folder = "lab"
-        case .starLab: folder = "builder_base"
-        case .pets: folder = "pets"
-        case .builderBase: folder = "builder_base"
-        }
-
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-                .lowercased()
-        }
-
-        let sanitizedName = sanitize(upgrade.name)
-        var variations: [String] = []
-
-        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(sanitizedName)")
-        }
-        variations.append("\(folder)/\(sanitizedName)")
-        variations.append(sanitizedName)
-
-        for variant in variations {
-            if UIImage(named: variant) != nil { return variant }
-        }
-        return "\(folder)/\(sanitizedName)"
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
     }
 
     private func progressFraction(for upgrade: BuildingUpgrade) -> Double {
@@ -2153,7 +2086,7 @@ struct LabPetWidgetEntryView: View {
                         .frame(width: 22, height: 22)
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 3) {
-                            Text(upgrade.name)
+                            Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
                                 .font(.system(size: 11, weight: .semibold))
                                 .lineLimit(1)
                             if upgrade.showsSuperchargeIcon {
@@ -2196,44 +2129,7 @@ struct LabPetWidgetEntryView: View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        let folder: String
-        switch upgrade.category {
-        case .builderVillage: folder = "buildings_home"
-        case .lab: folder = "lab"
-        case .starLab: folder = "builder_base"
-        case .pets: folder = "pets"
-        case .builderBase: folder = "builder_base"
-        }
-
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-                .lowercased()
-        }
-
-        let sanitizedName = sanitize(upgrade.name)
-        
-        var variations: [String] = []
-        
-        // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
-        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(sanitizedName)")
-        }
-        
-        // Try category-specific folder
-        variations.append("\(folder)/\(sanitizedName)")
-        
-        // Try direct sanitized name
-        variations.append(sanitizedName)
-
-        for variant in variations {
-            if UIImage(named: variant) != nil {
-                return variant
-            }
-        }
-        
-        return "\(folder)/\(sanitizedName)" // Default fallback
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
     }
 }
 
@@ -2461,7 +2357,7 @@ struct BuilderBaseWidgetEntryView: View {
                         .frame(width: 18, height: 18)
                     VStack(alignment: .leading, spacing: 0) {
                         HStack(spacing: 3) {
-                            Text(upgrade.name)
+                            Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
                                 .font(.system(size: 11, weight: .semibold))
                                 .lineLimit(1)
                             if upgrade.showsSuperchargeIcon {
@@ -2505,44 +2401,7 @@ struct BuilderBaseWidgetEntryView: View {
     }
 
     private func iconName(for upgrade: BuildingUpgrade) -> String {
-        let folder: String
-        switch upgrade.category {
-        case .builderVillage: folder = "buildings_home"
-        case .lab: folder = "lab"
-        case .starLab: folder = "builder_base"
-        case .pets: folder = "pets"
-        case .builderBase: folder = "builder_base"
-        }
-
-        func sanitize(_ s: String) -> String {
-            return s.components(separatedBy: CharacterSet.alphanumerics.inverted)
-                .joined(separator: "_")
-                .trimmingCharacters(in: CharacterSet(charactersIn: "_"))
-                .lowercased()
-        }
-
-        let sanitizedName = sanitize(upgrade.name)
-        
-        var variations: [String] = []
-        
-        // SPECIAL CASE: seasonal defenses (IDs 103000000-104000000) should try crafted_defenses folder first
-        if upgrade.isSeasonalDefense == true || (upgrade.dataId ?? 0 >= 103_000_000 && upgrade.dataId ?? 0 < 104_000_000) {
-            variations.append("crafted_defenses/\(sanitizedName)")
-        }
-        
-        // Try category-specific folder
-        variations.append("\(folder)/\(sanitizedName)")
-        
-        // Try direct sanitized name
-        variations.append(sanitizedName)
-
-        for variant in variations {
-            if UIImage(named: variant) != nil {
-                return variant
-            }
-        }
-        
-        return "\(folder)/\(sanitizedName)" // Default fallback
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
     }
 }
 
@@ -2570,3 +2429,258 @@ struct BuilderBaseWidget: Widget {
     SimpleEntry(date: Date(), upgrades: [], builderCount: 5, debugText: "Preview")
 }
 
+
+// MARK: - Multi-account widgets
+
+enum MultiAccountUpgradeType: String, AppEnum {
+    case builders, lab, pets
+
+    static var typeDisplayRepresentation: TypeDisplayRepresentation = "Upgrade Type"
+    static var caseDisplayRepresentations: [Self: DisplayRepresentation] = [
+        .builders: "Builders", .lab: "Laboratory", .pets: "Pet House"
+    ]
+
+    var category: UpgradeCategory {
+        switch self {
+        case .builders: return .builderVillage
+        case .lab: return .lab
+        case .pets: return .pets
+        }
+    }
+}
+
+struct MultiAccountProfileQuery: EntityQuery {
+    func entities(for identifiers: [String]) async throws -> [ProfileEntity] {
+        allProfiles().filter { identifiers.contains($0.id) }
+    }
+
+    func suggestedEntities() async throws -> [ProfileEntity] { allProfiles() }
+
+    private func allProfiles() -> [ProfileEntity] {
+        (PersistentStore.loadState()?.profiles ?? []).map {
+            ProfileEntity(id: $0.id.uuidString, displayName: MultiAccountUpgrades.displayName(for: $0))
+        }
+    }
+}
+
+struct MultiAccountWidgetIntent: WidgetConfigurationIntent {
+    static let title: LocalizedStringResource = "Multi-Account Upgrades"
+    static let description: IntentDescription = "Show the six closest upgrades across your accounts. Starred priority accounts always have a slot."
+
+    @Parameter(title: "Upgrade Types", default: [.builders])
+    var upgradeTypes: [MultiAccountUpgradeType]
+
+    @Parameter(title: "One Upgrade per Account", default: false)
+    var onePerAccount: Bool
+
+    @Parameter(title: "Accounts", description: "Leave empty to use all accounts. Priority accounts are always included.",
+               size: .init(min: 0, max: 6), query: MultiAccountProfileQuery())
+    var selectedProfiles: [ProfileEntity]?
+}
+
+struct MultiAccountWidgetEntry: TimelineEntry {
+    let date: Date
+    let items: [MultiAccountUpgrades.Item]
+    let availability: MultiAccountUpgrades.BuilderAvailability?
+    let hasProfiles: Bool
+    let hasSelectedTypes: Bool
+    let hasPriorityProfiles: Bool
+}
+
+struct MultiAccountWidgetProvider: AppIntentTimelineProvider {
+    func placeholder(in context: Context) -> MultiAccountWidgetEntry {
+        let now = Date()
+        let profiles = (1...6).map { index in
+            PlayerAccount(displayName: "Account \(index)", activeUpgrades: [
+                BuildingUpgrade(name: "Archer Tower", targetLevel: 20,
+                                endTime: now.addingTimeInterval(Double(index) * 3600),
+                                category: .builderVillage, startTime: now.addingTimeInterval(-3600), totalDuration: 86400)
+            ])
+        }
+        return entry(profiles: profiles, configuration: MultiAccountWidgetIntent(), date: now)
+    }
+
+    func snapshot(for configuration: MultiAccountWidgetIntent, in context: Context) async -> MultiAccountWidgetEntry {
+        let profiles = PersistentStore.loadState()?.profiles ?? []
+        if context.isPreview && profiles.isEmpty { return placeholder(in: context) }
+        return entry(profiles: profiles, configuration: configuration, date: Date())
+    }
+
+    func timeline(for configuration: MultiAccountWidgetIntent, in context: Context) async -> Timeline<MultiAccountWidgetEntry> {
+        let profiles = PersistentStore.loadState()?.profiles ?? []
+        let now = Date()
+        let horizon = now.addingTimeInterval(15 * 60)
+        // Pre-render minute updates and exact completions so a finished upgrade
+        // leaves the list and frees its builder without waiting for a reload.
+        var dates = Set((0...15).map { now.addingTimeInterval(Double($0) * 60) })
+        for profile in profiles {
+            for upgrade in profile.activeUpgrades {
+                let completion = upgrade.projectedCompletionDate(activeBoosts: profile.activeBoosts, referenceDate: now)
+                if completion > now && completion < horizon { dates.insert(completion.addingTimeInterval(1)) }
+            }
+            for boost in profile.activeBoosts where boost.endTime > now && boost.endTime < horizon {
+                dates.insert(boost.endTime)
+            }
+        }
+        let entries = dates.sorted().map { entry(profiles: profiles, configuration: configuration, date: $0) }
+        return Timeline(entries: entries, policy: .after(horizon))
+    }
+
+    private func entry(profiles: [PlayerAccount], configuration: MultiAccountWidgetIntent, date: Date) -> MultiAccountWidgetEntry {
+        let selectedIDs = Set((configuration.selectedProfiles ?? []).compactMap { $0.profileID() })
+        let categories = Set(configuration.upgradeTypes.map(\.category))
+        return MultiAccountWidgetEntry(
+            date: date,
+            items: MultiAccountUpgrades.items(profiles: profiles, selectedProfileIDs: selectedIDs,
+                                             categories: categories, onePerAccount: configuration.onePerAccount,
+                                             referenceDate: date),
+            availability: MultiAccountUpgrades.builderAvailability(profiles: profiles, referenceDate: date),
+            hasProfiles: !profiles.isEmpty, hasSelectedTypes: !categories.isEmpty,
+            hasPriorityProfiles: profiles.contains(where: \.isWidgetPriority))
+    }
+}
+
+struct MultiAccountWidgetEntryView: View {
+    @Environment(\.widgetFamily) private var family
+    let entry: MultiAccountWidgetEntry
+
+    private var isLarge: Bool { family == .systemLarge }
+    private var columns: Int { isLarge ? 2 : 3 }
+    private var rows: Int { isLarge ? 3 : 2 }
+
+    private var statusText: String {
+        if let availability = entry.availability {
+            return "\(availability.freeBuilders) \(availability.freeBuilders == 1 ? "builder" : "builders") free • \(availability.profileName)"
+        }
+        if entry.hasPriorityProfiles { return "All priority builders busy" }
+        return "\(entry.items.count) upcoming \(entry.items.count == 1 ? "upgrade" : "upgrades")"
+    }
+
+    var body: some View {
+        GeometryReader { geometry in
+            VStack(spacing: isLarge ? 8 : 4) {
+                if entry.items.isEmpty {
+                    VStack(spacing: 6) {
+                        Image(systemName: "person.2.fill")
+                            .font(.title2)
+                            .foregroundStyle(.secondary)
+                        Text(!entry.hasProfiles ? "Add accounts in Clashboard" :
+                             !entry.hasSelectedTypes ? "Select upgrade types in Edit Widget" : "No upcoming upgrades")
+                            .font(.caption)
+                            .multilineTextAlignment(.center)
+                    }
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                } else {
+                    let width = max(0, (geometry.size.width - CGFloat(columns - 1) * 8) / CGFloat(columns))
+                    VStack(spacing: isLarge ? 10 : 6) {
+                        ForEach(0..<rows, id: \.self) { row in
+                            HStack(spacing: 8) {
+                                ForEach(0..<columns, id: \.self) { column in
+                                    let index = row * columns + column
+                                    if index < entry.items.count {
+                                        accountCell(entry.items[index])
+                                            .frame(width: width)
+                                            .frame(maxHeight: .infinity)
+                                    } else {
+                                        Color.clear.frame(width: width)
+                                    }
+                                }
+                            }
+                            .frame(maxHeight: .infinity)
+                        }
+                    }
+                    .frame(maxHeight: .infinity)
+                }
+                Text(statusText)
+                    .font(.system(size: isLarge ? 11 : 10, weight: .bold))
+                    .foregroundStyle(entry.availability == nil ? .green : .orange)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.65)
+                    .frame(maxWidth: .infinity)
+            }
+            .frame(width: geometry.size.width, height: geometry.size.height)
+        }
+        .widgetURL(URL(string: "clashdash://refresh"))
+    }
+
+    private func accountCell(_ item: MultiAccountUpgrades.Item) -> some View {
+        VStack(alignment: .leading, spacing: isLarge ? 4 : 3) {
+            if isLarge, let upgrade = item.upgrade {
+                Text(UpgradePresentationCatalog.shared.displayName(for: upgrade))
+                    .font(.system(size: 12, weight: .semibold))
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            HStack(spacing: 2) {
+                if item.isPriority {
+                    Image(systemName: "star.fill")
+                        .font(.system(size: isLarge ? 8 : 7))
+                        .foregroundStyle(.yellow)
+                }
+                Text(item.profileName)
+                    .font(.system(size: 10, weight: isLarge ? .regular : .semibold))
+                    .foregroundStyle(isLarge ? .secondary : .primary)
+                    .lineLimit(1)
+                    .minimumScaleFactor(0.7)
+            }
+            HStack(spacing: 4) {
+                if let upgrade = item.upgrade {
+                    trimmedWidgetImage(named: multiAccountIconName(for: upgrade))
+                        .resizable()
+                        .clashWidgetTintAwareRendering()
+                        .scaledToFit()
+                        .frame(width: isLarge ? 32 : 25, height: isLarge ? 32 : 25)
+                    VStack(alignment: .leading, spacing: 2) {
+                        if isLarge {
+                            Text(upgrade.levelDisplayText)
+                                .font(.system(size: 10))
+                                .foregroundStyle(.secondary)
+                                .lineLimit(1)
+                                .minimumScaleFactor(0.7)
+                        }
+                        Text(formatBoostedTimeRemaining(for: upgrade, activeBoosts: item.activeBoosts, referenceDate: entry.date))
+                            .font(.system(size: isLarge ? 11 : 9))
+                            .monospacedDigit()
+                            .lineLimit(1)
+                            .minimumScaleFactor(0.7)
+                    }
+                } else {
+                    Image(systemName: "checkmark.circle")
+                        .foregroundStyle(.green)
+                    Text("No upgrades")
+                        .font(.system(size: isLarge ? 11 : 9))
+                        .foregroundStyle(.secondary)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.7)
+                }
+            }
+            if let upgrade = item.upgrade {
+                ProgressView(value: boostedProgressFraction(for: upgrade, activeBoosts: item.activeBoosts,
+                                                            goldPassBoost: item.goldPassBoost, referenceDate: entry.date))
+                    .progressViewStyle(.linear)
+                    .tint(.blue)
+                    .frame(height: 3)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
+    }
+
+    private func multiAccountIconName(for upgrade: BuildingUpgrade) -> String {
+        UpgradePresentationCatalog.shared.iconName(for: upgrade)
+    }
+}
+
+struct MultiAccountWidget: Widget {
+    let kind = "MultiAccountWidget"
+
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: kind, intent: MultiAccountWidgetIntent.self, provider: MultiAccountWidgetProvider()) { entry in
+            MultiAccountWidgetEntryView(entry: entry)
+                .containerBackground(.fill.tertiary, for: .widget)
+        }
+        .configurationDisplayName("Multi-Account Upgrades")
+        .description("The six closest upgrades across your accounts, with priority-account builder alerts.")
+        .supportedFamilies([.systemMedium, .systemLarge])
+    }
+}

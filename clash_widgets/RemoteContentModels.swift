@@ -99,6 +99,13 @@ struct RemoteNews: Codable, Identifiable {
     let presentation: RemotePresentation
 }
 
+enum RemoteContentClockSchedule {
+    static func nextUpdate(events: [RemoteEvent], news: [RemoteNews], after now: Date) -> Date? {
+        let boundaries = events.filter(\.enabled).flatMap { [$0.start, $0.end] } + news.map(\.published)
+        return boundaries.filter { $0 > now }.min()
+    }
+}
+
 struct RemoteNewsFeed: Codable {
     let schemaVersion: Int
     let entries: [RemoteNews]

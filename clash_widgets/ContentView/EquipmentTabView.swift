@@ -56,11 +56,12 @@ struct EquipmentView: View {
     }
 
     private var summarySection: some View {
-        Section {
+        let totals = totalOreCost
+        return Section {
             VStack(alignment: .leading, spacing: 12) {
                 Text(summaryTitle)
                     .font(.headline)
-                OreTotalsView(totals: totalOreCost, showStarry: totalOreCost.starry > 0)
+                OreTotalsView(totals: totals, showStarry: totals.starry > 0)
             }
             .padding(.vertical, 4)
         }
@@ -124,9 +125,10 @@ struct EquipmentView: View {
     }
 
     private var equipmentSection: some View {
-        ForEach(groupedHeroes, id: \.self) { hero in
+        let groups = groupedEntries
+        return ForEach(groupedHeroes(in: groups), id: \.self) { hero in
             Section {
-                ForEach(groupedEntries[hero] ?? []) { entry in
+                ForEach(groups[hero] ?? []) { entry in
                     let totals = EquipmentView.oreCostTable
                         .totalCost(from: entry.level, to: entry.maxLevel)
                         .adjusted(for: entry.rarity)
@@ -217,20 +219,12 @@ struct EquipmentView: View {
     }
 
     private var groupedEntries: [String: [EquipmentEntry]] {
+        // filteredEntries is already ordered within each hero; grouping preserves that order.
         Dictionary(grouping: filteredEntries, by: { $0.hero })
-            .mapValues { entries in
-                entries.sorted { lhs, rhs in
-                    if lhs.rarity != rhs.rarity {
-                        return lhs.rarity.sortRank < rhs.rarity.sortRank
-                    }
-                    return lhs.name < rhs.name
-                }
-            }
     }
 
-    private var groupedHeroes: [String] {
-        let available = Set(groupedEntries.keys.filter { !$0.isEmpty })
-        // Order by heroes_config.json unlock order, then alphabetical for unknowns
+    private func groupedHeroes(in groups: [String: [EquipmentEntry]]) -> [String] {
+        let available = Set(groups.keys.filter { !$0.isEmpty })
         let configOrder = HeroConfigStore.shared.configs.map { $0.displayName }
         let ordered = configOrder.filter { available.contains($0) }
         let remaining = available.subtracting(Set(configOrder)).sorted()
