@@ -2,6 +2,21 @@
   "schemaVersion": 1,
   "entries": [
     {
+      "id": "town-hall-19-update-coming-2026-11-16",
+      "published": "2026-11-17T01:38:15Z",
+      "showAsPopup": true,
+      "presentation": {
+        "title": "Town Hall 19 update coming soon",
+        "summary": "The Clashboard update for Town Hall 19 is expected within the next couple of days.",
+        "sections": [
+          {
+            "title": "What to expect",
+            "body": "The update will add Town Hall 19 content and new multi-account widgets, so you can track upgrades across your villages in one place. Stay tuned!"
+          }
+        ]
+      }
+    },
+    {
       "id": "hammer-jam-started-2026-11-01",
       "published": "2026-11-01T14:03:14Z",
       "showAsPopup": true,
@@ -15,7 +30,7 @@
         "sections": [
           {
             "title": "Supercharge fix coming soon",
-            "body": "A Clashboard update is expected in the next 1\u20132 days with a fix for tracking Supercharge upgrade-time reductions. Until then, your current app version may not reflect those reductions correctly."
+            "body": "A Clashboard update is expected in the next 1–2 days with a fix for tracking Supercharge upgrade-time reductions. Until then, your current app version may not reflect those reductions correctly."
           }
         ]
       }
